@@ -1,0 +1,765 @@
+= 2.3.1 =
+* WordPress 5.3 での動作確認。
+  Compatible with WordPress 5.3.
+* ビジュアル エディタの「リンクカード挿入」ボタンが表示されない不具合を修正。
+  Fixed a bug that the button of the visual editor is not displayed.
+
+= 2.3.0 =
+* プラグイン等のインストール状況によって設定画面のタブが動作しない不具合を修正。
+  Fixed: Fixed a bug that the tab of the setting screen does not respond.
+
+= 2.2.9 =
+* WordPress 5.2.3 での動作確認。
+  Compatible with WordPress 5.2.3.
+* 設定画面の「かんたん書式設定」に「コンパクト」を追加。
+  Added: Tiny format 'Compact'.
+* カード管理画面にヘルプアイコンを設置。
+  Added: A help icon has been added to the "Pz Card Manager" screen.
+* 設定画面にヘルプアイコンを設置。
+  Added: A help icon has been added to the "Pz Card Settings" screen.
+* 設定画面をタブ方式に変更。
+  Modified: Changed the "Pz card setting" screen to tab method.
+* 外部リンク、内部リンク、同ページでそれぞれ枠線の色を選択できるように機能を追加。
+  Added: Added settings so that you can select the border color for external links, internal links, and the same page.
+
+= 2.2.8 =
+* WordPressテーマ「Cocoon」を使用しているとき、外部リンクのアイコンが表示されないように修正。
+  Fixed: When using the WordPress theme "Cocoon", the external link icon was not displayed.
+* WordPressテーマ「JIN」を使用しているとき、余分な空行が表示されないように修正。
+  Fixed: When using the WordPress theme "JIN", it has been corrected so that extra blank lines are not displayed.
+* 「付加情報」をSPAN要素からDIV要素に変更。(Thanks @metro_eight on Twitter)
+  Modified: "Additional information" changed from SPAN element to DIV element.
+* 「シェア数」をSPAN要素からDIV要素に変更。
+  Modified: "Share information" changed from SPAN element to DIV element.
+* 「続きを読む」ボタンをSPAN要素からDIV要素に変更。
+  Modified: "Read more button" changed from SPAN element to DIV element.
+
+= 2.2.7 =
+* サイトアイコンの垂直位置（vertical-align）をテキスト下（text-bottom）から中央（middle）へ変更。
+  Modified: Changed the vertical position of the site icon (vertical-align) from the bottom of the text (text-bottom) to the middle (middle).
+* サイト追加情報をSPANタグからDIVタグへ変更。
+  Modified: Changed site addition information from SPAN to DIV.
+* 設定画面にタイトルを折り返さない設定を追加。
+  Added: Added a setting that does not wrap the title.
+* 設定画面にURLを折り返さない設定を追加。
+  Added: Added a setting that does not wrap the URL.
+* 設定画面の「文字の設定」のレイアウトを変更。
+  Modified: Changed the layout of "Text Settings" on the setting screen.
+* 設定画面の「かんたん書式設定」に「囲み」を追加。
+  Modified: Added tiny format "Enclose".
+* 設定画面の「かんたん書式設定」に「反射」を追加。
+  Modified: Added tiny format "Reflection".
+* 設定画面の「かんたん書式設定」に「セロハンテープ（斜め）」を追加。
+  Modified: Added tiny format "Cellophane tape (digonal)".
+* 設定画面の「かんたん書式設定」に「Windows 95」を追加。
+  Modified: Added tiny format "Windows 95".
+* 設定画面の「かんたん書式設定」に「Windows XP」を追加。
+  Modified: Added tiny format "Windows XP".
+* 内部リンクがキャッシュされない不具合を修正。(Thanks @Masa_s_Record on Twitter)
+  Fixed: Fixed a bug that internal links are not cached.
+* サイトアイコンの取得が失敗した際に、警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.2.6.2 =
+* バグ修正。
+  Fixed: Fixed a bug.
+
+= 2.2.6.1 =
+* バグ修正。
+  Fixed: Fixed a bug.
+
+= 2.2.6 =
+* 設定画面の「余白」に「40px」を追加。
+  Added: Added "40px" to "Margin" value.
+* ドメイン名（サイト名称）にマウスカーソルを重ねたときにアンダーラインが表示されないように変更。
+  Modified: Changed so that the underline is not displayed when the mouse cursor is moved over the domain name (site name).
+* ビジュアル エディタの「リンクカード挿入」ボタンを押したとき、モーダルウィンドウが開くように変更。
+  Modified: Changed to open a modal window when the insert button is pressed.
+
+= 2.2.5 =
+* 内部リンクでもnofollow指定できるように修正。
+  Modified: Fixed to be able to specify nofollow even for internal links.
+* 押しピンの画像がクリック無効になるように修正。
+  Modified: Fixed push pin image to be click invalid.
+
+= 2.2.4 =
+* WordPress 5.2.2 での動作確認。
+  Compatible with WordPress 5.2.2.
+* ショートコードごとにnofollowを追加できる機能を追加。
+  Added: Added the function to add nofollow per short code.
+* スタイルシートの取得方法を変更。
+  Modified: Changed style sheet acquisition method.
+* 内部リンクのサムネイルのURLからスキーム（http:やhttps:）を省略するように変更。
+  Modified: Changed to omit scheme from URL of internal link thumbnail.
+
+= 2.2.3 =
+* 設定画面にショートコードを強制的に展開する機能を追加。
+  Added: Added the function to forcibly expand the short code to the setting.
+* WordPress 5.2 での動作確認。
+  Compatible with WordPress 5.2.
+* WordPress 5.2.1 での動作確認。
+  Compatible with WordPress 5.2.1.
+
+= 2.2.2.1 =
+* ビジュアル エディタで警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.2.2 =
+* ビジュアル エディタの「リンクカード挿入」ボタンの仕組みを見直し。
+  Modified: Review the mechanism of the insert button in the visual editor.
+
+= 2.2.1 =
+* WordPress 5.0.1 での動作確認。
+  Compatible with WordPress 5.0.1.
+* WordPress 5.0.2 での動作確認。
+  Compatible with WordPress 5.0.2.
+* WordPress 5.0.3 での動作確認。
+  Compatible with WordPress 5.0.3.
+* WordPress 5.1 での動作確認。
+  Compatible with WordPress 5.1.
+* URL指定エラーの解除方法をメッセージに追加。
+  Modified: Added a message on how to cancel the URL error.
+* 編集画面で警告が出ていたのを修正。
+  Fixed: Fix warning on edit screen.
+
+= 2.2.0 =
+* WordPress 5.0 での動作確認。
+  Compatible with WordPress 5.0.
+* 存在しないURLを指定したときに警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+* カード管理画面で警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.1.9.1 =
+* カード管理画面で警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.1.9 =
+* 相対URLを指定したときにサイトURLを補完する機能を追加。
+  Added: Added a function to supplement site URL when relative URL is specified.
+
+= 2.1.8.4 =
+* サイト情報が「なし」の場合、「続きを読む」ボタンが表示されなかったのを修正。(Thanks Andrew)
+  Fixed: Fixed a bug that the "Read more" button is not displayed.
+
+= 2.1.8.3 =
+* カード管理画面で警告エラーが発生する不具合を修正。(Thanks @sayataro98 on Twitter)
+  Fixed: Fixed a bug.
+* 「続きを読む」ボタンが表示されなかったのを修正。(Thanks Andrew)
+  Fixed: Fixed a bug that the "Read more" button is not displayed.
+
+= 2.1.8.2 =
+* 警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.1.8.1 =
+* フィルターの優先度を指定するように修正。
+  Modified: Fix to specify filter priority.
+* リンク切れチェックの周期が長くなるように修正。
+  Modified: Correction was made so that the link break check cycle becomes longer.
+* 編集画面に次回のリンク切れチェック日時を表示。
+  Modified: The next link break check date and time was displayed on the edit screen.
+
+= 2.1.8 =
+* 設定画面の「かんたん書式設定」の「Pzカード 標準書式」を「Pzカード オリジナル」に名称変更。
+  Modified: Minor fixes.
+* 設定画面の「かんたん書式設定」の「Pzカード 標準書式」を微調整。
+  Modified: Fine adjustment tiny format "Pz LinkCard Default".
+* 設定画面の「かんたん書式設定」の「見出し」を微調整。
+  Modified: Fine adjustment tiny format "Header".
+* 設定画面の「かんたん書式設定」の「シンプル」を「ノーマル（はてなブログカード風）」に名称変更。
+  Modified: Modified tiny format "Simple" to "Normal".
+* 設定画面の「かんたん書式設定」に「シンプル」を追加。
+  Added: Added tiny format "Simple".
+* 設定画面の「かんたん書式設定」の「押しピン」を微調整。
+  Modified: Added tiny format "Pushpin".
+* 設定画面のサイト情報の位置に「タイトルの上側」を追加。
+  Added: Added setting to set Above the title.
+* 設定画面の「サイト情報」を「付加情報」に修正。
+  Fixed: Modified "Site information" to "Added information".
+* カード管理画面の並び順の表示が昇順になっていたのを修正。
+  Fixed: Fixed a bug.
+* ソーシャルカウントに「Pocket」を追加。
+  Added: Added Pocket social count.
+* アンカーテキストの装飾を無くすように修正。
+  Added: Added setting to disable anchor text decoration.
+
+= 2.1.7.1 =
+* 設定画面の「かんたん書式設定」に「見出し」を追加。
+  Added: Tiny format 'Headline'.
+* スタイルシートを整理。
+  Modified: Minor fixes.
+
+= 2.1.7 =
+* 「外部リンク」「内部リンク」「同ページ」の判定方法を修正。
+  Modified: Change judgment method.
+* 設定画面に外部リンクのみ変換する設定を追加。（テーマに内部リンクのカード化機能がある場合を想定）(Thanks @mocochat on Twitter)
+  Added: Added 'Convert only external link'.
+* 文字コードを自動判断したときの結果を修正。
+  Modified: Minor fixes.
+
+= 2.1.6.2 =
+* アンカーテキストのアンダーラインが表示されてしまうのを修正。
+  Fixed: Fixed a bug.
+
+= 2.1.6.1 =
+* サイト情報を表示しないとき、ワーニングが出ていたのを修正。
+  Fixed: Fixed a bug.(Thanks @ryuji120912 on Twitter)
+
+= 2.1.6 =
+* 設定画面にTwitterアカウントを表示。
+  Added: Added 'When in trouble'.
+* タイトル取得方法（正規表現）を修正。
+  Modified: Fixed title acquisition method.
+* アンカーテキストのアンダーラインを無しに。
+  Modified: Changed the text-decoration to "none".
+
+= 2.1.5 =
+* 文字装飾を「無し」(none)に変更。
+  Modified: Changed the text-decoration to "none".
+* 設定画面の「影」の初期設定を「影を付けない」に変更。
+  Modified: Changed the initial setting to "Do not add shadows".
+* 設定画面の「角をまるめる」の初期設定を「角を丸めない」に変更。
+  Modified: Changed the initial setting to "Do not round".
+* 設定画面の外部リンクのサムネイルの初期設定を「直接取得できない場合、WebAPIを利用する」に変更。
+  Modified: Changed the initial setting to "Use WebAPI ,If can not direct".
+* 設定画面の「角をまるめる」にサイズを追加。
+  Modified： Square rounding has added some sizes.
+* 設定画面の「カードの余白」に「24px」を追加。
+  Modified: 24px was added to the card margin.
+* 設定画面のサムネイル取得WebAPIのHeartRail社の例をhttpsに変更。
+  Modified: Modified HeartRail WebAPI URL to support SSL.
+* facebookのシェア数取得WebAPIをhttpsに変更。
+  Modified: Modified facebook WebAPI URL to support SSL.
+* Twitterのツイート数取得WebAPIをhttpsに変更。
+  Modified: Modified Twitter WebAPI URL to support SSL.
+* Tweet(s)をクリックしたときの動作をツイート検索に変更。
+  Modified: From registration to search at Twitter.
+* User(s)をクリックしたときの動作をはてなブックマーク数表示に変更。
+  Modified: From registration to search at Hatena.
+* 設定画面の「サイト情報」から「サイト名称」と「付加情報」を別項目に変更。
+  Added: Add additional information.
+* 設定画面の「文字の設定」に「付加情報」の文字設定を追加。
+  Added: Add character setting of additional information.
+* 設定画面の「付加情報」を「見出し表示」にする設定を追加。(Thanks @hituji_1234 on Twitter)
+  Added: Added setting to set additional information as heading.
+
+= 2.1.4.2 =
+* WordPress 4.9.8 での動作確認。
+  Compatible with WordPress 4.9.8.
+
+= 2.1.4.1 =
+* URLの記述ミスを修正。
+  Modified: Corresponded to URL mistake.
+
+= 2.1.4 =
+* CHARSETを判断できないパターンがあったのを修正。(Thanks サイノア)
+  Fixed: There was a pattern which can not judge CHARSET, so I fixed it.
+* カード管理画面で「すべて」を選んだときに「内部リンク」のみが表示されていたのを修正。
+  Fixed: Fixed a bug in card management.
+
+= 2.1.3.1 =
+* WordPress 4.9.6 での動作確認。
+  Compatible with WordPress 4.9.6.
+
+= 2.1.3 =
+* WordPress管理画面のカード管理画面のサブメニュー項目の横にリンク切れの件数を表示する機能を追加。(Thanks @Oncle1316 on Twitter)
+  Added: Added setting to display the number of broken links next to the submenu.
+
+= 2.1.2.2 =
+* 定義されていない変数を使用していたため警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.1.2.1 =
+* プラグインの新規インストールもしくは停止から有効化した際に警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.1.2 =
+* 直接取得するサムネイルのサイズを100pxから200pxへ変更。
+  Fixed: Directly acquired thumbnail size was changed from 100px to 200px.
+* 横幅に合わせて縮小表示させるときのフォントサイズと行の高さを調整。
+  Fixed: Adjusted the font size and line height when reducing the display to fit the width.
+* URLを表示できる場所を「タイトルの下」の他に「サイト情報の後ろ」が選べるように変更。
+  Added: "Behind site-info" has been added as the display location of the URL.
+* カード管理画面に文字列検索を追加。
+  Added: A character string search was added to the card management screen.
+* カード管理画面の一括メニューに「サムネイルの再取得」を追加。
+  Added: "Renew thumbnail" was added to the batch menu of the card management screen.
+
+= 2.1.1.1 =
+* WordPress 4.9.5 での動作確認。
+  Compatible with WordPress 4.9.5
+
+= 2.1.1 =
+* 設定画面に「続きを読む」ボタンの文字の色とサイズを追加。
+  Added: Added setting of color and size of "Read more".
+
+= 2.1.0.1 =
+* カード管理画面に「リンク切れ」の項目を追加。
+  Added: Added "Link broken" item to card management.
+* スタイルシートを読み込まないときに簡易表示するように修正。（Google AMP対応）
+  Modified: If CSS is not loaded, display simple.
+* 設定画面に、テキストエディタのクイックタグを表示するかを選択する設定を追加。
+  Added: Added settings to allow you to choose whether to display quick tags in a text editor.
+* 設定画面に、ビジュアル エディタの「リンクカード挿入」ボタンを表示するかを選択する設定を追加。
+  Added: Added settings to allow you to choose whether to display the insert button in the visual editor.
+* 設定画面に、「続きを読むボタン」を追加するかと選択する設定を追加。(Thanks @R18otomegame on Twitter)
+  Added: Added so that you can set the Read more button.
+* 設定画面の誤記を修正。
+  Fixed: The mistyping was corrected.
+* 設定画面の設定項目を再配置。
+  Modified: The setting items on the setting screen have been relocated.
+* 設定画面にバージョン表記を追加。
+  Modified: Version was written on setting screen.
+
+= 2.0.8 =
+* WordPress 4.9.4 での動作確認。
+  Compatible with WordPress 4.9.4
+* 設定画面の、ショートコードの表示を修正。
+  Fixed: Fixed so that the short code is displayed immediately on the setting screen.
+* 設定画面に、スタイルシートを追加する設定を追加。
+  Fixed: Fix to be able to add stylesheet.
+* カード管理画面で警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.0.7.2 =
+* WordPress 4.9.2 での動作確認。
+  Compatible with WordPress 4.9.2
+* 設定画面の一部が日本語表記になっていなかったのを修正。
+  Fixed: A part of the setting screen was not written in Japanese was fixed.
+
+= 2.0.7.1 =
+* バグ修正。
+  Fixed: Fixed a bug.
+
+= 2.0.7 =
+* WordPress 4.9 での動作確認。
+  Compatible with WordPress 4.9
+* 記事では無いページでURL指定エラーが発生する不具合を修正。（特定のURLを除外）
+  Modified: Exclude some URLs from errors.
+* 設定画面に、サブディレクトリ型のマルチサイトのとき、メインサイトからサブサイトを外部リンクと判定する設定を追加。
+  Added: In the case of the multi-site of the subdirectory type, the site under the subdirectory is judged as an external site.
+
+= 2.0.6 =
+* URLパラメーターが無効な場合にURL指定エラーを表示する機能を追加。
+  Added the function to display URL parameter.
+
+= 2.0.5 =
+* 内部リンクの記事ID取得が失敗した場合に外部アクセスする機能を追加。（サイト全体に負荷がかかる可能性があります）
+  Added: If the PostID can not be acquired, the URL of the redirect destination is acquired.
+
+= 2.0.4.1 =
+* 設定画面に、アクセスされたURLの末尾が「/?amp=1」だったとき、簡易表示する設定を追加。（Google AMP暫定対応）
+  Added: Simple display if the end of URL is "/?amp=1".
+* ドキュメント（readme.txt）修正。
+  Fixed: Fixed a typo in "readme.txt".
+
+= 2.0.4 =
+* WordPress 4.8.2 での動作確認。
+  Compatible with WordPress 4.8.2
+* 「外部リンクにはてなブログカードを使用」した際のURLを変更。
+  Modified: Hatena URL changed.
+* ショートコード記述時のURLの記述ミスに対応。
+  Modified: Corresponded to URL mistake.
+* 「押しピン」の画像を変更。
+  Modified: Changed the image of "push pin".
+* 設定画面の「かんたん書式設定」にWordPress標準ブログカード風の「スクエア」を追加。
+  Added: Tiny format 'Square'.
+* 設定画面の「サムネイルの位置」に「上側」を追加。
+  Added: "Upper" has been added to the position of the thumbnail.
+
+= 2.0.3 =
+* 設定画面に、404エラーのときでもリンクを有効にする設定を追加。(Thanks @toru1231 on Twitter)
+  Added: Added setting to enable link even on 404 error.
+* 内部リンクの抜粋文が取得できていなかったのを修正。
+  Fixed: Fixed an excerpt of the internal link could not be acquired.
+* 外部リンクのサムネイル取得が失敗する不具合を修正。
+  Fixed: Fixed a bug that you can not acquire thumbnails of external links.
+
+= 2.0.2 =
+* 外部リンクの場合、サイトアイコンURLを取得するように修正。
+  Fixed: Fix to get URL of site icon.
+* サムネイルURL、サイトアイコンURLが相対パスの場合に絶対パスに変換するように修正。
+  Modified: Corresponds to relative specified URL.
+* パラメータが誤っているときに設定エラーが表示されない場合があったのを修正。
+  Fixed: Fix to display error when parameter is wrong.
+
+= 2.0.1.1 =
+* 警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.0.1 =
+* 内部リンクのカテゴリーページ／タグページに対応。
+  Added: Supported display of category page.
+
+= 2.0.0.3 =
+* 内部リンクが取得できない不具合を修正。（Ver.2.0.0.2から発生）
+  Fixed: Fixed a bug.
+
+= 2.0.0.2 =
+* 未実装のJavaScriptを呼び出し、エラーがサーバーログに出力される不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.0.0.1 =
+* idn_to_utf8()が実装されていない環境で警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug.
+
+= 2.0.0 =
+* ショートコードでURLを指定する際に「href」も使用できるように変更。(Thanks @weblearninglog on Twitter)
+  Modified: "href" was added to the parameter that specifies the URL.
+* 設定画面に、テキストエディタへ「クイックタグ」を追加する設定を追加。(Thanks @kumasan_kenkou on Twitter)
+  Added: A quick tag was added to the text editor.
+* 設定画面に、ビジュアル エディタへ「リンクカード作成」を追加する設定を追加。
+  Added: A card insertion button was added to the visual editor.
+* 設定画面に、テキストリンクだけが記載されている行をリンクカードに変更する機能を追加。
+  Added: Added the function to convert text link to card.
+* 設定画面に、URLだけが記載されている行をリンクカードに変更する機能を追加。(Thanks @hina01011 on Twitter)
+  Added: Added the function to convert URL to card.
+* カード管理画面のタイトルと抜粋文を変更されている場合に太文字で表示するように変更。
+  Modified: Changed so that changed parts are displayed in bold letters on the card management screen.
+* 設定画面に、国際化ドメイン（IDNA ASCIIドメイン）に対応する設定を追加。(Thanks @ichinosecom on Twitter)
+  Added: It supports display of IDNA ASCII domain.
+
+= 1.8.2 =
+* スタイルシートのURLからスキーム（http:やhttps:）を省略するように変更。(Thanks @mataku_hair on Twitter)
+  Modified: The style sheet URL was corrected.
+* InstantWPで使用した場合にカード管理画面が文字化けするのを修正。(Thanks aya)
+  Fixed: Fixed garbled characters on the management screen.
+* 外部リンクのサムネイルの保存ディレクトリを変更。
+  Modified: Changed directory to save thumbnails.
+* カード管理画面を狭い画面で見ると表示が崩れるのを修正。
+  Fixed: Fixed display collapse of the management screen.
+* カード管理画面の文字セットの列を非表示に変更。
+  Modified: The character set column of the management screen was deleted.
+* カード管理画面のソーシャルカウントの表示を複数列から1列に変更。
+  Modified: Changed the social count column of the management screen.
+* カード管理画面に外部リンクのサムネイルの表示を追加。
+  Added: Added display of thumbnail to the management screen.
+
+= 1.8.1 =
+* WordPress 4.8 での動作確認。
+  Compatible with WordPress 4.8
+* 内部リンクのサムネイル取得について、フルサイズ画像を取得していたのを修正。(Thanks @cstudyupdate on Twitter)
+  Fixed: Fixed a bug. Corrected the size of thumbnail to be acquired.
+* 設定画面の「外部リンク」タブの、「サムネイルの取得方法」で「直接取得」を選択可能に変更。
+  Modified: Modified to be able to select "Direct" from "Thumbnail" on the "External Link" tab of the setting screen.
+* 設定画面の「かんたん書式設定」にはてなブログカード風の「シンプル」を追加。
+  Added: Tiny format 'Simple'.
+
+= 1.8.0 =
+* 設定画面のカラーコード入力にチェックを追加。
+  Added: Added color code check.
+* 設定画面に、アクセスされたURLの末尾が「/amp」「/amp/」だった場合に簡易表示する設定を追加。（Google AMP暫定対応）(Thanks @misoji_13 on Twitter)
+  Added: Simple display if the end of URL is "/amp".
+* 設定画面の「かんたん書式設定」に「押しピン」を追加。(Thanks @kautakku on Twitter)
+  Added: Tiny format 'Pushpin'.
+
+= 1.7.9.1 =
+* 抜粋文の文字フォントサイズが枠線のものになってしまう不具合を修正。(Thanks @cgrio0822 on Twitter)
+  Fixed: Fixed a bug. Incorrect font size of excerpt.
+
+= 1.7.9 =
+* キャッシュ用DBが作成されず、CPUが高負荷になってしまう不具合を修正。
+  Fixed: Fixed a bug that table is not created.
+* METAタグの名前が大文字が混ざっていると取得できなかったのを修正。(Thanks @J_kindan on Twitter)
+* 内部リンクが取得できない時に外部アクセスしていたのが高負荷に繋がっていたため、外部アクセスしないように修正。(Thanks @J_kindan on Twitter)
+  Fixed: Fixed a high load bug.
+
+= 1.7.8 =
+* キャッシュ用DBが作成されず、CPUが高負荷になってしまう不具合を修正。(Thanks @J_kindan on Twitter)
+  Fixed: Fixed a bug that table is not created.
+
+= 1.7.7 =
+* アイキャッチ画像が設定されていないテーマの場合に警告エラーが発生する不具合を修正。(Thanks enomoto)(Thanks sato)
+  Fixed: Fixed a bug.
+
+= 1.7.6 =
+* 設定画面に、用例等を追加。
+  Added: Add tips at settings screen.
+* 設定画面の「かんたん書式設定」に「縫い目」を追加。(Thanks @i_tsu_tsu on Twitter)
+  Added: Tiny format 'Stitch'.
+* 設定画面に、サムネイルのサイズの設定を追加。(Thanks @misoji_13 on Twitter)
+  Modified: Able to change the size of the thumbnail.
+
+= 1.7.5 =
+* WordPress 4.7.1 での動作確認。
+  Compatible with WordPress 4.7.1.
+* アクティベート／バージョンアップ時に重複データを削除する機能を追加。
+  Cleaning up garbage from the database at activation.
+* 設定画面の項目追加と整理。
+  Modified: Cleaned up the settings screen.
+* 設定画面に用例等を追加。
+  Added: Add tips at settings screen.
+* 設定画面に、サイト情報、タイトル、URL、抜粋文部分の行の高さを追加。(Thanks @keitaihoo on Twitter)(Thanks @ud_fibonacci on Twitter)
+  Added: Added setting. "Height" in letter.
+* 設定画面に、「ドメイン名のみ」以外の場合でも末尾のスラッシュを除去する設定を追加。
+  Added: Added setting. Trailing slash.
+* facebookのシェア数が取得できなくなっていたのを修正。(Thanks @i_tsu_tsu on Twitter)
+  Modified: Fixed that the number of shares of facebook could not be obtained.
+* カード管理画面での内部リンクの判定方法を修正。
+  Modified: Corrected the method of determining internal links on the Pz card management screen.
+* 内部リンクのキャッシュが正常に作成されない場合があったのを修正。(Thanks @i_tsu_tsu on Twitter)
+  Fixed: Fixed not being cached properly when using internal links.
+* 内部リンクをキャッシュから取得した場合に画像が表示されなかったのを修正。(Thanks @i_tsu_tsu on Twitter)
+  Fixed: Fixed the image not being displayed properly when using an internal link.
+* 設定画面に、リンク先がリダイレクトされているときに追尾するかどうかの設定を追加。(Thanks @fumieblog on Twitter)
+  Added: Added a setting so that you can choose whether to track when the link destination is redirected.
+* 設定画面に、リンク先がリンク切れになっているかチェックするかどうかの設定を追加。(Thanks @misoji_13 on Twitter)
+  Added: Added a setting so that you can choose whether to check if the link destination is broken.
+* 設定画面に、リンク先がリンク切れの場合、Aタグを無効にするかどうかの設定を追加。
+  Added: Added a setting so that you can choose whether to disable the A tag when the link destination is broken.
+* WebAPIに使用しているURLのデフォルトをSSL対応のものに変更。(Thanks @fumieblog on Twitter)(Thanks @hareannie01 on Twitter)
+  Modified: Supports SSL for WebAPI URL.
+
+= 1.7.4 =
+* キャッシュ用DBが作成されず、CPUが高負荷になってしまう不具合を修正。
+  Fixed: Fixed a bug that table is not created.
+
+= 1.7.3 =
+* ドメイン名が取得できていない不具合を修正。
+  Fixed: Fixed a bug that domain-name disappears.
+
+= 1.7.2 =
+* WordPress 4.5.13 での動作確認。
+  Compatible with WordPress 4.5.13.
+* WordPress 4.5.14 での動作確認。
+  Compatible with WordPress 4.5.14.
+* WordPress 4.5.15 での動作確認。
+  Compatible with WordPress 4.5.15.
+* WordPress 4.5.16 での動作確認。
+  Compatible with WordPress 4.5.16.
+* WordPress 4.5.17 での動作確認。
+  Compatible with WordPress 4.5.17.
+* WordPress 4.5.18 での動作確認。
+  Compatible with WordPress 4.5.18.
+* WordPress 4.5.19 での動作確認。
+  Compatible with WordPress 4.5.19.
+* WordPress 4.5.20 での動作確認。
+  Compatible with WordPress 4.5.20.
+* WordPress 4.5.21 での動作確認。
+  Compatible with WordPress 4.5.21.
+* WordPress 4.5.22 での動作確認。
+  Compatible with WordPress 4.5.22.
+* WordPress 4.5.23 での動作確認。
+  Compatible with WordPress 4.5.23.
+* WordPress 4.5.24 での動作確認。
+  Compatible with WordPress 4.5.24.
+* WordPress 4.5.25 での動作確認。
+  Compatible with WordPress 4.5.25.
+* WordPress 4.5.26 での動作確認。
+  Compatible with WordPress 4.5.26.
+* WordPress 4.5.27 での動作確認。
+  Compatible with WordPress 4.5.27.
+* WordPress 4.5.28 での動作確認。
+  Compatible with WordPress 4.5.28.
+* WordPress 4.6 での動作確認。
+  Compatible with WordPress 4.6.
+* 幅に合わせて縮小を有効にしたとき、サムネイルと合わせて文字サイズも小さくするように修正。(Thanks @fumieblog on Twitter)
+  Modified: Modified so as also to small character size to fit the size of screen.
+* カード管理画面で再取得時にソーシャルカウントが消えてしまう不具合を修正。（Ver.1.7.1から発生）(Thanks @i_tsu_tsu on Twitter)
+  Fixed: Fixed a bug that social count disappears.
+* 内部リンクの画像が取得できない不具合を修正。（Ver.1.7.1から発生）(Thanks @i_tsu_tsu on Twitter)
+  Fixed: Fixed a bug that thumbnail can not display.
+* マルチサイトへの対応方法が誤っていたため修正。（Ver.1.7.1から発生）(Thanks @kyutechnabe on Twitter)
+  Fixed: When the multi-site, fixes a bug that setting is not properly reflected.
+
+= 1.7.1 =
+* 記事内容がキャッシュされない不具合を修正。(Thanks @i_tsu_tsu on Twitter)
+  Fixed: Fixed a bug that article content can not be acquired.
+* 取得エラーが発生するサイトのサムネイルを表示しないように修正。(Thanks @misoji_13 on Twitter)
+  Modified: Time of the error, modified so that it does not display the thumbnail.
+* マルチサイトへの仮対応。(Thanks @kyutechnabe on Twitter)
+  Modified: Modification of the order to respond to multi-site.
+
+= 1.7.0 =
+* ドメイン名のみのときに最後のスラッシュを削除する機能を追加。(Thanks @toru1231 on Twitter)
+  Added: Added setting. "In the case of domain names, to ignore the trailing-slash".
+* 設定画面の「定型書式」に「小麦色」を追加。(Thanks @fumieblog on Twitter)
+  Added: Added border "Wheat'.
+
+= 1.6.9 =
+* WordPress 4.5.3 での動作確認。
+  Compatible with WordPress 4.5.3.
+* 設定画面で表示幅によってサムネイルを調整する「幅に合わせて縮小」を初期選択するように変更。
+  Modified: Scaled down to fit the screen size in setting. Default change "disabled" to "enabled".
+* Twitter代替WebAPI「count.jsoon」を使用してツイート数の取得に対応。
+  Modified: Use an alternative WebAPI to get the Twitter count.
+* 設定画面で、内部リンクのときでWordPress標準のサイトアイコンが設定されていない場合、内部取得を選べないように修正。(Thanks @meiko2285 on Twitter)
+  Fixed: Fix the method of acquiring the site icon in the internal site.
+* 設定画面に、内部リンクのときでサムネイルが設定されていない場合、WebAPIを利用できる設定を追加。(Thanks @fumieblog on Twitter)
+  Added: Added thumbnail acquisition method at the internal links.
+* 設定画面に、SSL証明書の検証を無効にできる設定を追加。
+  Added: Added the ability to disable the verification of SSL certificate.
+* リンク切れチェック機能の追加にあたってプログラムを一部見直し。(Thanks @misoji_13 on Twitter)
+
+= 1.6.8 =
+* WordPress 4.4.1 での動作確認。
+  Compatible with WordPress 4.4.1.
+* WordPress 4.4.2 での動作確認。
+  Compatible with WordPress 4.4.2.
+* WordPress 4.4.15 での動作確認。
+  Compatible with WordPress 4.4.15.
+* WordPress 4.4.16 での動作確認。
+  Compatible with WordPress 4.4.16.
+* WordPress 4.4.17 での動作確認。
+  Compatible with WordPress 4.4.17.
+* WordPress 4.4.18 での動作確認。
+  Compatible with WordPress 4.4.18.
+* WordPress 4.4.19 での動作確認。
+  Compatible with WordPress 4.4.19.
+* WordPress 4.4.20 での動作確認。
+  Compatible with WordPress 4.4.20.
+* WordPress 4.4.21 での動作確認。
+  Compatible with WordPress 4.4.21.
+* WordPress 4.4.22 での動作確認。
+  Compatible with WordPress 4.4.22.
+* WordPress 4.4.23 での動作確認。
+  Compatible with WordPress 4.4.23.
+* WordPress 4.4.24 での動作確認。
+  Compatible with WordPress 4.4.24.
+* WordPress 4.4.25 での動作確認。
+  Compatible with WordPress 4.4.25.
+* WordPress 4.4.26 での動作確認。
+  Compatible with WordPress 4.4.26.
+* WordPress 4.4.27 での動作確認。
+  Compatible with WordPress 4.4.27.
+* WordPress 4.4.28 での動作確認。
+  Compatible with WordPress 4.4.28.
+* WordPress 4.4.29 での動作確認。
+  Compatible with WordPress 4.4.29.
+* WordPress 4.5 での動作確認。
+  Compatible with WordPress 4.5.
+* WordPress 4.5.1 での動作確認。
+  Compatible with WordPress 4.5.1.
+* WordPress 4.5.2 での動作確認。
+  Compatible with WordPress 4.5.2.
+* 警告エラーが発生する不具合を修正。(@junya_0606)
+  Fixed: Fixed a notice.
+* 指定したリンク先によってはMETAタグを内部テーブルに展開するのに失敗して致命的エラーが発生する不具合を修正。(Thanks @misoji_13 on Twitter)(Thanks @ryu-blacknd on Twitter)
+  Fixed: Fixed an error. In had failed Perth META tags.
+* カード管理画面のPHPショートタグを使用しないように修正。(Thanks @toru1231 on Twitter)
+  Fixed: Fixed so as not to use PHP-short-tags.
+
+= 1.6.7 =
+* 設定画面にて、内部リンクの記事抜粋方法を選択できるように修正。(Thanks @okamurajun on Twitter)
+  Added: Added a method of article excerpt internal link in setting.
+
+= 1.6.6 =
+* 設定画面に「画面の幅によってサムネイルを小さくする」機能を追加。(Thanks 弁保社長)
+  Added: Scaled down to fit the screen size in setting.
+
+= 1.6.5 =
+* WordPress 4.4 での動作確認。
+  Compatible with WordPress 4.4.
+* 設定画面に文字のふちどり指定を追加。(Thanks @okaerinasainet on Twitter)
+  Added: Add a border of letters in setting.
+* facebookのシェア数取得WebAPIのURLが誤っていたため修正。
+  Fixed: Fixed incorrect facebook WebAPI URL.
+
+= 1.6.4 =
+* facebookのシェア数が2以上でも1と表示されていたのを修正。(Thanks 弁保社長)
+  Fixed: Shares of facebook has not been able to properly get.
+* 設定画面にリンクカードのDIV要素に任意のクラス名を設定できるように追加。(Thanks @misoji_13 on Twitter)
+  Added: Grant function of any class name.
+
+= 1.6.3 =
+* 「Twitter純正WebAPI」の公開終了に伴ってツイート数取得処理を削除。設定画面に更新されない旨のメッセージを追加。
+  Modified: Correspondence associated with the end Tweets number acquiring WebAPI.
+* 設定画面のツイート数表示の初期選択を「表示しない」に変更。
+  Modified: Changed the initial selection of the number of tweets display on the setting screen to "Hide".
+* カード管理画面からソーシャルカウントの再取得を行ったとき、処理を二度行っていたので修正。（Ver.1.6.0から発生）
+  Fixed: Bugfix.
+
+= 1.6.2 =
+* サンフランシスコ時間で11月20日を経過したが「Twitter純正WebAPI」でツイート数が取得できているので制限を一時的に解除。
+  Modified: Deadline of Tweets number get me grew day.
+
+= 1.6.1 =
+* 標準時間で11月20日を経過したが「Twitter純正WebAPI」でツイート数が取得できているので制限を一日延長。
+  Modified: Deadline of Tweets number get me grew day.
+
+= 1.6.0 =
+* リンク先の取得に wp_remote_get() を使用していたのを、cURL に変更。
+  Modified: Acquired without the wp_remote_get, modified to use a cURL.
+* charsetの取得方法を変更。
+  Modified: Fixed character set acquisition method.
+* ソーシャルカウントの取得をスケジュール方式に変更。
+  Modified: Fixed social count set acquisition method.
+* 「カード内側の余白」の設定を追加と、それに伴うCSS修正。(Thanks yunosuke)
+  Added: Add the margins of the inner card.
+
+= 1.1.1 =
+* METAタグの取得方法を修正。
+  Fixed: Fixed to had failed parsing of meta tags.
+
+= 1.1.0 =
+* 2015年11月20日に「Twitter純正WebAPI」が廃止される事に伴い、同日以降取得しないように修正。
+  Modified: Since November 20, 2015 , it does not use the Twitter WebAPI.
+* 設定画面の「新しいウィンドウで開く」をチェックボックスからリストに変更。
+  Modified: Change "Open in new window" from the check box to the list on the setting screen.
+* 設定画面の「新しいウィンドウで開く」に「モバイル以外（パソコンのみ新しいウィンドウで開く）」を追加。(Thanks @misoji_13 on Twitter)
+  Added: Added "Other than mobile" to "Open in new window" on the settings screen.
+
+= 1.0.3 =
+* キャッシュ保存時にキーが正しく設定されない事があったのを修正。
+* カード管理画面で内部ID（連番）の表示を追加。
+* 設定画面の「定型書式」に「紙がめくれる効果」を修正。（テーマによってはレイアウトが崩れる可能性があります）
+* 設定画面の「定型書式」に「テープと紙めくれ」を追加。（テーマによってはレイアウトが崩れる可能性があります）
+
+= 1.0.2 =
+* カード管理画面でキャッシュを編集したとき、一部の文字をエスケープしていなかったのを修正。
+* バージョンアップの度に一部のパラメータがデフォルトに戻っていたのを修正。
+* プログラム内でのキャッシュの読み書き方法の改善。
+
+= 1.0.1 =
+* カード管理画面でキャッシュを編集したとき、内部IDがクリアされてしまう不具合を修正。
+
+= 1.0.0 =
+* 全体的なプログラムの見直し。
+  * URLが空欄等の場合の対応。
+  * 文字エンコードまわりを修正。
+  * DBキャッシュまわりを修正。
+* ショートコードの囲い文字の扱いの仕様変更。
+  * ショートコード1にのみ適用されるように修正。
+  * タイトルがURLになってしまう不具合修正。
+* ショートコード3を解放。
+* カード管理画面を修正。
+  * リンク先単体の「編集」「再取得」「削除」が行えるように修正。
+  * 一括処理に「再取得」を追加。
+  * 抽出条件にドメイン名を追加。
+  * 内部リンクのURLにもリンク（Aタグ）を追加。
+  * ページング機能を追加。
+
+= 0.1.4 =
+* <head>にprefix等があるときに、metaタグの解析に失敗していたのを修正。
+* パラメータに閉じの「半角角かっこ（大かっこ）」がある場合に、URLに余分なコードが入ってしまう不具合を修正。
+
+= 0.1.3 =
+* content=''となっているOGP情報は無視するように修正。
+* metaタグ表記にシングルクォートが使われている場合でも取得できるように修正。
+* 設定画面の定型書式に「Pzカード標準書式」を使用し、「サイト情報」を「下側」にしている場合、サイト名が見えなくなる不具合を修正。
+* カード管理画面のセキュリティを強化。
+* 設定画面の「サイト情報」の位置を追加。
+* 設定画面に「サイト情報」と「記事内容」の間を区切るための「区切り線」を追加。
+* サムネイル取得WebAPIの初期設定をWordPress.comのものに変更。
+* タイトルや抜粋文をパラメータ等で設定した場合にもHTML等を除去するように変更。
+
+= 0.1.2 =
+* 「新しいウィンドウで開く」の設定を追加。
+* カード管理画面のソート順を修正。
+* facebookの表記を「f」から「fb」へ変更。
+
+= 0.1.1 =
+* 公開後発見されたバグを修正。
+
+= 0.1.0 =
+* 公式プラグインディレクトリでの最初の公開バージョン。
+
+= 0.0.1 =
+* サイト「ぽぽづれ」内での最初の公開バージョン。
+
+= 0.0.0 =
+* 途中まで作成していたバージョンを破棄。
+* Pz-HatenaBlogCard Ver.1.2.5 を元にDBアクセス部分を移植してPz-LinkCardを作成。
+* サイト「ぽぽづれ（開発環境）」での動作検証。
+* サイト「ぽぽづれ」での動作検証。

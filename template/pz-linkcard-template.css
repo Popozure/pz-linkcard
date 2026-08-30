@@ -1,0 +1,473 @@
+.linkcard {
+	/*MARGIN-TOP*/
+	/*MARGIN-BOTTOM*/
+	/*MARGIN-LEFT*/
+	/*MARGIN-RIGHT*/
+
+	/*SELECTION*/
+}
+.linkcard a {
+	text-decoration: none;
+}
+.linkcard img {
+	/*RESET-IMG*/
+}
+.linkcard span.external-icon {
+	display: none;
+}
+.linkcard p {
+	display: none;
+}
+.linkcard:hover .lkc-thumbnail img {
+	/*SCALE*/
+}
+.lkc-link {
+}
+.lkc-unlink {
+	cursor:	not-allowed;
+}
+.lkc-external-wrap {
+	/*EX-BORDER*/
+	/*EX-SHADOW*/
+	/*EX-RADIUS*/
+	/*EX-BG-COLOR*/
+	/*EX-IMAGE*/
+}
+.lkc-external-wrap:hover {
+	/*EX-HOVER*/
+}
+.lkc-internal-wrap {
+	/*IN-BORDER*/
+	/*IN-SHADOW*/
+	/*IN-RADIUS*/
+	/*IN-BG-COLOR*/
+	/*IN-IMAGE*/
+}
+.lkc-internal-wrap:hover {
+	/*IN-HOVER*/
+}
+.lkc-this-wrap {
+	/*TH-BORDER*/
+	/*TH-SHADOW*/
+	/*TH-RADIUS*/
+	/*TH-BG-COLOR*/
+	/*TH-IMAGE*/
+}
+.lkc-this-wrap:hover {
+	/*TH-HOVER*/
+}
+.lkc-external-wrap , .lkc-internal-wrap , .lkc-this-wrap {
+	position:	relative;
+	/*WRAP-MARGIN*/
+	/*PADDING*/
+	/*HEIGHT*/
+	/*WIDTH*/
+	/*WRAP*/
+	/*NOHOVER*/
+}
+.lkc-external-wrap::before , .lkc-internal-wrap::before , .lkc-this-wrap::before {
+	/*WRAP-BEFORE*/
+}
+.lkc-external-wrap::after , .lkc-internal-wrap::after , .lkc-this-wrap::after {
+	/*WRAP-AFTER*/
+}
+.lkc-external-wrap:hover , .lkc-internal-wrap:hover , .lkc-this-wrap:hover {
+	/*HOVER*/
+}
+.lkc-external-wrap:hover::before , .lkc-internal-wrap:hover::before , .lkc-this-wrap:hover::before {
+	/*HOVER-BEFORE*/
+}
+.lkc-external-wrap:hover::after , .lkc-internal-wrap:hover::after , .lkc-this-wrap:hover::after {
+	/*HOVER-AFTER*/
+}
+.lkc-card {
+	/*CARD-TOP*/
+	/*CARD-BOTTOM*/
+	/*CARD-LEFT*/
+	/*CARD-RIGHT*/
+}
+.lkc-content {
+	word-break: break-all;
+	white-space: normal;
+	overflow: hidden;
+	/*CONTENT-PADDING*/
+	/*CONTENT-INSET*/
+	/*CONTENT-BG-COLOR*/
+	/*CONTENT-HEIGHT*/
+	/*CONTENT-MARGIN*/
+	/*SEPARATOR*/
+}
+.lkc-title {
+	display: block;
+	overflow: hidden;
+	word-break: break-all;
+
+	/*TITLE-MARGIN*/
+
+	/*TITLE-COLOR*/
+	/*TITLE-OUTLINE-COLOR*/
+	/*TITLE-BG-COLOR*/
+	/*TITLE-SIZE*/
+	/*TITLE-HEIGHT*/
+	/*TITLE-MAXLINE*/
+	/*TITLE-TRIM*/
+	/*TITLE-BOLD*/
+	/*TITLE-ITALIC*/
+	/*TITLE-UNDERLINE*/
+}
+.lkc-title:hover {
+	/*TITLE-HOVER*/
+}
+.lkc-excerpt {
+	padding: 0;
+	overflow: hidden;
+	
+	/*EXCERPT-MARGIN*/
+
+	/*EXCERPT-COLOR*/
+	/*EXCERPT-OUTLINE-COLOR*/
+	/*EXCERPT-BG-COLOR*/
+	/*EXCERPT-SIZE*/
+	/*EXCERPT-HEIGHT*/
+	/*EXCERPT-MAXLINE*/
+	/*EXCERPT-TRIM*/
+	/*EXCERPT-BOLD*/
+	/*EXCERPT-ITALIC*/
+	/*EXCERPT-UNDERLINE*/
+
+	/*NONE-EXCERPT*/
+}
+.lkc-excerpt:hover {
+	/*EXCERPT-HOVER*/
+}
+.lkc-url {
+	display: block /*IMPORTANT*/;
+	margin: 0;
+	padding: 0;
+	border-radius: 4px;
+	text-decoration: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	/*URL-MARGIN*/
+
+	/*URL-COLOR*/
+	/*URL-OUTLINE-COLOR*/
+	/*URL-BG-COLOR*/
+	/*URL-SIZE*/
+	/*URL-HEIGHT*/
+	/*URL-MAXLINE*/
+	/*URL-TRIM*/
+	/*URL-BOLD*/
+	/*URL-ITALIC*/
+	/*URL-UNDERLINE*/
+}
+.lkc-url:hover {
+	/*URL-HOVER*/
+}
+.lkc-url:link {
+	text-decoration: none;
+}
+.lkc-date {
+	display: block /*IMPORTANT*/;
+	margin: 0;
+	padding: 0 4px;
+	border-radius: 4px;
+	text-decoration: none;
+	overflow: hidden;
+
+	/*DATE-COLOR*/
+	/*DATE-OUTLINE-COLOR*/
+	/*DATE-BG-COLOR*/
+	/*DATE-SIZE*/
+	/*DATE-HEIGHT*/
+	/*DATE-MAXLINE*/
+	/*DATE-TRIM*/
+	/*DATE-BOLD*/
+	/*DATE-ITALIC*/
+	/*DATE-UNDERLINE*/
+	/*DATE-ELLIPSIS*/
+}
+.lkc-date:hover {
+	/*DATE-HOVER*/
+}
+.lkc-external-wrap .lkc-heading {
+	/*EX-HEADING*/
+	/*EX-HEADING-BORDER*/
+	/*EX-HEADING-RADIUS*/
+	/*EX-HEADING-SHADOW*/
+	/*EX-HEADING-BG-COLOR*/
+}
+.lkc-internal-wrap .lkc-heading {
+	/*IN-HEADING*/
+	/*IN-HEADING-BORDER*/
+	/*IN-HEADING-RADIUS*/
+	/*IN-HEADING-SHADOW*/
+	/*IN-HEADING-BG-COLOR*/
+}
+.lkc-this-wrap .lkc-heading {
+	/*TH-HEADING*/
+	/*TH-HEADING-BORDER*/
+	/*TH-HEADING-RADIUS*/
+	/*TH-HEADING-SHADOW*/
+	/*TH-HEADING-BG-COLOR*/
+}
+.lkc-heading {
+	display: inline /*IMPORTANT*/;
+
+	/*HEADING-MARGIN*/
+
+	/*HEADING-COLOR*/
+	/*HEADING-OUTLINE-COLOR*/
+	/*HEADING-BG-COLOR*/
+	/*HEADING-SIZE*/
+	/*HEADING-HEIGHT*/
+	/*HEADING-MAXLINE*/
+	/*HEADING-TRIM*/
+	/*HEADING-BOLD*/
+	/*HEADING-ITALIC*/
+	/*HEADING-UNDERLINE*/
+}
+.lkc-heading:hover {
+	/*HEADING-HOVER*/
+}
+.lkc-external-wrap .lkc-more {
+	/*EX-MOREBTN*/
+}
+.lkc-internal-wrap .lkc-more {
+	/*IN-MOREBTN*/
+}
+.lkc-this-wrap .lkc-more {
+	/*TH-MOREBTN*/
+}
+.lkc-more {
+	display: inline;
+	position: absolute;
+	padding: 0 24px;
+
+	/*MORE-MARGIN*/
+
+	/*MORE-COLOR*/
+	/*MORE-OUTLINE-COLOR*/
+	/*MORE-BG-COLOR*/
+	/*MORE-SIZE*/
+	/*MORE-HEIGHT*/
+	/*MORE-MAXLINE*/
+	/*MORE-TRIM*/
+	/*MORE-BOLD*/
+	/*MORE-ITALIC*/
+	/*MORE-UNDERLINE*/
+}
+.lkc-more:hover {
+	/*MORE-HOVER*/
+	/*MOREBTN-HOVER*/
+}
+.lkc-more:active {
+	/*MOREBTN-ACTIVE*/
+}
+.lkc-info {
+	display: flex !important;
+	margin: 0;
+	padding: 0;
+	align-items: center;
+
+	/*INFO-POSITION*/
+	/*INFO-NONE*/
+	/*INFO-MARGIN*/
+
+	/*INFO-COLOR*/
+	/*INFO-OUTLINE-COLOR*/
+	/*INFO-BG-COLOR*/
+	/*INFO-SIZE*/
+	/*INFO-HEIGHT*/
+	/*INFO-MAXLINE*/
+	/*INFO-TRIM*/
+	/*INFO-BOLD*/
+	/*INFO-ITALIC*/
+	/*INFO-UNDERLINE*/
+
+	/*NONE-INFO*/
+}
+.lkc-external-wrap > .lkc-added {
+	/*EX-ADDED*/
+}
+.lkc-internal-wrap > .lkc-added {
+	/*IN-ADDED*/
+}
+.lkc-this-wrap > .lkc-added {
+	/*TH-ADDED*/
+}
+.lkc-added {
+	display: inline /*IMPORTANT*/;
+	border-radius: 4px;
+
+	/*ADDED-MARGIN*/
+
+	/*ADDED-COLOR*/
+	/*ADDED-OUTLINE-COLOR*/
+	/*ADDED-BG-COLOR*/
+	/*ADDED-SIZE*/
+	/*ADDED-HEIGHT*/
+	/*ADDED-MAXLINE*/
+	/*ADDED-TRIM*/
+	/*ADDED-BOLD*/
+	/*ADDED-ITALIC*/
+	/*ADDED-UNDERLINE*/
+}
+.lkc-added:hover {
+	/*ADDED-HOVER*/
+}
+.lkc-info:hover {
+	/*INFO-HOVER*/
+}
+.lkc-info * {
+	margin: 0 4px 0 0;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.lkc-favicon {
+	display: inline-flex /*IMPORTANT*/;
+	vertical-align: middle /*IMPORTANT*/;
+	border: none;
+
+	/*FAVICON-HEIGHT*/
+	/*FAVICON-WIDTH*/
+}
+img.lkc-favicon {
+	margin: -4px 0 0 0 !important;
+	object-fit: cover;
+	height: 100%;
+	width: 100%;
+}
+.lkc-domain {
+	display: inline-flex /*IMPORTANT*/;
+	vertical-align: middle /*IMPORTANT*/;
+	text-decoration: none;
+
+	/*INFO-POSITION*/
+	/*INFO-NONE*/
+	/*INFO-MARGIN*/
+
+	/*INFO-COLOR*/
+	/*INFO-OUTLINE-COLOR*/
+	/*INFO-BG-COLOR*/
+	/*INFO-SIZE*/
+	/*INFO-HEIGHT*/
+	/*INFO-MAXLINE*/
+	/*INFO-TRIM*/
+	/*INFO-BOLD*/
+	/*INFO-ITALIC*/
+	/*INFO-UNDERLINE*/
+}
+.lkc-share {
+	text-shadow: none;
+	white-space: nowrap;
+	overflow: hidden;
+	
+	/*INFO-HEIGHT*/
+}
+.lkc-share * {
+	display: inline;
+	margin: 0 /*IMPORTANT*/;
+	padding: 0 1px /*IMPORTANT*/;
+	font-size: 9px;
+	text-decoration: underline /*IMPORTANT*/;
+	font-weight: bold /*IMPORTANT*/;
+	white-space: nowrap;
+}
+.lkc-sns-x {
+	color: #ffffff /*IMPORTANT*/;
+	background-color: #333 /*IMPORTANT*/;
+}
+.lkc-sns-tw {
+	color: #5ea9dd /*IMPORTANT*/;
+	background-color: #e0f8fa /*IMPORTANT*/;
+}
+.lkc-sns-fb {
+	color: #ffffff /*IMPORTANT*/;
+	background-color: #3864a3 /*IMPORTANT*/;
+}
+.lkc-sns-hb {
+	color: #ff6464 /*IMPORTANT*/;
+	background-color: #ffefef /*IMPORTANT*/;
+}
+.lkc-sns-gp {
+	color: #dd4e42 /*IMPORTANT*/;
+	background-color: #ffffff /*IMPORTANT*/;
+}
+.lkc-sns-po {
+	color: #eeeeee /*IMPORTANT*/;
+	background-color: #ee4055 /*IMPORTANT*/;
+}
+.lkc-url-info {
+	font-weight: normal;
+	text-decoration: underline;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	/*URL-COLOR*/
+	/*URL-OUTLINE-COLOR*/
+	/*URL-BG-COLOR*/
+	/*URL-SIZE*/
+	/*URL-HEIGHT*/
+	/*URL-MAXLINE*/
+	/*URL-TRIM*/
+	/*URL-BOLD*/
+	/*URL-ITALIC*/
+	/*URL-UNDERLINE*/
+}
+.lkc-url-info:hover {
+	/*URL-HOVER*/
+}
+.lkc-thumbnail {
+	display: flex;
+
+	/*THUMBNAIL-POSITION*/
+	/*THUMBNAIL-HEIGHT*/
+	/*THUMBNAIL-WIDTH*/
+	/*THUMBNAIL-MARGIN*/
+}
+.lkc-thumbnail-img {
+	object-fit: cover;
+
+	/*THUMBNAIL-IMG-WIDTH*/
+	/*THUMBNAIL-IMG-HEIGHT*/
+	/*THUMBNAIL-BORDER*/
+	/*THUMBNAIL-SHADOW*/
+	/*THUMBNAIL-RADIUS*/
+	/*TRANSFORM*/
+}
+.lkc-error {
+	display: block;
+	padding-top: 50px;
+	margin-top: -50px;
+}
+.clear {
+	clear: both;
+}
+blockquote.lkc-quote {
+	background-color: transparent;
+	background-image: none;
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+blockquote.lkc-quote::before {
+	content: '';
+}
+blockquote.lkc-quote::after {
+	content: '';
+}
+.lkc-iframe-wrap {
+	/*WIDTH*/
+}
+.lkc-iframe {
+	padding: 0;
+	margin: 0;
+	width: 100%;
+}
+/*OPTION*/
+/*CSS-ADD*/
+/*RESIZE*/
