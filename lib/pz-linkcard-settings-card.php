@@ -407,7 +407,7 @@
 			$item_value_list	=
 				array(
 					'thumbnail'	=>	__('Thumbnail (150px)', 'pz-linkcard' ),
-					'midium'	=>	__('Medium (300px)', 'pz-linkcard' ),
+					'medium'	=>	__('Medium (300px)', 'pz-linkcard' ),
 					'large'		=>	__('Large (1024px)', 'pz-linkcard' ),
 					'full'		=>	__('Original Size', 'pz-linkcard' ),
 				);

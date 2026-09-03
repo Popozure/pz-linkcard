@@ -168,7 +168,7 @@ class class_pz_linkcard {
 			'ex-favicon'			=>	3,
 			'ex-favicon-alt'		=>	null,
 			'ex-thumbnail'			=>	13,
-			'ex-thumbnail-size'		=>	'thumbnail',
+			'ex-thumbnail-size'		=>	'medium',
 			'ex-thumbnail-alt'		=>	null,
 			'ex-target'				=>	2,
 			'ex-get'				=>	2,
@@ -418,6 +418,7 @@ class class_pz_linkcard {
 			add_action		('upgrader_process_complete',				[$this, 'action_upgrader_process_complete' ],	10, 2 );	// アップデートしたときの処理
 			add_action		('admin_post_pz_export_file',				[$this, 'action_export_file' ],					10, 1 );	// エクスポート処理
 			add_action		('enqueue_block_editor_assets',				[$this, 'action_enqueue_block_editor_assets' ],	10, 1 );	// ブロックエディタ用スクリプト
+			add_action		('enqueue_block_assets',					[$this, 'action_enqueue_block_assets' ],		10, 1 );	// ブロックエディタ本文
 
 			if ($this->options['flg-alive'] ) {
 				add_action(self::CRON_ALIVE,	[$this, 'schedule_hook_alive' ] );
@@ -1357,10 +1358,18 @@ class class_pz_linkcard {
 	private	function	pz_RelToURL($base_url = null, $rel_path = null ) {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__, '$base_url='.esc_html($base_url ).' $rel_path="'.esc_html($rel_path ) ); }
 
+		if	(!$base_url || !$rel_path ) {
+			return	$rel_path;
+		}
+
 		// ベースURLをパース
 		$base_url	=	$this->Pz_SanitizeURL($base_url );					// 念のためサニタイズ
 		$info_base	=	$this->Pz_GetURLInfo($base_url );
 		$info_rel	=	$this->Pz_GetURLInfo($rel_path );
+		$base_domain_url	=	$info_base['domain_url'];
+		if	(!empty($info_base['port'] ) ) {
+			$base_domain_url	.=	':'.$info_base['port'];
+		}
 
 		// 絶対パスだった場合（スキームあり）
 		if	($info_rel['scheme'] ) {
@@ -1376,12 +1385,49 @@ class class_pz_linkcard {
 
 		// ルート指定
 		if	(substr($rel_path, 0, 1 )	==	'/' ) {
-			$return_url	=	$info_base['domain_url'].$rel_path;
+			$return_url	=	$base_domain_url.$rel_path;
 			return			$return_url;
 		}
 
-		// とりあえずくっつける
-		$return_url		=	trim($base_url, '/' ).'/'.$rel_path;
+		// ベースURLのディレクトリを基準に相対パスを解決
+		$base_path	=	$info_base['path'] ?? '/';
+		if	(!$base_path ) {
+			$base_path	=	'/';
+		}
+		if	(substr($base_path, -1 ) <> '/' ) {
+			$base_path	=	preg_replace('/\/[^\/]*$/', '/', $base_path );
+		}
+		$rel_query		=	'';
+		$rel_fragment	=	'';
+		$rel_path_only	=	$rel_path;
+		$fragment_pos	=	strpos($rel_path_only, '#' );
+		if	($fragment_pos !== false ) {
+			$rel_fragment	=	substr($rel_path_only, $fragment_pos );
+			$rel_path_only	=	substr($rel_path_only, 0, $fragment_pos );
+		}
+		$query_pos		=	strpos($rel_path_only, '?' );
+		if	($query_pos !== false ) {
+			$rel_query		=	substr($rel_path_only, $query_pos );
+			$rel_path_only	=	substr($rel_path_only, 0, $query_pos );
+		}
+		if	($rel_path_only === '' ) {
+			$target_path	=	$info_base['path'] ?? '/';
+		} else {
+			$target_path	=	$base_path.$rel_path_only;
+		}
+		$path_parts		=	explode('/', $target_path );
+		$resolved_parts	=	array();
+		foreach	($path_parts as $path_part ) {
+			if	($path_part === '' || $path_part === '.' ) {
+				continue;
+			}
+			if	($path_part === '..' ) {
+				array_pop($resolved_parts );
+				continue;
+			}
+			$resolved_parts[]	=	$path_part;
+		}
+		$return_url		=	$base_domain_url.'/'.implode('/', $resolved_parts ).$rel_query.$rel_fragment;
 		return				$return_url;
 	}
 
@@ -2080,10 +2126,6 @@ class class_pz_linkcard {
 			}
 			
 			// サムネイル画像
-			if			($thumbnail_url	&& !preg_match('/^https*:\/\//i', $thumbnail_url, $m ) ) {
-				$thumbnail_url	=	$this->pz_RelToURL($url, $thumbnail_url );
-			}
-			$thumbnail_url		=	$this->pz_EncodeURL($thumbnail_url, true );
 			if				(!$thumbnail_url ) {
 				if			($og_image ) {
 					$thumbnail_url =	$og_image;
@@ -2091,6 +2133,10 @@ class class_pz_linkcard {
 					$thumbnail_url =	$tw_image;
 				}
 			}
+			if			($thumbnail_url	&& !preg_match('/^https*:\/\//i', $thumbnail_url, $m ) ) {
+				$thumbnail_url	=	$this->pz_RelToURL($url_access, $thumbnail_url );
+			}
+			$thumbnail_url		=	$this->pz_EncodeURL($thumbnail_url, true );
 
 			// サイト名
 			if				(!$sitename ) {
@@ -2331,13 +2377,14 @@ class class_pz_linkcard {
 
 		// metaタグ パース
 		$match	=	null;
-		preg_match_all('/<\s*meta\s(?=[^>]*?\b(?:name|property)\s*=\s*(?|"\s*([^"]*?)\s*"|\'\s*([^\']*?)\s*\'|([^"\'>]*?)(?=\s*\/?\s*>|\s\w+\s*=) ))[^>]*?\bcontent\s*=\s*(?|"\s*([^"]*?)\s*"|\'\s*([^\']*?)\s*\'|([^"\'>]*?)(?=\s*\/?\s*>|\s\w+\s*=) )[^>]*>/is', $html, $match );
-		if	(isset($match ) && is_array($match ) && count($match ) == 3 && count($match[1] ) > 0 ) {
-			foreach($match[1] as &$m ) {
-				$m	=	strtolower($m );
+		preg_match_all('/<\s*meta\b[^>]*>/is', $html, $match );
+		if	(isset($match ) && is_array($match ) && count($match ) == 1 && count($match[0] ) > 0 ) {
+			$attr_value_pattern	=	'(?|"\s*([^"]*?)\s*"|\'\s*([^\']*?)\s*\'|([^"\'\s>]*))';
+			foreach	($match[0] as $meta_tag ) {
+				if	(preg_match('/\b(?:name|property)\s*=\s*'.$attr_value_pattern.'/is', $meta_tag, $match_name ) && preg_match('/\bcontent\s*=\s*'.$attr_value_pattern.'/is', $meta_tag, $match_content ) ) {
+					$tags[strtolower($match_name[1] )]	=	$match_content[1];
+				}
 			}
-			unset($m );
-			$tags	+=	array_combine($match[1], $match[2] );
 		}
 
 		// linkタグ パース
@@ -2717,67 +2764,89 @@ class class_pz_linkcard {
 			return;
 		}
 
-		$shortcode		=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options['code1'] );
-		$editor_script	=	null;
-		if	($shortcode ) {
-			$editor_script	=	self::PLUGIN_SLUG.'-block-editor';
-			wp_register_script(
-				$editor_script,
-				$this->plugin_dir_url.'js/block-editor.js',
-				array('wp-blocks', 'wp-element', 'wp-editor', 'wp-components', 'wp-data', 'wp-hooks', 'wp-i18n' ),
-				PZLKC_PLUGIN_VERSION,
-				true
-			);
-			$placeholder_url	=	__('Enter URL here...', 'pz-linkcard' );
-			wp_localize_script($editor_script, 'pzLinkCardBlock', array(
-				'shortcode'			=>	$shortcode,
-				'placeholderUrl'	=>	$placeholder_url,
-			) );
+		$shortcodes	=	array();
+		foreach	(array('code1', 'code2', 'code3', 'code4' ) as $key ) {
+			$code	=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options[$key] ?? '' );
+			if	($code ) {
+				$shortcodes[]	=	$code;
+			}
 		}
+		if	(!$shortcodes ) {
+			$shortcodes[]	=	self::DEFAULTS['code1'];
+		}
+		$shortcodes		=	array_values(array_unique($shortcodes ) );
+		$editor_script	=	self::PLUGIN_SLUG.'-block-editor';
+		wp_register_script(
+			$editor_script,
+			$this->plugin_dir_url.'js/block-editor.js',
+			array('wp-blocks', 'wp-block-editor', 'wp-editor', 'wp-components', 'wp-element', 'wp-i18n', 'wp-data', 'wp-hooks', 'wp-compose', 'wp-server-side-render' ),
+			PZLKC_PLUGIN_VERSION,
+			true
+		);
+		wp_localize_script($editor_script, 'pz_lkc_block_icon', array(
+			'blockName'		=>	'pz-linkcard/linkcard',
+			'iconUrl'		=>	$this->plugin_dir_url.'img/icon-pz-linkcard.png',
+			'shortcode'		=>	$shortcodes[0],
+			'shortcodes'	=>	$shortcodes,
+			'title'			=>	'Pz-LinkCard',
+			'placeholder'	=>	__('Enter the URL and press Enter', 'pz-linkcard' ),
+			'description'	=>	__('Create a Pz-LinkCard shortcode.', 'pz-linkcard' ),
+		) );
 
 		$block_args	=	array(
 			'title'				=>	'Pz-LinkCard',
-			'description'		=>	__('Insert a Pz-LinkCard shortcode.', 'pz-linkcard' ),
+			'description'		=>	__('Create a Pz-LinkCard shortcode.', 'pz-linkcard' ),
 			'category'			=>	'widgets',
 			'icon'				=>	'admin-links',
 			'supports'			=>	array(
-				'inserter'	=>	true,
+				'inserter'	=>	false,
 			),
 			'attributes'		=>	array(
 				'url'		=>	array(
 					'type'		=>	'string',
 					'default'	=>	'',
 				),
-				'title'		=>	array(
-					'type'		=>	'string',
-					'default'	=>	'',
-				),
-				'content'	=>	array(
+				'shortcode'	=>	array(
 					'type'		=>	'string',
 					'default'	=>	'',
 				),
 			),
 			'render_callback'	=>	array($this, 'render_block_linkcard' ),
 		);
-		if	($editor_script ) {
-			$block_args['editor_script']	=	$editor_script;
-		}
+		$block_args['editor_script']	=	$editor_script;
 		register_block_type('pz-linkcard/linkcard', $block_args );
 	}
 
 	// Pz-LinkCard ブロック描画
 	public	function	render_block_linkcard($attributes, $content = '' ) {
-		$atts	=	array();
-		if	(!empty($attributes['url'] ) ) {
-			$atts['url']	=	$attributes['url'];
+		$url	=	esc_url_raw($attributes['url'] ?? '' );
+		if	(!$url ) {
+			return	'<div class="linkcard"><div class="lkc-this-wrap"><div class="lkc-info">'.esc_html(self::PLUGIN_NAME).'</div><div class="lkc-excerpt">'.esc_html__('No URL was specified.', 'pz-linkcard' ).'</div></div></div>';
 		}
+		$shortcode	=	preg_replace('/[^a-zA-Z0-9]/', '', $attributes['shortcode'] ?? '' );
+		$available_shortcodes	=	array();
+		foreach	(array('code1', 'code2', 'code3', 'code4' ) as $key ) {
+			$code	=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options[$key] ?? '' );
+			if	($code ) {
+				$available_shortcodes[]	=	$code;
+			}
+		}
+		if	(!$available_shortcodes ) {
+			$available_shortcodes[]	=	self::DEFAULTS['code1'];
+		}
+		if	(!$shortcode || !in_array($shortcode, $available_shortcodes, true ) ) {
+			$shortcode	=	$available_shortcodes[0];
+		}
+
+		$atts	=	array();
+		$atts['url']	=	$url;
 		if	(!empty($attributes['title'] ) ) {
 			$atts['title']	=	sanitize_text_field($attributes['title'] );
 		}
 		if	(!empty($attributes['content'] ) ) {
 			$atts['content']	=	sanitize_textarea_field($attributes['content'] );
 		}
-		return	$this->shortcode($atts, null, $this->options['code1'] );
+		return	$this->shortcode($atts, null, $shortcode );
 	}
 
 	// ブロックエディタ用スクリプト
@@ -2785,6 +2854,30 @@ class class_pz_linkcard {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 
 		wp_enqueue_style(self::PLUGIN_SLUG.'-block-editor', PZLKC_PZLKC_URL_ADMIN_CSS, array(), PZLKC_PLUGIN_VERSION );
+		$this->enqueue_block_card_styles();
+	}
+
+	// ブロックエディタ本文用スタイルシート
+	public	function	action_enqueue_block_assets() {
+		if	(!is_admin() ) {
+			return;
+		}
+		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
+
+		$this->enqueue_block_card_styles();
+	}
+
+	// ブロックエディタ内プレビュー用カードスタイル
+	private	function	enqueue_block_card_styles() {
+		$css_version	=	PZLKC_PLUGIN_VERSION.'.'.$this->options['css-count'];
+		if	($this->options['flg-compress'] ) {
+			wp_enqueue_style	(self::PLUGIN_SLUG.'-block-card-css',	PZLKC_URL_STYLE.'style.min.css',	array(),	$css_version );
+		} else {
+			wp_enqueue_style	(self::PLUGIN_SLUG.'-block-card-css',	PZLKC_URL_STYLE.'style.css',		array(),	$css_version );
+		}
+		if	($this->options['css-add-url'] ) {
+			wp_enqueue_style	(self::PLUGIN_SLUG.'-block-card-css-add',	$this->options['css-add-url'],	array(),	$css_version );
+		}
 	}
 
 	// 通常時のスタイルシート
