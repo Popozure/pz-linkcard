@@ -28,16 +28,53 @@
 
 	const icon = {
 		src: () =>
-			blockIcon?.iconUrl
-				? el("img", {
-						src: blockIcon.iconUrl,
-						alt: "",
-						style: {
-							width: "24px",
-							height: "24px",
-						},
-				  })
-				: "admin-links",
+			el(
+				"svg",
+				{
+					viewBox: "0 0 512 512",
+					width: "24",
+					height: "24",
+					role: "img",
+					"aria-hidden": "true",
+					focusable: "false",
+				},
+				el("path", {
+					fill: "none",
+					stroke: "currentColor",
+					strokeWidth: "38",
+					strokeLinecap: "round",
+					strokeLinejoin: "round",
+					d: "M 280,385 H 95 C 65,385 40,360 40,330 V 135 C 40,105 65,80 95,80 H 417 C 447,80 472,105 472,135 V 250",
+				}),
+				el(
+					"text",
+					{
+						x: "76",
+						y: "315",
+						fill: "currentColor",
+						fontFamily: "Georgia, serif",
+						fontSize: "245",
+						fontWeight: "700",
+					},
+					"Pz"
+				),
+				el("path", {
+					fill: "none",
+					stroke: "currentColor",
+					strokeWidth: "38",
+					strokeLinecap: "round",
+					strokeLinejoin: "round",
+					d: "m 350,313 42,-42 a 32,32 0 0 1 45,45 l -22,22",
+				}),
+				el("path", {
+					fill: "none",
+					stroke: "currentColor",
+					strokeWidth: "38",
+					strokeLinecap: "round",
+					strokeLinejoin: "round",
+					d: "m 360,353 -27,27 a 32,32 0 0 0 45,45 l 42,-42",
+				})
+			),
 	};
 
 	const escapeRegExp = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

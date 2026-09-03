@@ -111,9 +111,9 @@
 	// ページの見出し表示（設定）
 	$page_class	=	' pz-cacheman';
 	$switch_link	=	esc_url($this->settings_url );
-	$switch_icon	=	__('&#x2699;&#xfe0f;', 'pz-linkcard' );
+	$switch_icon	=	'<span class="dashicons dashicons-admin-generic" style="vertical-align: text-bottom;"></span>';
 	$switch_label	=	__('Settings', 'pz-linkcard' );
-	$title_icon		=	__('&#x1f5c3;&#xfe0f;', 'pz-linkcard' );
+	$title_icon		=	'<span class="dashicons dashicons-archive" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Manager', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
 	$html_title		=	'<div class="pz-header"><a class="pz-header-switch" href="'.$switch_link.'"><span class="pz-header-switch-icon">'.$switch_icon.'</span><span class="pz-header-switch-label">'.$switch_label.'</span></a><h1><span class="pz-header-title"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';

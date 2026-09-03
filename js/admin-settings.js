@@ -74,6 +74,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.addEventListener("click", errorModeNoticeDismiss);
         document.addEventListener("click", selectImageFromMedia);
+        initCharacterCounts();
+        initScreenOptions();
 
         // readonly チェックボックス無効化
         document.querySelectorAll("input[type=checkbox]").forEach(el =>
@@ -248,9 +250,160 @@ document.addEventListener("DOMContentLoaded", () => {
             input.value = attachment.url;
             input.dispatchEvent(new Event("input", { bubbles: true }));
             input.dispatchEvent(new Event("change", { bubbles: true }));
+            updateImagePreview(input, attachment.url);
         });
 
         frame.open();
+    }
+
+    function initCharacterCounts() {
+        document.querySelectorAll("[data-pz-character-count-for]").forEach(counter => {
+            const target = document.getElementById(counter.dataset.pzCharacterCountFor || "");
+            if (!target) return;
+
+            const template = counter.dataset.pzCharacterCountTemplate || "%s characters";
+            const formatter = new Intl.NumberFormat(document.documentElement.lang || undefined);
+            const update = () => {
+                counter.textContent = template.replace("%s", formatter.format(Array.from(target.value || "").length));
+            };
+
+            update();
+            target.addEventListener("input", update);
+        });
+    }
+
+    function updateImagePreview(input, url) {
+        const imageBox = input
+            ?.closest(".pz-man-cache-image-box")
+            ?.querySelector(".pz-man-cache-image-preview");
+        if (!imageBox || !url) return;
+
+        imageBox.classList.remove("pz-man-cache-image-empty");
+        imageBox.innerHTML = "";
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.className = "pz-man-image-box-trigger";
+
+        const frame = document.createElement("div");
+        const img = document.createElement("img");
+        img.src = url;
+        img.alt = "";
+        img.loading = "lazy";
+
+        frame.appendChild(img);
+        link.appendChild(frame);
+        imageBox.appendChild(link);
+    }
+
+    function initScreenOptions() {
+        const root = document.querySelector(".pz-man-screen-options");
+        const toggle = document.querySelector("#pz-man-screen-options-toggle");
+        const panel = document.querySelector("#pz-man-screen-options-panel");
+        if (!root || !toggle || !panel) return;
+
+        const columns = {
+            id: [".pz-man-head-id", ".pz-man-body-id"],
+            excerpt: [".pz-man-head-excerpt", ".pz-man-body-excerpt-cell"],
+            charset: [".pz-man-head-charset", ".pz-man-body-charset"],
+            domain: [".pz-man-head-domain", ".pz-man-body-domain-cell"],
+            sns: [".pz-man-head-sns_twitter", ".pz-man-body-sns"],
+            regist_time: [".pz-man-head-regist_time", ".pz-man-body-resist-time"],
+            update_time: [".pz-man-head-update_time", ".pz-man-body-update-time"],
+            sns_time: [".pz-man-head-sns_time", ".pz-man-body-sns-time"],
+            alive_time: [".pz-man-head-alive_time", ".pz-man-body-alive-time"],
+            post_id: [".pz-man-head-use_post_id1", ".pz-man-body-post-id"],
+            click_count: [".pz-man-head-click_count", ".pz-man-body-click-count"],
+            result: [".pz-man-head-update_result", ".pz-man-body-result"],
+        };
+
+        const state = {};
+
+        const setPanelOpen = open => {
+            panel.hidden = !open;
+            toggle.setAttribute("aria-expanded", open ? "true" : "false");
+            const icon = toggle.querySelector(".dashicons");
+            if (icon) {
+                icon.classList.toggle("dashicons-arrow-down-alt2", !open);
+                icon.classList.toggle("dashicons-arrow-up-alt2", open);
+            }
+        };
+
+        const applyColumn = (column, visible) => {
+            (columns[column] || []).forEach(selector => {
+                document.querySelectorAll(selector).forEach(el => {
+                    el.classList.toggle("pz-man-column-hidden", !visible);
+                });
+            });
+        };
+
+        const saveState = (perPage = null) => {
+            if (!window.pzLinkCardAdmin?.ajaxUrl || !window.pzLinkCardAdmin?.cachemanColumnsNonce) {
+                return Promise.resolve();
+            }
+
+            const body = new URLSearchParams();
+            body.set("action", "pz_lkc_save_cacheman_columns");
+            body.set("nonce", window.pzLinkCardAdmin.cachemanColumnsNonce);
+            Object.entries(state).forEach(([column, visible]) => {
+                body.set(`columns[${column}]`, visible ? "1" : "0");
+            });
+            if (perPage !== null) body.set("per_page", perPage);
+
+            return fetch(window.pzLinkCardAdmin.ajaxUrl, {
+                method: "POST",
+                credentials: "same-origin",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                },
+                body: body.toString(),
+            }).catch(() => {});
+        };
+
+        panel.querySelectorAll(".pz-man-screen-column-toggle").forEach(checkbox => {
+            const column = checkbox.dataset.pzManColumn;
+            state[column] = checkbox.checked;
+            applyColumn(column, checkbox.checked);
+            checkbox.addEventListener("change", () => {
+                state[column] = checkbox.checked;
+                applyColumn(column, checkbox.checked);
+                saveState();
+            });
+        });
+
+        const perPageSelect = document.querySelector("#pz-man-screen-option-per-page");
+        if (perPageSelect) {
+            perPageSelect.addEventListener("change", () => {
+                saveState(perPageSelect.value).finally(() => {
+                    const form = perPageSelect.closest("form");
+                    const pageNow = form?.querySelector('input[name="page_now"]');
+                    if (pageNow) pageNow.value = "1";
+                    if (form?.requestSubmit) {
+                        form.requestSubmit();
+                    } else {
+                        form?.submit();
+                    }
+                });
+            });
+        }
+
+        toggle.addEventListener("click", e => {
+            e.preventDefault();
+            setPanelOpen(panel.hidden);
+        });
+
+        document.addEventListener("click", e => {
+            if (panel.hidden || root.contains(e.target)) return;
+            setPanelOpen(false);
+        });
+
+        document.addEventListener("keydown", e => {
+            if (e.key !== "Escape" || panel.hidden) return;
+            setPanelOpen(false);
+            toggle.focus();
+        });
     }
 
     // 全選択

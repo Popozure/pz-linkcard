@@ -462,6 +462,7 @@ class class_pz_linkcard {
 		}
 		add_action		('init',								[$this, 'action_register_block' ],	10, 1 );		// ブロック登録
 		add_action		('wp_ajax_pz_lkc_clear_error_mode',		[$this, 'action_ajax_pz_lkc_error_mode_clear'] );
+		add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
 		add_action		('wp_ajax_pz_lkc_click_count', 			[$this, 'action_ajax_pz_lkc_click_count'] );
 		add_action		('wp_ajax_nopriv_pz_lkc_click_count',	[$this, 'action_ajax_pz_lkc_click_count'] );
 	}
@@ -2712,6 +2713,7 @@ class class_pz_linkcard {
 		wp_localize_script	(self::PLUGIN_SLUG.'-admin-js',		'pzLinkCardAdmin', array(
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 			'noticeNonce'	=>	wp_create_nonce('pz_lkc_clear_error_mode' ),
+			'cachemanColumnsNonce'	=>	wp_create_nonce('pz_lkc_cacheman_columns' ),
 			'mediaTitle'	=>	__('Select Image', 'pz-linkcard' ),
 			'mediaButton'	=>	__('Use this image', 'pz-linkcard' ),
 		) );
@@ -2785,7 +2787,7 @@ class class_pz_linkcard {
 		);
 		wp_localize_script($editor_script, 'pz_lkc_block_icon', array(
 			'blockName'		=>	'pz-linkcard/linkcard',
-			'iconUrl'		=>	$this->plugin_dir_url.'img/icon-pz-linkcard.png',
+			'iconUrl'		=>	$this->plugin_dir_url.'img/icon_lkc_block.svg',
 			'shortcode'		=>	$shortcodes[0],
 			'shortcodes'	=>	$shortcodes,
 			'title'			=>	'Pz-LinkCard',
@@ -3027,6 +3029,49 @@ class class_pz_linkcard {
 		$this->pz_SaveOptions();
 
 		wp_send_json_success();
+	}
+
+	// 管理画面・表示オプション保存
+	public	function	action_ajax_pz_lkc_save_cacheman_columns() {
+		if	(!current_user_can('manage_options' ) ) {
+			wp_send_json_error('forbidden', 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_cacheman_columns', 'nonce', false ) ) {
+			wp_send_json_error('invalid nonce', 403 );
+		}
+
+		$allowed_columns	=	$this->pz_GetCachemanColumnKeys();
+		$columns			=	isset($_POST['columns'] ) && is_array($_POST['columns'] ) ? map_deep(wp_unslash($_POST['columns'] ), 'sanitize_text_field' ) : array();
+		$save_columns		=	array();
+
+		foreach	($allowed_columns as $column ) {
+			$save_columns[$column]	=	isset($columns[$column] ) && ('1' === (string) $columns[$column] || 1 === $columns[$column] );
+		}
+		update_user_meta(get_current_user_id(), 'pz_lkc_cacheman_columns', $save_columns );
+
+		$allowed_per_page	=	$this->pz_GetCachemanPerPageChoices();
+		$per_page			=	isset($_POST['per_page'] ) ? absint(wp_unslash($_POST['per_page'] ) ) : 0;
+		if	(in_array($per_page, $allowed_per_page, true ) ) {
+			update_user_meta(get_current_user_id(), 'pz_lkc_cacheman_per_page', $per_page );
+		} else {
+			$per_page	=	intval(get_user_meta(get_current_user_id(), 'pz_lkc_cacheman_per_page', true ) );
+			if	(!in_array($per_page, $allowed_per_page, true ) ) {
+				$per_page	=	10;
+			}
+		}
+
+		wp_send_json_success(array(
+			'columns'	=>	$save_columns,
+			'per_page'	=>	$per_page,
+		) );
+	}
+
+	private	function	pz_GetCachemanColumnKeys() {
+		return	array('id', 'excerpt', 'charset', 'domain', 'sns', 'regist_time', 'update_time', 'sns_time', 'alive_time', 'post_id', 'click_count', 'result' );
+	}
+
+	private	function	pz_GetCachemanPerPageChoices() {
+		return	array(10, 20, 50, 100);
 	}
 
 	// クリックカウント
