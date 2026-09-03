@@ -75,6 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("click", errorModeNoticeDismiss);
         document.addEventListener("click", selectImageFromMedia);
         initCharacterCounts();
+        initCachemanSearch();
         initScreenOptions();
 
         // readonly チェックボックス無効化
@@ -403,6 +404,42 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.key !== "Escape" || panel.hidden) return;
             setPanelOpen(false);
             toggle.focus();
+        });
+    }
+
+    function initCachemanSearch() {
+        const input = document.querySelector("#post-search-input");
+        const searchSubmit = document.querySelector("#search-submit");
+        if (!input || !searchSubmit) return;
+
+        const runIdSearch = id => {
+            if (!id) return;
+
+            input.value = `ID:${id}`;
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            input.dispatchEvent(new Event("change", { bubbles: true }));
+
+            const pageNow = input.form?.querySelector('input[name="page_now"]');
+            if (pageNow) pageNow.value = "1";
+
+            searchSubmit.click();
+        };
+
+        document.addEventListener("click", e => {
+            const button = e.target?.closest?.(".pz-man-id-search");
+            if (!button) return;
+
+            e.preventDefault();
+            runIdSearch(button.dataset.pzManSearchId);
+        });
+
+        document.addEventListener("click", e => {
+            const button = e.target?.closest?.(".pz-filter-item");
+            if (!button) return;
+
+            input.value = "";
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+            input.dispatchEvent(new Event("change", { bubbles: true }));
         });
     }
 

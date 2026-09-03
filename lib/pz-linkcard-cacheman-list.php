@@ -1,5 +1,7 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
+	require_once __DIR__.'/pz-linkcard-search-query-parser.php';
+
 	// ドメイン一覧
 	$mydomain			=	null;
 	if	(preg_match('{https?://(.*)/}i', $this->home_url.'/',$m ) ) {
@@ -37,54 +39,44 @@
 	}
 
 	// 抽出条件
-	$where				=	null;
+	$cond				=	(string) $keyword;
 
 	switch	($filter ) {
 	case	'all':
-		$where			=	"";
 		break;
 	case	'internal':
-		$where			=	"domain = '".$this->domain."'";
+		$cond			.=	' domain='.$this->domain;
 		break;
 	case	'external':
-		$where			=	"domain <> '".$this->domain."'";
+		$cond			.=	' -domain='.$this->domain;
 		break;
 	case	'modify':
-		$where			=	"alive_result <> update_result";
+		$cond			.=	' alive_result<>update_result';
 		break;
 	case	'unlink':
-		$where			=	"( alive_result < 100 OR alive_result >= 400 )";
+		$cond			.=	' -alive_result:100..399';
 		break;
 	default:
 		if	($this->options['flg-alive'] && $this->options['flg-alive-count']) {
 			$filter		=	'unlink';
-			$where		=	"( alive_result < 100 OR alive_result >= 400 )";
+			$cond		.=	' -alive_result:100..399';
 		} else {
 			$filter		=	'all';
-			$where		=	"";
 		}
 	}	
 
 	// キーワード指定
 	$param				=	array();
-	if	($keyword ) {
-		$like			=	'%' . $wpdb->esc_like($keyword ) . '%';
-		$param[]		=	$like;
-		$param[]		=	$like;
-		if	($where ) {
-			$where		.=	" AND ";
-		}
-		$where			.=	"( title LIKE '%s' OR excerpt LIKE '%s' )";
-	}
 
 	// ドメイン指定
 	if	($refine ) {
-		$param[]		=	$refine;
-		if	($where ) {
-			$where		.=	" AND ";
-		}
-		$where			.=	"domain = %s";
+		$cond			.=	' domain='.$refine;
 	}
+
+	$parser				=	new pz_LinkCard_Search_Query_Parser($wpdb );
+	$parsed_search		=	$parser->parse($cond );
+	$where				=	$parsed_search['where'];
+	$param				=	$parsed_search['params'];
 
 	// 表示オプション
 	$screen_option_columns	=	array(
@@ -135,33 +127,16 @@
 	}
 
 	// 検索SQL作成
-	$sql				=	"SELECT * FROM $this->db_name";
+	$sql				=	"SELECT COUNT(*) FROM $this->db_name";
 	if	($where ) {
 		$sql			.=	" WHERE $where";
-	}
-	if	($orderby ) {
-		$sql			.=	" ORDER BY $orderby $order";
 	}
 	if	(strpos($sql, 'UPDATE' ) || strpos($sql, 'UNION' ) ) { // 気持ち程度のインジェクション対策
 		$sql			=	null;
 	}
 
-	// データ抽出（パラメータ個数による）
-	switch	(count($param ) ) {
-	case	1:
-		$data_now	=	$wpdb->get_results($wpdb->prepare($sql, $param[0] ) );
-		break;
-	case	2:
-		$data_now	=	$wpdb->get_results($wpdb->prepare($sql, $param[0], $param[1] ) );
-		break;
-	case	3:
-		$data_now	=	$wpdb->get_results($wpdb->prepare($sql, $param[0], $param[1], $param[2] ) );
-		break;
-	default:
-		$data_now	=	$wpdb->get_results($sql );
-		break;
-	}
-	$count_now		=	count($data_now );
+	// データ件数
+	$count_now		=	intval(!empty($param ) ? $wpdb->get_var(call_user_func_array(array($wpdb, 'prepare' ), array_merge(array($sql ), $param ) ) ) : $wpdb->get_var($sql ) );
 
 	// ページ数
 	$page_limit		=	$screen_option_per_page;																	// ページ内の行数
@@ -172,6 +147,18 @@
 	$page_prev		=	$page_now		>	$page_min	?	$page_now - 1	:	null;							// 前のページ
 	$page_next		=	$page_now		<	$page_max	?	$page_now + 1	:	null;							// 次のページ
 	$page_top		=	$page_now		<	1			?	0				:	($page_now - 1 ) * $page_limit;	// 表示中のページの最初に表示するのが何件目か
+
+	// データ抽出
+	$sql				=	"SELECT * FROM $this->db_name";
+	if	($where ) {
+		$sql			.=	" WHERE $where";
+	}
+	if	($orderby ) {
+		$sql			.=	" ORDER BY $orderby $order";
+	}
+	$sql				.=	" LIMIT %d OFFSET %d";
+	$data_param			=	array_merge($param, array($page_limit, $page_top ) );
+	$data_now			=	$wpdb->get_results(call_user_func_array(array($wpdb, 'prepare' ), array_merge(array($sql ), $data_param ) ) );
 
 	// 件数確認
 	$sql			=	"SELECT COUNT( * ) AS count_all, ";
@@ -262,9 +249,9 @@
 	</div>
 	
 	<div class="pz-man-search">
-		<p class="search-box" title="<?php esc_attr_e('Text search by title and excerpt', 'pz-linkcard' ); ?>">
+		<p class="search-box" title="<?php esc_attr_e('Text or field search. Examples: post:1234, id:10, domain:example.com', 'pz-linkcard' ); ?>">
 			<label>
-				<span><?php echo __('&#x1f50d;&#xfe0f;', 'pz-linkcard' ); ?></span>
+				<span class="dashicons dashicons-search" style="vertical-align: text-bottom;"></span>
 				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" />
 				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action"><?php esc_html_e('Search', 'pz-linkcard' ); ?></button>
 			</label>
@@ -310,49 +297,53 @@
 			<tr>
 				<td id="cb" class="pz-man-head-check manage-column column-cb check-column"><input id="cb-select-all-1" type="checkbox" /></td>
 <?php
-	$asc_chr	=	'<span class="pz-man-head-orderby">'.__('&#x1f53c;&#xfe0f;', 'pz-linkcard' ).'</span>';
-	$desc_chr	=	'<span class="pz-man-head-orderby">'.__('&#x1f53d;&#xfe0f;', 'pz-linkcard' ).'</span>';
+	$sort_none	=	'<img class="pz-man-head-orderby" src="'.esc_url($this->plugin_dir_url.'img/sort_none.svg' ).'" alt="" width="16" height="16" />';
+	$sort_asc	=	'<img class="pz-man-head-orderby" src="'.esc_url($this->plugin_dir_url.'img/sort_asc.svg'  ).'" alt="" width="16" height="16" />';
+	$sort_desc	=	'<img class="pz-man-head-orderby" src="'.esc_url($this->plugin_dir_url.'img/sort_desc.svg' ).'" alt="" width="16" height="16" />';
+	$get_sort_icon = function($item) use ($orderby, $order, $sort_none, $sort_asc, $sort_desc) {
+		return	($orderby === $item ? ($order === 'desc' ? $sort_desc : $sort_asc ) : $sort_none );
+	};
 
 	$item		=	'id';
 	$item_name	=	__('ID', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('id');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'url';
 	$item_name	=	__('URL', 'pz-linkcard' );
 	$add_class	=	'';
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'title';
 	$item_name	=	__('Title', 'pz-linkcard' );
 	$add_class	=	'';
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'excerpt';
 	$item_name	=	__('Excerpt', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('excerpt');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'charset';
 	$item_name	=	__('Charset', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('charset');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'domain';
 	$item_name	=	__('Domain', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('domain');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'sns_twitter';
 	$item_name	=	__('Tw', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('sns');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'">';
 	echo	'<button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button>';
 	// echo	'</th>';
@@ -360,7 +351,7 @@
 	$item		=	'sns_facebook';
 	$item_name	=	__('fb', 'pz-linkcard' );
 	$add_class	=	'';
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	// echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'">';
 	echo	'<button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button>';
 	// echo	'</th>';
@@ -368,7 +359,7 @@
 	$item		=	'sns_hatena';
 	$item_name	=	__('B!', 'pz-linkcard' );
 	$add_class	=	'';
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	// echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'">';
 	echo	'<button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button>';
 	echo	'</th>';
@@ -376,43 +367,43 @@
 	$item		=	'regist_time';
 	$item_name	=	__('Registered<br>Date', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('regist_time');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'update_time';
 	$item_name	=	__('Update<br>Date', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('update_time');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'sns_time';
 	$item_name	=	__('SNS<br>Check<br>Date', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('sns_time');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'alive_time';
 	$item_name	=	__('Alive<br>Check<br>Date', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('alive_time');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'use_post_id1';
 	$item_name	=	__('Post ID', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('post_id');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'click_count';
 	$item_name	=	__('Click<br/>Count', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('click_count');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'update_result';
 	$item_name	=	__('Result<br>code', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('result');
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'">';
 	echo	'<button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button>';
 	// echo	'</th>';
@@ -420,7 +411,7 @@
 	$item		=	'alive_result';
 	$item_name	=	__('(Last)', 'pz-linkcard' );
 	$add_class	=	'';
-	$sort		=	($orderby === $item ? ($order === 'desc' ? $desc_chr : $asc_chr ) : '' );
+	$sort		=	$get_sort_icon($item);
 	// echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'">';
 	echo	'<button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button>';
 	echo	'</th>';
@@ -429,11 +420,7 @@
 		</thead>
 		<tbody>
 			<?php
-				for ($i = $page_top; $i <= ($page_top + $page_limit - 1 ); $i++ ) {
-					if	($i >= count($data_now ) ) {
-						break;
-					}
-					$data		=	$data_now[$i];
+				foreach	($data_now as $data ) {
 
 					// データID
 					$data_id	=	$data->id;
@@ -554,7 +541,7 @@
 			?>
 			<tr>
 				<th scope="row" class="pz-man-body-check check-column"><input id="cb-select-<?php echo intval($data_id ); ?>" type="checkbox" name="select_id[]" value="<?php echo intval($data_id ); ?>" /><div class="locked-indicator"></div></th>
-				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><?php echo intval($data_id ).$html_thumbnail; ?></td>
+				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search"><?php echo intval($data_id ); ?></button><?php echo $html_thumbnail; ?></td>
 				<td colspan="2">
 					<div class="pz-man-body-url"><?php echo $html_url; ?></div>
 					<div class="pz-man-body-title"><span title="<?php echo esc_attr($title ); ?>"><?php echo $html_title; ?></span></div>
