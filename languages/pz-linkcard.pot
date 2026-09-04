@@ -767,14 +767,6 @@ msgstr ""
 msgid "(Deprecation)"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-advanced.php:88
-msgid "Use Blockquote Tag"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php:91
-msgid "Without using DIV tag, and use BLOCKQUOTE tag."
-msgstr ""
-
 #: ../lib/pz-linkcard-settings-advanced.php:96
 msgid "Hide URL Error"
 msgstr ""
@@ -2572,4 +2564,36 @@ msgstr ""
 
 #: ../pz-linkcard.php:2719
 msgid "Discard changes?"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-position.php:16
+msgid "Wrapper Tag"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:4
+msgid "DIV Tag"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:5
+msgid "BLOCKQUOTE Tag"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:6
+msgid "FIGURE Tag"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:7
+msgid "ARTICLE Tag"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:8
+msgid "SECTION Tag"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:9
+msgid "NAV Tag"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:10
+msgid "ASIDE Tag"
 msgstr ""

@@ -44,7 +44,7 @@ class class_pz_linkcard {
 			'width'					=>	'500px',
 			'content-height'		=>	'100px',
 			'centering'				=>	0,
-			'blockquote'			=>	0,
+			'enclose-tag'			=>	'div',
 			'info-position'			=>	1,
 			'use-sitename'			=>	1,
 
@@ -1212,12 +1212,12 @@ class class_pz_linkcard {
 		default:
 			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content">'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 		}
-		// 引用文扱い
-		if	($this->options['blockquote'] ) {
-			$html_tag	=	'<div class="'.$class_id.'"><blockquote class="lkc-quote">'.$html_tag.'</blockquote></div>';
-		} else {
-			$html_tag	=	'<div class="'.$class_id.'">'.$html_tag.'</div>';
+		$enclose_tag	=	isset($this->options['enclose-tag'] ) ? strtolower($this->options['enclose-tag'] ) : (!empty($this->options['blockquote'] ) ? 'blockquote' : 'div');
+		if	(!in_array($enclose_tag, array('div', 'blockquote', 'figure', 'article', 'section', 'nav', 'aside' ), true ) ) {
+			$enclose_tag	=	'div';
 		}
+		$enclose_tag	=	tag_escape($enclose_tag ) ?: 'div';
+		$html_tag		=	'<'.$enclose_tag.' class="'.esc_attr($class_id ).'">'.$html_tag.'</'.$enclose_tag.'>';
 
 		return	$html_tag;
 	}

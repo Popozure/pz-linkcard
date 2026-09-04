@@ -85,14 +85,6 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Use Blockquote Tag', 'pz-linkcard' ); ?></th>
-			<td>
-				<?php
-					pz_Checkbox($prop, 'blockquote', __('Without using DIV tag, and use BLOCKQUOTE tag.', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ) );
-				?>
-			</td>
-		</tr>
-		<tr>
 			<th scope="row"><?php esc_html_e('Hide URL Error', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>

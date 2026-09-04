@@ -12,6 +12,14 @@
 				?>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Wrapper Tag', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php
+					pz_Select($prop, 'enclose-tag', LIST_ENCLOSE_TAG );
+				?>
+			</td>
+		</tr>
 		<tr><th scope="row"><?php esc_html_e('Resize', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>

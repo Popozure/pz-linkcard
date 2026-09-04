@@ -1,5 +1,15 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
+	define('LIST_ENCLOSE_TAG',	array(
+		'div'			=>		__('DIV Tag',			'pz-linkcard' ),
+		'blockquote'	=>		__('BLOCKQUOTE Tag',	'pz-linkcard' ),
+		'figure'		=>		__('FIGURE Tag',		'pz-linkcard' ),
+		'article'		=>		__('ARTICLE Tag',		'pz-linkcard' ),
+		'section'		=>		__('SECTION Tag',		'pz-linkcard' ),
+		'nav'			=>		__('NAV Tag',			'pz-linkcard' ),
+		'aside'			=>		__('ASIDE Tag',			'pz-linkcard' ),
+	) );
+
 	// 「内部リンクの設定を参照」
 	define('LIST_INTERNAL',	array(''	=>	__('Use the same setting as Internal Link', 'pz-linkcard' ), ) );
 
@@ -90,6 +100,9 @@
 		$prop		=	array_merge(self::DEFAULTS, is_array($this->options ) ? $this->options : array() );
 		foreach	($_POST['properties']	as	$key => $value ) {
 			$prop[$key]	=	stripslashes($value );
+		}
+		if	(!array_key_exists('enclose-tag', $_POST['properties'] ) ) {
+			$prop['enclose-tag']	=	!empty($this->options['blockquote'] ) ? 'blockquote' : 'div';
 		}
 		ksort($prop );
 
@@ -249,6 +262,7 @@
 			'debug-url',
 			'thumbnail-dir',
 			'thumbnail-url',
+			'blockquote',
 		);
 		foreach	(self::DEFAULTS as $key => $value ) {
 			if	(!array_key_exists($key, $prop ) ) {
@@ -280,7 +294,7 @@
 						}
 					}
 				}
-				unset($prop['url-length'], $this->options['url-length'] );
+				unset($prop['url-length'], $this->options['url-length'], $prop['blockquote'], $this->options['blockquote'] );
 			} else {
 				$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Could not retrieve the content to be changed.', 'pz-linkcard' ).'</strong></p></div>';
 			}
@@ -450,6 +464,9 @@
 
 	// プロパティーズにコピー
 	$prop		=	$this->options;
+	if	(!array_key_exists('enclose-tag', $prop ) ) {
+		$prop['enclose-tag']	=	!empty($prop['blockquote'] ) ? 'blockquote' : 'div';
+	}
 
 	$show_error			=	($menu_error		==	0	?	'style="display: none;"' : '' );
 	$show_basic			=	'';

@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         // 自動変換チェック
-        document.querySelectorAll(".pz-sync-check,.pz-show").forEach(el =>
+        document.querySelectorAll(".pz-sync-check,.pz-show,input[name='properties[centering]'],select[name='properties[thumbnail-position]'],select[name='properties[info-position]']").forEach(el =>
             el.addEventListener("change", switchEnabled)
         );
 
@@ -155,6 +155,22 @@ document.addEventListener("DOMContentLoaded", () => {
 		setDisabled("input[name='properties[auto-external]'][type=checkbox]", false, !enabled, enabled ? "#444" : "#ddd");
 		setDisabled("input[name='properties[flg-do-shortcode]'][type=checkbox]", false, !enabled, enabled ? "#444" : "#ddd");
 		setDisabled("textarea[name='properties[exclude-url]']", false, !enabled, enabled ? "#444" : "#888");
+
+		// 中央寄せ時は外側の左右余白を固定
+		const centeringEl = document.querySelector("input[name='properties[centering]'][type=checkbox]");
+		const centering = centeringEl ? centeringEl.checked : false;
+		setDisabled("select[name='properties[margin-left]']", centering);
+		setDisabled("select[name='properties[margin-right]']", centering);
+
+		// 配置なしの場合は関連する詳細設定を固定
+		const thumbnailPositionEl = document.querySelector("select[name='properties[thumbnail-position]']");
+		const thumbnailDisabled = thumbnailPositionEl ? thumbnailPositionEl.value === "0" : false;
+		setDisabled("input[name='properties[thumbnail-width]']", thumbnailDisabled);
+		setDisabled("input[name='properties[thumbnail-height]']", thumbnailDisabled);
+
+		const infoPositionEl = document.querySelector("select[name='properties[info-position]']");
+		const siteNameReadonly = infoPositionEl ? infoPositionEl.value === "" : false;
+		setDisabled("input[name='properties[use-sitename]'][type=checkbox]", false, siteNameReadonly, siteNameReadonly ? "#ddd" : "#444");
 	}
 
     // ショートコードをコピー

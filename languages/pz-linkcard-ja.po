@@ -817,14 +817,6 @@ msgstr ""
 msgid "(Deprecation)"
 msgstr "<span style=\"color: #e40 !important;\">（非推奨）</span>"
 
-#: ../lib/pz-linkcard-settings-advanced.php:88
-msgid "Use Blockquote Tag"
-msgstr "BLOCKQUOTEタグを使用する"
-
-#: ../lib/pz-linkcard-settings-advanced.php:91
-msgid "Without using DIV tag, and use BLOCKQUOTE tag."
-msgstr "&lt;BLOCKQUOTE&gt;で囲んで引用扱いにします。"
-
 #: ../lib/pz-linkcard-settings-advanced.php:96
 msgid "Hide URL Error"
 msgstr "URLエラーを非表示"
@@ -2705,6 +2697,30 @@ msgstr "リンクカードのショートコードを挿入する"
 #: ../pz-linkcard.php:2911
 msgid "Pz Card"
 msgstr "Pzカード"
+
+msgid "Wrapper Tag"
+msgstr "全体を囲むタグ"
+
+msgid "DIV Tag"
+msgstr "DIVタグ"
+
+msgid "BLOCKQUOTE Tag"
+msgstr "BLOCKQUOTEタグ"
+
+msgid "FIGURE Tag"
+msgstr "FIGUREタグ"
+
+msgid "ARTICLE Tag"
+msgstr "ARTICLEタグ"
+
+msgid "SECTION Tag"
+msgstr "SECTIONタグ"
+
+msgid "NAV Tag"
+msgstr "NAVタグ"
+
+msgid "ASIDE Tag"
+msgstr "ASIDEタグ"
 
 msgid "Discard changes?"
 msgstr "変更を破棄しますか？"

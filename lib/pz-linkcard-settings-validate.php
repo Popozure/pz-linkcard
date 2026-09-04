@@ -79,6 +79,14 @@
 		unset($test_item[$key] );
 	}
 
+	$key						=	'enclose-tag';
+	$temp_value					=	isset($this->options[$key] ) ? strtolower($this->options[$key] ) : 'div';
+	if	(!in_array($temp_value, array('div', 'blockquote', 'figure', 'article', 'section', 'nav', 'aside' ), true ) ) {
+		$temp_value				=	'div';
+	}
+	$this->options[$key]		=	$temp_value;
+	unset($test_item[$key] );
+
 	// エラー状態のチェック
 	$temp		=	$this->options['error-time'];
 	if	(!is_numeric($temp ) ) {
