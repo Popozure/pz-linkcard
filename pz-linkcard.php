@@ -2716,6 +2716,7 @@ class class_pz_linkcard {
 			'cachemanColumnsNonce'	=>	wp_create_nonce('pz_lkc_cacheman_columns' ),
 			'mediaTitle'	=>	__('Select Image', 'pz-linkcard' ),
 			'mediaButton'	=>	__('Use this image', 'pz-linkcard' ),
+			'discardChanges'	=>	__('Discard changes?', 'pz-linkcard' ),
 		) );
 		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			PZLKC_PLUGIN_VERSION );
 

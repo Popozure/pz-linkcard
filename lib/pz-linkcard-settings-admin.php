@@ -135,8 +135,8 @@
 		<tr>
 			<th scope="row"><?php esc_html_e('Occurrence Time', 'pz-linkcard' ); ?></th>
 			<td>
-				<input type="text" size="40" value="<?php echo esc_attr(is_numeric($prop['error-time'] ) ? $this->pz_Date(PZLKC_DATETIME_FORMAT, $prop['error-time'] ) : $prop['error-time'] ); ?>" readonly="readonly" />
 				<input name="properties[error-time]" type="text" value="<?php echo esc_attr($prop['error-time'] ); ?>" class="pz-ad______min-only" />
+				<span><?php echo esc_attr(is_numeric($prop['error-time'] ) ? $this->pz_Date(PZLKC_DATETIME_FORMAT, $prop['error-time'] ) : $prop['error-time'] ); ?></span>
 			</td>
 		</tr>
 	</table>

@@ -2569,3 +2569,7 @@ msgstr ""
 #: ../pz-linkcard.php:2911
 msgid "Pz Card"
 msgstr ""
+
+#: ../pz-linkcard.php:2719
+msgid "Discard changes?"
+msgstr ""

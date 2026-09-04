@@ -28,6 +28,13 @@
 		'type'			=>	true,
 		'value'			=>	true,
 	);
+	$cacheman_allowed_html['a']			=	array(
+		'class'			=>	true,
+		'href'			=>	true,
+		'rel'			=>	true,
+		'target'		=>	true,
+		'title'			=>	true,
+	);
 	$cacheman_allowed_html['textarea']	=	array(
 		'accesskey'		=>	true,
 		'class'			=>	true,
@@ -55,6 +62,19 @@
 		$admin_edit	=	!empty($args['editable'] ) ? ' ondblclick="this.readOnly=false;"' : (!empty($args['admin_edit'] ) ? $cacheman_admin_edit_attr() : '');
 		$class_attr	=	$class ? ' class="'.esc_attr($class ).'"' : '';
 		return '<input name="'.esc_attr($name ).'" type="text" value="'.esc_attr($value ).'" size="'.esc_attr($size ).'"'.$title.$class_attr.$readonly.$admin_edit.$style.'>';
+	};
+	$cacheman_static_value = function($key, $args = array() ) use ($cacheman_get_value) {
+		$name		=	$args['name'] ?? 'data['.$key.']';
+		$value		=	$args['value'] ?? $cacheman_get_value($key );
+		$display	=	$args['display'] ?? $value;
+		$class		=	$args['class'] ?? '';
+		$title		=	isset($args['title'] ) ? $args['title'] : $display;
+		$class_attr	=	$class ? ' '.esc_attr($class ) : '';
+		$html		=	'<input name="'.esc_attr($name ).'" type="hidden" value="'.esc_attr($value ).'">';
+		if	(!empty($args['href'] ) && '' !== $display ) {
+			return $html.'<a href="'.esc_url($args['href'] ).'" target="_blank" rel="noopener noreferrer" class="pz-man-cache-static-value pz-man-cache-static-link'.$class_attr.'" title="'.esc_attr($title ).'">'.esc_html($display ).'</a>';
+		}
+		return $html.'<span class="pz-man-cache-static-value'.$class_attr.'" title="'.esc_attr($title ).'">'.esc_html($display !== '' ? $display : '-' ).'</span>';
 	};
 	$cacheman_action_buttons = function() {
 		return '<button type="submit" name="action" value="update" class="button button-primary button-large">'.esc_html(__('Update', 'pz-linkcard' ) ).'</button><button type="submit" name="action" value="cancel" class="button button-large" formnovalidate>'.esc_html(__('Cancel', 'pz-linkcard' ) ).'</button>';
@@ -133,11 +153,11 @@
 					<div class="inside pz-man-cache-permalink">
 						<div class="pz-man-cache-permalink-row">
 							<strong><?php esc_html_e('URL', 'pz-linkcard' ) ?></strong>
-							<?php echo wp_kses($cacheman_text_input('url', array('size' => 80, 'class' => 'pz-monospace', 'readonly' => true, 'title' => $this->pz_DecodeURL($cacheman_get_value('url' ) ) ) ), $cacheman_allowed_html ); ?>
+							<?php echo wp_kses($cacheman_static_value('url', array('class' => 'pz-monospace', 'display' => $this->pz_DecodeURL($cacheman_get_value('url' ) ), 'title' => $this->pz_DecodeURL($cacheman_get_value('url' ) ), 'href' => $cacheman_get_value('url' ) ) ), $cacheman_allowed_html ); ?>
 						</div>
 						<div class="pz-man-cache-permalink-row">
 							<strong><?php esc_html_e('Redirect URL', 'pz-linkcard' ) ?></strong>
-							<?php echo wp_kses($cacheman_text_input('url_redir', array('size' => 80, 'class' => 'pz-monospace', 'readonly' => true ) ), $cacheman_allowed_html ); ?>
+							<?php echo wp_kses($cacheman_static_value('url_redir', array('class' => 'pz-monospace' ) ), $cacheman_allowed_html ); ?>
 						</div>
 					</div>
 				</div>
@@ -152,7 +172,7 @@
 				<?php echo wp_kses($cacheman_postbox_open(__('Site Data', 'pz-linkcard' ) ), $cacheman_allowed_html ); ?>
 					<table class="form-table pz-man-cache-form-table">
 						<?php echo wp_kses($cacheman_field_row(esc_html__('Site Name', 'pz-linkcard' ), '<input name="data[site_name]" type="text" value="'.esc_attr($cacheman_get_value('site_name' ) ).'" size="80" accesskey="1">' ), $cacheman_allowed_html ); ?>
-						<?php echo wp_kses($cacheman_field_row(esc_html__('Domain', 'pz-linkcard' ), $cacheman_text_input('domain', array('size' => 80, 'readonly' => true ) ) ), $cacheman_allowed_html ); ?>
+						<?php echo wp_kses($cacheman_field_row(esc_html__('Domain', 'pz-linkcard' ), $cacheman_static_value('domain', array('class' => 'pz-monospace' ) ) ), $cacheman_allowed_html ); ?>
 					</table>
 				<?php echo wp_kses($cacheman_postbox_close(), $cacheman_allowed_html ); ?>
 

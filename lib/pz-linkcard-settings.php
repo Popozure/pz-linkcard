@@ -66,7 +66,7 @@
 	}
 	$action				=	isset($_POST['action'] )					?	esc_attr($_POST['action'] )					:	null ;
 	$submit				=	isset($_POST['submit'] )					?	esc_attr($_POST['submit'] )					:	null ;
-	$tab_now			=	isset($_POST['tab-now'] )					?	esc_attr($_POST['tab-now'] )				:	'pz-basic' ;
+	$tab_now			=	isset($_POST['tab-now'] )					?	esc_attr($_POST['tab-now'] )				:	'pz-error' ;
 	$scroll_now			=	isset($_POST['scroll-now'] )				?	esc_attr($_POST['scroll-now'] )				:	null ;
 
 	// 変更の保存ボタンを押したとき
@@ -395,9 +395,10 @@
 	// 各種ロゴ
 	$logo_pz		=	'<img src="'.$this->plugin_dir_url.'img/icon_popozure.ico"    width="16" height="16" alt="'.__('Popozure Logo',		'pz-linkcard' ).'">';
 	$logo_pz_lkc	=	'<img src="'.$this->plugin_dir_url.'img/icon-pz-linkcard.png" width="16" height="16" alt="'.__('Pz-LinkCard Logo',	'pz-linkcard' ).'">';
+	$logo_pz3		=	'<img src="'.$this->plugin_dir_url.'img/icon_pz3.png"         width="16" height="16" alt="'.__('Pz-LinkCard3 Logo',	'pz-linkcard' ).'">';
 	$logo_wp		=	'<img src="'.$this->plugin_dir_url.'img/icon_WordPress.png"   width="16" height="16" alt="'.__('WordPress.org Logo','pz-linkcard' ).'">';
-	$logo_tw		=	'<img src="'.$this->plugin_dir_url.'img/icon_twitter.svg"     width="16" height="16" alt="'.__('Twitter Logo',		'pz-linkcard' ).'">';
-	$logo_x			=	'<img src="'.$this->plugin_dir_url.'img/icon_x.svg"           width="16" height="16" alt="'.__('X Logo',			'pz-linkcard' ).'">';
+	$logo_tw		=	'<img src="'.$this->plugin_dir_url.'img/icon_tw.png"          width="16" height="16" alt="'.__('Twitter Logo',		'pz-linkcard' ).'">';
+	$logo_x			=	'<img src="'.$this->plugin_dir_url.'img/icon_x.png"           width="16" height="16" alt="'.__('X Logo',			'pz-linkcard' ).'">';
 	$logo_az		=	'<img src="'.$this->plugin_dir_url.'img/icon_amazon.png"      width="16" height="16" alt="'.__('Amazon Logo',		'pz-linkcard' ).'">';
 
 	// 修正履歴
@@ -425,6 +426,7 @@
 		$changelog	=	preg_replace('/&ensp;&ensp;removed:\s*/i',	'&ensp;&ensp;<span class="pz-log-removed">Removed</span>&ensp;',		$changelog);	// 修正
 		$changelog	=	preg_replace('/&ensp;&ensp;tested:\s*/i',	'&ensp;&ensp;<span class="pz-log-tested">Tested</span>&ensp;',			$changelog);	// テスト
 		$changelog	=	preg_replace('/&ensp;&ensp;pending:\s*/i',	'&ensp;&ensp;<span class="pz-log-pending">Pending</span>&ensp;',		$changelog);	// テスト
+		$changelog	=	preg_replace('/\[Pz3\]*/i',					$logo_pz3,																$changelog);	// テスト
 		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on x\.com）/iu',				'<a href="https://x.com/$2" class="pz-thx" rel="external noopener noreferrer" target="_blank">'.						'Thanks<span class="pz-thx-name">$1</span>'.$logo_x. '<span class="pz-thx-account">@$2</span></a>', $changelog);	
 		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on twitter\.com）/iu',			'<a href="https://twitter.com/$2" class="pz-thx" rel="external noopener noreferrer" target="_blank">'.					'Thanks<span class="pz-thx-name">$1</span>'.$logo_tw.'<span class="pz-thx-account">@$2</span></a>', $changelog);	
 		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on wordpress\.org）/iu',		'<a href="https://wordpress.org/support/users/$2" class="pz-thx" rel="external noopener noreferrer" target="_blank">'.	'Thanks<span class="pz-thx-name">$1</span>'.$logo_wp.'<span class="pz-thx-account">@$2</span></a>', $changelog);	
@@ -476,7 +478,9 @@ echo	$html_style;
 			echo	$html_title;
 			echo	$html_notice;
 		?>
-		<div class="pz-tabs">
+		<div id="pz-tabbar-wrapper" class="pz-tabbar-wrapper">
+			<button type="button" class="pz-tab-scroll pz-tab-left" aria-label="<?php esc_attr_e('Scroll tabs left', 'pz-linkcard' ); ?>"><span class="dashicons dashicons-arrow-left-alt2"></span></button>
+			<div id="pz-tabbar" class="pz-tabs">
 			<a class="pz-tab pz-red<?php echo $pz_tab_active('pz-error' ); ?>"			name="pz-error"			href="#pz-error"		<?php echo $show_error;			?>><?php esc_html_e('Error', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab pz-hide<?php echo $pz_tab_active('pz-basic' ); ?>"			name="pz-basic"			href="#pz-basic"		<?php echo $show_basic;			?>><?php esc_html_e('Basic', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab<?php echo $pz_tab_active('pz-position' ); ?>"				name="pz-position"		href="#pz-position"		<?php echo $show_position;		?>><?php esc_html_e('Position', 'pz-linkcard' ); ?></a>
@@ -492,6 +496,8 @@ echo	$html_style;
 			<a class="pz-tab<?php echo $pz_tab_active('pz-etc' ); ?>"					name="pz-etc"			href="#pz-etc"			<?php echo $show_etc;			?>><?php esc_html_e('etc.', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab<?php echo $pz_tab_active('pz-initialize' ); ?>"			name="pz-initialize"	href="#pz-initialize"	<?php echo $show_initialize;	?>><?php esc_html_e('Initialize', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab pz-purple<?php echo $pz_tab_active('pz-admin' ); ?>"		name="pz-admin"			href="#pz-admin"		<?php echo $show_admin;			?>><?php esc_html_e('Admin', 'pz-linkcard' ); ?></a>
+			</div>
+			<button type="button" class="pz-tab-scroll pz-tab-right" aria-label="<?php esc_attr_e('Scroll tabs right', 'pz-linkcard' ); ?>"><span class="dashicons dashicons-arrow-right-alt2"></span></button>
 		</div>
 	</header>
 	<article>
@@ -514,7 +520,7 @@ echo	$html_style;
 				require_once('pz-linkcard-settings-initialize.php' );		// 「初期化」タブ
 				require_once('pz-linkcard-settings-admin.php' );			// 「管理者」タブ
 			?>
-			<div class="pz-button-top" title="<?php esc_attr_e('Scroll to the top', 'pz-linkcard' ); ?>"><?php echo wp_kses_post(__('^<br>Top', 'pz-linkcard' ) ); ?></div>
+			<div class="pz-indicator"><div class="pz-button-top" title="<?php esc_attr_e('Scroll to the top', 'pz-linkcard' ); ?>"><?php echo wp_kses_post(__('^<br>Top', 'pz-linkcard' ) ); ?></div><div class="pz-tab-name">&nbsp;</div></div>
 		</form>
 		</article>
 </div>

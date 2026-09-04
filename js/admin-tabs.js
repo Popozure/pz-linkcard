@@ -41,8 +41,10 @@
 		}
 		// タブを選択する
 		document.querySelectorAll('.pz-tab-active, .pz-page-active').forEach(el => el.classList.remove('pz-tab-active', 'pz-page-active'));
-		document.querySelector(`a[name="${name}"]`)?.classList.add('pz-tab-active');
+		const activeTab = document.querySelector(`a[name="${name}"]`);
+		activeTab?.classList.add('pz-tab-active');
 		document.getElementById(name)?.classList.add('pz-page-active');
+		tab_update_name(activeTab);
 	}
 
 	// 選択されたタブを開く
@@ -54,6 +56,7 @@
 		this.classList.add('pz-tab-active');
 		document.querySelector(this.getAttribute('href'))?.classList.add('pz-page-active');
 		document.querySelector('input[name="tab-now"]').value = this.getAttribute('name');
+		tab_update_name(this);
 	}
 
 	// タブをカーソルキーで移動する
@@ -77,6 +80,12 @@
 		tabs[activeIndex].classList.add('pz-tab-active');
 		document.querySelector(tabs[activeIndex].getAttribute('href')).classList.add('pz-page-active');
 		document.querySelector('input[name="tab-now"]').value = tabs[activeIndex].getAttribute('name');
+		tab_update_name(tabs[activeIndex]);
+	}
+
+	function tab_update_name(tab) {
+		const tabName = document.querySelector('.pz-tab-name');
+		if (tabName && tab) tabName.textContent = tab.textContent;
 	}
 
 	// タブの有効化／無効化

@@ -73,7 +73,7 @@ msgstr "URL"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:23
 msgid "Redirect URL"
-msgstr "相対指定URL"
+msgstr "転送先URL"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:27
 msgid "Scheme"
@@ -2153,239 +2153,239 @@ msgstr "中央に寄せる"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "1px"
-msgstr ""
+msgstr "1px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "3px"
-msgstr ""
+msgstr "3px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "5px"
-msgstr ""
+msgstr "5px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "7px"
-msgstr ""
+msgstr "7px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "9px"
-msgstr ""
+msgstr "9px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "10px"
-msgstr ""
+msgstr "10px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "11px"
-msgstr ""
+msgstr "11px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "13px"
-msgstr ""
+msgstr "13px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "14px"
-msgstr ""
+msgstr "14px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "15px"
-msgstr ""
+msgstr "15px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "17px"
-msgstr ""
+msgstr "17px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "18px"
-msgstr ""
+msgstr "18px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "19px"
-msgstr ""
+msgstr "19px"
 
 #: ../lib/pz-linkcard-settings.php:7 ../lib/pz-linkcard-settings.php:17
 #: ../lib/pz-linkcard-settings.php:35
 msgid "20px"
-msgstr ""
+msgstr "20px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "21px"
-msgstr ""
+msgstr "21px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "22px"
-msgstr ""
+msgstr "22px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "23px"
-msgstr ""
+msgstr "23px"
 
 #: ../lib/pz-linkcard-settings.php:7 ../lib/pz-linkcard-settings.php:18
 #: ../lib/pz-linkcard-settings.php:36
 msgid "24px"
-msgstr ""
+msgstr "24px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "25px"
-msgstr ""
+msgstr "25px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "26px"
-msgstr ""
+msgstr "26px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "27px"
-msgstr ""
+msgstr "27px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "28px"
-msgstr ""
+msgstr "28px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "29px"
-msgstr ""
+msgstr "29px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "30px"
-msgstr ""
+msgstr "30px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "31px"
-msgstr ""
+msgstr "31px"
 
 #: ../lib/pz-linkcard-settings.php:7 ../lib/pz-linkcard-settings.php:19
 #: ../lib/pz-linkcard-settings.php:37
 msgid "32px"
-msgstr ""
+msgstr "32px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "33px"
-msgstr ""
+msgstr "33px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "34px"
-msgstr ""
+msgstr "34px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "35px"
-msgstr ""
+msgstr "35px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "36px"
-msgstr ""
+msgstr "36px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "37px"
-msgstr ""
+msgstr "37px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "38px"
-msgstr ""
+msgstr "38px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "39px"
-msgstr ""
+msgstr "39px"
 
 #: ../lib/pz-linkcard-settings.php:7 ../lib/pz-linkcard-settings.php:20
 msgid "40px"
-msgstr ""
+msgstr "40px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "41px"
-msgstr ""
+msgstr "41px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "42px"
-msgstr ""
+msgstr "42px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "43px"
-msgstr ""
+msgstr "43px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "44px"
-msgstr ""
+msgstr "44px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "45px"
-msgstr ""
+msgstr "45px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "46px"
-msgstr ""
+msgstr "46px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "47px"
-msgstr ""
+msgstr "47px"
 
 #: ../lib/pz-linkcard-settings.php:7 ../lib/pz-linkcard-settings.php:21
 msgid "48px"
-msgstr ""
+msgstr "48px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "49px"
-msgstr ""
+msgstr "49px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "50px"
-msgstr ""
+msgstr "50px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "51px"
-msgstr ""
+msgstr "51px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "52px"
-msgstr ""
+msgstr "52px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "53px"
-msgstr ""
+msgstr "53px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "54px"
-msgstr ""
+msgstr "54px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "55px"
-msgstr ""
+msgstr "55px"
 
 #: ../lib/pz-linkcard-settings.php:7 ../lib/pz-linkcard-settings.php:22
 msgid "56px"
-msgstr ""
+msgstr "56px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "57px"
-msgstr ""
+msgstr "57px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "58px"
-msgstr ""
+msgstr "58px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "59px"
-msgstr ""
+msgstr "59px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "60px"
-msgstr ""
+msgstr "60px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "61px"
-msgstr ""
+msgstr "61px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "62px"
-msgstr ""
+msgstr "62px"
 
 #: ../lib/pz-linkcard-settings.php:7
 msgid "63px"
-msgstr ""
+msgstr "63px"
 
 #: ../lib/pz-linkcard-settings.php:7 ../lib/pz-linkcard-settings.php:23
 #: ../lib/pz-linkcard-settings.php:38
 msgid "64px"
-msgstr ""
+msgstr "64px"
 
 #: ../lib/pz-linkcard-settings.php:11
 msgid "Not defined"
@@ -2705,6 +2705,9 @@ msgstr "リンクカードのショートコードを挿入する"
 #: ../pz-linkcard.php:2911
 msgid "Pz Card"
 msgstr "Pzカード"
+
+msgid "Discard changes?"
+msgstr "変更を破棄しますか？"
 
 #~ msgid "URL Key"
 #~ msgstr "URLキー"

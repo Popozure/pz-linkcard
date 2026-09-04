@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             btn.addEventListener("click", buttonTopClick)
         );
         window.addEventListener("scroll", topButtonScroll);
+        topButtonScroll();
 
         // ショートコードをコピー
         document.querySelectorAll(".pz-shortcode-1").forEach(el =>
@@ -49,7 +50,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // submit時にスクロール位置保存
         document.querySelectorAll("form").forEach(form => {
-            form.addEventListener("submit", () => {
+            form.addEventListener("submit", e => {
+                const submitter = e.submitter;
+                if (submitter?.classList.contains("pz-man-cache-reload-button")) {
+                    submitter.classList.add("is-spinning");
+                }
+
                 if (scrollNow && !cacheEditor) scrollNow.value = window.scrollY;
                 const inhibit = document.querySelector("input[type=checkbox][name='properties[flg-inhibit]']");
                 const inhibitValue = document.querySelector("input[name='flg-inhibit']")?.value;
@@ -75,6 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
         document.addEventListener("click", errorModeNoticeDismiss);
         document.addEventListener("click", selectImageFromMedia);
         initCharacterCounts();
+        initUnsavedFormWarnings();
+        initSettingsTabs();
         initCachemanSearch();
         initScreenOptions();
 
@@ -102,13 +110,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // TOPボタンの表示切替
     function topButtonScroll() {
-        const btn = document.querySelector(".pz-button-top");
-        if (!btn) return;
-        if (window.scrollY > 80) {
-            btn.style.display = "block";
-        } else {
-            btn.style.display = "none";
-        }
+        const indicator = document.querySelector(".pz-indicator");
+        if (!indicator) return;
+        indicator.classList.toggle("pz-indicator-active", window.scrollY > 80);
     }
 
     // 項目の有効化／無効化
@@ -271,6 +275,190 @@ document.addEventListener("DOMContentLoaded", () => {
             update();
             target.addEventListener("input", update);
         });
+    }
+
+    function serializeFormValues(form) {
+        const params = new URLSearchParams();
+        Array.from(form.elements).forEach(el => {
+            if (!el.name || el.disabled) return;
+            if (["button", "submit", "reset"].includes(el.type)) return;
+            if (["scroll-now", "tab-now"].includes(el.name)) return;
+            if ((el.type === "checkbox" || el.type === "radio") && !el.checked) return;
+            if (el.type === "file") return;
+
+            if (el.tagName === "SELECT" && el.multiple) {
+                Array.from(el.selectedOptions).forEach(option => params.append(el.name, option.value));
+                return;
+            }
+
+            params.append(el.name, el.value);
+        });
+        return params.toString();
+    }
+
+    function initUnsavedFormWarning(form, options = {}) {
+        if (!form) return;
+        if (form.dataset.pzUnsavedWarningInitialized) return;
+        form.dataset.pzUnsavedWarningInitialized = "1";
+
+        const confirmMessage = window.pzLinkCardAdmin?.discardChanges || "Discard changes?";
+        const confirmNonUpdateSubmit = options.confirmNonUpdateSubmit || false;
+        let isSubmitting = false;
+        let initialState = serializeFormValues(form);
+        let hasUnsavedChanges = false;
+
+        const updateUnsavedChanges = () => {
+            hasUnsavedChanges = serializeFormValues(form) !== initialState;
+        };
+
+        form.addEventListener("input", updateUnsavedChanges);
+        form.addEventListener("change", updateUnsavedChanges);
+        form.addEventListener("reset", () => {
+            window.setTimeout(updateUnsavedChanges, 0);
+        });
+        form.addEventListener("submit", e => {
+            const submitter = e.submitter;
+            const isUpdate = submitter?.name === "action" && submitter?.value === "update";
+            if (confirmNonUpdateSubmit && !isUpdate && hasUnsavedChanges && !window.confirm(confirmMessage)) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+
+            isSubmitting = true;
+            initialState = serializeFormValues(form);
+            hasUnsavedChanges = false;
+        }, true);
+
+        window.addEventListener("pageshow", () => {
+            isSubmitting = false;
+        });
+
+        window.addEventListener("beforeunload", e => {
+            if (isSubmitting || !hasUnsavedChanges) return;
+
+            e.preventDefault();
+            e.returnValue = confirmMessage;
+            return confirmMessage;
+        });
+    }
+
+    function initUnsavedFormWarnings() {
+        initUnsavedFormWarning(document.querySelector(".pz-man-cache-dirty-check")?.closest("form"), {
+            confirmNonUpdateSubmit: true,
+        });
+        initUnsavedFormWarning(document.querySelector(".pz-settings form"));
+    }
+
+    function initSettingsTabs() {
+        const wrapper = document.querySelector("#pz-tabbar-wrapper");
+        const tabbar = document.querySelector("#pz-tabbar");
+        if (!wrapper || !tabbar) return;
+
+        const leftBtn = wrapper.querySelector(".pz-tab-left");
+        const rightBtn = wrapper.querySelector(".pz-tab-right");
+        const tabNameEl = document.querySelector(".pz-tab-name");
+        const tabNow = document.querySelector('input[name="tab-now"]');
+        let lastWheelAt = 0;
+
+        const getTabName = tab => tab?.getAttribute("name") || tab?.hash?.replace("#", "") || "";
+        const isVisibleTab = tab => {
+            const style = window.getComputedStyle(tab);
+            return style.display !== "none" && style.visibility !== "hidden" && tab.getClientRects().length > 0;
+        };
+        const getTabs = () => Array.from(tabbar.querySelectorAll(".pz-tab")).filter(isVisibleTab);
+
+        const updateButtons = () => {
+            const overflow = tabbar.scrollWidth > tabbar.clientWidth + 1;
+            wrapper.classList.toggle("pz-tabbar-overflow", overflow);
+
+            if (!leftBtn || !rightBtn) return;
+            leftBtn.style.display = overflow && tabbar.scrollLeft > 0 ? "flex" : "none";
+            rightBtn.style.display = overflow && tabbar.scrollLeft + tabbar.clientWidth < tabbar.scrollWidth - 1 ? "flex" : "none";
+        };
+
+        const adjustTabVisibility = tab => {
+            if (!tab) return;
+
+            const tabRect = tab.getBoundingClientRect();
+            const barRect = tabbar.getBoundingClientRect();
+            const margin = 24;
+
+            if (tabRect.left < barRect.left) {
+                tabbar.scrollBy({ left: tabRect.left - barRect.left - margin, behavior: "smooth" });
+            } else if (tabRect.right > barRect.right) {
+                tabbar.scrollBy({ left: tabRect.right - barRect.right + margin, behavior: "smooth" });
+            }
+        };
+
+        const openTab = tab => {
+            const tabName = getTabName(tab);
+            if (!tabName) return;
+
+            getTabs().forEach(item => item.classList.remove("pz-tab-active"));
+            document.querySelectorAll(".pz-page").forEach(page => page.classList.remove("pz-page-active"));
+
+            tab.classList.add("pz-tab-active");
+            document.getElementById(tabName)?.classList.add("pz-page-active");
+            if (tabNameEl) tabNameEl.textContent = tab.textContent;
+            if (tabNow) tabNow.value = tabName;
+
+            adjustTabVisibility(tab);
+            updateButtons();
+        };
+
+        const getCurrentIndex = tabs => {
+            const currentName = tabNow?.value || getTabName(tabbar.querySelector(".pz-tab-active"));
+            const currentIndex = tabs.findIndex(tab => getTabName(tab) === currentName);
+            return currentIndex >= 0 ? currentIndex : tabs.findIndex(tab => tab.classList.contains("pz-tab-active"));
+        };
+
+        const moveTab = direction => {
+            const tabs = getTabs();
+            if (!tabs.length) return;
+
+            const currentIndex = getCurrentIndex(tabs);
+            const baseIndex = currentIndex >= 0 ? currentIndex : 0;
+            const nextIndex = (baseIndex + direction + tabs.length) % tabs.length;
+            openTab(tabs[nextIndex]);
+        };
+
+        tabbar.addEventListener("click", e => {
+            const tab = e.target.closest(".pz-tab");
+            if (!tab || !tabbar.contains(tab)) return;
+
+            e.preventDefault();
+            openTab(tab);
+        });
+
+        tabbar.addEventListener("wheel", e => {
+            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+            if (delta === 0) return;
+
+            e.preventDefault();
+            const now = Date.now();
+            if (now - lastWheelAt < 120) return;
+            lastWheelAt = now;
+            moveTab(delta > 0 ? 1 : -1);
+        }, { passive: false });
+
+        leftBtn?.addEventListener("click", () => {
+            tabbar.scrollBy({ left: -Math.round(tabbar.clientWidth * 0.75), behavior: "smooth" });
+        });
+        rightBtn?.addEventListener("click", () => {
+            tabbar.scrollBy({ left: Math.round(tabbar.clientWidth * 0.75), behavior: "smooth" });
+        });
+
+        tabbar.addEventListener("scroll", updateButtons);
+        window.addEventListener("resize", updateButtons);
+        if (window.ResizeObserver) {
+            new ResizeObserver(updateButtons).observe(tabbar);
+        }
+
+        const activeTab = tabbar.querySelector(".pz-tab-active") || getTabs()[0];
+        if (tabNameEl && activeTab) tabNameEl.textContent = activeTab.textContent;
+        adjustTabVisibility(activeTab);
+        updateButtons();
     }
 
     function updateImagePreview(input, url) {
