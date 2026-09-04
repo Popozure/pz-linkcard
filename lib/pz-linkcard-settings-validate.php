@@ -26,7 +26,7 @@
 	}
 
 	// 英数字
-	$check_item					=	array('code1', 'code2', 'code3', 'code4' );
+	$check_item					=	array('code1', 'code2', 'code3' );
 	foreach($check_item			as	$key ) {
 		$temp_value				=	isset($this->options[$key] )	?	$this->options[$key]	:	'' ;
 		$this->options[$key]	=	preg_replace('/[^0-9a-zA-Z]/', '', $temp_value );

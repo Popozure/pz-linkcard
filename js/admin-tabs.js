@@ -81,6 +81,7 @@
 		document.querySelector(tabs[activeIndex].getAttribute('href')).classList.add('pz-page-active');
 		document.querySelector('input[name="tab-now"]').value = tabs[activeIndex].getAttribute('name');
 		tab_update_name(tabs[activeIndex]);
+		tabs[activeIndex].focus();
 	}
 
 	function tab_update_name(tab) {

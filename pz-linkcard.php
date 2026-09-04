@@ -214,7 +214,6 @@ class class_pz_linkcard {
 			'code1'					=>	'blogcard',
 			'code2'					=>	null,
 			'code3'					=>	null,
-			'code4'					=>	null,
 			'use-inline'			=>	null,
 			'auto-atag'				=>	0,
 			'auto-url'				=>	0,
@@ -452,10 +451,6 @@ class class_pz_linkcard {
 				add_shortcode($code, array($this, 'shortcode' ), 10 );
 			}
 			$code	=	preg_replace("/[^a-zA-Z0-9]/", "", $this->options['code3'] );								// ショートコード3
-			if	($code ) {
-				add_shortcode($code, array($this, 'shortcode' ), 10 );
-			}
-			$code	=	preg_replace("/[^a-zA-Z0-9]/", "", $this->options['code4'] );								// ショートコード4
 			if	($code ) {
 				add_shortcode($code, array($this, 'shortcode' ), 10 );
 			}
@@ -2768,7 +2763,7 @@ class class_pz_linkcard {
 		}
 
 		$shortcodes	=	array();
-		foreach	(array('code1', 'code2', 'code3', 'code4' ) as $key ) {
+		foreach	(array('code1', 'code2', 'code3' ) as $key ) {
 			$code	=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options[$key] ?? '' );
 			if	($code ) {
 				$shortcodes[]	=	$code;
@@ -2828,7 +2823,7 @@ class class_pz_linkcard {
 		}
 		$shortcode	=	preg_replace('/[^a-zA-Z0-9]/', '', $attributes['shortcode'] ?? '' );
 		$available_shortcodes	=	array();
-		foreach	(array('code1', 'code2', 'code3', 'code4' ) as $key ) {
+		foreach	(array('code1', 'code2', 'code3' ) as $key ) {
 			$code	=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options[$key] ?? '' );
 			if	($code ) {
 				$available_shortcodes[]	=	$code;

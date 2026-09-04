@@ -124,10 +124,6 @@
 			<th scope="row"><?php esc_html_e('ShortCode 3', 'pz-linkcard' ); ?></th>
 			<td>[<input name="properties[code3]" type="text" class="pz-shortcode" value="<?php echo	esc_attr($prop['code3'] ); ?>" /> url="http://popozure.info" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]<p><?php esc_html_e('Case-sensitive', 'pz-linkcard' ); ?></p></td>
 		</tr>
-		<tr class="pz-admin-only">
-			<th scope="row"><?php esc_html_e('ShortCode 4', 'pz-linkcard' ); ?></th>
-			<td>[<input name="properties[code4]" type="text" class="pz-shortcode" value="<?php echo	esc_attr($prop['code4'] ); ?>" /> url="http://popozure.info" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]<p><?php esc_html_e('Case-sensitive', 'pz-linkcard' ); ?></p></td>
-		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Example Entry', 'pz-linkcard' ); ?></th>
 			<td>

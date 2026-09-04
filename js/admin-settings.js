@@ -407,7 +407,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
 
-        const openTab = tab => {
+        const openTab = (tab, focusTab = false) => {
             const tabName = getTabName(tab);
             if (!tabName) return;
 
@@ -421,22 +421,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
             adjustTabVisibility(tab);
             updateButtons();
+            if (focusTab) tab.focus();
         };
 
-        const getCurrentIndex = tabs => {
-            const currentName = tabNow?.value || getTabName(tabbar.querySelector(".pz-tab-active"));
+        const getCurrentIndex = (tabs, currentTab = null) => {
+            const currentName = getTabName(currentTab) || tabNow?.value || getTabName(tabbar.querySelector(".pz-tab-active"));
             const currentIndex = tabs.findIndex(tab => getTabName(tab) === currentName);
             return currentIndex >= 0 ? currentIndex : tabs.findIndex(tab => tab.classList.contains("pz-tab-active"));
         };
 
-        const moveTab = direction => {
+        const moveTab = (direction, focusTab = false, currentTab = null) => {
             const tabs = getTabs();
             if (!tabs.length) return;
 
-            const currentIndex = getCurrentIndex(tabs);
+            const currentIndex = getCurrentIndex(tabs, currentTab);
             const baseIndex = currentIndex >= 0 ? currentIndex : 0;
             const nextIndex = (baseIndex + direction + tabs.length) % tabs.length;
-            openTab(tabs[nextIndex]);
+            openTab(tabs[nextIndex], focusTab);
         };
 
         tabbar.addEventListener("click", e => {
@@ -445,6 +446,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             e.preventDefault();
             openTab(tab);
+        });
+
+        tabbar.addEventListener("keydown", e => {
+            const tab = e.target.closest(".pz-tab");
+            if (!tab || !tabbar.contains(tab)) return;
+            if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+
+            e.preventDefault();
+            e.stopPropagation();
+            moveTab(e.key === "ArrowRight" ? 1 : -1, true, tab);
         });
 
         tabbar.addEventListener("wheel", e => {
