@@ -43,16 +43,6 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Text Selection', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-unti-select]" value="" />
-					<input type="checkbox" name="properties[flg-unti-select]" value="1" <?php checked($this->options['flg-unti-select'] ); ?> />
-					<?php esc_html_e('Prohibit the selection of text in the Link-Card.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-		<tr>
 			<th scope="row"><?php esc_html_e('Date Format (Manager)',	'pz-linkcard' ); ?></th>
 			<td><input name="properties[date-format-man]"		type="text" size="40" value="<?php echo	(isset($this->options['date-format-man'] ) ? esc_attr($this->options['date-format-man'] ) : '' ); ?>" list="date-dormat-man-default" /></td>
 			<datalist id="date-dormat-man-default"><option value="Y\<\b\r\/\>m/d\<\b\r\/\>H:i">Y\<\b\r\/\>m/d\<\b\r\/\>H:i</option><option value="d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a">d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a</option></datalist>

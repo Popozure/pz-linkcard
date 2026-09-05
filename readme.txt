@@ -153,17 +153,17 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 = 2.6.1 =
 * [Fixed] 設定画面の「同ページへのリンク」の表示項目を一部修正しました。
 * [Fixed] metaタグのcontentとpropertyの順番によって上手く取得出来ない不具合を修正しました。
-* [Modified] 設定画面で変更を保存を押したときの画面スクロールを少なくしました。
+* [Modified] 設定画面で変更を保存を押したときの画面スクロールしてしまうを緩和しました。[Pz3]
 * [Modified] 設定画面のタブの上でホイールをまわすと前/次のタブを選べるようになりました。[Pz3]
+* [Modified] 設定画面の「外部リンク」「内部リンク」の項目を追加しました。[Pz3]
 * [Modified] 管理画面の検索機能を強化しました。[Pz3]
 * [Modified] ブロックエディタでのブロックにリンクカードを表示させるように修正しました。[Pz3]
 * [Modified] リンクカードの編集画面のレイアウトを変更しました。[Pz3]
+* [Modified] 画像キャッシュを作成する際、WebPが使用出来ない場合JPEGで保存するように変更しました。
 * [Added] 管理画面の一覧に「表示オプション」を追加しました。表示項目を選択出来ます。[Pz3]
-* [Added] 設定画面の「一番上へ戻る」ボタン下に、現在開いているタブ名を表示するようになりました。
-* [Added] 設定画面の「配置」タブに「領域を囲うタグ」を追加しました。DIVの他、ARTICLE、BLOCKQUOTEなどから選択でき、モバイル用クラス名も設定可能です。
-* [Removed] 設定画面の「配置」タブから「BLOCKQUOTEで囲む」を削除しました。「全体をタグで囲む」で同じことが出来るようになりました。
-
-
+* [Added] 設定画面の「一番上へ戻る」ボタン下に、現在開いているタブ名を表示するようになりました。[Pz3]
+* [Added] 設定画面の「配置」タブに「領域を囲うタグ」を追加しました。DIVの他、ARTICLE、BLOCKQUOTEなどから選択でき、モバイル用クラス名も設定可能です。[Pz3]
+* [Removed] 設定画面の「配置」タブから「BLOCKQUOTEで囲む」を削除しました。「全体をタグで囲む」で同じことが出来るようになりました。[Pz3]
 
 
 = 2.6.0.5 =
@@ -336,7 +336,7 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 * 管理画面の一番上にプラグインの名前とバージョンを追加しました。
   Added: Added plugin name and version at the top of the admin page.
 * リンクカードが記事の幅を越えて表示されてしまう不具合を修正しました。
-  Fixed: Fixed a bug that caused link cards to appear beyond the width of the article.
+  Fixed: Fixed a bug that caused Link Cards to appear beyond the width of the article.
 * サムネイル画像の領域を変更したが、テーマの設定に引っ張られ正しく表示されない現象を修正しました。（Thanks さくら工作室/工作系YouTuber @skrdtrt on x.com）
   Modified: Improved display of thumbnails with small vertical size. (Additional Corrections.)
 * 管理画面からキャッシュ内容のインポート／エクスポートが正常に出来ない不具合を修正しました。
@@ -366,7 +366,7 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 * カード管理画面で内部リンクのサムネイルのURLからスキーム部分（http、httpsなど）を削除しました。
   Modified: Removed scheme part (http, https, etc.) from URLs of thumbnails of internal links in the card management screen.
 * リンクカードの表示を一部調整しました。今までと表示がずれる可能性があります。
-  Modified: Some adjustments have been made to the display of link cards. There is a possibility that the display may be shifted from the previous version.
+  Modified: Some adjustments have been made to the display of Link Cards. There is a possibility that the display may be shifted from the previous version.
 * サムネイル画像のIMGタグにwidthとheightを追加しました。（サイトアイコンには既に付いていました）（Thanks Jack Ryan @ryan_j23 on x.com）
   Added: Added width and height to IMG tags for thumbnail images.
 * サムネイル画像が小さい場合、サムネイルの領域いっぱいに表示するように修正。（Thanks さくら工作室/工作系YouTuber @skrdtrt on x.com）

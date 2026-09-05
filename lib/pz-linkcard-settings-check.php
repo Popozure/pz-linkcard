@@ -19,7 +19,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-noopener]" value="" />
 					<input type="checkbox" name="properties[flg-noopener]" value="1" <?php checked($this->options['flg-noopener'] ); ?> />
-					<?php	echo __('In the case of an external site, it puts the "noopener".', 'pz-linkcard' ).__('(Recommend)', 'pz-linkcard' ); ?>
+					<?php	echo __('In the case of an external site, it puts the "noopener".', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -44,12 +44,12 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Disable SSL Verification', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Enable SSL Verification', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
-					<input type="hidden"   name="properties[flg-ssl]" value="" />
-					<input type="checkbox" name="properties[flg-ssl]" value="1" <?php checked($this->options['flg-ssl'] ); ?> />
-					<?php echo __('Try setting if the contents of the SSL site can not be acquired.', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?>
+					<input type="hidden"   name="properties[flg-sslverify]" value="" />
+					<input type="checkbox" name="properties[flg-sslverify]" value="1" <?php checked($this->options['flg-sslverify'] ); ?> />
+					<?php echo __('Verify the certificate when using SSL/TLS communication.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>

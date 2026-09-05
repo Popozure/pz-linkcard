@@ -78,6 +78,36 @@
 	}
 
 	// 足りない項目
+	foreach	(array('ex', 'in', 'th' ) as $t ) {
+		if	(array_key_exists('border-style', $this->options ) && !array_key_exists($t.'-border-style', $this->options ) ) {
+			$this->options[$t.'-border-style']	=	$this->options['border-style'];
+		}
+		if	(array_key_exists('border-width', $this->options ) && !array_key_exists($t.'-border-width', $this->options ) ) {
+			$this->options[$t.'-border-width']	=	$this->options['border-width'];
+		}
+		if	(array_key_exists('radius', $this->options ) && !array_key_exists($t.'-border-radius', $this->options ) ) {
+			$this->options[$t.'-border-radius']	=	$this->options['radius'];
+		}
+		if	(!array_key_exists($t.'-bg-enabled', $this->options ) ) {
+			$this->options[$t.'-bg-enabled']		=	1;
+		}
+		if	(!array_key_exists($t.'-transform-enabled', $this->options ) ) {
+			$this->options[$t.'-transform-enabled']	=	1;
+		}
+		if	(!array_key_exists($t.'-hover-bg-enabled', $this->options ) ) {
+			$this->options[$t.'-hover-bg-enabled']	=	!empty($this->options[$t.'-hover-bg-color'] ) ? 1 : 0;
+		}
+		if	(!array_key_exists($t.'-border-enabled', $this->options ) ) {
+			$this->options[$t.'-border-enabled']	=	1;
+		}
+		if	(array_key_exists('shadow', $this->options ) && !array_key_exists($t.'-shadow-enabled', $this->options ) ) {
+			$this->options[$t.'-shadow-enabled']	=	$this->options['shadow'];
+		}
+		if	(array_key_exists('shadow-inset', $this->options ) && !array_key_exists($t.'-shadow-inset', $this->options ) ) {
+			$this->options[$t.'-shadow-inset']	=	$this->options['shadow-inset'];
+		}
+	}
+
 	foreach	(Self::DEFAULTS		as	$key => $value ) {
 		if	(!array_key_exists($key, $this->options ) ) {
 			$this->options[$key]	=	Self::DEFAULTS[$key];
@@ -135,6 +165,34 @@
 			if	(array_key_exists($t.'-outline', $this->options ) && !$this->options[$t.'-outline'] ) {
 				$this->options[$t.'-outline-color']	=	null;
 			}
+		}
+	}
+
+	// 2.6.1
+	if		(version_compare($this->options['plugin-version'],	'2.6.1', '<' ) ) {
+		if	(isset($this->options['flg-ssl'] ) ) {
+			$this->options['flg-sslverify']	=	$this->options['flg-ssl'] ? 0 : 1 ;
+			unset($this->options['flg-ssl'] );
+		}
+		if	(isset($this->options['radius'] ) ) {
+			$this->options['in-border-radius']	=	$this->options['radius'];
+			$this->options['ex-border-radius']	=	$this->options['radius'];
+			$this->options['th-border-radius']	=	$this->options['radius'];
+			unset($this->options['radius'] );
+		}
+		if	(isset($this->options['border'] ) ) {
+			$this->options['in-border-enabled']	=	$this->options['border'];
+			$this->options['ex-border-enabled']	=	$this->options['border'];
+			$this->options['th-border-enabled']	=	$this->options['border'];
+			$this->options['in-border-style']	=	$this->options['border-style'];
+			$this->options['ex-border-style']	=	$this->options['border-style'];
+			$this->options['th-border-style']	=	$this->options['border-style'];
+			$this->options['in-border-width']	=	$this->options['border-width'];
+			$this->options['ex-border-width']	=	$this->options['border-width'];
+			$this->options['th-border-width']	=	$this->options['border-width'];
+			unset($this->options['border'] );
+			unset($this->options['border-style'] );
+			unset($this->options['border-width'] );
 		}
 	}
 

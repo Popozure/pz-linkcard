@@ -24,9 +24,9 @@
 			<td>
 				<?php pz_Option($prop, 'display-date', __('For internal links, display date instead of URL.', 'pz-linkcard' ), array(
 								''		=>		__('Off', 'pz-linkcard' ),
-								'1'		=>		__('Post date', 'pz-linkcard' ),
-								'2'		=>		__('Update date', 'pz-linkcard' ),
-								'3'		=>		__('Post date and Update date', 'pz-linkcard' ), ) ); ?>
+								'1'		=>		__('Post Date', 'pz-linkcard' ),
+								'2'		=>		__('Update Date', 'pz-linkcard' ),
+								'3'		=>		__('Post Date and Update Date', 'pz-linkcard' ), ) ); ?>
 			</td>
 		</tr>
 		<tr>

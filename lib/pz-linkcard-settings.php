@@ -540,6 +540,7 @@ echo	$html_style;
 			<div class="pz-indicator"><div class="pz-button-top" title="<?php esc_attr_e('Scroll to the top', 'pz-linkcard' ); ?>"><?php echo wp_kses_post(__('^<br>Top', 'pz-linkcard' ) ); ?></div><div class="pz-tab-name">&nbsp;</div></div>
 		</form>
 		</article>
+		<?php require_once dirname(__DIR__).'/includes/pz-color-picker.php'; ?>
 </div>
 <?php
 

@@ -36,7 +36,7 @@
 			// リンク先を取得
 			if (isset($data ) && isset($data->url ) ) {
 				$before	=	$this->pz_GetCache( array( 'url' => $data->url ) );
-				$after	=	$this->pz_GetCURL( $before );
+				$after	=	$this->pz_GetRemote( $before );
 				if	($before['title']   == $after['title'] ) {
 					$before['mod_title']	=	false;
 				} else {

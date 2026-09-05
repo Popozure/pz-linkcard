@@ -1,20 +1,13 @@
-document.addEventListener("DOMContentLoaded", () => {
+﻿document.addEventListener("DOMContentLoaded", () => {
 
 	const dashboard = document.querySelector(".pz-dashboard");
     if (!dashboard) return;
 
-	// 処理中オーバーレイを非表示
+	// 蜃ｦ逅・ｸｭ繧ｪ繝ｼ繝舌・繝ｬ繧､繧帝撼陦ｨ遉ｺ
     document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
     document.querySelector("#pz-overlay-proc")?.style.setProperty("display", "none");
 
-	// WordPress 標準のカラーピッカー (wpColorPicker) は jQuery 依存なので注意！
-    document.querySelectorAll(".pz-wp-color-picker").forEach(el => {
-        if (typeof jQuery !== "undefined" && typeof jQuery(el).wpColorPicker === "function") {
-            jQuery(el).wpColorPicker();
-        }
-    });
-
-	// スクロール位置の調整
+	// 繧ｹ繧ｯ繝ｭ繝ｼ繝ｫ菴咲ｽｮ縺ｮ隱ｿ謨ｴ
     const scrollNow = document.querySelector("input[name='scroll-now']");
     const cacheEditor = document.querySelector(".pz-man-cache-editor");
     if (scrollNow && !cacheEditor) window.scrollTo(0, scrollNow.value);
@@ -25,30 +18,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
         switchEnabled();
 
-        // 一番上に行くボタン
+        // 荳逡ｪ荳翫↓陦後￥繝懊ち繝ｳ
         document.querySelectorAll(".pz-button-top").forEach(btn =>
             btn.addEventListener("click", buttonTopClick)
         );
         window.addEventListener("scroll", topButtonScroll);
         topButtonScroll();
 
-        // ショートコードをコピー
+        // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨ｒ繧ｳ繝斐・
         document.querySelectorAll(".pz-shortcode-1").forEach(el =>
             el.addEventListener("keyup", copyShortcode)
         );
 
-        // ショートコードの入力チェック
+        // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨・蜈･蜉帙メ繧ｧ繝・け
         ["code1","code2","code3","code4"].forEach(code => {
             const el = document.querySelector(`input[name="properties[${code}]"]`);
             if (el) el.addEventListener("keydown", checkShortcodeKey);
         });
 
-        // すべてのWP-Cronスケジュールを表示
+        // 縺吶∋縺ｦ縺ｮWP-Cron繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｫ繧定｡ｨ遉ｺ
         document.querySelectorAll(".pz-cron-all").forEach(el =>
             el.addEventListener("change", showAllCron)
         );
 
-        // submit時にスクロール位置保存
+        // Admin setting handler
         document.querySelectorAll("form").forEach(form => {
             form.addEventListener("submit", e => {
                 const submitter = e.submitter;
@@ -73,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // クリックで全選択
+        // Admin setting handler
         document.querySelectorAll(".pz-click-all-select").forEach(el =>
             el.addEventListener("click", allSelect)
         );
@@ -85,13 +78,31 @@ document.addEventListener("DOMContentLoaded", () => {
         initSettingsTabs();
         initCachemanSearch();
         initScreenOptions();
-
-        // readonly チェックボックス無効化
+        // readonly checkbox guard
         document.querySelectorAll("input[type=checkbox]").forEach(el =>
             el.addEventListener("click", checkboxReadonly)
         );
+        document.querySelectorAll("input[type=checkbox][data-pz-locked-checked='1']").forEach(el => {
+            el.checked = true;
+            el.addEventListener("change", keepCheckboxChecked);
+        });
+        document.querySelectorAll("input[type=checkbox][data-pz-locked-checkbox='1']").forEach(el => {
+            el.dataset.pzLockedState = el.checked ? "1" : "0";
+            el.addEventListener("change", restoreLockedCheckbox);
+        });
 
-        // 自動変換チェック
+        document.querySelectorAll(".pz-card-range").forEach(el =>
+            el.addEventListener("input", syncCardRange)
+        );
+        document.querySelectorAll(".pz-card-range").forEach(el =>
+            el.addEventListener("keydown", resetCardRange)
+        );
+        document.querySelectorAll(".pz-card-prop-number input[type=number]").forEach(el =>
+            el.addEventListener("input", syncCardNumber)
+        );
+        updateCardRangeFills();
+
+        // Auto switch checks
         document.querySelectorAll(".pz-sync-check,.pz-show,input[name='properties[centering]'],select[name='properties[thumbnail-position]'],select[name='properties[info-position]']").forEach(el =>
             el.addEventListener("change", switchEnabled)
         );
@@ -100,22 +111,22 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelector("#pz-overlay-proc")?.classList.add("hidden");
     });
 
-    // ----------- 関数群 -----------
+    // ----------- 髢｢謨ｰ鄒､ -----------
 
-    // 一番上へ行く
+    // 荳逡ｪ荳翫∈陦後￥
     function buttonTopClick(e) {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    // TOPボタンの表示切替
+    // TOP繝懊ち繝ｳ縺ｮ陦ｨ遉ｺ蛻・崛
     function topButtonScroll() {
         const indicator = document.querySelector(".pz-indicator");
         if (!indicator) return;
         indicator.classList.toggle("pz-indicator-active", window.scrollY > 80);
     }
 
-    // 項目の有効化／無効化
+    // Admin setting helper
     function switchEnabled() {
         const setDisabled = (selector, disabled, readonly=false, color=null) => {
             document.querySelectorAll(selector).forEach(el => {
@@ -128,25 +139,25 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         };
 
-        // カスタムフィールド
+        // Admin setting value
         const inGet = document.querySelector("select[name='properties[in-get]']")?.value;
         setDisabled("input[name='properties[in-field-title]']", inGet != "3");
         setDisabled("input[name='properties[in-field-excerpt]']", inGet != "3");
 
-        // サムネイル（外部）
+        // Admin setting value
         const exThumb = document.querySelector("select[name='properties[ex-thumbnail]']")?.value;
         setDisabled("select[name='properties[ex-thumbnail-size]']", !(exThumb == "1" || exThumb == "13"));
 
-        // サムネイル（内部）
+        // Admin setting value
         const inThumb = document.querySelector("select[name='properties[in-thumbnail]']")?.value;
         setDisabled("select[name='properties[in-thumbnail-size]']", !(inThumb == "1" || inThumb == "13"));
 
-        // ユーザーエージェント
+        // Admin setting value
         const flgAgentEl = document.querySelector("input[name='properties[flg-agent]'][type=checkbox]");
 		const flgAgent = flgAgentEl ? flgAgentEl.checked : false;
 		setDisabled("input[name='properties[user-agent]']", !flgAgent, !flgAgent );
 
-		// 自動変換関連
+		// 閾ｪ蜍募､画鋤髢｢騾｣
 		const autoAtagEl = document.querySelector("input[name='properties[auto-atag]'][type=checkbox]");
 		const autoUrlEl  = document.querySelector("input[name='properties[auto-url]'][type=checkbox]");
 		const autoAtag = autoAtagEl ? autoAtagEl.checked : false;
@@ -156,13 +167,13 @@ document.addEventListener("DOMContentLoaded", () => {
 		setDisabled("input[name='properties[flg-do-shortcode]'][type=checkbox]", false, !enabled, enabled ? "#444" : "#ddd");
 		setDisabled("textarea[name='properties[exclude-url]']", false, !enabled, enabled ? "#444" : "#888");
 
-		// 中央寄せ時は外側の左右余白を固定
+		// Admin setting value
 		const centeringEl = document.querySelector("input[name='properties[centering]'][type=checkbox]");
 		const centering = centeringEl ? centeringEl.checked : false;
 		setDisabled("select[name='properties[margin-left]']", centering);
 		setDisabled("select[name='properties[margin-right]']", centering);
 
-		// 配置なしの場合は関連する詳細設定を固定
+		// Admin setting value
 		const thumbnailPositionEl = document.querySelector("select[name='properties[thumbnail-position]']");
 		const thumbnailDisabled = thumbnailPositionEl ? thumbnailPositionEl.value === "0" : false;
 		setDisabled("input[name='properties[thumbnail-width]']", thumbnailDisabled);
@@ -173,7 +184,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		setDisabled("input[name='properties[use-sitename]'][type=checkbox]", false, siteNameReadonly, siteNameReadonly ? "#ddd" : "#444");
 	}
 
-    // ショートコードをコピー
+    // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨ｒ繧ｳ繝斐・
     function copyShortcode(e) {
         const val = e.target.value;
         document.querySelectorAll(".pz-shortcode-copy").forEach(el => {
@@ -184,14 +195,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ショートコード入力チェック
+    // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝牙・蜉帙メ繧ｧ繝・け
     function checkShortcodeKey(e) {
         if (e.key === " ") {
             e.preventDefault();
         }
     }
 
-    // WP-Cron 一覧の表示切替
+    // WP-Cron 荳隕ｧ縺ｮ陦ｨ遉ｺ蛻・崛
     function showAllCron(e) {
         document.querySelectorAll(".pz-cron-list-other").forEach(el => {
             if (e.target.checked) {
@@ -206,7 +217,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // カラーピッカーとテキスト同期
+    // Admin setting helper
     function syncColor(e) {
         const name = e.target.getAttribute("name");
         const value = e.target.value;
@@ -215,11 +226,79 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // readonly チェックボックス無効化
+    function syncCardRange(e) {
+        const targetName = e.target.dataset.target;
+        const target = targetName ? document.querySelector(`input[name="${targetName}"]`) : null;
+        if (target) target.value = e.target.value;
+        updateCardRangeFill(e.target);
+    }
+
+    function syncCardNumber(e) {
+        const name = e.target.getAttribute("name");
+        const range = name ? document.querySelector(`.pz-card-range[data-target="${name}"]`) : null;
+        if (range) {
+            range.value = e.target.value;
+            updateCardRangeFill(range);
+        }
+    }
+
+    function resetCardRange(e) {
+        if (e.key !== "Escape") return;
+
+        const range = e.target;
+        const min = Number(range.min || 0);
+        const resetValue = range.hasAttribute("data-center") ? Number(range.dataset.center) : (min < 0 ? 0 : min);
+        e.preventDefault();
+        range.value = resetValue;
+        range.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    function updateCardRangeFills() {
+        document.querySelectorAll(".pz-card-range").forEach(updateCardRangeFill);
+    }
+
+    function updateCardRangeFill(range) {
+        const min = Number(range.min || 0);
+        const max = Number(range.max || 100);
+        const value = Number(range.value || 0);
+        if (max <= min) return;
+
+        const pct = Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100));
+        if (range.hasAttribute("data-center") || min < 0) {
+            const centerValue = range.hasAttribute("data-center") ? Number(range.dataset.center) : 0;
+            const center = Math.min(100, Math.max(0, ((centerValue - min) / (max - min)) * 100));
+            const start = Math.min(center, pct);
+            const end = Math.max(center, pct);
+            const fill = value < centerValue ? "#d64b4b" : "#0073aa";
+            range.style.setProperty("--pz-range-bg", `linear-gradient(to right, #d7d7d7 0%, #d7d7d7 ${start}%, ${fill} ${start}%, ${fill} ${end}%, #d7d7d7 ${end}%, #d7d7d7 100%)`);
+            return;
+        }
+        range.style.setProperty("--pz-range-bg", `linear-gradient(to right, #0073aa 0%, #0073aa ${pct}%, #d7d7d7 ${pct}%, #d7d7d7 100%)`);
+    }
+
+    // Admin setting helper
     function checkboxReadonly(e) {
+        if (e.target.dataset.pzLockedChecked === "1") {
+            e.preventDefault();
+            e.target.checked = true;
+            return;
+        }
+        if (e.target.dataset.pzLockedCheckbox === "1") {
+            e.preventDefault();
+            restoreLockedCheckbox(e);
+            return;
+        }
         if (e.target.readOnly) {
             e.preventDefault();
         }
+    }
+
+    function keepCheckboxChecked(e) {
+        e.target.checked = true;
+    }
+
+    function restoreLockedCheckbox(e) {
+        e.target.checked = e.target.dataset.pzLockedState === "1";
     }
 
     function errorModeNoticeDismiss(e) {
@@ -375,7 +454,62 @@ document.addEventListener("DOMContentLoaded", () => {
         const rightBtn = wrapper.querySelector(".pz-tab-right");
         const tabNameEl = document.querySelector(".pz-tab-name");
         const tabNow = document.querySelector('input[name="tab-now"]');
+        const dashboard = wrapper.closest(".pz-dashboard");
+        const submitFloat = dashboard?.querySelector(".pz-submit-float");
+        const tabbarSpacer = document.createElement("div");
         let lastWheelAt = 0;
+        let submitGap = null;
+
+        tabbarSpacer.className = "pz-tabbar-spacer";
+        tabbarSpacer.style.height = "0";
+        wrapper.parentNode.insertBefore(tabbarSpacer, wrapper);
+
+        const getFixedTop = () => {
+            const adminBar = document.querySelector("#wpadminbar");
+            const adminBarBottom = adminBar ? Math.max(0, adminBar.getBoundingClientRect().bottom) : 0;
+            const viewportTop = window.visualViewport ? Math.max(0, window.visualViewport.offsetTop) : 0;
+            return Math.max(adminBarBottom, viewportTop);
+        };
+
+        const measureSubmitGap = () => {
+            const tabRect = wrapper.getBoundingClientRect();
+            const submitRect = submitFloat?.getBoundingClientRect();
+            if (submitRect && !wrapper.classList.contains("pz-tabbar-fixed")) {
+                submitGap = Math.max(0, Math.round(submitRect.top - tabRect.bottom));
+            }
+        };
+
+        const syncFixedTabbar = () => {
+            const fixedTop = getFixedTop();
+            const shouldFix = tabbarSpacer.getBoundingClientRect().top <= fixedTop;
+
+            if (shouldFix) {
+                const spacerRect = tabbarSpacer.getBoundingClientRect();
+                const fixedLeft = Math.max(0, spacerRect.left);
+                const fixedWidth = Math.min(spacerRect.width, document.documentElement.clientWidth - fixedLeft);
+                tabbarSpacer.style.height = `${wrapper.offsetHeight}px`;
+                wrapper.classList.add("pz-tabbar-fixed");
+                wrapper.style.top = `${fixedTop}px`;
+                wrapper.style.setProperty("--pz-tabbar-fixed-top", `${fixedTop}px`);
+                wrapper.style.left = `${fixedLeft}px`;
+                wrapper.style.width = `${fixedWidth}px`;
+                if (submitFloat) {
+                    if (submitGap === null) submitGap = 12;
+                    submitFloat.style.setProperty("--pz-submit-sticky-top", `${fixedTop + wrapper.offsetHeight + submitGap}px`);
+                }
+            } else {
+                measureSubmitGap();
+                wrapper.classList.remove("pz-tabbar-fixed");
+                wrapper.style.top = "";
+                wrapper.style.removeProperty("--pz-tabbar-fixed-top");
+                wrapper.style.left = "";
+                wrapper.style.width = "";
+                tabbarSpacer.style.height = "0";
+                submitFloat?.style.removeProperty("--pz-submit-sticky-top");
+            }
+
+            updateButtons();
+        };
 
         const getTabName = tab => tab?.getAttribute("name") || tab?.hash?.replace("#", "") || "";
         const isVisibleTab = tab => {
@@ -459,6 +593,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         tabbar.addEventListener("wheel", e => {
+            if (!e.shiftKey) return;
+
             const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
             if (delta === 0) return;
 
@@ -466,7 +602,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const now = Date.now();
             if (now - lastWheelAt < 120) return;
             lastWheelAt = now;
-            moveTab(delta > 0 ? 1 : -1);
+            moveTab(delta > 0 ? 1 : -1, true);
         }, { passive: false });
 
         leftBtn?.addEventListener("click", () => {
@@ -477,15 +613,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         tabbar.addEventListener("scroll", updateButtons);
-        window.addEventListener("resize", updateButtons);
+        window.addEventListener("scroll", syncFixedTabbar);
+        window.addEventListener("resize", syncFixedTabbar);
+        window.visualViewport?.addEventListener("scroll", syncFixedTabbar);
+        window.visualViewport?.addEventListener("resize", syncFixedTabbar);
         if (window.ResizeObserver) {
-            new ResizeObserver(updateButtons).observe(tabbar);
+            new ResizeObserver(syncFixedTabbar).observe(tabbar);
+            new ResizeObserver(syncFixedTabbar).observe(wrapper);
         }
 
         const activeTab = tabbar.querySelector(".pz-tab-active") || getTabs()[0];
         if (tabNameEl && activeTab) tabNameEl.textContent = activeTab.textContent;
         adjustTabVisibility(activeTab);
-        updateButtons();
+        measureSubmitGap();
+        syncFixedTabbar();
     }
 
     function updateImagePreview(input, url) {
@@ -658,7 +799,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 全選択
+    // Admin setting helper
     function allSelect(e) {
         const el = e.target;
         if (el.tagName === "INPUT") {

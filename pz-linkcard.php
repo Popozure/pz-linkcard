@@ -56,11 +56,6 @@ class class_pz_linkcard {
 			'content-inset'			=>	0,
 			'shadow'				=>	0,
 			'shadow-inset'			=>	0,
-			'radius'				=>	'4px',
-			'radius'				=>	'4px',
-			'border'				=>	0,
-			'border-style'			=>	'solid',
-			'border-width'			=>	'1px',
 			'more-style'			=>	'SMP',
 			'hover'					=>	1,
 			'thumbnail-border'		=>	null,
@@ -158,9 +153,47 @@ class class_pz_linkcard {
 			'more-underline'		=>	0,
 			'more-hover'			=>	0,
 
+			'ex-transform-enabled'	=>	1,
+			'ex-transform-x'		=>	0,
+			'ex-transform-y'		=>	0,
+			'ex-transform-rotate'	=>	0,
+			'ex-transform-scale'	=>	100,
+			'ex-bg-enabled'			=>	1,
 			'ex-border-color'		=>	'#114488',
+			'ex-border-enabled'		=>	1,
+			'ex-border-style'		=>	'solid',
+			'ex-border-width'		=>	'1px',
+			'ex-border-radius'		=>	'4px',
+			'ex-shadow-enabled'		=>	0,
+			'ex-shadow-color'		=>	'#aaaacc',
+			'ex-shadow-x'			=>	8,
+			'ex-shadow-y'			=>	8,
+			'ex-shadow-blur'		=>	8,
+			'ex-shadow-spread'		=>	0,
+			'ex-shadow-inset'		=>	0,
+			'ex-transition'			=>	0,
 			'ex-bg-color'			=>	'#ddeeff',
 			'ex-hover-bg-color'		=>	'',
+			'ex-hover-transform-enabled'	=>	1,
+			'ex-hover-transform-x'	=>	0,
+			'ex-hover-transform-y'	=>	0,
+			'ex-hover-transform-rotate'	=>	0,
+			'ex-hover-transform-scale'	=>	100,
+			'ex-hover-bg-enabled'	=>	0,
+			'ex-hover-image'			=>	null,
+			'ex-hover-border-color'	=>	'',
+			'ex-hover-border-enabled'	=>	0,
+			'ex-hover-border-style'	=>	'solid',
+			'ex-hover-border-width'	=>	'1px',
+			'ex-hover-border-radius'	=>	'4px',
+			'ex-hover-shadow-enabled'	=>	0,
+			'ex-hover-shadow-color'	=>	'#aaaacc',
+			'ex-hover-shadow-x'		=>	8,
+			'ex-hover-shadow-y'		=>	8,
+			'ex-hover-shadow-blur'	=>	8,
+			'ex-hover-shadow-spread'	=>	0,
+			'ex-hover-shadow-inset'	=>	0,
+			'ex-hover-transition'	=>	0,
 			'ex-image'				=>	null,
 			'ex-heading-text'		=>	null,
 			'ex-more-text'			=>	null,
@@ -173,9 +206,47 @@ class class_pz_linkcard {
 			'ex-target'				=>	2,
 			'ex-get'				=>	2,
 
+			'in-transform-enabled'	=>	1,
+			'in-transform-x'		=>	0,
+			'in-transform-y'		=>	0,
+			'in-transform-rotate'	=>	0,
+			'in-transform-scale'	=>	100,
+			'in-bg-enabled'			=>	1,
 			'in-border-color'		=>	'#888888',
+			'in-border-enabled'		=>	1,
+			'in-border-style'		=>	'solid',
+			'in-border-width'		=>	'1px',
+			'in-border-radius'		=>	'4px',
+			'in-shadow-enabled'		=>	0,
+			'in-shadow-color'		=>	'#aaaacc',
+			'in-shadow-x'			=>	8,
+			'in-shadow-y'			=>	8,
+			'in-shadow-blur'		=>	8,
+			'in-shadow-spread'		=>	0,
+			'in-shadow-inset'		=>	0,
+			'in-transition'			=>	0,
 			'in-bg-color'			=>	'#f8f8f8',
 			'in-hover-bg-color'		=>	'',
+			'in-hover-transform-enabled'	=>	1,
+			'in-hover-transform-x'	=>	0,
+			'in-hover-transform-y'	=>	0,
+			'in-hover-transform-rotate'	=>	0,
+			'in-hover-transform-scale'	=>	100,
+			'in-hover-bg-enabled'	=>	0,
+			'in-hover-image'			=>	null,
+			'in-hover-border-color'	=>	'',
+			'in-hover-border-enabled'	=>	0,
+			'in-hover-border-style'	=>	'solid',
+			'in-hover-border-width'	=>	'1px',
+			'in-hover-border-radius'	=>	'4px',
+			'in-hover-shadow-enabled'	=>	0,
+			'in-hover-shadow-color'	=>	'#aaaacc',
+			'in-hover-shadow-x'		=>	8,
+			'in-hover-shadow-y'		=>	8,
+			'in-hover-shadow-blur'	=>	8,
+			'in-hover-shadow-spread'	=>	0,
+			'in-hover-shadow-inset'	=>	0,
+			'in-hover-transition'	=>	0,
 			'in-image'				=>	null,
 			'in-heading-text'		=>	null,
 			'in-more-text'			=>	null,
@@ -191,8 +262,47 @@ class class_pz_linkcard {
 			'in-field-excerpt'		=>	null,
 			'in-get-url'			=>	0,
 
+			'th-transform-enabled'	=>	1,
+			'th-transform-x'		=>	0,
+			'th-transform-y'		=>	0,
+			'th-transform-rotate'	=>	0,
+			'th-transform-scale'	=>	100,
+			'th-bg-enabled'			=>	1,
 			'th-border-color'		=>	'#666666',
+			'th-border-enabled'		=>	1,
+			'th-border-style'		=>	'solid',
+			'th-border-width'		=>	'1px',
+			'th-border-radius'		=>	'4px',
+			'th-shadow-enabled'		=>	0,
+			'th-shadow-color'		=>	'#aaaacc',
+			'th-shadow-x'			=>	8,
+			'th-shadow-y'			=>	8,
+			'th-shadow-blur'		=>	8,
+			'th-shadow-spread'		=>	0,
+			'th-shadow-inset'		=>	0,
+			'th-transition'			=>	0,
 			'th-bg-color'			=>	'#f4f4f4',
+			'th-hover-bg-color'		=>	'',
+			'th-hover-transform-enabled'	=>	1,
+			'th-hover-transform-x'	=>	0,
+			'th-hover-transform-y'	=>	0,
+			'th-hover-transform-rotate'	=>	0,
+			'th-hover-transform-scale'	=>	100,
+			'th-hover-bg-enabled'	=>	0,
+			'th-hover-image'			=>	null,
+			'th-hover-border-color'	=>	'',
+			'th-hover-border-enabled'	=>	0,
+			'th-hover-border-style'	=>	'solid',
+			'th-hover-border-width'	=>	'1px',
+			'th-hover-border-radius'	=>	'4px',
+			'th-hover-shadow-enabled'	=>	0,
+			'th-hover-shadow-color'	=>	'#aaaacc',
+			'th-hover-shadow-x'		=>	8,
+			'th-hover-shadow-y'		=>	8,
+			'th-hover-shadow-blur'	=>	8,
+			'th-hover-shadow-spread'	=>	0,
+			'th-hover-shadow-inset'	=>	0,
+			'th-hover-transition'	=>	0,
 			'th-image'				=>	null,
 			'th-heading-text'		=>	null,
 			'th-more-text'			=>	null,
@@ -203,7 +313,7 @@ class class_pz_linkcard {
 			'flg-referer'			=>	1,
 			'flg-relative-url'		=>	1,
 			'flg-unlink'			=>	1,
-			'flg-ssl'				=>	0,
+			'flg-sslverify'			=>	1,
 			'flg-redir'				=>	1,
 			'flg-agent'				=>	1,
 			'user-agent'			=>	null,
@@ -329,8 +439,10 @@ class class_pz_linkcard {
 		// 定数
 		define('PZLKC_PZLKC_URL_ADMIN_JS',		plugins_url('js/admin-settings.js', __FILE__ ) );	// 管理画面のJSのURL（設定画面）
 		define('PZLKC_PZLKC_URL_ADMIN_TAB',		plugins_url('js/admin-tabs.js', __FILE__ ) );		// 管理画面のJSのURL（設定画面タブ）
+		define('PZLKC_PZLKC_URL_COLOR_PICKER_JS',	plugins_url('js/color-picker.js', __FILE__ ) );	// 管理画面のJSのURL（カラーピッカー）
 		define('PZLKC_JS_COUNT',		plugins_url('js/click-count.js', __FILE__ ) );				// 管理画面のJSのURL（クリックカウント）
 		define('PZLKC_PZLKC_URL_ADMIN_CSS',		plugins_url('css/admin.css', __FILE__ ) );			// 管理画面のCSSのURL
+		define('PZLKC_PZLKC_URL_COLOR_PICKER_CSS',	plugins_url('css/color-picker.css', __FILE__ ) );	// 管理画面のCSSのURL（カラーピッカー）
 
 		define('PZLKC_DIR_UPLOAD',		wp_upload_dir()['basedir']. '/'.self::PLUGIN_SLUG.'/' );	// アップロード ディレクトリのパス
 		define('PZLKC_URL_UPLOAD',		preg_replace('/(http|https):(\/\/.*)/', '$2', wp_upload_dir()['baseurl'] ).'/'.self::PLUGIN_SLUG.'/' );		// アップロード ディレクトリのURL
@@ -806,7 +918,7 @@ class class_pz_linkcard {
 
 			// キャッシュが無い、もしくは強制取得
 			if	((!$data_id ) || ($this->options['debug-mode']	==	true  && $this->options['debug-nocache']	==	true ) || (isset($atts['force'] ) && $atts['force'] == true ) ) {
-				$result		=	$this->pz_GetCURL($data );			// cURLで記事内容を取得
+				$result		=	$this->pz_GetRemote($data );			// 記事内容を強制取得
 				if	(isset($result ) && is_array($result ) && isset($result['url'] ) ) {
 					$data	=	$result;
 					$result	=	$this->pz_SetCache($data );
@@ -1880,7 +1992,7 @@ class class_pz_linkcard {
 						}
 					} else {
 						if	($this->options['in-get-url'] ) {
-							$result			=	$this->Pz_GetCURL($data );		// 外部サイトとして読み込み
+							$result			=	$this->pz_GetRemote($data );		// 外部サイトとして読み込み
 							if	(isset($result ) && is_array($result ) && isset($result['url'] ) ) {
 								$data		=	$result;
 								$result		=	$this->pz_SetCache($data );
@@ -1953,7 +2065,7 @@ class class_pz_linkcard {
 	}
 
 	// 外部リンク・記事情報取得
-	private	function	pz_GetCURL($data ) {
+	private	function	pz_GetRemote($data ) {
 		global	$wp_version;
 
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__, '$data='.print_r($data, true ) ); }
@@ -1970,7 +2082,7 @@ class class_pz_linkcard {
 		$rget_args					=	[];
 		$rget_args['user-agent']	=	$this->options['flg-agent']		?	$this->options['user-agent']	// ユーザーエージェントにPz-LinkCard-Crawlerを使う
 																		:	'WordPress/'.$wp_version.'; '.get_bloginfo( 'url' );
-		$rget_args['sslverify']		=	$this->options['flg-ssl']		?	false	:	true ;
+		$rget_args['sslverify']		=	$this->options['flg-sslverify']		?	true	:	false ;
 
 		// URLエンコード
 		$url			=	$this->pz_EncodeURL($url ,true );
@@ -2718,8 +2830,16 @@ class class_pz_linkcard {
 		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE ) {
 			wp_enqueue_media();
 		}
-		wp_enqueue_script	('wp-color-picker' );		// WordPressカラーピッカースクリプト
-		wp_enqueue_style	('wp-color-picker' );		// WordPressカラーピッカースタイルシート
+		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );
+			wp_localize_script	(self::PLUGIN_SLUG.'-color-picker',	'pz_lkc_color_picker', array(
+				'labels'	=>	array(
+					'clear'			=>	__('Clear', 'pz-linkcard' ),
+					'selectColor'	=>	__('Select color', 'pz-linkcard' ),
+				),
+			) );
+			wp_enqueue_style	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_CSS,	array(),	PZLKC_PLUGIN_VERSION );
+		}
 	}
 
 	// Pz-LinkCard挿入ダイアログを表示する投稿編集画面か

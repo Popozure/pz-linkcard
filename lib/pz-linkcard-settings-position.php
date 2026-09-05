@@ -3,34 +3,6 @@
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 	<h2><?php echo	__('Position Settings', 'pz-linkcard' ).$help_open.'position'.$help_close; ?></h2>
 
-	<table class="form-table">
-		<tr>
-			<th scope="row"><?php esc_html_e('Link the Entire Card', 'pz-linkcard' ); ?></th>
-			<td>
-				<?php
-					pz_Checkbox($prop, 'link-all', __('Wrap the entire card in a link.', 'pz-linkcard' ) );
-				?>
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Wrapper Tag', 'pz-linkcard' ); ?></th>
-			<td>
-				<?php
-					pz_Select($prop, 'enclose-tag', LIST_ENCLOSE_TAG );
-				?>
-			</td>
-		</tr>
-		<tr><th scope="row"><?php esc_html_e('Resize', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[thumbnail-resize]" value="" />
-					<input type="checkbox" name="properties[thumbnail-resize]" value="1" <?php checked($prop['thumbnail-resize'] ); ?> />
-					<?php esc_html_e('Adjust the thumbnail and text size according to the width.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-	</table>
-
 	<table class="pz-position-margin">
 		<tr>
 			<td colspan="3">
@@ -52,7 +24,7 @@
 					<tr>
 						<td colspan="5">
 							<?php
-								echo	__('Margin top', 'pz-linkcard' ).'<br>';
+								echo	__('Padding top', 'pz-linkcard' ).'<br>';
 								pz_Select($prop, 'card-top', LIST_MARGIN );
 							?>
 						</td>
@@ -84,7 +56,7 @@
 					<tr>
 						<td>
 							<?php
-								echo	__('Margin left', 'pz-linkcard' ).'<br>';
+								echo	__('Padding left', 'pz-linkcard' ).'<br>';
 								pz_Select($prop, 'card-left', LIST_MARGIN );
 							?>
 						</td>
@@ -151,7 +123,7 @@
 						</td>
 						<td>
 							<?php
-								echo	__('Margin right', 'pz-linkcard' ).'<br>';
+								echo	__('Padding right', 'pz-linkcard' ).'<br>';
 								pz_Select($prop, 'card-right', LIST_MARGIN );
 							?>
 						</td>
@@ -161,7 +133,7 @@
 						</td>
 						<td colspan="2">
 							<?php
-								echo	__('Margin bottom', 'pz-linkcard' ).'<br>';
+								echo	__('Padding bottom', 'pz-linkcard' ).'<br>';
 								pz_Select($prop, 'card-bottom', LIST_MARGIN );
 							?>
 						</td>
@@ -188,6 +160,44 @@
 				?>
 			</td>
 			<td>
+			</td>
+		</tr>
+	</table>
+	<table class="form-table">
+		<tr>
+			<th scope="row"><?php esc_html_e('Wrapper Tag', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php
+					pz_Select($prop, 'enclose-tag', LIST_ENCLOSE_TAG );
+				?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Link the Entire Card', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php
+					pz_Checkbox($prop, 'link-all', __('Wrap the entire card in a link.', 'pz-linkcard' ) );
+				?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Text Selection', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-unti-select]" value="" />
+					<input type="checkbox" name="properties[flg-unti-select]" value="1" <?php checked($this->options['flg-unti-select'] ); ?> />
+					<?php esc_html_e('Prohibit the selection of text in the Link-Card.', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Resize', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[thumbnail-resize]" value="" />
+					<input type="checkbox" name="properties[thumbnail-resize]" value="1" <?php checked($prop['thumbnail-resize'] ); ?> />
+					<?php esc_html_e('Adjust the thumbnail and text size according to the width.', 'pz-linkcard' ); ?>
+				</label>
 			</td>
 		</tr>
 	</table>

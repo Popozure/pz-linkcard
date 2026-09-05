@@ -314,7 +314,7 @@
 				$data				=	$this->pz_GetCache(array('id' => $data_id ) );
 				if	(isset($data ) && is_array($data ) ) {
 					$data						=	$this->pz_GetCache($data );
-					$after						=	$this->pz_GetCURL($data );
+					$after						=	$this->pz_GetRemote($data );
 					$data['alive_result']		=	$after['update_result'];
 					$data['alive_time']			=	$this->now;
 					$data['alive_nexttime']		=	$this->now + WEEK_IN_SECONDS * 4;

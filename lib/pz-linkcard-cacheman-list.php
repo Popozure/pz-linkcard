@@ -389,13 +389,13 @@
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'use_post_id1';
-	$item_name	=	__('Post ID', 'pz-linkcard' );
+	$item_name	=	__('Post<br>ID', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('post_id');
 	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
 	$item		=	'click_count';
-	$item_name	=	__('Click<br/>Count', 'pz-linkcard' );
+	$item_name	=	__('Click<br>Count', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('click_count');
 	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';

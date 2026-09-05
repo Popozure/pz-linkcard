@@ -96,7 +96,7 @@
 	$cacheman_image_preview = function($key, $class = '') use ($cacheman_get_value) {
 		$image_url			=	$cacheman_get_value($key );
 		$image_cache_url	=	$image_url ? $this->pz_GetImage($image_url ) : '';
-		$image_preview_url	=	$image_cache_url ?: $image_url;
+		$image_preview_url	=	$image_cache_url;
 		if	(!$image_preview_url ) {
 			return '<div class="pz-man-cache-image-preview pz-man-cache-image-empty">-</div>';
 		}
