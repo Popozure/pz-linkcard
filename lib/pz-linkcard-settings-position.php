@@ -76,8 +76,8 @@
 											pz_Select($prop,	'thumbnail-position',
 												array(
 													'0'	=>		__('None',			'pz-linkcard' ),
-													'1'	=>		__('Right Side',	'pz-linkcard' ),
 													'2'	=>		__('Left Side',		'pz-linkcard' ),
+													'1'	=>		__('Right Side',	'pz-linkcard' ),
 													'3'	=>		__('Top Side',		'pz-linkcard' ),
 											) );
 										?>

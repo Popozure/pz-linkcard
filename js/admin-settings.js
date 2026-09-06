@@ -179,8 +179,8 @@
 		setDisabled("input[name='properties[thumbnail-height]']", thumbnailDisabled);
 
 		const infoPositionEl = document.querySelector("select[name='properties[info-position]']");
-		const siteNameReadonly = infoPositionEl ? infoPositionEl.value === "" : false;
-		setDisabled("input[name='properties[use-sitename]'][type=checkbox]", false, siteNameReadonly, siteNameReadonly ? "#ddd" : "#444");
+		const siteNameDisabled = infoPositionEl ? infoPositionEl.value === "" : false;
+		setDisabled("input[name='properties[flg-use-sitename]'][type=checkbox]", siteNameDisabled, false, siteNameDisabled ? "#ddd" : "#444");
 	}
 
     // ショートコード名をコピー

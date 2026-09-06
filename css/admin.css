@@ -1526,6 +1526,7 @@ a.pz-thx {
 	display: flex;
 	width: 100%;
 	min-width: 0;
+	padding-left: 8px;
 	overflow-x: auto;
 	overflow-y: hidden;
 	box-sizing: border-box;
@@ -2257,6 +2258,7 @@ a.pz-thx {
 	position: relative;
 	float: right;
 	margin: -10px;
+	font-size: 20px;
 }
 
 #pz-close:hover {
@@ -2265,8 +2267,16 @@ a.pz-thx {
 
 /* Visual Editor - Input URL Dialog - TextBox */
 #pz-content {
-	text-align: center;
+	text-align: left;
 	padding: 10px;
+}
+
+#pz-url {
+	min-height: 32px;
+}
+
+#pz-insert {
+	height: 32px;
 }
 
 /* Setting */

@@ -17,6 +17,11 @@
 				image: url + "/mce-button.png"
 			});
 			ed.addCommand(id, function() {
+				const insertButton = document.getElementById("pz-insert");
+				if (insertButton && tinymce.translate) {
+					const insertLabel = tinymce.translate("Insert Linkcard");
+					insertButton.value = insertLabel;
+				}
 				document.getElementById("pz-overlay").style.display = "block";
 				document.getElementById("pz-modal").style.display = "block";
 				document.getElementById("pz-url").value = "";

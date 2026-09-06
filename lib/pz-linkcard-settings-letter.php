@@ -11,7 +11,6 @@
 			<th><?php esc_html_e('Size',				'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Line Height',			'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Line Limit',			'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Length',				'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Bold',				'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Italic',				'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Underline',			'pz-linkcard' ); ?></th>
@@ -89,16 +88,6 @@
 				echo	'<input type="number"   name="properties['.$key.']" value="'.$value.'" class="pz-letter-box-r" min="0" max="99" />';
 			} else {
 				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="99" />';
-			}
-			echo	'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-length';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="number"   name="properties['.$key.']" value="'.$value.'" class="pz-letter-box-r" min="0" max="9999" />';
-			} else {
-				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="9999" />';
 			}
 			echo	'</td>';
 

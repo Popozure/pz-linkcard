@@ -100,10 +100,26 @@
 		}
 		return `[${shortcodeName} ${nextUrl}]`;
 	};
+	const getTextContent = (value) => {
+		if (value && typeof value.textContent === "string") {
+			const clone = value.cloneNode(true);
+			clone.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
+			return clone.textContent;
+		}
+		const text = String(value || "");
+		const doc = window.document;
+		const element = doc.createElement("div");
+		element.innerHTML = text;
+		element.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
+		return element.textContent || text;
+	};
 	const parseShortcode = (text) => {
+		const shortcodeText = getTextContent(text)
+			.replace(/^\s*<p[^>]*>/i, "")
+			.replace(/<\/p>\s*$/i, "");
 		const shortcodeNames = shortcodes.map(escapeRegExp).join("|");
 		const pattern = new RegExp("^\\s*\\[(" + shortcodeNames + ")\\b([^\\]]*)(?:\\]\\s*)?$", "i");
-		const match = String(text || "").match(pattern);
+		const match = shortcodeText.match(pattern);
 		if (!match) return null;
 
 		const urlMatch = String(match[2] || "").match(/\burl\s*=\s*(?:"([^"]*)"?|'([^']*)'?|([^\s\]]+))/i);
@@ -112,10 +128,64 @@
 		return {
 			shortcode: match[1],
 			url: decodeShortcodeAttribute(urlMatch[1] ?? urlMatch[2] ?? urlMatch[3] ?? ""),
-			text: String(text || ""),
+			text: shortcodeText,
 		};
 	};
-	const isPzShortcodeBlock = (attributes) => parseShortcode(attributes?.text) !== null;
+	const parseShortcodes = (text) => {
+		const html = String(text || "");
+		const element = window.document.createElement("div");
+		element.innerHTML = html;
+		const nodes = element.children.length
+			? Array.from(element.children)
+			: getTextContent(html).split(/\r?\n/);
+
+		const parseShortcodesText = (value) => {
+			let source = getTextContent(value).trim();
+			if (!source) {
+				return [];
+			}
+
+			const shortcodeNames = shortcodes.map(escapeRegExp).join("|");
+			const pattern = new RegExp("\\[(" + shortcodeNames + ")\\b([^\\]]*)\\]", "gi");
+			const shortcodeItems = [];
+			let lastIndex = 0;
+			let match;
+
+			while ((match = pattern.exec(source)) !== null) {
+				if (source.slice(lastIndex, match.index).trim()) {
+					return [];
+				}
+
+				const parsed = parseShortcode(match[0]);
+				if (!parsed) {
+					return [];
+				}
+
+				shortcodeItems.push(parsed);
+				lastIndex = pattern.lastIndex;
+			}
+
+			if (source.slice(lastIndex).trim()) {
+				return [];
+			}
+
+			return shortcodeItems;
+		};
+
+		return nodes.reduce((items, node) => {
+			if (items === null) {
+				return null;
+			}
+
+			const parsedItems = parseShortcodesText(node);
+			if (parsedItems.length) {
+				return items.concat(parsedItems);
+			}
+
+			return getTextContent(node).trim() ? null : items;
+		}, []) || [];
+	};
+	const isPzShortcodeBlock = (attributes) => parseShortcodes(attributes?.text).length > 0;
 
 	const PzLinkCardEditor = ({ url, shortcodeName, commitUrl, clientId }) => {
 		const { removeBlock } = useDispatch(blockEditorStore);
@@ -219,11 +289,27 @@
 		createHigherOrderComponent(
 			(BlockEdit) =>
 				(props) => {
+					const { replaceBlocks } = useDispatch(blockEditorStore);
 					if (props.name !== "core/shortcode" || !isPzShortcodeBlock(props.attributes)) {
 						return el(BlockEdit, props);
 					}
 
-					const parsed = parseShortcode(props.attributes.text);
+					const parsedItems = parseShortcodes(props.attributes.text);
+
+					useEffect(() => {
+						if (parsedItems.length > 1) {
+							replaceBlocks(
+								[props.clientId],
+								parsedItems.map((item) => createBlock("core/shortcode", { text: item.text.trim() }))
+							);
+						}
+					}, [props.clientId, parsedItems.map((item) => item.text).join("\n"), replaceBlocks]);
+
+					if (parsedItems.length !== 1) {
+						return el(BlockEdit, props);
+					}
+
+					const parsed = parsedItems[0];
 					return el(PzLinkCardEditor, {
 						url: parsed.url,
 						shortcodeName: parsed.shortcode,
@@ -235,6 +321,37 @@
 					});
 				},
 			"withPzLinkCardShortcodeEdit"
+		)
+	);
+
+	addFilter(
+		"editor.BlockEdit",
+		"pz-linkcard/paragraph-to-shortcode",
+		createHigherOrderComponent(
+			(BlockEdit) =>
+				(props) => {
+					const content = props.name === "core/paragraph" ? props.attributes?.content : "";
+					const parsedItems = parseShortcodes(content);
+					const { replaceBlock } = useDispatch(blockEditorStore);
+					const { replaceBlocks } = useDispatch(blockEditorStore);
+
+					useEffect(() => {
+						if (props.name !== "core/paragraph" || !parsedItems.length) {
+							return;
+						}
+						if (parsedItems.length === 1) {
+							replaceBlock(props.clientId, createBlock("core/shortcode", { text: parsedItems[0].text.trim() }));
+							return;
+						}
+						replaceBlocks(
+							[props.clientId],
+							parsedItems.map((item) => createBlock("core/shortcode", { text: item.text.trim() }))
+						);
+					}, [props.clientId, props.name, parsedItems.map((item) => item.text).join("\n"), replaceBlock, replaceBlocks]);
+
+					return el(BlockEdit, props);
+				},
+			"withPzLinkCardParagraphToShortcode"
 		)
 	);
 
@@ -254,6 +371,31 @@
 				type: "string",
 				default: "",
 			},
+		},
+		transforms: {
+			from: [
+				...shortcodes.map((shortcode) => ({
+					type: "shortcode",
+					tag: shortcode,
+					attributes: {
+						url: {
+							type: "string",
+							shortcode: ({ named }) => named?.url || "",
+						},
+					},
+				})),
+				{
+					type: "raw",
+					selector: "p",
+					isMatch: (node) => parseShortcode(node),
+					transform: (node) => {
+						const parsed = parseShortcode(node);
+						return parsed
+							? createBlock("core/shortcode", { text: parsed.text.trim() })
+							: createBlock("core/paragraph", { content: getTextContent(node) });
+					},
+				},
+			],
 		},
 		edit: ({ attributes, clientId }) => {
 			const { replaceBlock } = useDispatch(blockEditorStore);

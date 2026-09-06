@@ -541,7 +541,10 @@
 			$content_height	=	$prop['content-height'];
 			if	($content_height	==	'' ) {
 			} else {
-				$content_height		=	intval($content_height );
+				$content_height	=	intval($content_height );
+				if	($prop['thumbnail-position']	==	'3' ) {
+					$content_height	=	$content_height + intval($thumbnail_height );
+				}
 				if	($content_height	>	0 ) {
 					$content_height	.=	'px';
 				}
@@ -586,9 +589,6 @@
 					break;
 				}
 			}
-
-
-
 
 			// リンク種別ごとの設定
 			$option_css		=	'';

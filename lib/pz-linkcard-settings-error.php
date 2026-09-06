@@ -1,4 +1,9 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php
+defined('ABSPATH' ) || wp_die;
+
+$error_post_id    = intval($prop['error-postid'] ?? 0);
+$error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
+?>
 <div class="pz-page<?php echo $pz_page_active('pz-error' ); ?>" id="pz-error">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 	<h2><?php echo	__('Error Settings', 'pz-linkcard' ).$help_open.'error'.$help_close; ?></h2>
@@ -13,9 +18,15 @@
 			</td>
 		</tr>
 		<tr>
+			<th scope="row">記事タイトル</th>
+			<td>
+				<span><?php echo $error_post_title ? esc_html($error_post_title ) : '-'; ?></span>
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><?php esc_html_e('Post URL', 'pz-linkcard' ); ?></th>
 			<td>
-				<a href="<?php echo esc_url($prop['error-url'] ); ?>#lkc-error" class="pz-error-url"><?php echo esc_html($prop['error-url'] ); ?></a>
+				<a href="<?php echo esc_url($prop['error-url'] ); ?>#lkc-error" class="pz-error-url"><?php echo esc_html($this->pz_DecodeURL($prop['error-url'] ) ); ?></a>
 			</td>
 		</tr>
 		<tr>

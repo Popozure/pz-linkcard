@@ -44,8 +44,7 @@
 			break;
 
 		case	'numeric':
-		case	'numeric_null':
-			if	($type === 'numeric_null' && ($temp_value === '' || $temp_value === null ) && $allow_null ) {
+			if	(($temp_value === '' || $temp_value === null ) && $allow_null ) {
 				$this->options[$key]	=	null;
 				break;
 			}
