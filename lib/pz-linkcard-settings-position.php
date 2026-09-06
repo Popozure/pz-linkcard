@@ -88,7 +88,7 @@
 										<?php esc_html_e('Width', 'pz-linkcard' );  ?>
 									</td>
 									<td>
-										<input name="properties[thumbnail-width]"	type="text" value="<?php echo esc_attr($prop['thumbnail-width'] ); ?>" size="2" />
+										<input name="properties[thumbnail-width]"	type="number" value="<?php echo esc_attr($prop['thumbnail-width'] ); ?>" size="2" min="0" step="1" /> px
 									</td>
 								</tr>
 								<tr>
@@ -96,7 +96,7 @@
 										<?php esc_html_e('Height', 'pz-linkcard' ); ?>
 									</td>
 									<td>
-										<input name="properties[thumbnail-height]"	type="text" value="<?php echo esc_attr($prop['thumbnail-height'] ); ?>" size="2" />
+										<input name="properties[thumbnail-height]"	type="number" value="<?php echo esc_attr($prop['thumbnail-height'] ); ?>" size="2" min="0" step="1" /> px
 									</td>
 								</tr>
 							</table>
@@ -108,7 +108,11 @@
 										<?php esc_html_e('Width', 'pz-linkcard' ); ?>
 									</td>
 									<td>
-										<input name="properties[width]"          type="text" value="<?php echo	esc_attr($prop['width'] ); ?>" size="3" />
+										<input name="properties[width]"			type="number" value="<?php echo	esc_attr($prop['width'] ); 		?>" size="3" min="0" step="1" />
+										<select name="properties[width-unit]">
+											<option value="px" <?php selected($prop['width-unit'], 'px' ); ?>>px</option>
+											<option value="%" <?php selected($prop['width-unit'], '%' ); ?>>%</option>
+										</select>
 									</td>
 								</tr>
 								<tr>
@@ -116,7 +120,7 @@
 										<?php esc_html_e('Height', 'pz-linkcard' ); ?>
 									</td>
 									<td style="margin: 0; padding: 0; text-align: left;">
-										<input name="properties[content-height]" type="text" value="<?php echo	esc_attr($prop['content-height'] ); ?>" size="3" />
+										<input name="properties[content-height]" type="number" value="<?php echo	esc_attr($prop['content-height'] ); ?>" size="3" min="0" step="1" /> px
 									</td>
 								</tr>
 							</table>
@@ -194,8 +198,8 @@
 			<th scope="row"><?php esc_html_e('Resize', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
-					<input type="hidden"   name="properties[thumbnail-resize]" value="" />
-					<input type="checkbox" name="properties[thumbnail-resize]" value="1" <?php checked($prop['flg-resize'] ); ?> />
+					<input type="hidden"   name="properties[flg-resize]" value="" />
+					<input type="checkbox" name="properties[flg-resize]" value="1" <?php checked($prop['flg-resize'] ); ?> />
 					<?php esc_html_e('Adjust the thumbnail and text size according to the width.', 'pz-linkcard' ); ?>
 				</label>
 			</td>

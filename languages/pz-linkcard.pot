@@ -19,6 +19,11 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
+#. Description of the plugin
+#: ../pz-linkcard.php
+msgid "Displays links in card format."
+msgstr ""
+
 #: ../lib/pz-linkcard-cacheman-edit.php:80
 msgid "Update"
 msgstr ""
@@ -60,8 +65,16 @@ msgstr ""
 msgid "Thumbnail Image"
 msgstr ""
 
+#: ../lib/pz-linkcard-cacheman-edit.php:226
+msgid "Clear thumbnail image"
+msgstr ""
+
 #: ../lib/pz-linkcard-cacheman-edit.php:236
 msgid "Favicon URL"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:237
+msgid "Clear site icon"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:247
@@ -953,6 +966,14 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:54
 msgid "Shadow"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php:90
+msgid "Transition Speed"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php:93
+msgid "Seconds"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:59 ../lib/pz-linkcard-settings-display.php:105

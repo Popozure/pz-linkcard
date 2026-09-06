@@ -126,7 +126,7 @@
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Post ID', 'pz-linkcard' ); ?></th>
-			<td><input name="properties[error-postid]" type="text" size="5" value="<?php echo esc_attr($prop['error-postid'] ); ?>" /></td>
+			<td><input name="properties[error-postid]" type="number" min="0" step="1" size="5" value="<?php echo esc_attr($prop['error-postid'] ); ?>" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Post URL', 'pz-linkcard' ); ?></th>

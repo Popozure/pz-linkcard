@@ -155,9 +155,9 @@
 
 	// 暗転（準備中）
 	if	($inhibit ) {
-		echo		'<div id="pz-overlay-proc" style="display: inline;"></div>';
+		echo		'<div id="pz-overlay-proc" style="display: flex;"><div class="pz-loader"></div></div>';
 	} else {
-		echo		'<div id="pz-overlay-proc" style="display: none;"></div>';
+		echo		'<div id="pz-overlay-proc" style="display: none;"><div class="pz-loader"></div></div>';
 	}
 	if	($scroll_now !== null && is_numeric($scroll_now ) && intval($scroll_now ) > 0 ) {
 		echo		'<script>(function(y){if("scrollRestoration" in history){history.scrollRestoration="manual";}var n=0;function r(){window.scrollTo(0,y);if(++n<30&&Math.abs(window.scrollY-y)>2){requestAnimationFrame(r);}}r();document.addEventListener("DOMContentLoaded",r,{once:true});window.addEventListener("load",r,{once:true});})('.intval($scroll_now ).');</script>';

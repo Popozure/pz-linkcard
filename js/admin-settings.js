@@ -2,12 +2,13 @@
 
 	const dashboard = document.querySelector(".pz-dashboard");
     if (!dashboard) return;
+    let processingOverlayTimer = null;
 
-	// 蜃ｦ逅・ｸｭ繧ｪ繝ｼ繝舌・繝ｬ繧､繧帝撼陦ｨ遉ｺ
+	// 処理中オーバーレイを非表示
     document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
     document.querySelector("#pz-overlay-proc")?.style.setProperty("display", "none");
 
-	// 繧ｹ繧ｯ繝ｭ繝ｼ繝ｫ菴咲ｽｮ縺ｮ隱ｿ謨ｴ
+	// スクロール位置を復元
     const scrollNow = document.querySelector("input[name='scroll-now']");
     const cacheEditor = document.querySelector(".pz-man-cache-editor");
     if (scrollNow && !cacheEditor) window.scrollTo(0, scrollNow.value);
@@ -18,25 +19,28 @@
 
         switchEnabled();
 
-        // 荳逡ｪ荳翫↓陦後￥繝懊ち繝ｳ
+        // ページ上部へ戻るボタン
         document.querySelectorAll(".pz-button-top").forEach(btn =>
             btn.addEventListener("click", buttonTopClick)
         );
         window.addEventListener("scroll", topButtonScroll);
         topButtonScroll();
 
-        // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨ｒ繧ｳ繝斐・
+        // ショートコード名をプレビューへ反映
         document.querySelectorAll(".pz-shortcode-1").forEach(el =>
             el.addEventListener("keyup", copyShortcode)
         );
 
-        // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨・蜈･蜉帙メ繧ｧ繝・け
+        // ショートコード名の入力チェック
         ["code1","code2","code3","code4"].forEach(code => {
             const el = document.querySelector(`input[name="properties[${code}]"]`);
             if (el) el.addEventListener("keydown", checkShortcodeKey);
         });
 
-        // 縺吶∋縺ｦ縺ｮWP-Cron繧ｹ繧ｱ繧ｸ繝･繝ｼ繝ｫ繧定｡ｨ遉ｺ
+        const widthInput = document.querySelector('input[name="properties[width]"]');
+        if (widthInput) widthInput.addEventListener("keydown", changeWidthUnitKey);
+
+        // すべてのWP-Cronスケジュールを表示
         document.querySelectorAll(".pz-cron-all").forEach(el =>
             el.addEventListener("change", showAllCron)
         );
@@ -50,19 +54,8 @@
                 }
 
                 if (scrollNow && !cacheEditor) scrollNow.value = window.scrollY;
-                const inhibit = document.querySelector("input[type=checkbox][name='properties[flg-inhibit]']");
-                const inhibitValue = document.querySelector("input[name='flg-inhibit']")?.value;
-                if (inhibit?.checked || inhibitValue === "1") {
-                    const overlay = document.querySelector("#pz-overlay-proc");
-                    if (overlay) {
-                        overlay.classList.remove("hidden");
-                        overlay.classList.remove("pz-overlay-proc-active");
-                        overlay.style.display = "block";
-                        setTimeout(() => {
-                            overlay.classList.add("pz-overlay-proc-active");
-                        }, 500);
-                    }
-                }
+                if (submitter?.dataset?.noOverlay === "1") return;
+                showProcessingOverlay();
             });
         });
 
@@ -73,10 +66,13 @@
 
         document.addEventListener("click", errorModeNoticeDismiss);
         document.addEventListener("click", selectImageFromMedia);
+        document.addEventListener("click", clearCachemanImage);
         initCharacterCounts();
         initUnsavedFormWarnings();
         initSettingsTabs();
         initCachemanSearch();
+        initCachemanPaginationKeys();
+        initImageBox();
         initScreenOptions();
         // readonly checkbox guard
         document.querySelectorAll("input[type=checkbox]").forEach(el =>
@@ -100,6 +96,9 @@
         document.querySelectorAll(".pz-card-prop-number input[type=number]").forEach(el =>
             el.addEventListener("input", syncCardNumber)
         );
+        document.querySelectorAll(".pz-copy-card-to-hover").forEach(el =>
+            el.addEventListener("click", copyCardSettingsToHover)
+        );
         updateCardRangeFills();
 
         // Auto switch checks
@@ -111,15 +110,15 @@
         document.querySelector("#pz-overlay-proc")?.classList.add("hidden");
     });
 
-    // ----------- 髢｢謨ｰ鄒､ -----------
+    // ----------- 関数群 -----------
 
-    // 荳逡ｪ荳翫∈陦後￥
+    // ページ上部へ戻る
     function buttonTopClick(e) {
         e.preventDefault();
         window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    // TOP繝懊ち繝ｳ縺ｮ陦ｨ遉ｺ蛻・崛
+    // TOPボタンの表示切り替え
     function topButtonScroll() {
         const indicator = document.querySelector(".pz-indicator");
         if (!indicator) return;
@@ -140,7 +139,7 @@
         };
 
         // Admin setting value
-        const inGet = document.querySelector("select[name='properties[in-get]']")?.value;
+        const inGet = document.querySelector("select[name='properties[in-get-from]']")?.value;
         setDisabled("input[name='properties[in-field-title]']", inGet != "3");
         setDisabled("input[name='properties[in-field-excerpt]']", inGet != "3");
 
@@ -157,7 +156,7 @@
 		const flgAgent = flgAgentEl ? flgAgentEl.checked : false;
 		setDisabled("input[name='properties[user-agent]']", !flgAgent, !flgAgent );
 
-		// 閾ｪ蜍募､画鋤髢｢騾｣
+		// 自動変換関連
 		const autoAtagEl = document.querySelector("input[name='properties[auto-atag]'][type=checkbox]");
 		const autoUrlEl  = document.querySelector("input[name='properties[auto-url]'][type=checkbox]");
 		const autoAtag = autoAtagEl ? autoAtagEl.checked : false;
@@ -184,7 +183,7 @@
 		setDisabled("input[name='properties[use-sitename]'][type=checkbox]", false, siteNameReadonly, siteNameReadonly ? "#ddd" : "#444");
 	}
 
-    // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨ｒ繧ｳ繝斐・
+    // ショートコード名をコピー
     function copyShortcode(e) {
         const val = e.target.value;
         document.querySelectorAll(".pz-shortcode-copy").forEach(el => {
@@ -195,14 +194,49 @@
         });
     }
 
-    // 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝牙・蜉帙メ繧ｧ繝・け
+    // ショートコード名の入力チェック
     function checkShortcodeKey(e) {
         if (e.key === " ") {
             e.preventDefault();
         }
     }
 
-    // WP-Cron 荳隕ｧ縺ｮ陦ｨ遉ｺ蛻・崛
+    function showProcessingOverlay(delay = 500) {
+        const overlay = document.querySelector("#pz-overlay-proc");
+        if (!overlay) return;
+
+        if (processingOverlayTimer) {
+            clearTimeout(processingOverlayTimer);
+            processingOverlayTimer = null;
+        }
+        processingOverlayTimer = setTimeout(() => {
+            processingOverlayTimer = null;
+            overlay.classList.remove("hidden");
+            overlay.classList.remove("pz-overlay-proc-active");
+            overlay.style.display = "flex";
+            overlay.classList.add("pz-overlay-proc-active");
+        }, delay);
+    }
+
+    function changeWidthUnitKey(e) {
+        let unit = null;
+        if (e.key === "p" || e.key === "P") {
+            unit = "px";
+        } else if (e.key === "%") {
+            unit = "%";
+        }
+        if (unit === null) return;
+
+        const unitSelect = document.querySelector('select[name="properties[width-unit]"]');
+        if (!unitSelect) return;
+
+        e.preventDefault();
+        unitSelect.value = unit;
+        unitSelect.dispatchEvent(new Event("input", { bubbles: true }));
+        unitSelect.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    // WP-Cron一覧の表示切り替え
     function showAllCron(e) {
         document.querySelectorAll(".pz-cron-list-other").forEach(el => {
             if (e.target.checked) {
@@ -274,6 +308,60 @@
             return;
         }
         range.style.setProperty("--pz-range-bg", `linear-gradient(to right, #0073aa 0%, #0073aa ${pct}%, #d7d7d7 ${pct}%, #d7d7d7 100%)`);
+    }
+
+    function copyCardSettingsToHover(e) {
+        const prefix = e.currentTarget?.dataset?.pzCardPrefix;
+        if (!prefix) return;
+
+        const findNamedControl = name => {
+            const controls = Array.from(document.querySelectorAll(`[name="${name}"]`));
+            return controls.find(control => control.type !== "hidden") || controls[0] || null;
+        };
+
+        [
+            "transform-enabled",
+            "transform-x",
+            "transform-y",
+            "transform-rotate",
+            "transform-scale",
+            "bg-enabled",
+            "bg-color",
+            "image",
+            "border-enabled",
+            "border-color",
+            "border-style",
+            "border-width",
+            "border-radius",
+            "shadow-enabled",
+            "shadow-color",
+            "shadow-x",
+            "shadow-y",
+            "shadow-blur",
+            "shadow-spread",
+            "shadow-inset",
+            "transition"
+        ].forEach(suffix => {
+            const fromName = `properties[${prefix}-${suffix}]`;
+            const toName = `properties[${prefix}-hover-${suffix}]`;
+            const from = findNamedControl(fromName);
+            const to = findNamedControl(toName);
+            if (!from || !to) return;
+
+            if (to.type === "checkbox") {
+                to.checked = from.checked;
+            } else {
+                to.value = from.value;
+            }
+            to.dispatchEvent(new Event("input", { bubbles: true }));
+            to.dispatchEvent(new Event("change", { bubbles: true }));
+
+            const range = document.querySelector(`.pz-card-range[data-target="${toName}"]`);
+            if (range) {
+                range.value = to.value;
+                updateCardRangeFill(range);
+            }
+        });
     }
 
     // Admin setting helper
@@ -354,6 +442,22 @@
         });
 
         frame.open();
+    }
+
+    function clearCachemanImage(e) {
+        const button = e.target.closest(".pz-man-cache-clear-image");
+        if (!button) return;
+
+        e.preventDefault();
+
+        const target = button.dataset.target;
+        const input = target ? document.querySelector(`input[name="${target}"]`) : null;
+        if (!input) return;
+
+        input.value = "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        updateImagePreview(input, "");
     }
 
     function initCharacterCounts() {
@@ -459,6 +563,7 @@
         const tabbarSpacer = document.createElement("div");
         let lastWheelAt = 0;
         let submitGap = null;
+        let invalidNavigationActive = false;
 
         tabbarSpacer.className = "pz-tabbar-spacer";
         tabbarSpacer.style.height = "0";
@@ -558,6 +663,60 @@
             if (focusTab) tab.focus();
         };
 
+        const focusControl = control => {
+            if (typeof control?.focus !== "function") return;
+            try {
+                control.focus({ preventScroll: true });
+            } catch (e) {
+                control.focus();
+            }
+        };
+
+        const isControlInView = control => {
+            if (!control) return;
+
+            const rect = control.getBoundingClientRect();
+            const fixedTop = getFixedTop() + wrapper.offsetHeight + 16;
+            const fixedBottom = 16;
+            return rect.top >= fixedTop && rect.bottom <= window.innerHeight - fixedBottom;
+        };
+
+        const scrollToControl = control => {
+            if (!control) return;
+
+            if (isControlInView(control)) {
+                focusControl(control);
+                return;
+            }
+
+            const rect = control.getBoundingClientRect();
+            const fixedTop = getFixedTop() + wrapper.offsetHeight + 16;
+            const visibleHeight = Math.max(1, window.innerHeight - fixedTop);
+            const targetTop = Math.max(0, window.scrollY + rect.top - fixedTop - ((visibleHeight - rect.height) / 2));
+            window.scrollTo({ top: targetTop, behavior: "smooth" });
+            focusControl(control);
+        };
+
+        const showInvalidControl = control => {
+            if (invalidNavigationActive) return;
+            invalidNavigationActive = true;
+            window.setTimeout(() => {
+                invalidNavigationActive = false;
+            }, 500);
+
+            const page = control?.closest(".pz-page");
+            if (!page?.id) return;
+
+            const tab = tabbar.querySelector(`.pz-tab[name="${page.id}"], .pz-tab[href="#${page.id}"]`);
+            if (tab) openTab(tab);
+
+            window.setTimeout(() => scrollToControl(control), 60);
+        };
+
+        document.querySelector(".pz-settings form")?.addEventListener("invalid", e => {
+            showInvalidControl(e.target);
+        }, true);
+
         const getCurrentIndex = (tabs, currentTab = null) => {
             const currentName = getTabName(currentTab) || tabNow?.value || getTabName(tabbar.querySelector(".pz-tab-active"));
             const currentIndex = tabs.findIndex(tab => getTabName(tab) === currentName);
@@ -633,15 +792,29 @@
         const imageBox = input
             ?.closest(".pz-man-cache-image-box")
             ?.querySelector(".pz-man-cache-image-preview");
-        if (!imageBox || !url) return;
+        if (!imageBox) return;
+
+        const clearButton = input
+            ?.closest(".pz-man-cache-image-box")
+            ?.querySelector(".pz-man-cache-clear-image");
+
+        imageBox.innerHTML = "";
+
+        if (!url) {
+            imageBox.classList.add("pz-man-cache-image-empty");
+            imageBox.textContent = "-";
+            if (clearButton) clearButton.hidden = true;
+            return;
+        }
 
         imageBox.classList.remove("pz-man-cache-image-empty");
-        imageBox.innerHTML = "";
+        if (clearButton) clearButton.hidden = false;
 
         const link = document.createElement("a");
         link.href = url;
         link.target = "_blank";
-        link.rel = "noopener noreferrer";
+        link.rel = "noopener";
+        link.referrerPolicy = "no-referrer";
         link.className = "pz-man-image-box-trigger";
 
         const frame = document.createElement("div");
@@ -653,6 +826,203 @@
         frame.appendChild(img);
         link.appendChild(frame);
         imageBox.appendChild(link);
+    }
+
+    function initImageBox() {
+        const cacheman = document.querySelector(".pz-cacheman");
+        if (!cacheman) return;
+
+        const CLICK_ZOOM = 5;
+        const MAX_ZOOM = 10;
+        const MIN_ZOOM = 1;
+        const WHEEL_ZOOM_STEP = 0.5;
+
+        const style = document.createElement("style");
+        style.textContent = `
+            .pz-image-box {
+                position: fixed;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-sizing: border-box;
+                padding: 56px 28px 28px;
+                overflow: auto;
+                background: rgba(0, 0, 0, 0.72);
+                z-index: 1000;
+                cursor: default;
+            }
+            .pz-image-box img {
+                display: block;
+                max-width: min(92vw, 100%);
+                max-height: calc(100vh - 120px);
+                object-fit: contain;
+                background: #fff;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+                cursor: zoom-in;
+                transform-origin: center center;
+                transition: transform 120ms ease;
+                user-select: none;
+            }
+            .pz-image-box img.pz-image-box-zoomed {
+                cursor: zoom-out;
+            }
+            .pz-image-box-close {
+                position: absolute;
+                top: 12px;
+                right: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                padding: 0 0 2px;
+                border: 0;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.92);
+                color: #111;
+                font-size: 28px;
+                line-height: 1;
+                cursor: pointer;
+            }
+            .pz-image-box-close:hover,
+            .pz-image-box-close:focus {
+                background: #fff;
+                outline: 2px solid #72aee6;
+                outline-offset: 2px;
+            }
+        `;
+        document.head.appendChild(style);
+
+        let box = null;
+        let observer = null;
+        let zoom = 1;
+        let activeImage = null;
+
+        const clampZoom = value => Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value));
+
+        const applyZoom = () => {
+            if (!activeImage) return;
+            activeImage.style.transform = `scale(${zoom})`;
+            activeImage.classList.toggle("pz-image-box-zoomed", zoom > 1);
+        };
+
+        const setZoom = value => {
+            zoom = clampZoom(value);
+            applyZoom();
+        };
+
+        const getContentLeft = () => {
+            const wpContent = document.querySelector("#wpcontent");
+            if (wpContent) return wpContent.getBoundingClientRect().left;
+
+            const menuWrap = document.querySelector("#adminmenuwrap");
+            return menuWrap ? menuWrap.getBoundingClientRect().right : 0;
+        };
+
+        const positionBox = () => {
+            if (!box) return;
+
+            const adminBar = document.querySelector("#wpadminbar");
+            const infobar = document.querySelector("#pz-infobar");
+            const top = infobar
+                ? infobar.getBoundingClientRect().bottom
+                : adminBar
+                    ? adminBar.getBoundingClientRect().bottom
+                    : 0;
+            const left = getContentLeft();
+
+            box.style.top = `${Math.max(0, top)}px`;
+            box.style.left = `${Math.max(0, left)}px`;
+            box.style.right = "0";
+            box.style.bottom = "0";
+            box.style.width = "auto";
+            box.style.height = "auto";
+        };
+
+        const closeBox = () => {
+            if (!box) return;
+
+            box.remove();
+            box = null;
+            activeImage = null;
+            zoom = 1;
+            window.removeEventListener("resize", positionBox);
+            window.removeEventListener("scroll", positionBox, true);
+            window.removeEventListener("keydown", handleKeydown);
+
+            if (observer) {
+                observer.disconnect();
+                observer = null;
+            }
+        };
+
+        function handleKeydown(e) {
+            if (e.key !== "Escape" && e.key !== "Esc") return;
+            closeBox();
+        }
+
+        const openBox = (src, alt) => {
+            closeBox();
+
+            box = document.createElement("div");
+            box.className = "pz-image-box";
+
+            const close = document.createElement("button");
+            close.type = "button";
+            close.className = "pz-image-box-close";
+            close.setAttribute("aria-label", "Close");
+            close.textContent = "\u00d7";
+
+            const img = document.createElement("img");
+            img.src = src;
+            img.alt = alt || "";
+            activeImage = img;
+            zoom = 1;
+
+            box.append(close, img);
+            document.body.appendChild(box);
+            positionBox();
+
+            close.addEventListener("click", closeBox);
+            box.addEventListener("click", closeBox);
+            img.addEventListener("click", e => {
+                e.stopPropagation();
+                setZoom(zoom > MIN_ZOOM ? MIN_ZOOM : CLICK_ZOOM);
+            });
+            box.addEventListener("wheel", e => {
+                if (!e.ctrlKey) return;
+
+                e.preventDefault();
+                e.stopPropagation();
+                const delta = e.deltaY > 0 ? -WHEEL_ZOOM_STEP : WHEEL_ZOOM_STEP;
+                setZoom(zoom + delta);
+            }, { passive: false });
+
+            window.addEventListener("resize", positionBox);
+            window.addEventListener("scroll", positionBox, true);
+            window.addEventListener("keydown", handleKeydown);
+
+            observer = new MutationObserver(positionBox);
+            observer.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+
+            const menuWrap = document.querySelector("#adminmenuwrap");
+            if (menuWrap) {
+                observer.observe(menuWrap, { attributes: true, attributeFilter: ["class", "style"] });
+            }
+        };
+
+        cacheman.addEventListener("click", e => {
+            const link = e.target?.closest?.(".pz-man-thumbnail, .pz-man-image-box-trigger");
+            if (!link || !cacheman.contains(link)) return;
+
+            const img = link.querySelector("img");
+            const src = link.getAttribute("href") || img?.src;
+            if (!src) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+            openBox(src, img?.alt || "");
+        });
     }
 
     function initScreenOptions() {
@@ -768,6 +1138,22 @@
         const searchSubmit = document.querySelector("#search-submit");
         if (!input || !searchSubmit) return;
 
+        const resetToFirstPage = () => {
+            const pageNow = input.form?.querySelector('input[name="page_now"]');
+            const pageTrans = input.form?.querySelector('input[name="page_trans"]');
+            if (pageNow) pageNow.value = "1";
+            if (pageTrans) pageTrans.value = "1";
+        };
+
+        const submitSearch = () => {
+            resetToFirstPage();
+            if (input.form?.requestSubmit) {
+                input.form.requestSubmit(searchSubmit);
+            } else {
+                searchSubmit.click();
+            }
+        };
+
         const runIdSearch = id => {
             if (!id) return;
 
@@ -775,11 +1161,19 @@
             input.dispatchEvent(new Event("input", { bubbles: true }));
             input.dispatchEvent(new Event("change", { bubbles: true }));
 
-            const pageNow = input.form?.querySelector('input[name="page_now"]');
-            if (pageNow) pageNow.value = "1";
-
-            searchSubmit.click();
+            submitSearch();
         };
+
+        input.addEventListener("keydown", e => {
+            if (e.key !== "Enter" || e.isComposing) return;
+
+            e.preventDefault();
+            submitSearch();
+        });
+
+        searchSubmit.addEventListener("click", () => {
+            resetToFirstPage();
+        });
 
         document.addEventListener("click", e => {
             const button = e.target?.closest?.(".pz-man-id-search");
@@ -796,6 +1190,51 @@
             input.value = "";
             input.dispatchEvent(new Event("input", { bubbles: true }));
             input.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+    }
+
+    function initCachemanPaginationKeys() {
+        const cacheman = document.querySelector(".pz-cacheman");
+        const pageInput = document.querySelector('input[name="page_trans"]');
+        const form = pageInput?.closest("form");
+        if (!cacheman || !pageInput || !form) return;
+
+        const isEditableTarget = target => {
+            if (!target) return false;
+            if (target.isContentEditable) return true;
+            return !!target.closest?.("input, textarea, select, [contenteditable='true']");
+        };
+
+        const getPageMax = () => {
+            const total = document.querySelector(".pz-man-pages .total-pages")?.textContent || "";
+            const max = parseInt(total.replace(/[^\d]/g, ""), 10);
+            return Number.isFinite(max) && max > 0 ? max : 1;
+        };
+
+        const movePage = delta => {
+            const pageNow = parseInt(pageInput.value, 10) || 1;
+            const pageMax = getPageMax();
+            const nextPage = Math.min(pageMax, Math.max(1, pageNow + delta));
+            if (nextPage === pageNow) return;
+
+            pageInput.value = String(nextPage);
+            pageInput.dispatchEvent(new Event("input", { bubbles: true }));
+            pageInput.dispatchEvent(new Event("change", { bubbles: true }));
+
+            if (form.requestSubmit) {
+                form.requestSubmit();
+            } else {
+                form.submit();
+            }
+        };
+
+        document.addEventListener("keydown", e => {
+            if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
+            if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+            if (isEditableTarget(e.target)) return;
+
+            e.preventDefault();
+            movePage(e.key === "ArrowRight" ? 1 : -1);
         });
     }
 

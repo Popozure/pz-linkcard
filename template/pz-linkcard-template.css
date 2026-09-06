@@ -441,8 +441,7 @@ img.lkc-favicon {
 }
 .lkc-error {
 	display: block;
-	padding-top: 50px;
-	margin-top: -50px;
+	scroll-margin-top: 33vh;
 }
 .clear {
 	clear: both;

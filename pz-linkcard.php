@@ -3,7 +3,7 @@
 /*
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
-Description:	リンクをカード形式で表示します。
+Description:	Displays links in card format.
 Version:		2.6.1
 Author:			Poporon
 Author URI:		http://popozure.info
@@ -39,10 +39,11 @@ class class_pz_linkcard {
 			'card-left'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
 			'card-right'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
 			'thumbnail-position'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
-			'thumbnail-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'100px', ],
-			'thumbnail-height'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'100px', ],
-			'width'							=>	['type'	=>	'pixel_per',	'null'	=>	true,	'default'	=>	'500px', ],
-			'content-height'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'100px', ],
+			'thumbnail-width'				=>	['type'	=>	'numeric_null',	'null'	=>	true,	'default'	=>	100, ],
+			'thumbnail-height'				=>	['type'	=>	'numeric_null',	'null'	=>	true,	'default'	=>	100, ],
+			'width'							=>	['type'	=>	'numeric_null',	'null'	=>	true,	'default'	=>	500, ],
+			'width-unit'					=>	['type'	=>	'unit',			'null'	=>	true,	'default'	=>	'px', ],
+			'content-height'				=>	['type'	=>	'numeric_null',	'null'	=>	true,	'default'	=>	100, ],
 			'centering'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'enclose-tag'					=>	['type'	=>	'html_tag',		'null'	=>	false,	'default'	=>	'div', ],
 			'flg-use-sitename'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
@@ -199,7 +200,7 @@ class class_pz_linkcard {
 			'ex-thumbnail-size'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
 			'ex-thumbnail-alt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-target'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
-			'ex-get'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
+			'ex-get-from'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
 
 			'in-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'in-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	0, ],
@@ -252,7 +253,7 @@ class class_pz_linkcard {
 			'in-thumbnail-size'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
 			'in-thumbnail-alt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-target'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-get'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-get-from'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-field-title'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-field-excerpt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-get-url'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
@@ -758,7 +759,7 @@ class class_pz_linkcard {
 					$result	=	$this->pz_SaveOptions();
 				}
 			}
-			$tag		=	'<div class="linkcard"><a id="lkc-error"></a><div class="lkc-this-wrap"><div class="lkc-info">'.self::PLUGIN_NAME.'</div><div class="lkc-excerpt">'.__('-', 'pz-linkcard' ).' '.__('Incorrect URL specification.', 'pz-linkcard' ).'<br>'.__('-', 'pz-linkcard' ).' '.__('URL', 'pz-linkcard' ).'='.esc_url($url_org ).'</div></div></div>';
+			$tag		=	'<div class="linkcard"><a id="lkc-error" class="lkc-error" style="display:block;scroll-margin-top:33vh;"></a><div class="lkc-this-wrap"><div class="lkc-info">'.self::PLUGIN_NAME.'</div><div class="lkc-excerpt">'.__('-', 'pz-linkcard' ).' '.__('Incorrect URL specification.', 'pz-linkcard' ).'<br>'.__('-', 'pz-linkcard' ).' '.__('URL', 'pz-linkcard' ).'='.esc_url($url_org ).'</div></div></div>';
 			return			PHP_EOL.$tag.PHP_EOL;
 		}
 
@@ -891,7 +892,7 @@ class class_pz_linkcard {
 			}
 
 			// 記事の取得方法
-			if	($this->options['in-get'] == 2 ) {	// 常にカード管理から
+			if	($this->options['in-get-from'] == 2 ) {	// 常にカード管理から
 				if	(!$data_id || (isset($atts['force'] ) && $atts['force'] == true ) ) {	// キャッシュに無いとき
 					$data		=	$this->pz_GetPost($data );		// 最新記事内容を取得
 					$result		=	$this->pz_SetCache($data );		// 保存
@@ -1917,12 +1918,12 @@ class class_pz_linkcard {
 			$excerpt			=	$post->post_content;					// 記事内容から抜粋
 
 			// 「抜粋」優先
-			if	($this->options['in-get'] == 1 && $post->post_excerpt ) {	// 記事取得方法：「抜粋文」があった場合、優先する
+			if	($this->options['in-get-from'] == 1 && $post->post_excerpt ) {	// 記事取得方法：「抜粋文」があった場合、優先する
 				$excerpt		=	$post->post_excerpt;					// 抜粋文
 			}
 
 			// 「カスタムフィールド」優先
-			if	($this->options['in-get'] == 3 ) {							// 記事取得方法：「カスタムフィールド」があった場合、優先する
+			if	($this->options['in-get-from'] == 3 ) {						// 記事取得方法：「カスタムフィールド」があった場合、優先する
 				$meta_title		=	get_post_meta($post_id, $this->options['in-field-title'] );
 				if	(array($meta_title ) && array_key_exists(0, $meta_title ) ) {
 					$title		=	$meta_title[0];
@@ -2091,15 +2092,13 @@ class class_pz_linkcard {
 		$rget_args['user-agent']	=	$this->options['flg-agent']		?	$this->options['user-agent']	// ユーザーエージェントにPz-LinkCard-Crawlerを使う
 																		:	'WordPress/'.$wp_version.'; '.get_bloginfo( 'url' );
 		$rget_args['sslverify']		=	$this->options['flg-sslverify']		?	true	:	false ;
+		$rget_args['redirection']	=	$this->options['flg-redir']			?	8		:	0;
 
 		// URLエンコード
 		$url			=	$this->pz_EncodeURL($url ,true );
 		$url_redir		=	'';
 		$url_access		=	$url;
-		$last_url		=	$url;
-		// リダイレクト確認
-		if	($this->options['flg-redir'] ) {
-				$get_response_url	=	function($response ) {
+		$get_response_url	=	function($response ) {
 				if	(is_wp_error($response ) || !isset($response['http_response'] ) || !is_object($response['http_response'] ) || !method_exists($response['http_response'], 'get_response_object' ) ) {
 					return	null;
 				}
@@ -2109,22 +2108,66 @@ class class_pz_linkcard {
 				}
 				return	null;
 			};
+		$get_location_url	=	function($response, $base_url ) {
+			if	(is_wp_error($response ) ) {
+				return	null;
+			}
+			$location	=	wp_remote_retrieve_header($response, 'location' );
+			if	(is_array($location ) ) {
+				$location	=	end($location );
+			}
+			if	(!$location ) {
+				return	null;
+			}
+			$location	=	trim($location );
+			if	(!preg_match('/^https?:\/\//i', $location ) ) {
+				$location	=	$this->pz_RelToURL($base_url, $location );
+			}
+			return	$this->pz_EncodeURL($location, true );
+		};
+		$trace_redirect_url	=	function($start_url ) use ($rget_args, $get_response_url, $get_location_url ) {
+			$current_url	=	$start_url;
+			$trace_args		=	$rget_args;
+			$trace_args['redirection']	=	0;
 
-			$head_args					=	$rget_args;
-			$head_args['method']		=	'HEAD';
-			$head_args['redirection']	=	8;
-			$rget_head					=	wp_safe_remote_head($url, $head_args );		// Bodyを取得せず、リダイレクトだけ確認
-			$last_url					=	$get_response_url($rget_head ) ?: $url;
+			for	($i = 0; $i < 8; $i++ ) {
+				$head_args				=	$trace_args;
+				$head_args['method']	=	'HEAD';
+				$response				=	wp_safe_remote_head($current_url, $head_args );
 
-			if	($last_url === $url && (is_wp_error($rget_head ) || intval(wp_remote_retrieve_response_code($rget_head ) ) >= 400 ) ) {
-				$redir_args							=	$rget_args;
-				$redir_args['redirection']			=	8;
-				$redir_args['limit_response_size']	=	1;						// HEAD不可のサイト向けにBody取得を最小化
-				$rget_redir							=	wp_safe_remote_get($url, $redir_args );
-				$last_url							=	$get_response_url($rget_redir ) ?: $url;
+				if	(is_wp_error($response ) ) {
+					$get_args							=	$trace_args;
+					$get_args['limit_response_size']	=	1;
+					$response							=	wp_safe_remote_get($current_url, $get_args );
+				}
+
+				$response_url	=	$get_response_url($response );
+				if	($response_url && $response_url !== $current_url ) {
+					$current_url	=	$this->pz_EncodeURL($response_url, true );
+					continue;
+				}
+
+				$http_code		=	intval(wp_remote_retrieve_response_code($response ) );
+				$location_url	=	$get_location_url($response, $current_url );
+				if	($http_code >= 300 && $http_code < 400 && $location_url && $location_url !== $current_url ) {
+					$current_url	=	$location_url;
+					continue;
+				}
+
+				break;
 			}
 
-			if	($last_url && $url <> $last_url ) {
+			return	$current_url;
+		};
+
+		// リンク先サイトのアクセス
+		$rget_data					=	wp_safe_remote_get($url_access, $rget_args );	// wp_remote_get実行
+		if	($this->options['flg-redir'] ) {
+			$last_url	=	$get_response_url($rget_data );
+			if	(!$last_url || $last_url === $url ) {
+				$last_url	=	$trace_redirect_url($url );
+			}
+			if	($last_url && $url !== $last_url ) {
 				$url_redir	=	$this->pz_EncodeURL($last_url, true );
 				$url_access	=	$url_redir;
 			}
@@ -2170,8 +2213,6 @@ class class_pz_linkcard {
 			return	$data;
 		}
 
-		// リンク先サイトのアクセス
-		$rget_data					=	wp_safe_remote_get($url_access, $rget_args );	// wp_remote_get実行
 		$err_no						=	is_wp_error($rget_data );						// wp_remote_getエラー有無
 
 		// エラーチェック
@@ -3021,7 +3062,7 @@ class class_pz_linkcard {
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-css-add',		$this->options['css-add-url'],			array(),	$css_version );
 		}
 		// クリック回数
-		// if	($this->options['flg-click-count'] ) {
+		if	($this->options['flg-click-count'] ) {
 			wp_enqueue_script	(
 				'pz-lkc-click',	
 				plugin_dir_url(__FILE__) . 'js/click-counter.js',	
@@ -3032,7 +3073,7 @@ class class_pz_linkcard {
 				'ajax_url'		=>	admin_url('admin-ajax.php' ),
 				'nonce'			=>	wp_create_nonce('pz_lkc_nonce' ),
 			] );
-		// }
+		}
 	}
 
 	// 管理画面時の設定（スタイルシートの追加）

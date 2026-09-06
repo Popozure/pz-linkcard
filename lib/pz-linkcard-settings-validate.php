@@ -83,6 +83,11 @@
 			$this->options[$key]	=	pz_TrimNumPx($temp_value, true );
 			break;
 
+		case	'unit':
+			$temp_value				=	strtolower($temp_value );
+			$this->options[$key]	=	in_array($temp_value, array('px', '%' ), true ) ? $temp_value : $definition['default'];
+			break;
+
 		case	'url':
 			$temp_value				=	$this->pz_EncodeURL($temp_value );
 			$this->options[$key]	=	wp_http_validate_url($temp_value );
@@ -115,4 +120,11 @@
 		}
 
 		unset($test_item[$key] );
+	}
+
+	if	($this->options['width'] === null ) {
+		$this->options['width']		=	null;
+		$this->options['width-unit']	=	null;
+	} elseif	(empty($this->options['width-unit'] ) ) {
+		$this->options['width-unit']	=	self::pz_GetDefaultOption('width-unit' );
 	}

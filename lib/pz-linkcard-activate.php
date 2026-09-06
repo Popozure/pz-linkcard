@@ -66,17 +66,33 @@
 		'noopener'				=>		'flg-noopener',				// Ver.2.5.6 パラメータ名変更のため
 		'title-trim'			=>		'title-length',				// Ver.2.5.6 パラメータ名変更のため
 		'excerpt-trim'			=>		'excerpt-length',			// Ver.2.5.6 パラメータ名変更のため
+		'ex-get'				=>		'ex-get-from',				// パラメータ名変更のため
+		'in-get'				=>		'in-get-from',				// パラメータ名変更のため
 		'flg-get-pid'			=>		'in-get-url',				// Ver.2.5.6 パラメータ名変更のため
 		);
 	foreach ($rename_key		as	$old => $new ) {
-		if	(array_key_exists($old, $this->options ) && !array_key_exists($new, $this->options ) ) {
-			$this->options[$new]	=	$this->options[$old];
+		if	(array_key_exists($old, $this->options ) ) {
+			if	(!array_key_exists($new, $this->options ) ) {
+				$this->options[$new]	=	$this->options[$old];
+			}
 			unset($this->options[$old] );
 		}
 	}
 
 	// Ver.2.6.1で共通指定からリンク種別ごとの指定に変わった項目を移行
 	if	(!$stored_version || version_compare($stored_version, '2.6.1', '<' ) ) {
+		foreach	(array(
+			'link-all'			=>	'flg-linkall',
+			'thumbnail-resize'	=>	'flg-resize',
+			'use-sitename'		=>	'flg-use-sitename',
+			'style-reset-img'	=>	'flg-style-reset',
+		) as $old => $new ) {
+			if	(array_key_exists($old, $this->options ) && !array_key_exists($new, $this->options ) ) {
+				$this->options[$new]	=	$this->options[$old];
+			}
+			unset($this->options[$old] );
+		}
+
 		$old_radius	=	array_key_exists('radius', $this->options ) ? $this->options['radius'] : null;
 		switch	((string)$old_radius ) {
 		case	'1':
@@ -150,7 +166,7 @@
 
 	foreach	(Self::DEFAULTS		as	$key => $value ) {
 		if	(!array_key_exists($key, $this->options ) ) {
-			$this->options[$key]	=	Self::DEFAULTS[$key];
+			$this->options[$key]	=	self::pz_GetDefaultOption($key );
 		}
 	}
 
@@ -179,7 +195,8 @@
 		}
 			
 		if	(intval($this->options['width'] ) == 0 ) {
-			$this->options['width']					=	'500px';
+			$this->options['width']					=	500;
+			$this->options['width-unit']			=	'px';
 		}
 
 		// 縁取りの色をクリアする
@@ -187,6 +204,30 @@
 			if	(array_key_exists($t.'-outline', $this->options ) && !$this->options[$t.'-outline'] ) {
 				$this->options[$t.'-outline-color']	=	null;
 			}
+		}
+	}
+
+	if	(array_key_exists('width', $this->options ) ) {
+		$old_width	=	$this->options['width'];
+		if	($old_width === null || $old_width === '' ) {
+			$this->options['width']		=	null;
+			$this->options['width-unit']	=	null;
+		} else {
+			$old_width	=	trim((string)$old_width );
+			if	(substr($old_width, -1 ) === '%' ) {
+				$this->options['width-unit']	=	'%';
+			} elseif	(strtolower(substr($old_width, -2 ) ) === 'px' ) {
+				$this->options['width-unit']	=	'px';
+			} elseif	(!isset($this->options['width-unit'] ) || !in_array($this->options['width-unit'], array('px', '%' ), true ) ) {
+				$this->options['width-unit']	=	self::pz_GetDefaultOption('width-unit' );
+			}
+			$this->options['width']	=	intval($old_width );
+		}
+	}
+
+	foreach	(array('thumbnail-width', 'thumbnail-height', 'content-height' ) as $key ) {
+		if	(array_key_exists($key, $this->options ) ) {
+			$this->options[$key]	=	($this->options[$key] === null || $this->options[$key] === '' ) ? null : intval($this->options[$key] );
 		}
 	}
 

@@ -455,14 +455,14 @@
 					// 表示用のURL
 					if	($is_internal ) {
 						$temp_href		=	esc_url($url );
-						$temp_rel		=	'internal';
+						$temp_rel		=	'internal noopener';
 						$temp_target	=	'_self';
 					} else {
 						$temp_href		=	esc_url($url );
-						$temp_rel		=	'external noopenner noreferrer';
+						$temp_rel		=	'external noopener';
 						$temp_target	=	'_blank';
 					}
-					$html_url			=	$html_url_error.'<a href="'.$temp_href.'" title="'.$temp_href.'" rel="'.$temp_rel.'" target="'.$temp_target.'">'.esc_url($this->pz_DecodeURL($url ) ).'</a>';
+					$html_url			=	$html_url_error.'<a href="'.$temp_href.'" title="'.$temp_href.'" rel="'.$temp_rel.'" target="'.$temp_target.'" referrerpolicy="no-referrer">'.esc_url($this->pz_DecodeURL($url ) ).'</a>';
 
 					// タイトル
 					$title			=	esc_attr(stripslashes($data->title ) );		// 代入しながら判定
@@ -512,7 +512,7 @@
 						}
 					}
 					if	($thumbnail_url ) {
-						$html_thumbnail			=	'<a href="'.esc_url($thumbnail_url ).'" target="_blank" class="pz-man-thumbnail"><div><img src="'.esc_url($thumbnail_url ).'" alt="" class="pz-man-thumbnail-img"></div></a>';
+						$html_thumbnail			=	'<a href="'.esc_url($thumbnail_url ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" class="pz-man-thumbnail"><div><img src="'.esc_url($thumbnail_url ).'" alt="" class="pz-man-thumbnail-img"></div></a>';
 					}
 
 					// 記事ID
@@ -521,7 +521,7 @@
 						$use_post_id	=	'use_post_id'.$j;
 						$post_id		=	$data->$use_post_id;
 						if	($post_id > 0 ) {
-							$html_post_id	.=	'<a href="'.esc_url(get_permalink($post_id ) ).'" target="_blank" title="'.esc_attr(get_the_title($post_id ) ).'">'.intval($post_id ).'</a><br>';
+							$html_post_id	.=	'<a href="'.esc_url(get_permalink($post_id ) ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" title="'.esc_attr(get_the_title($post_id ) ).'">'.intval($post_id ).'</a><br>';
 						}
 					}
 
@@ -542,7 +542,7 @@
 			<tr>
 				<th scope="row" class="pz-man-body-check check-column"><input id="cb-select-<?php echo intval($data_id ); ?>" type="checkbox" name="select_id[]" value="<?php echo intval($data_id ); ?>" /><div class="locked-indicator"></div></th>
 				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search"><?php echo intval($data_id ); ?></button><?php echo $html_thumbnail; ?></td>
-				<td colspan="2">
+				<td colspan="2" class="pz-man-body-url-title-cell">
 					<div class="pz-man-body-url"><?php echo $html_url; ?></div>
 					<div class="pz-man-body-title"><span title="<?php echo esc_attr($title ); ?>"><?php echo $html_title; ?></span></div>
 					<div id="inline_<?php echo intval($data_id ); ?>" class="pz-man-body-menu row-actions">

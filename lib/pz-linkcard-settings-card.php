@@ -13,7 +13,7 @@
 
 		echo	'<h2>'.$t['title'].$help_open.$t['type'].'-link'.$help_close.'</h2>';
 
-		// 繝・Φ繝励Ξ繝ｼ繝・
+		// 入力項目のHTMLテンプレート
 		$temp_color			=	'<tr><th scope="row">%s</th><td><input name="properties[%s]" type="color" value="%s" class="pz-sync-text pz-letter-color-code" /><input name="properties[%s]" type="text"  value="%s" class="pz-sync-text" /></td></tr>';
 		$temp_text			=	'<tr><th scope="row">%s</th><td><input name="properties[%s]" type="text" value="%s" size="%s" class="%s" %s />%s</td></tr>';
 		$temp_checkbox		=	'<tr><th scope="row">%s</th><td><label><input type="hidden" name="properties[%s]" value="" /><input type="checkbox" %s value="1" %s />%s</label></td></tr>';
@@ -27,7 +27,7 @@
 			$item_name			=	$prefix.'-transform-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 1;
 			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-			foreach	(array('x' => array(__('Horizontal', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'y' => array(__('Vertical', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'rotate' => array(__('Rotate', 'pz-linkcard' ), -180, 180, 0, 'deg' ), 'scale' => array(__('Scale', 'pz-linkcard' ), 1, 200, 100, '%' ) ) as $transform_key => $transform_item ) {
+			foreach	(array('x' => array(__('Horizontal', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'y' => array(__('Vertical', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'rotate' => array(__('Rotate', 'pz-linkcard' ), -360, 360, 0, 'deg' ), 'scale' => array(__('Scale', 'pz-linkcard' ), 1, 200, 100, '%' ) ) as $transform_key => $transform_item ) {
 				$item_name		=	$prefix.'-transform-'.$transform_key;
 				$item_value		=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : $transform_item[3];
 				$item_center	=	($transform_item[1] < 0 || $transform_key === 'scale') ? ' data-center="'.esc_attr($transform_item[3] ).'"' : '';
@@ -87,18 +87,18 @@
 			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Inner Shadow', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
 			echo				'</span></td></tr>';
 
-			echo				'<tr><th scope="row">'.esc_html('遷移速度' ).'</th><td><span class="pz-card-prop-row">';
+			echo				'<tr><th scope="row">'.esc_html__('Transition Speed', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
 			$item_name			=	$prefix.'-transition';
 			$item_value			=	number_format(isset($prop[$item_name] ) ? floatval($prop[$item_name] ) : 0, 1, '.', '' );
-			echo				'<label class="pz-card-prop-number"><span>'.esc_html('秒' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /><span>s</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /></span></label>';
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Seconds', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /><span>s</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /></span></label>';
 			echo				'</span></td></tr>';
 		};
 
-		// 蟆剰ｦ句・縺・
+		// 基本設定
 		echo	'<h3>'.__('Basic', 'pz-linkcard' ).'</h3>';
 		echo	'<table class="form-table">';
 
-		// 譁ｰ縺励＞繧ｿ繝悶〒髢九￥
+		// リンクを新しいウィンドウまたはタブで開く
 		$item_name			=	$t['name'].'-target';
 		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
 			$item_value		=	esc_attr($prop[$item_name] );
@@ -121,24 +121,25 @@
 		echo	'<h3>'.__('Link Card', 'pz-linkcard' ).'</h3>';
 		echo	'<table class="form-table">';
 
-		// 譫邱壹・譖ｸ蠑・
+		// リンクカードの外観設定
 
-		// 譫濶ｲ
+		// 通常時の外観
 		$echo_card_appearance($t, $prop );
 		echo			'</table>';
 
 		echo	'<h3>'.__('On Hover', 'pz-linkcard' ).'</h3>';
+		echo	'<p><button type="button" class="button pz-copy-card-to-hover" data-pz-card-prefix="'.esc_attr($t['name'] ).'">'.__('Copy Settings from Link Card', 'pz-linkcard' ).'</button></p>';
 		echo	'<table class="form-table">';
 		$echo_card_appearance($t, $prop, '-hover' );
 		echo			'</table>';
-		// 縲瑚ｨ倅ｺ句・螳ｹ縲阪・險ｭ螳壼ｧ九ａ
+		// 記事内容の設定
 		$item_title		=	__('Article Content',	'pz-linkcard' );
 		echo			'<h3>'.$item_title.'</h3>';
 		echo			'<table class="form-table">';
 
-		// 險倅ｺ九・蜿門ｾ玲婿豕・
+		// 記事内容の取得方法
 		$item_title	=		__('Get Contents', 'pz-linkcard' );
-		$item_name		=		$t['name'].'-get';
+		$item_name		=		$t['name'].'-get-from';
 		$item_notice		=		'';
 		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
 			$s_name			=	'name="properties['.$item_name.']"';
@@ -176,7 +177,7 @@
 		}
 		echo	sprintf($temp_select,   $item_title, $s_name, $item_class, $s_switch, $s_option, $item_notice );
 
-		// 繧ｿ繧､繝医Ν縺ｮ繧ｫ繧ｹ繧ｿ繝繝輔ぅ繝ｼ繝ｫ繝・
+		// タイトル用カスタムフィールド
 		$item_name			=	$t['name'].'-field-title';
 		$item_value			=	'';
 		$item_list			=	$meta_list;
@@ -194,7 +195,7 @@
 		}
 		echo_combo($item_name, $item_value, $item_list, $item_title, $item_notice, $item_class, 99, $item_disabled );
 
-		// 謚懃ｲ区枚縺ｮ繧ｫ繧ｹ繧ｿ繝繝輔ぅ繝ｼ繝ｫ繝・
+		// 抜粋文用カスタムフィールド
 		$item_name			=	$t['name'].'-field-excerpt';
 		$item_value			=	'';
 		$item_list			=	$meta_list;
@@ -212,7 +213,7 @@
 		}
 		echo_combo($item_name, $item_value, $item_list, $item_title, $item_notice, $item_class, 99, $item_disabled );
 
-		// 
+		// リンク種別ごとの追加項目
 		switch	($t['name'] ) {
 		case	'ex':
 			$item_name		=	null;
@@ -265,12 +266,12 @@
 		}
 		echo	'</table>';
 
-		// 縲後・繝・ム繝ｼ縲阪・險ｭ螳壼ｧ九ａ
+		// 見出しの設定
 		$item_title		=	__('Heading',	'pz-linkcard' );
 		echo			'<h3>'.$item_title.'</h3>';
 		echo			'<table class="form-table">';
 
-		// 縲後・繝・ム繝ｼ縲阪・繝・く繧ｹ繝・
+		// 見出しテキスト
 		$item_title			=	__('Text',	'pz-linkcard' );
 		$item_notice		=	__('When a string is entered, it is overlaid on the top border.', 'pz-linkcard' );
 		$item_class			=	'regular-text';
@@ -295,16 +296,16 @@
 		echo			'</td></tr>';
 		echo			'</table>';
 
-		// 縲後・繝・ム繝ｼ縲阪・險ｭ螳夂ｵゅｏ繧・
+		// 見出し設定の終了
 		echo		'</table>';
 
 
-		// 縲檎ｶ壹″繧定ｪｭ繧繝懊ち繝ｳ縲阪・險ｭ螳壼ｧ九ａ
+		// 続きを読むボタンの設定
 		$item_header		=	__('More',	'pz-linkcard' );
 		echo			'<h3>'.$item_header.'</h3>';
 		echo			'<table class="form-table">';
 
-		// 縲檎ｶ壹″繧定ｪｭ繧繝懊ち繝ｳ縲阪・繝・く繧ｹ繝・
+		// 続きを読むボタンのテキスト
 		$item_title			=	__('Text',	'pz-linkcard' );
 		$item_notice		=	__('When a string is entered, it is overlaid on the lower right corner of the article content.', 'pz-linkcard' );
 		$item_class			=	'regular-text';
@@ -328,12 +329,12 @@
 		echo			'</td></tr>';
 		echo			'</table>';
 
-		// 縲後し繧､繝域ュ蝣ｱ縺ｮ霑ｽ蜉繝・く繧ｹ繝医阪・險ｭ螳壼ｧ九ａ
+		// サイト情報の設定
 		$item_header		=	__('Site Information',	'pz-linkcard' );
 		echo			'<h3>'.$item_header.'</h3>';
 		echo			'<table class="form-table">';
 
-		// 縲後し繧､繝域ュ蝣ｱ縺ｮ霑ｽ蜉縲阪・譫邱・
+		// サイト名の後ろに表示するテキスト
 		$item_title			=	__('Text',	'pz-linkcard' );
 		$item_notice		=	__('Enter a string to display after the site name.', 'pz-linkcard' );
 		$item_class			=	'regular-text';
@@ -356,7 +357,7 @@
 		}
 		echo			'</td></tr>';
 
-		// 繧ｵ繧､繝医い繧､繧ｳ繝ｳ縺ｮ蜿門ｾ玲婿豕・
+		// サイトアイコンの取得方法
 		$item_title	=			__('How to get Site-Icon', 'pz-linkcard' );
 		$item_name			=	$t['name'].'-favicon';
 		$item_notice		=	'';
@@ -385,7 +386,7 @@
 		}
 		echo	sprintf($temp_select,   $item_title, $s_name, $item_class, $s_switch, $s_option, $item_notice );
 
-		// 繧ｵ繧､繝医い繧､繧ｳ繝ｳ縺ｮ莉｣譖ｿ繝・く繧ｹ繝・
+		// サイトアイコンの代替テキスト
 		$item_title	=		__('Alternative text', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-favicon-alt';
 		$s_len		=		'';
@@ -404,11 +405,11 @@
 
 		echo	'</table>';
 
-		// 蟆剰ｦ句・縺・
+		// サムネイルの設定
 		echo	'<h3>'.__('Thumbnail', 'pz-linkcard' ).'</h3>';
 		echo	'<table class="form-table">';
 
-		// 繧ｵ繝繝阪う繝ｫ縺ｮ蜿門ｾ玲婿豕・
+		// サムネイルの取得方法
 		$item_title	=		__('Thumbnail', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-thumbnail';
 		$item_notice		=		'';
@@ -437,7 +438,7 @@
 		}
 		echo	sprintf($temp_select,   $item_title, $s_name, $item_class, $s_switch, $s_option, $item_notice );
 
-		// 繧ｵ繝繝阪う繝ｫ縺ｮ繧ｵ繧､繧ｺ
+		// サムネイル画像サイズ
 		$item_title	=		__('Thumbnail Size', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-thumbnail-size';
 		$item_notice		=		'';
@@ -466,7 +467,7 @@
 		}
 		echo	sprintf($temp_select,   $item_title, $s_name, $item_class, $s_switch, $s_option, $item_notice );
 
-		// 繧ｵ繝繝阪う繝ｫ縺ｮ莉｣譖ｿ繝・く繧ｹ繝・
+		// サムネイルの代替テキスト
 		$item_title	=		__('Thubnail Alt Text', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-thumbnail-alt';
 		$s_len		=		'';

@@ -484,8 +484,8 @@
 			}
 
 			// サムネイルの位置とサイズ
-			$thumbnail_width	= intval(preg_replace('/[^0-9]/', '',		$prop['thumbnail-width'] ) );
-			$thumbnail_height	= intval(preg_replace('/[^0-9]/', '',		$prop['thumbnail-height'] ) );
+			$thumbnail_width	= intval($prop['thumbnail-width'] );
+			$thumbnail_height	= intval($prop['thumbnail-height'] );
 			switch ($prop['thumbnail-position'] ) {
 			case '1':			// 右側にサムネイル
 				$file_text	=	str_replace('/*THUMBNAIL-POSITION*/',		'float: right;', $file_text );
@@ -515,8 +515,8 @@
 				$size_excerpt		=	intval(preg_replace('/[^0-9]/', '', $prop['excerpt-size'] ) );
 				$height_title		=	intval(preg_replace('/[^0-9]/', '', $prop['title-height'] ) );
 				$height_excerpt		=	intval(preg_replace('/[^0-9]/', '', $prop['excerpt-height'] ) );
-				$thumbnail_height	=	intval(preg_replace('/[^0-9]/', '', $prop['thumbnail-height'] ) );
-				$thumbnail_width	=	intval(preg_replace('/[^0-9]/', '', $prop['thumbnail-width'] ) );
+				$thumbnail_height	=	intval($prop['thumbnail-height'] );
+				$thumbnail_width	=	intval($prop['thumbnail-width'] );
 				$file_text	=	str_replace('/*RESIZE*/',
 					'@media screen and ( max-width: 600px )  { .lkc-title { font-size: '.intval($size_title * 0.9).'px; line-height: '.intval($height_title * 0.9).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.95).'px; } .lkc-thumbnail { width: '.intval($thumbnail_width * 0.9).'px !important; } img.lkc-thumbnail-img { height: '.intval($thumbnail_height * 0.9).'px !important; width: '.intval($thumbnail_width * 0.9).'px !important; } }'.
 					'@media screen and ( max-width: 480px )  { .lkc-title { font-size: '.intval($size_title * 0.8).'px; line-height: '.intval($height_title * 0.8).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.8 ).'px; } .lkc-thumbnail { width: '.intval($thumbnail_width * 0.7).'px !important; } img.lkc-thumbnail-img { height: '.intval($thumbnail_height * 0.7).'px !important; width: '.intval($thumbnail_width * 0.7).'px !important; } }'.
@@ -524,15 +524,17 @@
 			}
 
 			// カード幅
-			if		($prop['width']	==	null ) {
-				$prop['width']		=	'100%';
-			}
-			$width_value	=	intval($prop['width'] );
-			$width_unit		=	substr($prop['width'], -1 ) == '%'	?	'%'		:	'px';
-			if	($width_unit	==	'%' ) {
-				$file_text	=	str_replace('/*WIDTH*/',			'width: '.$width_value.$width_unit.';',			$file_text );
+			if	($prop['width']	===	null || $prop['width'] === '' ) {
+				$width_unit	=	null;
+				$file_text	=	str_replace('/*WIDTH*/',			'',										$file_text );
 			} else {
-				$file_text	=	str_replace('/*WIDTH*/',			'max-width: '.$width_value.$width_unit.';',		$file_text );
+				$width_value	=	intval($prop['width'] );
+				$width_unit		=	isset($prop['width-unit'] ) && $prop['width-unit'] === '%' ? '%' : 'px';
+				if	($width_unit	==	'%' ) {
+					$file_text	=	str_replace('/*WIDTH*/',		'width: '.$width_value.$width_unit.';',			$file_text );
+				} else {
+					$file_text	=	str_replace('/*WIDTH*/',		'max-width: '.$width_value.$width_unit.';',		$file_text );
+				}
 			}
 
 			// 記事情報エリアの高さ

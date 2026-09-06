@@ -22,6 +22,7 @@
 		'aria-label'	=>	true,
 		'class'			=>	true,
 		'data-target'	=>	true,
+		'hidden'		=>	true,
 		'formnovalidate'	=>	true,
 		'name'			=>	true,
 		'title'			=>	true,
@@ -31,6 +32,7 @@
 	$cacheman_allowed_html['a']			=	array(
 		'class'			=>	true,
 		'href'			=>	true,
+		'referrerpolicy'	=>	true,
 		'rel'			=>	true,
 		'target'		=>	true,
 		'title'			=>	true,
@@ -72,7 +74,9 @@
 		$class_attr	=	$class ? ' '.esc_attr($class ) : '';
 		$html		=	'<input name="'.esc_attr($name ).'" type="hidden" value="'.esc_attr($value ).'">';
 		if	(!empty($args['href'] ) && '' !== $display ) {
-			return $html.'<a href="'.esc_url($args['href'] ).'" target="_blank" rel="noopener noreferrer" class="pz-man-cache-static-value pz-man-cache-static-link'.$class_attr.'" title="'.esc_attr($title ).'">'.esc_html($display ).'</a>';
+			$rel				=	$args['rel'] ?? 'noopener';
+			$referrerpolicy		=	$args['referrerpolicy'] ?? 'no-referrer';
+			return $html.'<a href="'.esc_url($args['href'] ).'" target="_blank" rel="'.esc_attr($rel ).'" referrerpolicy="'.esc_attr($referrerpolicy ).'" class="pz-man-cache-static-value pz-man-cache-static-link'.$class_attr.'" title="'.esc_attr($title ).'">'.esc_html($display ).'</a>';
 		}
 		return $html.'<span class="pz-man-cache-static-value'.$class_attr.'" title="'.esc_attr($title ).'">'.esc_html($display !== '' ? $display : '-' ).'</span>';
 	};
@@ -100,10 +104,13 @@
 		if	(!$image_preview_url ) {
 			return '<div class="pz-man-cache-image-preview pz-man-cache-image-empty">-</div>';
 		}
-		return '<div class="pz-man-cache-image-preview'.($class ? ' '.esc_attr($class ) : '' ).'"><a href="'.esc_url($image_preview_url ).'" target="_blank" rel="noopener noreferrer" class="pz-man-image-box-trigger"><div><img src="'.esc_url($image_preview_url ).'" alt="" loading="lazy" /></div></a></div>';
+		return '<div class="pz-man-cache-image-preview'.($class ? ' '.esc_attr($class ) : '' ).'"><a href="'.esc_url($image_preview_url ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" class="pz-man-image-box-trigger"><div><img src="'.esc_url($image_preview_url ).'" alt="" loading="lazy" /></div></a></div>';
 	};
 	$cacheman_media_button = function($target_name) {
 		return '<button type="button" class="button pz-debug-only pz-media-select-image pz-man-cache-media-button" data-target="'.esc_attr($target_name ).'"><span class="dashicons dashicons-admin-media"></span>'.esc_html(__('Media', 'pz-linkcard' ) ).'</button>';
+	};
+	$cacheman_clear_image_button = function($target_name, $label, $has_value) {
+		return '<button type="button" class="button-link pz-man-cache-clear-image" data-target="'.esc_attr($target_name ).'"'.($has_value ? '' : ' hidden' ).'>'.esc_html($label ).'</button>';
 	};
 	$cacheman_category_checklist = function($post_id) {
 		$post_id	=	intval($post_id );
@@ -157,7 +164,7 @@
 						</div>
 						<div class="pz-man-cache-permalink-row">
 							<strong><?php esc_html_e('Redirect URL', 'pz-linkcard' ) ?></strong>
-							<?php echo wp_kses($cacheman_static_value('url_redir', array('class' => 'pz-monospace' ) ), $cacheman_allowed_html ); ?>
+							<?php echo wp_kses($cacheman_static_value('url_redir', array('class' => 'pz-monospace', 'display' => $this->pz_DecodeURL($cacheman_get_value('url_redir' ) ), 'title' => $this->pz_DecodeURL($cacheman_get_value('url_redir' ) ), 'href' => $cacheman_get_value('url_redir' ) ) ), $cacheman_allowed_html ); ?>
 						</div>
 					</div>
 				</div>
@@ -224,6 +231,7 @@
 
 				<?php echo wp_kses($cacheman_postbox_open(__('Thumbnail Image', 'pz-linkcard' ), 'pz-man-cache-image-box' ), $cacheman_allowed_html ); ?>
 					<?php echo wp_kses($cacheman_image_preview('thumbnail', 'pz-man-cache-thumbnail-preview' ), $cacheman_allowed_html ); ?>
+					<?php echo wp_kses($cacheman_clear_image_button('data[thumbnail]', __('Clear thumbnail image', 'pz-linkcard' ), $cacheman_get_value('thumbnail' ) !== '' ), $cacheman_allowed_html ); ?>
 					<div class="pz-man-cache-image-url">
 						<label><?php esc_html_e('URL', 'pz-linkcard' ); ?></label>
 						<div class="pz-man-cache-image-url-control">
@@ -235,6 +243,7 @@
 
 				<?php echo wp_kses($cacheman_postbox_open(__('Favicon URL', 'pz-linkcard' ), 'pz-man-cache-image-box' ), $cacheman_allowed_html ); ?>
 					<?php echo wp_kses($cacheman_image_preview('favicon', 'pz-man-cache-siteicon-preview' ), $cacheman_allowed_html ); ?>
+					<?php echo wp_kses($cacheman_clear_image_button('data[favicon]', __('Clear site icon', 'pz-linkcard' ), $cacheman_get_value('favicon' ) !== '' ), $cacheman_allowed_html ); ?>
 					<div class="pz-man-cache-image-url">
 						<label><?php esc_html_e('URL', 'pz-linkcard' ); ?></label>
 						<div class="pz-man-cache-image-url-control">
