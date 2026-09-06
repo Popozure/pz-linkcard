@@ -4,7 +4,7 @@
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
 Description:	リンクをカード形式で表示します。
-Version:		2.6.0.5
+Version:		2.6.1
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -54,8 +54,6 @@ class class_pz_linkcard {
 			'separator'				=>	0,
 			'display-excerpt'		=>	1,
 			'content-inset'			=>	0,
-			'shadow'				=>	0,
-			'shadow-inset'			=>	0,
 			'more-style'			=>	'SMP',
 			'hover'					=>	1,
 			'thumbnail-border'		=>	null,

@@ -12,7 +12,7 @@
 		</tr>
 
 		<tr>
-			<th scope="row" rowspan="10"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="6"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Option($prop, 'display-url', __('Position to display URL', 'pz-linkcard' ), array(
 								''		=>		__('None', 'pz-linkcard' ),
@@ -36,33 +36,12 @@
 		</tr>
 		<tr>
 			<td>
-				<?php pz_Checkbox($prop, 'content-inset', __('Show Contents Frame', 'pz-linkcard' ) ); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
 				<?php pz_Checkbox($prop, 'display-excerpt', __('Show Excerpt', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
 		<tr>
 			<td>
 				<?php pz_Checkbox($prop, 'shadow-inset', __('Shadow-inset', 'pz-linkcard' ) ); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php pz_Checkbox($prop, 'shadow', __('Shadow', 'pz-linkcard' ) ); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php pz_Option($prop, 'radius', __('Round a square', 'pz-linkcard' ), LIST_MARGIN ); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php pz_Option($prop, 'border-style', __('Style', 'pz-linkcard' ), LIST_BORDER ); ?>
-				<?php pz_Option($prop, 'border-width', __('Width', 'pz-linkcard' ), LIST_PX ); ?>
 			</td>
 		</tr>
 		<tr>

@@ -15,15 +15,13 @@
 
 	// オプション取得
 	$result			=	$this->pz_LoadOptions();
+	$stored_version	=	isset($this->options['plugin-version'] ) ? $this->options['plugin-version'] : null;
 
 	// 項目名称変更
 	$rename_key	=	array(
 		'old_key_name'			=>		'new_key_name',
 		'anker'					=>		'anchor',					// パラメータ名変更のため
 		'opacity'				=>		'hover',					// パラメータ名変更のため
-		'border-color'			=>		'ex-border-color',			// パラメータ細分化のため
-		'border-color'			=>		'in-border-color',			// パラメータ細分化のため
-		'border-color'			=>		'th-border-color',			// パラメータ細分化のため
 		'flg-invalid'			=>		'error-mode',				// Ver.2.4.4 パラメータ名変更のため：エラー状態
 		'invalid-url'			=>		'error-url',				// Ver.2.4.4 パラメータ名変更のため：エラーURL
 		'invalid-time'			=>		'error-time',				// Ver.2.4.4 パラメータ名変更のため：エラー発生日時
@@ -77,17 +75,62 @@
 		}
 	}
 
+	// Ver.2.6.1で共通指定からリンク種別ごとの指定に変わった項目を移行
+	if	(!$stored_version || version_compare($stored_version, '2.6.1', '<' ) ) {
+		$old_radius	=	array_key_exists('radius', $this->options ) ? $this->options['radius'] : null;
+		switch	((string)$old_radius ) {
+		case	'1':
+			$old_radius	=	'8px';
+			break;
+		case	'2':
+			$old_radius	=	'4px';
+			break;
+		case	'3':
+			$old_radius	=	'16px';
+			break;
+		case	'4':
+			$old_radius	=	'32px';
+			break;
+		case	'5':
+			$old_radius	=	'64px';
+			break;
+		}
+
+		foreach	(array('ex', 'in', 'th' ) as $t ) {
+			if	(array_key_exists('border', $this->options ) && !array_key_exists($t.'-border-enabled', $this->options ) ) {
+				$this->options[$t.'-border-enabled']	=	$this->options['border'];
+			}
+			foreach	(array('color', 'style', 'width') as $item ) {
+				if	(array_key_exists('border-'.$item, $this->options ) && !array_key_exists($t.'-border-'.$item, $this->options ) ) {
+					$this->options[$t.'-border-'.$item]	=	$this->options['border-'.$item];
+				}
+			}
+			if	($old_radius !== null && !array_key_exists($t.'-border-radius', $this->options ) ) {
+				$this->options[$t.'-border-radius']	=	$old_radius;
+			}
+			if	(!empty($this->options['shadow'] ) ) {
+				$this->options[$t.'-shadow-enabled']	=	1;
+				$this->options[$t.'-shadow-color']	=	'#444444';
+				$this->options[$t.'-shadow-x']		=	8;
+				$this->options[$t.'-shadow-y']		=	8;
+				$this->options[$t.'-shadow-blur']	=	8;
+				if	(!array_key_exists($t.'-shadow-spread', $this->options ) ) {
+					$this->options[$t.'-shadow-spread']	=	0;
+				}
+				if	(!array_key_exists($t.'-shadow-inset', $this->options ) ) {
+					$this->options[$t.'-shadow-inset']	=	!empty($this->options['shadow-inset'] ) ? 1 : 0;
+				}
+			}
+		}
+		unset($this->options['border-color'] );
+		unset($this->options['border-style'] );
+		unset($this->options['border-width'] );
+		unset($this->options['border'] );
+		unset($this->options['radius'] );
+	}
+
 	// 足りない項目
 	foreach	(array('ex', 'in', 'th' ) as $t ) {
-		if	(array_key_exists('border-style', $this->options ) && !array_key_exists($t.'-border-style', $this->options ) ) {
-			$this->options[$t.'-border-style']	=	$this->options['border-style'];
-		}
-		if	(array_key_exists('border-width', $this->options ) && !array_key_exists($t.'-border-width', $this->options ) ) {
-			$this->options[$t.'-border-width']	=	$this->options['border-width'];
-		}
-		if	(array_key_exists('radius', $this->options ) && !array_key_exists($t.'-border-radius', $this->options ) ) {
-			$this->options[$t.'-border-radius']	=	$this->options['radius'];
-		}
 		if	(!array_key_exists($t.'-bg-enabled', $this->options ) ) {
 			$this->options[$t.'-bg-enabled']		=	1;
 		}
@@ -116,24 +159,6 @@
 
 	// 個別に設定しなおす
 	if		(version_compare($this->options['plugin-version'],	'2.5.6', '<' ) ) {
-		// 角の丸め
-		switch	($this->options['radius'] ) {
-		case	'2':
-			$this->options['radius']			=	'4px';
-			break;
-		case	'1':
-			$this->options['radius']			=	'8px';
-			break;
-		case	'3':
-			$this->options['radius']			=	'16px';
-			break;
-		case	'4':
-			$this->options['radius']			=	'32px';
-			break;
-		case	'5':
-			$this->options['radius']			=	'64px';
-			break;
-		}
 		// 続きを読むボタン
 		if	(isset($this->options['flg-more'] ) ) {
 			switch	($this->options['flg-more'] ) {
@@ -169,33 +194,10 @@
 	}
 
 	// 2.6.1
-	if		(version_compare($this->options['plugin-version'],	'2.6.1', '<' ) ) {
-		if	(isset($this->options['flg-ssl'] ) ) {
-			$this->options['flg-sslverify']	=	$this->options['flg-ssl'] ? 0 : 1 ;
-			unset($this->options['flg-ssl'] );
-		}
-		if	(isset($this->options['radius'] ) ) {
-			$this->options['in-border-radius']	=	$this->options['radius'];
-			$this->options['ex-border-radius']	=	$this->options['radius'];
-			$this->options['th-border-radius']	=	$this->options['radius'];
-			unset($this->options['radius'] );
-		}
-		if	(isset($this->options['border'] ) ) {
-			$this->options['in-border-enabled']	=	$this->options['border'];
-			$this->options['ex-border-enabled']	=	$this->options['border'];
-			$this->options['th-border-enabled']	=	$this->options['border'];
-			$this->options['in-border-style']	=	$this->options['border-style'];
-			$this->options['ex-border-style']	=	$this->options['border-style'];
-			$this->options['th-border-style']	=	$this->options['border-style'];
-			$this->options['in-border-width']	=	$this->options['border-width'];
-			$this->options['ex-border-width']	=	$this->options['border-width'];
-			$this->options['th-border-width']	=	$this->options['border-width'];
-			unset($this->options['border'] );
-			unset($this->options['border-style'] );
-			unset($this->options['border-width'] );
-		}
+	if	(array_key_exists('flg-ssl', $this->options ) ) {
+		$this->options['flg-sslverify']	=	$this->options['flg-ssl'] ? 0 : 1 ;
+		unset($this->options['flg-ssl'] );
 	}
-
 	// プラグインバージョンの更新とCSSの補助バージョンのリセット
 	if		($this->options['plugin-version']	<>	PZLKC_PLUGIN_VERSION ) {
 		if	($this->options['css-count']		>	5 ) {
