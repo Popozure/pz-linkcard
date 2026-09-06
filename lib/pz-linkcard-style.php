@@ -82,15 +82,15 @@
 				$file_text	=	str_replace('/*ADDED-COLOR*/',			'color: #fff;', $file_text );
 				$file_text	=	str_replace('/*ADDED-SIZE*/',			'font-size: 12px;', $file_text );
 				$file_text	=	str_replace('/*ADDED-HEIGHT*/',			'line-height: 30px;', $file_text );
-				$added_height	=	intval(preg_replace('/[^0-9]/', '', isset($prop['added-height'] ) ? $prop['added-height']  : self::DEFAULTS['added-height']  ) );
+				$added_height	=	intval(preg_replace('/[^0-9]/', '', isset($prop['added-height'] ) ? $prop['added-height']  : self::pz_GetDefaultOption('added-height' )  ) );
 				$file_text		=	str_replace('/*EX-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; '.txt_color('background-color: ', $prop['ex-border-color'] ).' border-radius: 2px;', $file_text );
 				$file_text		=	str_replace('/*IN-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; '.txt_color('background-color: ', $prop['in-border-color'] ).' border-radius: 2px;', $file_text );
 				$file_text		=	str_replace('/*TH-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; '.txt_color('background-color: ', $prop['th-border-color'] ).' border-radius: 2px;', $file_text );
-				if (isset($prop['thumbnail-resize'] ) && $prop['thumbnail-resize'] == '1' ) {
-					$size_title			=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-size'] ) ? $prop['title-size'] : self::DEFAULTS['title-size'] ) );
-					$size_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-size'] ) ? $prop['excerpt-size'] : self::DEFAULTS['excerpt-size'] ) );
-					$height_title		=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-height'] ) ? $prop['title-height'] : self::DEFAULTS['title-height'] ) );
-					$height_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-height'] ) ? $prop['excerpt-height'] : self::DEFAULTS['excerpt-height'] ) );
+				if (isset($prop['flg-resize'] ) && $prop['flg-resize'] == '1' ) {
+					$size_title			=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-size'] ) ? $prop['title-size'] : self::pz_GetDefaultOption('title-size' ) ) );
+					$size_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-size'] ) ? $prop['excerpt-size'] : self::pz_GetDefaultOption('excerpt-size' ) ) );
+					$height_title		=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-height'] ) ? $prop['title-height'] : self::pz_GetDefaultOption('title-height' ) ) );
+					$height_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-height'] ) ? $prop['excerpt-height'] : self::pz_GetDefaultOption('excerpt-height' ) ) );
 					$thumbnail_width	=	150;
 					$file_text	=	str_replace('/*RESIZE*/',
 						'@media screen and (max-width: 767px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-this-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.9).'px; line-height: '.intval($height_title * 0.9).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.95).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.9).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.9).'px; } }'.
@@ -410,7 +410,7 @@
 			$file_text		=	str_replace('/*CARD-RIGHT*/',	'margin-right: '.	$margin_right.	';', $file_text );
 
 			// img 要素のスタイルをリセット
-			if (isset($prop['style-reset-img'] ) ) {
+			if (isset($prop['flg-style-reset'] ) ) {
 				$file_text	=	str_replace('/*RESET-IMG*/',	'margin: 0 !important; padding: 0; border: none;', $file_text );
 				$file_text	=	str_replace('/*STATIC*/',		'position: static !important;', $file_text );
 				$file_text	=	str_replace('/*IMPORTANT*/',	'!important', $file_text );
@@ -510,7 +510,7 @@
 			}
 
 			// サムネイルと文字サイズのレスポンシブ調整
-			if (isset($prop['thumbnail-resize'] ) && $prop['thumbnail-resize'] ) {
+			if (isset($prop['flg-resize'] ) && $prop['flg-resize'] ) {
 				$size_title			=	intval(preg_replace('/[^0-9]/', '', $prop['title-size'] ) );
 				$size_excerpt		=	intval(preg_replace('/[^0-9]/', '', $prop['excerpt-size'] ) );
 				$height_title		=	intval(preg_replace('/[^0-9]/', '', $prop['title-height'] ) );

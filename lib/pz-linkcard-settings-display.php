@@ -7,7 +7,7 @@
 		<tr>
 			<th scope="row"><?php esc_html_e('Reset Image', 'pz-linkcard' ); ?></th>
 			<td>
-				<?php pz_Checkbox($prop, 'style-reset-img', __('When unnecessary frame is displayed on the image, you can improve it by case', 'pz-linkcard' ) ); ?>
+				<?php pz_Checkbox($prop, 'flg-style-reset', __('When unnecessary frame is displayed on the image, you can improve it by case', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
 

@@ -97,7 +97,7 @@
 	// 入力値
 	$prop		=	null;
 	if	(isset($_POST['properties'] ) ) {
-		$prop		=	array_merge(self::DEFAULTS, is_array($this->options ) ? $this->options : array() );
+		$prop		=	array_merge(self::pz_GetDefaultOptions(), is_array($this->options ) ? $this->options : array() );
 		foreach	($_POST['properties']	as	$key => $value ) {
 			$prop[$key]	=	stripslashes($value );
 		}
@@ -285,7 +285,7 @@
 		case	'save-changed':								// 変更を保存ボタン
 			$flg_change			=	false;
 			if	(isset($_POST['properties'] ) ) {
-				$prop	=	array_merge(self::DEFAULTS, is_array($this->options ) ? $this->options : array() );
+				$prop	=	array_merge(self::pz_GetDefaultOptions(), is_array($this->options ) ? $this->options : array() );
 				foreach	($_POST['properties']	as	$key => $value ) {
 					$prop[$key]	=	stripslashes($value );
 					if	(array_key_exists($key, $this->options ) ) {

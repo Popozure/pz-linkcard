@@ -46,7 +46,7 @@
 													'2'		=>		__('Bottom Side',		'pz-linkcard' ),
 											) );
 											echo	'&emsp;';
-											pz_Checkbox($prop, 'use-sitename', __('Use Site Name', 'pz-linkcard' ) );
+											pz_Checkbox($prop, 'flg-use-sitename', __('Use Site Name', 'pz-linkcard' ) );
 										?>
 									</td>
 								</tr>
@@ -176,7 +176,7 @@
 			<th scope="row"><?php esc_html_e('Link the Entire Card', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php
-					pz_Checkbox($prop, 'link-all', __('Wrap the entire card in a link.', 'pz-linkcard' ) );
+					pz_Checkbox($prop, 'flg-linkall', __('Wrap the entire card in a link.', 'pz-linkcard' ) );
 				?>
 			</td>
 		</tr>
@@ -195,7 +195,7 @@
 			<td>
 				<label>
 					<input type="hidden"   name="properties[thumbnail-resize]" value="" />
-					<input type="checkbox" name="properties[thumbnail-resize]" value="1" <?php checked($prop['thumbnail-resize'] ); ?> />
+					<input type="checkbox" name="properties[thumbnail-resize]" value="1" <?php checked($prop['flg-resize'] ); ?> />
 					<?php esc_html_e('Adjust the thumbnail and text size according to the width.', 'pz-linkcard' ); ?>
 				</label>
 			</td>

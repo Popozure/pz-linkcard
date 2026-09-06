@@ -97,26 +97,23 @@
 		}
 
 		foreach	(array('ex', 'in', 'th' ) as $t ) {
-			if	(array_key_exists('border', $this->options ) && !array_key_exists($t.'-border-enabled', $this->options ) ) {
-				$this->options[$t.'-border-enabled']	=	$this->options['border'];
-			}
 			foreach	(array('color', 'style', 'width') as $item ) {
 				if	(array_key_exists('border-'.$item, $this->options ) && !array_key_exists($t.'-border-'.$item, $this->options ) ) {
-					$this->options[$t.'-border-'.$item]	=	$this->options['border-'.$item];
+					$this->options[$t.'-border-enabled']	=	1;
+					$this->options[$t.'-border-'.$item]		=	$this->options['border-'.$item];
 				}
 			}
 			if	($old_radius !== null && !array_key_exists($t.'-border-radius', $this->options ) ) {
-				$this->options[$t.'-border-radius']	=	$old_radius;
+				$this->options[$t.'-border-enabled']	=	1;
+				$this->options[$t.'-border-radius']		=	$old_radius;
 			}
 			if	(!empty($this->options['shadow'] ) ) {
 				$this->options[$t.'-shadow-enabled']	=	1;
-				$this->options[$t.'-shadow-color']	=	'#444444';
+				$this->options[$t.'-shadow-color']	=	'#888888';
 				$this->options[$t.'-shadow-x']		=	8;
 				$this->options[$t.'-shadow-y']		=	8;
 				$this->options[$t.'-shadow-blur']	=	8;
-				if	(!array_key_exists($t.'-shadow-spread', $this->options ) ) {
-					$this->options[$t.'-shadow-spread']	=	0;
-				}
+				$this->options[$t.'-shadow-spread']	=	0;
 				if	(!array_key_exists($t.'-shadow-inset', $this->options ) ) {
 					$this->options[$t.'-shadow-inset']	=	!empty($this->options['shadow-inset'] ) ? 1 : 0;
 				}
@@ -182,7 +179,7 @@
 		}
 			
 		if	(intval($this->options['width'] ) == 0 ) {
-			$this->options['width']				=	'500px';
+			$this->options['width']					=	'500px';
 		}
 
 		// 縁取りの色をクリアする
