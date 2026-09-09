@@ -236,12 +236,11 @@
 		$this->options['flg-sslverify']	=	$this->options['flg-ssl'] ? 0 : 1 ;
 		unset($this->options['flg-ssl'] );
 	}
-	// プラグインバージョンの更新とCSSの補助バージョンのリセット
-	if		($this->options['plugin-version']	<>	PZLKC_PLUGIN_VERSION ) {
-		if	($this->options['css-count']		>	5 ) {
-			$this->options['css-count']		=	0;
-		}
+	// プラグインバージョンの更新
+	$plugin_version_changed	=	($this->options['plugin-version']	<>	PZLKC_PLUGIN_VERSION );
+	if		($plugin_version_changed ) {
 		$this->options['plugin-version']	=	PZLKC_PLUGIN_VERSION;
+		$this->options['css-count']			=	0;
 	}
 
 	// DBテーブル作成・更新＆メンテナンス
@@ -253,7 +252,7 @@
 	}
 
 	// オプションの更新
-	$result		=	$this->pz_SaveOptions();
+	$result		=	$this->pz_SaveOptions(!$plugin_version_changed );
 	if	($result		==	false ) {
 		return	false;
 	}

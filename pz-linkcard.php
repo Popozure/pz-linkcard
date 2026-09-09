@@ -2606,7 +2606,7 @@ class class_pz_linkcard {
 	}
 
 	// 設定を更新する
-	private	function	pz_SaveOptions() {
+	private	function	pz_SaveOptions($increment_css_count = true ) {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 
 		// 変更前
@@ -2620,7 +2620,9 @@ class class_pz_linkcard {
 		}
 
 		// CSSバージョン（CSSキャッシュ対策）
-		$this->options['css-count']			+=	1;
+		if	($increment_css_count ) {
+			$this->options['css-count']			+=	1;
+		}
 
 		// プラグインバージョン
 		$this->options['plugin-version']	=	PZLKC_PLUGIN_VERSION;

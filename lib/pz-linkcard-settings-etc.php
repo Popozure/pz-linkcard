@@ -15,7 +15,7 @@
 		</tr>
 		<tr class="pz-debug-only">
 			<th scope="row"><?php esc_html_e('Stylesheet Version', 'pz-linkcard' ); ?></th>
-			<td><input name="properties[css-count]"		type="number" min="0" step="1" size="10" title="<?php echo	esc_attr($prop['css-count'] ); ?>" value="<?php echo	esc_attr($prop['css-count'] ); ?>" readonly="readonly" <?php if ($prop['admin-mode'] ) { echo	'onDblClick="this.readOnly=false;" '; }?>/></td>
+			<td><input name="" type="number" min="0" step="1" size="10" title="<?php echo esc_attr($prop['css-count'] ); ?>" value="<?php echo esc_attr($prop['css-count'] ); ?>" readonly="readonly" /></td>
 		</tr>
 		<tr class="pz-debu-only">
 			<th scope="row"><?php echo __('CSS File URL', 'pz-linkcard' ); ?></th>
