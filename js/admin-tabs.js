@@ -2,7 +2,7 @@
 	// Pz-LinkCardの設定画面のときのみ動作
 	if (document.querySelector('.pz-dashboard')) {
 		// 最後に開いていたタブを開く
-		document.querySelector('input[name="tab-now"]').addEventListener('change', tab_open_last);
+		document.querySelector('input[name="tab-now"]')?.addEventListener('change', tab_open_last);
 	}
 
 	// 画面表示された時に実行
@@ -28,7 +28,10 @@
 
 	// 最後に開いていたタブを開く
 	function tab_open_last() {
-		let name = document.querySelector('input[name="tab-now"]').value;
+		const tabNow = document.querySelector('input[name="tab-now"]');
+		if (!tabNow) return;
+
+		let name = tabNow.value;
 		let tab = document.querySelector(`a[name="${name}"]`);
 		// 無効化されているタブの場合、次のタブにする
 		if (!tab || tab.style.display === 'none') {
@@ -50,12 +53,15 @@
 	// 選択されたタブを開く
 	function tab_open(event) {
 		event.preventDefault();
+		const tabNow = document.querySelector('input[name="tab-now"]');
+		if (!tabNow) return;
+
 		document.querySelectorAll('.pz-page').forEach(el => el.classList.remove('pz-page-active'));
 		document.querySelectorAll('.pz-tab').forEach(el => el.classList.remove('pz-tab-active'));
 
 		this.classList.add('pz-tab-active');
 		document.querySelector(this.getAttribute('href'))?.classList.add('pz-page-active');
-		document.querySelector('input[name="tab-now"]').value = this.getAttribute('name');
+		tabNow.value = this.getAttribute('name');
 		tab_update_name(this);
 	}
 
@@ -70,7 +76,10 @@
 	// 移動先のタブの処理
 	function tab_select(direction) {
 		let tabs = [...document.querySelectorAll('.pz-tab')].filter(tab => tab.style.display !== 'none');
+		if (!tabs.length) return;
+
 		let activeIndex = tabs.findIndex(tab => tab.classList.contains('pz-tab-active'));
+		if (activeIndex < 0) activeIndex = 0;
 
 		if (direction === -1 && activeIndex > 0) activeIndex--;
 		if (direction === 1 && activeIndex < tabs.length - 1) activeIndex++;
@@ -78,8 +87,9 @@
 		tabs.forEach(tab => tab.classList.remove('pz-tab-active'));
 		document.querySelectorAll('.pz-page-active').forEach(page => page.classList.remove('pz-page-active'));
 		tabs[activeIndex].classList.add('pz-tab-active');
-		document.querySelector(tabs[activeIndex].getAttribute('href')).classList.add('pz-page-active');
-		document.querySelector('input[name="tab-now"]').value = tabs[activeIndex].getAttribute('name');
+		document.querySelector(tabs[activeIndex].getAttribute('href'))?.classList.add('pz-page-active');
+		const tabNow = document.querySelector('input[name="tab-now"]');
+		if (tabNow) tabNow.value = tabs[activeIndex].getAttribute('name');
 		tab_update_name(tabs[activeIndex]);
 		tabs[activeIndex].focus();
 	}

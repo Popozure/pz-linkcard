@@ -2851,8 +2851,9 @@ class class_pz_linkcard {
 	public	function	action_admin_enqueue_scripts($hook ) {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 
+		$admin_css_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/admin.css' );
 		if	($this->is_editor_modal_screen($hook ) ) {
-			wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			PZLKC_PLUGIN_VERSION );
+			wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
 			return;
 		}
 
@@ -2864,7 +2865,6 @@ class class_pz_linkcard {
 			return;
 		}
 
-		wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-tabs',	PZLKC_PZLKC_URL_ADMIN_TAB,			array('jquery' ),	PZLKC_PLUGIN_VERSION, true );
 		wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-js',		PZLKC_PZLKC_URL_ADMIN_JS,			array('jquery' ),	PZLKC_PLUGIN_VERSION, true );
 		wp_localize_script	(self::PLUGIN_SLUG.'-admin-js',		'pzLinkCardAdmin', array(
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
@@ -2874,12 +2874,14 @@ class class_pz_linkcard {
 			'mediaButton'	=>	__('Use this image', 'pz-linkcard' ),
 			'discardChanges'	=>	__('Discard changes?', 'pz-linkcard' ),
 		) );
-		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			PZLKC_PLUGIN_VERSION );
+		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
 
 		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE ) {
 			wp_enqueue_media();
 		}
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
+			$admin_tabs_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-tabs.js' );
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-tabs',	PZLKC_PZLKC_URL_ADMIN_TAB,			array('jquery' ),	$admin_tabs_version, true );
 			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );
 			wp_localize_script	(self::PLUGIN_SLUG.'-color-picker',	'pz_lkc_color_picker', array(
 				'labels'	=>	array(
@@ -3020,7 +3022,7 @@ class class_pz_linkcard {
 	public	function	action_enqueue_block_editor_assets() {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 
-		wp_enqueue_style(self::PLUGIN_SLUG.'-block-editor', PZLKC_PZLKC_URL_ADMIN_CSS, array(), PZLKC_PLUGIN_VERSION );
+		wp_enqueue_style(self::PLUGIN_SLUG.'-block-editor', PZLKC_PZLKC_URL_ADMIN_CSS, array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/admin.css' ) );
 		$this->enqueue_block_card_styles();
 	}
 

@@ -580,7 +580,8 @@
             const tabRect = wrapper.getBoundingClientRect();
             const submitRect = submitFloat?.getBoundingClientRect();
             if (submitRect && !wrapper.classList.contains("pz-tabbar-fixed")) {
-                submitGap = Math.max(0, Math.round(submitRect.top - tabRect.bottom));
+                const minGap = window.matchMedia("(max-width: 782px)").matches ? 32 : 12;
+                submitGap = Math.max(minGap, Math.round(submitRect.top - tabRect.bottom));
             }
         };
 
@@ -599,7 +600,9 @@
                 wrapper.style.left = `${fixedLeft}px`;
                 wrapper.style.width = `${fixedWidth}px`;
                 if (submitFloat) {
-                    if (submitGap === null) submitGap = 12;
+                    const minGap = window.matchMedia("(max-width: 782px)").matches ? 32 : 12;
+                    if (submitGap === null) submitGap = minGap;
+                    submitGap = Math.max(minGap, submitGap);
                     submitFloat.style.setProperty("--pz-submit-sticky-top", `${fixedTop + wrapper.offsetHeight + submitGap}px`);
                 }
             } else {
