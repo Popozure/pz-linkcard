@@ -10,13 +10,37 @@
         if (!win || !handle) return;
         const form = document.querySelector(".pz-settings form");
         const storageKey = "pz-linkcard-preview-state";
+        const labels = (typeof pzLinkCardPreview !== "undefined" && pzLinkCardPreview.labels) || {};
+        const restoreButton = document.createElement("button");
+        restoreButton.type = "button";
+        restoreButton.className = "pz-settings-preview-restore";
+        restoreButton.textContent = labels.restorePreview || "□Preview";
+        restoreButton.setAttribute("aria-label", labels.restorePreviewAria || "Show preview");
+        restoreButton.hidden = true;
+        document.body.appendChild(restoreButton);
         let previewFadeTimer = null;
+        let previewClosed = false;
         const showPreviewWindow = () => {
+            previewClosed = false;
             window.clearTimeout(previewFadeTimer);
             win.style.display = "";
             window.requestAnimationFrame(() => {
                 win.classList.add("pz-settings-preview-ready");
             });
+        };
+        const showRestoreButton = () => {
+            restoreButton.hidden = false;
+            window.requestAnimationFrame(() => {
+                restoreButton.classList.add("pz-settings-preview-restore-ready");
+            });
+        };
+        const hideRestoreButton = () => {
+            restoreButton.classList.remove("pz-settings-preview-restore-ready");
+            window.setTimeout(() => {
+                if (!restoreButton.classList.contains("pz-settings-preview-restore-ready")) {
+                    restoreButton.hidden = true;
+                }
+            }, 160);
         };
         const hidePreviewWindow = () => {
             window.clearTimeout(previewFadeTimer);
@@ -34,6 +58,13 @@
 
             win.addEventListener("transitionend", onTransitionEnd);
             previewFadeTimer = window.setTimeout(finish, 220);
+        };
+        const showIconPreview = () => {
+            previewClosed = true;
+            setDockedScrollSpace(0);
+            win.classList.remove("pz-settings-preview-ready", "pz-settings-preview-docked");
+            win.style.display = "none";
+            showRestoreButton();
         };
 
         const preventPreviewLink = e => {
@@ -131,6 +162,7 @@
             if (rect.width <= 0 || rect.height <= 0) return null;
 
             const state = {
+                ...(readStoredState() || {}),
                 "preview-mode": previewDocked ? "docked" : "window",
                 "preview-left": Math.round(rect.left),
                 "preview-top": Math.round(rect.top),
@@ -138,6 +170,21 @@
                 "preview-height": Math.round(rect.height),
                 "preview-docked-height": Math.round(previewDocked ? rect.height : (readStateNumber(null, "preview-docked-height") || rect.height)),
             };
+            if (previewDocked) {
+                Object.assign(state, {
+                    "docked-left": Math.round(rect.left),
+                    "docked-top": Math.round(rect.top),
+                    "docked-width": Math.round(rect.width),
+                    "docked-height": Math.round(rect.height),
+                });
+            } else {
+                Object.assign(state, {
+                    "window-left": Math.round(rect.left),
+                    "window-top": Math.round(rect.top),
+                    "window-width": Math.round(rect.width),
+                    "window-height": Math.round(rect.height),
+                });
+            }
             Object.entries(state).forEach(([name, value]) => setStateInput(name, value));
             try {
                 window.localStorage?.setItem(storageKey, JSON.stringify(state));
@@ -145,6 +192,34 @@
                 // Ignore storage failures such as private browsing quota errors.
             }
             return state;
+        };
+        const saveIconState = () => {
+            const rect = getWindowRect();
+            const storedState = readStoredState() || {};
+            const state = {
+                ...storedState,
+                "preview-mode": "icon",
+                "preview-restore-mode": previewDocked ? "docked" : "window",
+                "preview-left": Math.round(rect.left),
+                "preview-top": Math.round(rect.top),
+                "preview-width": Math.round(rect.width),
+                "preview-height": Math.round(rect.height),
+                "preview-docked-height": Math.round(previewDocked ? rect.height : (readStateNumber(null, "preview-docked-height") || rect.height)),
+                "window-left": readStateNumber(storedState, "window-left"),
+                "window-top": readStateNumber(storedState, "window-top"),
+                "window-width": readStateNumber(storedState, "window-width"),
+                "window-height": readStateNumber(storedState, "window-height"),
+                "docked-left": readStateNumber(storedState, "docked-left"),
+                "docked-top": readStateNumber(storedState, "docked-top"),
+                "docked-width": readStateNumber(storedState, "docked-width"),
+                "docked-height": readStateNumber(storedState, "docked-height"),
+            };
+            setStateInput("preview-mode", "icon");
+            try {
+                window.localStorage?.setItem(storageKey, JSON.stringify(state));
+            } catch (err) {
+                // Ignore storage failures such as private browsing quota errors.
+            }
         };
         const persistPreviewState = async () => {
             if (typeof pzLinkCardPreview === "undefined" || !pzLinkCardPreview.ajaxUrl) return;
@@ -219,6 +294,7 @@
         };
 
         const keepInViewport = () => {
+            if (previewClosed) return;
             if (previewDocked) {
                 applyDockedRect(getWindowRect().height);
                 return;
@@ -297,14 +373,19 @@
         };
         const restorePreviewState = () => {
             const stored = readStoredState() || {};
-            const mode = stored["preview-mode"] || readStateInput("preview-mode");
-            const left = readStateNumber(stored, "preview-left");
-            const top = readStateNumber(stored, "preview-top");
-            const width = readStateNumber(stored, "preview-width");
-            const height = readStateNumber(stored, "preview-height");
-            const dockedHeight = readStateNumber(stored, "preview-docked-height") || height;
+            const storedMode = stored["preview-mode"] || readStateInput("preview-mode");
+            const mode = storedMode === "icon" ? (stored["preview-restore-mode"] || "window") : storedMode;
+            const statePrefix = mode === "docked" ? "docked" : "window";
+            const left = readStateNumber(stored, `${statePrefix}-left`) ?? readStateNumber(stored, "preview-left");
+            const top = readStateNumber(stored, `${statePrefix}-top`) ?? readStateNumber(stored, "preview-top");
+            const width = readStateNumber(stored, `${statePrefix}-width`) ?? readStateNumber(stored, "preview-width");
+            const height = readStateNumber(stored, `${statePrefix}-height`) ?? readStateNumber(stored, "preview-height");
+            const dockedHeight = readStateNumber(stored, "docked-height") ?? readStateNumber(stored, "preview-docked-height") ?? height;
 
             if (mode === "docked") {
+                if (left !== null && top !== null && width !== null && height !== null) {
+                    floatingPreviewRect = { left, top, width, height };
+                }
                 applyDockedRect(dockedHeight);
                 return;
             }
@@ -462,21 +543,35 @@
         closeButton?.addEventListener("click", e => {
             e.preventDefault();
             e.stopPropagation();
-            previewDocked = false;
-            win.classList.remove("pz-settings-preview-docked");
-            setDockedScrollSpace(0);
-            updateModeButton();
+            if (!previewDocked) floatingPreviewRect = getWindowRect();
             syncPreviewState();
             persistPreviewState();
-            hidePreviewWindow();
+            saveIconState();
+            showIconPreview();
             closeButton.blur();
+        });
+        restoreButton.addEventListener("click", e => {
+            e.preventDefault();
+            hideRestoreButton();
+            previewClosed = false;
+            win.style.display = "";
+            restorePreviewState();
+            showPreviewWindow();
+            win.focus?.();
         });
 
         window.addEventListener("resize", keepInViewport);
         updateModeButton();
-        restorePreviewState();
+        if ((readStoredState() || {})["preview-mode"] === "icon" || readStateInput("preview-mode") === "icon") {
+            showIconPreview();
+        } else if (readStoredState() || readStateInput("preview-mode")) {
+            restorePreviewState();
+            showPreviewWindow();
+        } else {
+            saveIconState();
+            showIconPreview();
+        }
         initSettingsPreviewLiveStyles(win);
-        showPreviewWindow();
     }
 
     function initSettingsPreviewLiveStyles(win) {
@@ -568,7 +663,12 @@
             return /^-?\d+(\.\d+)?$/.test(String(raw)) ? `${raw}px` : String(raw);
         };
         const applyDisplay = (node, show) => {
-            if (node) node.style.display = show ? "" : "none";
+            if (!node) return;
+            if (show) {
+                node.style.removeProperty("display");
+            } else {
+                node.style.setProperty("display", "none", "important");
+            }
         };
         const resetStyle = (node, props) => {
             if (!node) return;
@@ -730,13 +830,19 @@
 
                 if (heading) {
                     heading.textContent = value(`${prefix}-heading-text`);
-                    applyDisplay(heading, heading.textContent !== "");
-                    applyPartBox(card, ".lkc-heading", `${prefix}-heading`);
+                    const showHeading = heading.textContent !== "";
+                    applyDisplay(heading, showHeading);
+                    if (showHeading) {
+                        applyPartBox(card, ".lkc-heading", `${prefix}-heading`);
+                    }
                 }
                 if (more) {
                     more.textContent = value(`${prefix}-more-text`);
-                    applyDisplay(more, more.textContent !== "" && value("more-style") !== "");
-                    applyPartBox(card, ".lkc-more", `${prefix}-more`);
+                    const showMore = more.textContent !== "" && value("more-style") !== "";
+                    applyDisplay(more, showMore);
+                    if (showMore) {
+                        applyPartBox(card, ".lkc-more", `${prefix}-more`);
+                    }
                 }
                 const addedText = value(`${prefix}-added-text`);
                 let added = info?.querySelector(".lkc-added");
@@ -763,6 +869,11 @@
             textStyle(".lkc-added", "added");
             textStyle(".lkc-heading", "heading");
             textStyle(".lkc-more", "more");
+            win.querySelectorAll("[data-pz-preview-heading], [data-pz-preview-more], .lkc-added").forEach(node => {
+                if (node.textContent.trim() === "") {
+                    node.style.setProperty("display", "none", "important");
+                }
+            });
             applySpecialFormat();
         };
 
@@ -771,8 +882,8 @@
             schedulePreviewCssCallback();
         };
 
-        form.addEventListener("input", syncPreview);
-        form.addEventListener("change", syncPreview);
+        form.addEventListener("input", syncPreview, true);
+        form.addEventListener("change", syncPreview, true);
         const observer = new MutationObserver(mutations => {
             if (!mutations.some(m => m.type === "attributes")) return;
             syncPreview();

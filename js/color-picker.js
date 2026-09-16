@@ -43,10 +43,10 @@ function getContentTop() {
 
 function getPickerBounds() {
   const pr = rect(picker);
-  const minLeft = window.scrollX + Math.max(0, getContentLeft());
-  const minTop = window.scrollY + Math.max(0, getContentTop());
-  const maxLeft = window.scrollX + document.documentElement.clientWidth - pr.width;
-  const maxTop = window.scrollY + document.documentElement.clientHeight - pr.height;
+  const minLeft = Math.max(0, getContentLeft());
+  const minTop = Math.max(0, getContentTop());
+  const maxLeft = document.documentElement.clientWidth - pr.width;
+  const maxTop = document.documentElement.clientHeight - pr.height;
 
   return {
     minLeft,
@@ -63,25 +63,30 @@ function setPickerPosition(left, top) {
 }
 
 // ドラッグ処理を共通化（Pointer Events）
+function startControlDrag(target, e, onMove) {
+  if (e.button != null && e.button !== 0) return false;
+  e.preventDefault();
+  target.setPointerCapture?.(e.pointerId);
+
+  onMove(e);
+
+  const move = (ev) => { ev.preventDefault(); onMove(ev); };
+  const up = (ev) => {
+    target.releasePointerCapture?.(ev.pointerId);
+    window.removeEventListener("pointermove", move, { passive: false });
+    window.removeEventListener("pointerup", up, { passive: false });
+    window.removeEventListener("pointercancel", up, { passive: false });
+  };
+
+  window.addEventListener("pointermove", move, { passive: false });
+  window.addEventListener("pointerup", up, { passive: false });
+  window.addEventListener("pointercancel", up, { passive: false });
+  return true;
+}
+
 function dragHandler(target, onMove) {
   const onPointerDown = (e) => {
-    if (e.button != null && e.button !== 0) return;
-    e.preventDefault();
-    target.setPointerCapture?.(e.pointerId);
-
-    onMove(e);
-
-    const move = (ev) => { ev.preventDefault(); onMove(ev); };
-    const up = (ev) => {
-      target.releasePointerCapture?.(ev.pointerId);
-      window.removeEventListener("pointermove", move, { passive: false });
-      window.removeEventListener("pointerup", up, { passive: false });
-      window.removeEventListener("pointercancel", up, { passive: false });
-    };
-
-    window.addEventListener("pointermove", move, { passive: false });
-    window.addEventListener("pointerup", up, { passive: false });
-    window.addEventListener("pointercancel", up, { passive: false });
+    startControlDrag(target, e, onMove);
   };
 
   target.addEventListener("pointerdown", onPointerDown, { passive: false });
@@ -296,7 +301,7 @@ function updateUI() {
 // ======================================================
 // Drag Events（Pointer Events）
 // ======================================================
-dragHandler(svArea, e => {
+const moveSvArea = e => {
   const r = rect(svArea);
   const { x, y } = getClientXY(e);
 
@@ -308,23 +313,27 @@ dragHandler(svArea, e => {
   isColorEmpty = false;
 
   updateUI();
-});
+};
 
-dragHandler(hueSlider, e => {
+const moveHueSlider = e => {
   sliderMove(e, hueSlider, ratio => {
     state.h = ratio * 359;
     isColorEmpty = false;
     updateUI();
   });
-});
+};
 
-dragHandler(alphaSlider, e => {
+const moveAlphaSlider = e => {
   sliderMove(e, alphaSlider, ratio => {
     state.a = clamp(ratio, 0, 1);
     isColorEmpty = false;
     updateUI();
   });
-});
+};
+
+dragHandler(svArea, moveSvArea);
+dragHandler(hueSlider, moveHueSlider);
+dragHandler(alphaSlider, moveAlphaSlider);
 
 // ======================================================
 // Picker Window Drag Move（縦ズレ修正 + 画面内クランプ + ドラッグ直後閉じ抑止）
@@ -332,17 +341,47 @@ dragHandler(alphaSlider, e => {
 (function enablePickerDrag() {
   let offsetX = 0, offsetY = 0;
   let moved = false;
+  const isPointInThumb = (el, x, y) => {
+    if (!el) return false;
+    const r = rect(el);
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    const radius = Math.min(r.width, r.height) / 2;
+    return Math.hypot(x - cx, y - cy) <= radius;
+  };
 
   picker.addEventListener("pointerdown", e => {
-    const isBlocked =
+    if (e.button != null && e.button !== 0) return;
+    const { x, y } = getClientXY(e);
+    const isControl =
       e.target.closest(".pz-sv-area") ||
       e.target.closest(".pz-hue-slider") ||
-      e.target.closest(".pz-alpha-slider") ||
-      e.target.closest(".pz-input-wrap") ||
+      e.target.closest(".pz-alpha-slider");
+    const isBlocked =
+      isControl ||
+      e.target.closest(".pz-input-wrap input, .pz-input-wrap button") ||
       e.target.closest(".pz-mode-label") ||
       e.target.closest(".pz-palette");
 
     if (isBlocked) return;
+
+    const nearbyControl = [
+      { el: svCursor, onMove: moveSvArea },
+      { el: hueThumb, onMove: moveHueSlider },
+      { el: alphaThumb, onMove: moveAlphaSlider },
+    ].find(item => isPointInThumb(item.el, x, y));
+    if (nearbyControl) {
+      suppressOutsideClose = true;
+      const clearSuppression = () => {
+        window.setTimeout(() => { suppressOutsideClose = false; }, 0);
+        window.removeEventListener("pointerup", clearSuppression);
+        window.removeEventListener("pointercancel", clearSuppression);
+      };
+      window.addEventListener("pointerup", clearSuppression);
+      window.addEventListener("pointercancel", clearSuppression);
+      startControlDrag(picker, e, nearbyControl.onMove);
+      return;
+    }
 
     pickerDragging = true;
     moved = false;
@@ -365,9 +404,9 @@ dragHandler(alphaSlider, e => {
     moved = true;
     suppressOutsideClose = true;
 
-    // client -> ページ座標へは最後に scroll を足す
-    let left = (e.clientX - offsetX) + window.scrollX;
-    let top  = (e.clientY - offsetY) + window.scrollY;
+    // Fixed panel positioning uses viewport coordinates.
+    const left = e.clientX - offsetX;
+    const top  = e.clientY - offsetY;
 
     // 画面(ビューポート)内にクランプ
     setPickerPosition(left, top);
@@ -501,7 +540,8 @@ function renderInputFields() {
 
     [rgb.r, rgb.g, rgb.b, Math.round(state.a * 100)].forEach(val => {
       const input = document.createElement("input");
-      input.type = "number";
+      input.type = "text";
+      input.inputMode = "numeric";
       input.className = "pz-hex-input pz-small";
       input.value = val;
 
@@ -532,7 +572,8 @@ function renderInputFields() {
     [Math.round(hsl.h), Math.round(hsl.s * 100), Math.round(hsl.l * 100), Math.round(state.a * 100)]
       .forEach(val => {
         const input = document.createElement("input");
-        input.type = "number";
+        input.type = "text";
+        input.inputMode = "numeric";
         input.className = "pz-hex-input pz-small";
         input.value = val;
 
@@ -656,23 +697,23 @@ document.querySelectorAll(".pz-color-picker").forEach(input => {
     const r = rect(wrapper);
     picker.style.display = "block"; // 先に表示（高さを測るため）
 
-    // 横位置（そのまま）
-    let left = r.left + window.scrollX;
+    // Horizontal position in viewport coordinates.
+    let left = r.left;
 
-    // 下に開いた場合の top
-    let topBelow = r.bottom + window.scrollY + 6;
+    // Top when opening below the trigger.
+    let topBelow = r.bottom + 6;
 
     // ピッカーの高さ
     const pickerRect = rect(picker);
 
-    // ビューポート下端（ページ座標）
-    const viewportBottom = window.scrollY + window.innerHeight;
+    // Viewport bottom.
+    const viewportBottom = document.documentElement.clientHeight;
 
     // 下がはみ出すか？
     let top;
     if (topBelow + pickerRect.height > viewportBottom) {
       // 上に開く
-      top = r.top + window.scrollY - pickerRect.height - 6;
+      top = r.top - pickerRect.height - 6;
     } else {
       // 下に開く
       top = topBelow;

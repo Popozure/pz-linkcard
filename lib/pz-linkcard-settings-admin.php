@@ -87,6 +87,12 @@
 				<input type="text" name="properties[db-version]"     value="<?php echo esc_attr($prop['db-version'] ); ?>"     size="40" readonly="readonly" <?php if ($prop['admin-mode'] ) { echo	'ondblclick="this.readOnly=false;" '; }?>/>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Size of the options', 'pz-linkcard' ); ?></th>
+			<td>
+				<input type="text" size="10" value="<?php echo strlen(serialize($this->options) ); ?>"     size="40" readonly="readonly" <?php if ($prop['admin-mode'] ) { echo	'ondblclick="this.readOnly=false;" '; }?>/>
+			</td>
+		</tr>
 	</table>
 
 	<h2><?php esc_html_e('for Debug', 'pz-linkcard' ); ?></h2>

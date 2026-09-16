@@ -17,10 +17,13 @@
   </div>
 
   <div class="pz-preview-row">
-    <div class="pz-preview-circle" id="previewCircle"></div>
+    <div class="pz-preview-control">
+      <div class="pz-preview-circle" id="previewCircle"></div>
 
     <!-- モード切替（button化） -->
     <button type="button" id="modeLabel" class="pz-mode-label is-hex"></button>
+
+    </div>
 
     <div class="pz-input-wrap" id="inputWrap"></div>
   </div>

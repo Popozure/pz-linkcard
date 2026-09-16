@@ -187,7 +187,7 @@ class class_pz_linkcard {
 			'ex-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'ex-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'ex-image'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -297,7 +297,7 @@ class class_pz_linkcard {
 			'in-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'in-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'in-image'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -410,7 +410,7 @@ class class_pz_linkcard {
 			'th-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'th-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'th-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'th-image'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'th-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -3062,14 +3062,18 @@ class class_pz_linkcard {
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			$admin_tabs_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-tabs.js' );
 			$preview_js_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/pz-linkcard-preview.js' );
-			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-tabs',	PZLKC_PZLKC_URL_ADMIN_TAB,			array('jquery' ),	$admin_tabs_version, true );
-			wp_enqueue_script	(self::PLUGIN_SLUG.'-preview',	PZLKC_PZLKC_URL_PREVIEW_JS,		array(),	$preview_js_version, true );
-			wp_localize_script	(self::PLUGIN_SLUG.'-preview',	'pzLinkCardPreview', array(
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-tabs',	PZLKC_PZLKC_URL_ADMIN_TAB,	array('jquery' ),	$admin_tabs_version, true );
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-preview',		PZLKC_PZLKC_URL_PREVIEW_JS,	array(),	$preview_js_version, true );
+			wp_localize_script	(self::PLUGIN_SLUG.'-preview',		'pzLinkCardPreview',		array(
 				'ajaxUrl'	=>	admin_url('admin-ajax.php' ),
 				'nonce'		=>	wp_create_nonce('pz_lkc_preview_render' ),
 				'action'	=>	'pz_lkc_preview_render',
 				'stateNonce'	=>	wp_create_nonce('pz_lkc_preview_state' ),
 				'stateAction'	=>	'pz_lkc_preview_state',
+				'labels'	=>	array(
+					'restorePreview'		=>	__('Preview', 'pz-linkcard' ),
+					'restorePreviewAria'	=>	__('Preview', 'pz-linkcard' ),
+				),
 			) );
 			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );
 			wp_localize_script	(self::PLUGIN_SLUG.'-color-picker',	'pz_lkc_color_picker', array(

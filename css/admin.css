@@ -3061,6 +3061,7 @@ a.pz-thx {
 	opacity: 1;
 	pointer-events: auto;
 	transition-delay: 0s;
+	box-shadow: 8px 8px 8px rgba(0, 0, 0, 0.22 );
 }
 
 .pz-settings-preview-handle {
@@ -3121,8 +3122,11 @@ a.pz-thx {
 	outline: none;
 }
 
-.pz-settings-preview-dragging,
-.pz-settings-preview-resizing {
+.pz-settings-preview-window.pz-settings-preview-dragging {
+	opacity: 0.6;
+}
+
+.pz-settings-preview-window.pz-settings-preview-resizing {
 	opacity: 0.96;
 }
 
@@ -3136,6 +3140,36 @@ a.pz-thx {
 
 .pz-settings-preview-window.pz-settings-preview-animating {
 	transition: left 0.1s, top 0.1s, right 0.1s, bottom 0.1s, width 0.1s, height 0.1s, border-radius 0.1s, box-shadow 0.1s, opacity 0.16s ease, visibility 0s linear 0.16s;
+}
+
+.pz-settings-preview-restore {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+	z-index: 10009;
+	padding: 4px 10px;
+	border: 1px solid #1d2327;
+	background: #000;
+	color: #fff;
+	font-size: 12px;
+	line-height: 1.5;
+	cursor: pointer;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity 0.16s ease, visibility 0s linear 0.16s;
+}
+
+.pz-settings-preview-restore.pz-settings-preview-restore-ready {
+	visibility: visible;
+	opacity: 1;
+	transition-delay: 0s;
+}
+
+.pz-settings-preview-restore:hover,
+.pz-settings-preview-restore:focus-visible {
+	background: #1d2327;
+	color: #fff;
+	outline: none;
 }
 
 body.pz-settings-preview-docked-active #wpbody-content {

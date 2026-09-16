@@ -67,6 +67,9 @@
 		'ex-get'				=>		'ex-get-from',				// パラメータ名変更のため
 		'in-get'				=>		'in-get-from',				// パラメータ名変更のため
 		'flg-get-pid'			=>		'in-get-url',				// Ver.2.5.6 パラメータ名変更のため
+		'ex-image'				=>		'ex-bg-image',				// パラメータ名変更のため
+		'in-image'				=>		'in-bg-image',				// パラメータ名変更のため
+		'th-image'				=>		'th-bg-image',				// パラメータ名変更のため
 		);
 	foreach ($rename_key		as	$old => $new ) {
 		if	(array_key_exists($old, $this->options ) ) {

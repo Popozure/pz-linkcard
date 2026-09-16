@@ -88,6 +88,7 @@
         document.querySelectorAll(".pz-card-range").forEach(el =>
             el.addEventListener("keydown", resetCardRange)
         );
+        initCardRangeDragCancel();
         document.querySelectorAll(".pz-card-prop-number input[type=number]").forEach(el =>
             el.addEventListener("input", syncCardNumber)
         );
@@ -281,6 +282,75 @@
         e.preventDefault();
         range.value = resetValue;
         range.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+
+    function initCardRangeDragCancel() {
+        document.querySelectorAll(".pz-card-range").forEach(range => {
+            let dragStartValue = null;
+            let activePointerId = null;
+
+            const stopNativeDrag = () => {
+                const wasDisabled = range.disabled;
+                range.disabled = true;
+                range.blur();
+                window.requestAnimationFrame(() => {
+                    range.disabled = wasDisabled;
+                });
+            };
+
+            const cancelDrag = e => {
+                if (dragStartValue === null) return;
+                if (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                range.value = dragStartValue;
+                range.dispatchEvent(new Event("input", { bubbles: true }));
+                range.dispatchEvent(new Event("change", { bubbles: true }));
+                if (activePointerId !== null) {
+                    try {
+                        range.releasePointerCapture?.(activePointerId);
+                    } catch (err) {
+                        // Ignore if the browser already released pointer capture.
+                    }
+                }
+                stopNativeDrag();
+                dragStartValue = null;
+                activePointerId = null;
+            };
+
+            range.addEventListener("pointerdown", e => {
+                if (e.button === 0) {
+                    dragStartValue = range.value;
+                    activePointerId = e.pointerId;
+                    range.setPointerCapture?.(e.pointerId);
+                    return;
+                }
+                if (e.button === 2) {
+                    cancelDrag(e);
+                }
+            });
+            range.addEventListener("mousedown", e => {
+                if (e.button === 2 && dragStartValue !== null) {
+                    cancelDrag(e);
+                }
+            });
+            range.addEventListener("pointerup", e => {
+                if (activePointerId !== null && e.pointerId === activePointerId) {
+                    dragStartValue = null;
+                    activePointerId = null;
+                }
+            });
+            range.addEventListener("pointercancel", () => {
+                dragStartValue = null;
+                activePointerId = null;
+            });
+            range.addEventListener("contextmenu", e => {
+                if (dragStartValue !== null) {
+                    cancelDrag(e);
+                }
+            });
+        });
     }
 
     function updateCardRangeFills() {
@@ -633,6 +703,8 @@
         const submitFloat = dashboard?.querySelector(".pz-submit-float");
         const tabbarSpacer = document.createElement("div");
         let lastWheelAt = 0;
+        let rightButtonDown = false;
+        let rightWheelUsed = false;
         let submitGap = null;
         let invalidNavigationActive = false;
 
@@ -807,6 +879,70 @@
             openTab(tabs[nextIndex], focusTab);
         };
 
+        dashboard.addEventListener("wheel", e => {
+            if (!e.shiftKey) return;
+
+            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+            if (delta === 0) return;
+
+            if (e.shiftKey && tabbar.contains(e.target)) {
+                e.preventDefault();
+                e.stopPropagation();
+                const now = Date.now();
+                if (now - lastWheelAt < 120) return;
+                lastWheelAt = now;
+                moveTab(delta > 0 ? 1 : -1, true);
+                return;
+            }
+
+            const switchUi = e.target.closest(".pz-card-switch-ui");
+            if (switchUi && dashboard.contains(switchUi)) {
+                const checkbox = switchUi.closest(".pz-card-prop-switch")?.querySelector("input[type='checkbox']");
+                if (!checkbox || checkbox.disabled || checkbox.readOnly) return;
+
+                const nextChecked = delta < 0;
+                if (checkbox.checked === nextChecked) return;
+                checkbox.checked = nextChecked;
+                e.preventDefault();
+                e.stopPropagation();
+                checkbox.dispatchEvent(new Event("input", { bubbles: true }));
+                checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+                return;
+            }
+
+            const control = e.target.closest("select, input[type='number'], input[type='numeric'], input[type='range']");
+            if (!control || !dashboard.contains(control) || control.disabled || control.readOnly) return;
+
+            if (control.matches("select")) {
+                const options = Array.from(control.options);
+                const currentIndex = control.selectedIndex;
+                let nextIndex = currentIndex;
+                const direction = delta > 0 ? 1 : -1;
+                do {
+                    nextIndex += direction;
+                } while (nextIndex >= 0 && nextIndex < options.length && options[nextIndex].disabled);
+
+                if (nextIndex < 0 || nextIndex >= options.length || nextIndex === currentIndex) return;
+                control.selectedIndex = nextIndex;
+            } else {
+                const currentValue = Number(control.value);
+                const stepValue = control.step && control.step !== "any" ? Number(control.step) : 1;
+                if (!Number.isFinite(currentValue) || !Number.isFinite(stepValue) || stepValue <= 0) return;
+
+                const min = control.min === "" ? -Infinity : Number(control.min);
+                const max = control.max === "" ? Infinity : Number(control.max);
+                const direction = control.type === "number" || control.type === "range" ? -1 : 1;
+                const nextValue = Math.min(max, Math.max(min, currentValue + (delta > 0 ? stepValue * direction : -stepValue * direction)));
+                if (nextValue === currentValue) return;
+                control.value = String(nextValue);
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+            control.dispatchEvent(new Event("input", { bubbles: true }));
+            control.dispatchEvent(new Event("change", { bubbles: true }));
+        }, { passive: false });
+
         tabbar.addEventListener("click", e => {
             const tab = e.target.closest(".pz-tab");
             if (!tab || !tabbar.contains(tab)) return;
@@ -825,18 +961,38 @@
             moveTab(e.key === "ArrowRight" ? 1 : -1, true, tab);
         });
 
-        tabbar.addEventListener("wheel", e => {
-            if (!e.shiftKey) return;
+        dashboard.addEventListener("wheel", e => {
+            if (!rightButtonDown || e.shiftKey) return;
 
             const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
             if (delta === 0) return;
 
+            if (rightButtonDown) rightWheelUsed = true;
             e.preventDefault();
             const now = Date.now();
             if (now - lastWheelAt < 120) return;
             lastWheelAt = now;
             moveTab(delta > 0 ? 1 : -1, true);
         }, { passive: false });
+
+        dashboard.addEventListener("pointerdown", e => {
+            if (e.button === 2) {
+                rightButtonDown = true;
+                rightWheelUsed = false;
+            }
+        });
+        document.addEventListener("pointerup", e => {
+            if (e.button === 2) rightButtonDown = false;
+        });
+        document.addEventListener("pointercancel", e => {
+            if (e.button === 2) rightButtonDown = false;
+        });
+        window.addEventListener("blur", () => {
+            rightButtonDown = false;
+        });
+        dashboard.addEventListener("contextmenu", e => {
+            if (rightWheelUsed) e.preventDefault();
+        });
 
         leftBtn?.addEventListener("click", () => {
             tabbar.scrollBy({ left: -Math.round(tabbar.clientWidth * 0.75), behavior: "smooth" });
