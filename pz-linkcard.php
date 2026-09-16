@@ -17,353 +17,529 @@ class class_pz_linkcard {
 	// 設定値
 	private		const	DEFAULTS	=
 		array(
-			'plugin-version'				=>	['type'	=>	'version',		'null'	=>	false,	'default'	=>	null, ],
-			'db-version'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'plugin-version'					=>	['type'	=>	'version',		'null'	=>	false,	'default'	=>	null, ],
+			'db-version'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 
-			'error-mode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'error-hide'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'error-url'						=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
-			'error-postid'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'error-time'					=>	['type'	=>	'timestamp',	'null'	=>	true,	'default'	=>	null, ],
+			'error-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'error-hide'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'error-mode-hide'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'error-url'							=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
+			'error-postid'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'error-time'						=>	['type'	=>	'timestamp',	'null'	=>	true,	'default'	=>	null, ],
 
-			'special-format'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'special-format'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 
-			'flg-linkall'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-resize'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'margin-top'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
-			'margin-bottom'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
-			'margin-left'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
-			'margin-right'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
-			'card-top'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
-			'card-bottom'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
-			'card-left'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
-			'card-right'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
-			'thumbnail-position'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
-			'thumbnail-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
-			'thumbnail-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
-			'width'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	500, ],
-			'width-unit'					=>	['type'	=>	'unit',			'null'	=>	true,	'default'	=>	'px', ],
-			'content-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
-			'centering'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'enclose-tag'					=>	['type'	=>	'html_tag',		'null'	=>	false,	'default'	=>	'div', ],
-			'flg-use-sitename'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-linkall'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-resize'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'margin-top'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
+			'margin-bottom'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
+			'margin-left'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
+			'margin-right'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
+			'card-top'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
+			'card-bottom'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
+			'card-left'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
+			'card-right'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px', ],
+			'thumbnail-position'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
+			'thumbnail-width'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
+			'thumbnail-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
+			'width'								=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	500, ],
+			'width-unit'						=>	['type'	=>	'unit',			'null'	=>	true,	'default'	=>	'px', ],
+			'content-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
+			'centering'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'enclose-tag'						=>	['type'	=>	'html_tag',		'null'	=>	false,	'default'	=>	'div', ],
+			'flg-use-sitename'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'info-position'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 
-			'flg-style-reset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'display-url'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'display-date'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'separator'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'display-excerpt'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'content-inset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'more-style'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'SMP', ],
-			'hover'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'thumbnail-border'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'thumbnail-shadow'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	0, ],
-			'thumbnail-radius'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
-			'sns-position'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
-			'sns-tw'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'sns-tw-x'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'sns-fb'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'sns-hb'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-style-reset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'display-url'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'display-date'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'separator'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'display-excerpt'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'content-inset'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'more-style'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'SMP', ],
+			'hover'								=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'sns-position'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
+			'sns-tw'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'sns-tw-x'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'sns-fb'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'sns-hb'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 
-			'title-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#111111', ],
-			'title-outline-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'title-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'title-size'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'18px', ],
-			'title-height'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'23px', ],
-			'title-maxline'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	2, ],
-			'title-bold'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'title-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'title-underline'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'title-hover'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'title-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#111111', ],
+			'title-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'title-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'title-size'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'18px', ],
+			'title-height'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'23px', ],
+			'title-maxline'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	2, ],
+			'title-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'title-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'title-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'title-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 
-			'url-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#4466ff', ],
-			'url-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'url-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'url-size'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'12px', ],
-			'url-height'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'17px', ],
-			'url-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'url-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'url-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'url-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'url-color'							=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#4466ff', ],
+			'url-outline-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'url-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'url-size'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'12px', ],
+			'url-height'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'17px', ],
+			'url-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'url-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'url-underline'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'url-hover'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 
-			'excerpt-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
-			'excerpt-outline-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'excerpt-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'excerpt-size'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'11px', ],
-			'excerpt-height'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'18px', ],
-			'excerpt-maxline'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	3, ],
-			'excerpt-bold'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'excerpt-italic'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'excerpt-underline'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'excerpt-hover'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'excerpt-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
+			'excerpt-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'excerpt-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'excerpt-size'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'11px', ],
+			'excerpt-height'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'18px', ],
+			'excerpt-maxline'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	3, ],
+			'excerpt-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'excerpt-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'excerpt-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'excerpt-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'date-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
-			'date-outline-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'date-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'date-size'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'11px', ],
-			'date-height'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
-			'date-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'date-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'date-underline'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'date-hover'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'date-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
+			'date-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'date-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'date-size'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'11px', ],
+			'date-height'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
+			'date-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'date-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'date-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'date-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'info-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#222222', ],
-			'info-outline-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'info-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=> null],
-			'info-size'						=>	['type' =>	'pixel',		'null'	=>	true,	'default'	=> '12px'],
-			'info-height'					=>	['type' =>	'pixel',		'null'	=>	true,	'default'	 => '16px'],
-			'info-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'info-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'info-underline'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'info-hover'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'info-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#222222', ],
+			'info-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'info-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null],
+			'info-size'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'12px'],
+			'info-height'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px'],
+			'info-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'info-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'info-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'info-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'added-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
-			'added-outline-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'added-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#365cd9', ],
-			'added-size'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'9px', ],
-			'added-height'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'10px', ],
-			'added-bold'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'added-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'added-underline'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'added-hover'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'added-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
+			'added-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'added-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#365cd9', ],
+			'added-size'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'9px', ],
+			'added-height'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'10px', ],
+			'added-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'added-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'added-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'added-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'heading-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
-			'heading-outline-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'heading-size'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'12px', ],
-			'heading-height'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'32px', ],
-			'heading-bold'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'heading-italic'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'heading-underline'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'heading-hover'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'heading-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
+			'heading-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'heading-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'heading-size'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'12px', ],
+			'heading-height'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'32px', ],
+			'heading-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'heading-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'heading-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'heading-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'more-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
-			'more-outline-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'more-size'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'12px', ],
-			'more-height'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'24px', ],
-			'more-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'more-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'more-underline'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'more-hover'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'more-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
+			'more-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'more-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'more-size'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'12px', ],
+			'more-height'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'24px', ],
+			'more-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'more-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'more-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'more-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'ex-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'ex-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-bg-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'ex-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#114488', ],
-			'ex-border-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'ex-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'ex-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
-			'ex-border-radius'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
-			'ex-shadow-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'ex-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'ex-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'ex-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'ex-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-transition'					=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'ex-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff', ],
-			'ex-hover-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'ex-hover-transform-enabled'	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'ex-hover-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-hover-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-image'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-hover-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'ex-hover-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'ex-hover-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
-			'ex-hover-border-radius'		=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
-			'ex-hover-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'ex-hover-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'ex-hover-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'ex-hover-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'ex-hover-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	0, ],
-			'ex-hover-transition'			=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'ex-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-heading-text'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-more-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-added-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-favicon'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
-			'ex-favicon-alt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-thumbnail'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	13, ],
-			'ex-thumbnail-size'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
-			'ex-thumbnail-alt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-target'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
-			'ex-get-from'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
+			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'ex-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#114488', ],
+			'ex-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'ex-border-width'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'ex-border-radius'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'ex-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'ex-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
+			'ex-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff', ],
+			'ex-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'ex-hover-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'ex-hover-border-radius'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'ex-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'ex-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
+			'ex-image'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-favicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
+			'ex-favicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	13, ],
+			'ex-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
+			'ex-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-target'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
+			'ex-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
+			'ex-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'ex-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'ex-heading-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'ex-heading-border-radius'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'ex-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'ex-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'ex-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'ex-more-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'ex-more-border-radius'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'ex-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'ex-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'ex-thumbnail-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'ex-thumbnail-border-radius'		=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'ex-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'ex-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'ex-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'in-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'in-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-bg-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'in-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888', ],
-			'in-border-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'in-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'in-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
-			'in-border-radius'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
-			'in-shadow-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'in-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'in-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'in-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'in-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	0, ],
-			'in-transition'					=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'in-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#f8f8f8', ],
-			'in-hover-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'in-hover-transform-enabled'	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'in-hover-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-hover-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-image'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-hover-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'in-hover-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'in-hover-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
-			'in-hover-border-radius'		=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
-			'in-hover-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'in-hover-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'in-hover-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'in-hover-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'in-hover-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	0, ],
-			'in-hover-transition'			=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'in-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-heading-text'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-more-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-added-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-favicon'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
-			'in-favicon-alt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-thumbnail'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	1, ],
-			'in-thumbnail-size'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
-			'in-thumbnail-alt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-target'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-get-from'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-field-title'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-field-excerpt'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-get-url'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
+			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'in-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888', ],
+			'in-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'in-border-width'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'in-border-radius'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'in-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'in-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
+			'in-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#f8f8f8', ],
+			'in-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'in-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'in-hover-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'in-hover-border-radius'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'in-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'in-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
+			'in-image'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-favicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
+			'in-favicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	1, ],
+			'in-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
+			'in-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-target'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-field-title'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-field-excerpt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-get-url'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
+			'in-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'in-heading-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'in-heading-border-radius'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'in-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'in-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'in-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'in-more-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'in-more-border-radius'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'in-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'in-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'in-thumbnail-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'in-thumbnail-border-radius'		=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'in-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'in-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'th-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'th-bg-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#666666', ],
-			'th-border-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'th-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
-			'th-border-radius'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
-			'th-shadow-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'th-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	0, ],
-			'th-transition'					=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'th-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#f4f4f4', ],
-			'th-hover-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'th-hover-transform-enabled'	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-hover-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'th-hover-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-image'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-hover-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'th-hover-border-enabled' 	 	=>  ['type' =>	'flag',			'null'	=>	true,	'default'	=>	0],
-		 	'th-hover-border-style'         =>	['type' =>	'border',		'null'	=>	true,	'default'	=>	'solid'],
-		 	'th-hover-border-width'         =>	['type' =>	'pixel',		'null'	=>	true,	'default'	=>	'1px'],
-		 	'th-hover-border-radius'        =>	['type' =>	'pixel',		'null'	=>	true,	'default'	=>	'4px'],
-			'th-hover-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'th-hover-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-hover-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-hover-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-hover-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transition'			=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-			'th-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-heading-text'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-more-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-added-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'th-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'th-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'th-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'th-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#666666', ],
+			'th-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'th-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'th-border-width'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'th-border-radius'					=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'th-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'th-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
+			'th-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#f4f4f4', ],
+			'th-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'th-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'th-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-hover-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'th-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0],
+		 	'th-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid'],
+		 	'th-hover-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px'],
+		 	'th-hover-border-radius'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px'],
+			'th-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'th-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
+			'th-image'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'th-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'th-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'th-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'th-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'th-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'th-heading-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'th-heading-border-radius'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'th-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'th-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'th-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'th-more-border-width'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'th-more-border-radius'				=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'th-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'th-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'th-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
+			'th-thumbnail-border-width'			=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'1px', ],
+			'th-thumbnail-border-radius'		=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'4px', ],
+			'th-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
+			'th-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'th-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'th-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'flg-nofollow'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-noopener'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-referer'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-relative-url'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-unlink'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-sslverify'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-redir'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-agent'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'user-agent'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'user-agent-text'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-alive'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-alive-count'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-click-count'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-nofollow'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-noopener'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-referer'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-relative-url'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-unlink'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-sslverify'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-redir'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-agent'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'user-agent'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'flg-alive'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'code1'							=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	'blogcard', ],
-			'code2'							=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
-			'code3'							=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
-			'use-inline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	null, ],
-			'auto-atag'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'auto-url'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'auto-external'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-do-shortcode'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'exclude-url'					=>	['type'	=>	'textarea',		'null'	=>	true,	'default'	=>	'', ],
-			'flg-edit-block'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-edit-insert'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'mce-priority'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-edit-qtag'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-clear-excerpt'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'code1'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	'blogcard', ],
+			'code2'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
+			'code3'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
+			'use-inline'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	null, ],
+			'auto-atag'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'auto-url'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'auto-external'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-do-shortcode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'exclude-url'						=>	['type'	=>	'textarea',		'null'	=>	true,	'default'	=>	'', ],
+			'flg-edit-block'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-edit-insert'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'mce-priority'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'flg-edit-qtag'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-clear-excerpt'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 
-			'multi-mode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'multi-myid'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'multi-count'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'multi-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'multi-myid'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'multi-count'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 
-			'trail-slash'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'class-pc'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'class-mobile'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'date-format-man'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'Y\<\b\r\/\>m/d\<\b\r\/\>H:i', ],
-			'flg-unti-select'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-filemenu'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-adminbar'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-initialize'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-compress'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-amp-url'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-inhibit'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'error-mode-hide'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'saved-date'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'trail-slash'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'class-pc'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'class-mobile'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'date-format-man'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'Y\<\b\r\/\>m/d\<\b\r\/\>H:i', ],
+			'flg-preview'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'preview-mode'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'preview-left'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'preview-top'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'preview-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'preview-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'preview-docked-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'flg-anti-select'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-filemenu'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-compress'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-amp-url'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-inhibit'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'saved-date'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 
-			'develop-mode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'admin-mode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'debug-mode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'debug-nocache'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'survey-mode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'develop-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'admin-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'debug-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'debug-nocache'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'survey-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'css-add-url'					=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
-			'css-add'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'', ],
-			'css-count'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'favicon-api'					=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://www.google.com/s2/favicons?domain=%DOMAIN%', ],
-			'thumbnail-api'					=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://s.wordpress.com/mshots/v1/%URL%?w=200', ],
-			'initialize-exception'			=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
-			'flg-delete-db'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-delete-image'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-delete-settings'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'css-add-url'						=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
+			'css-add'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'', ],
+			'css-count'							=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'favicon-api'						=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://www.google.com/s2/favicons?domain=%DOMAIN%', ],
+			'thumbnail-api'						=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://s.wordpress.com/mshots/v1/%URL%?w=200', ],
+			'initialize-exception'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
+			'flg-delete-db'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-delete-image'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-delete-settings'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 		);
 
 	// 定数・プラグイン情報
@@ -418,16 +594,21 @@ class class_pz_linkcard {
 
 	private		$test_count;			// テスト用
 
+	private	static	function	pz_GetOptionDefinitions() {
+		return	self::DEFAULTS;
+	}
+
 	private	static	function	pz_GetDefaultOptions() {
 		$options	=	array();
-		foreach	(self::DEFAULTS as $key => $default ) {
+		foreach	(self::pz_GetOptionDefinitions() as $key => $default ) {
 			$options[$key]	=	$default['default'];
 		}
 		return	$options;
 	}
 
 	private	static	function	pz_GetDefaultOption($key ) {
-		return	array_key_exists($key, self::DEFAULTS ) ? self::DEFAULTS[$key]['default'] : null;
+		$definitions	=	self::pz_GetOptionDefinitions();
+		return	array_key_exists($key, $definitions ) ? $definitions[$key]['default'] : null;
 	}
 
 	public	function	__construct() {
@@ -445,6 +626,7 @@ class class_pz_linkcard {
 
 		// 定数
 		define('PZLKC_PZLKC_URL_ADMIN_JS',		plugins_url('js/admin-settings.js', __FILE__ ) );	// 管理画面のJSのURL（設定画面）
+		define('PZLKC_PZLKC_URL_PREVIEW_JS',	plugins_url('js/pz-linkcard-preview.js', __FILE__ ) );	// 管理画面のJSのURL（プレビュー）
 		define('PZLKC_PZLKC_URL_ADMIN_TAB',		plugins_url('js/admin-tabs.js', __FILE__ ) );		// 管理画面のJSのURL（設定画面タブ）
 		define('PZLKC_PZLKC_URL_COLOR_PICKER_JS',	plugins_url('js/color-picker.js', __FILE__ ) );	// 管理画面のJSのURL（カラーピッカー）
 		define('PZLKC_JS_COUNT',		plugins_url('js/click-count.js', __FILE__ ) );				// 管理画面のJSのURL（クリックカウント）
@@ -577,6 +759,8 @@ class class_pz_linkcard {
 		add_action		('init',								[$this, 'action_register_block' ],	10, 1 );		// ブロック登録
 		add_action		('wp_ajax_pz_lkc_clear_error_mode',		[$this, 'action_ajax_pz_lkc_error_mode_clear'] );
 		add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
+		add_action		('wp_ajax_pz_lkc_preview_render',		[$this, 'action_ajax_pz_lkc_preview_render'] );
+		add_action		('wp_ajax_pz_lkc_preview_state',		[$this, 'action_ajax_pz_lkc_preview_state'] );
 		add_action		('wp_ajax_pz_lkc_click_count', 			[$this, 'action_ajax_pz_lkc_click_count'] );
 		add_action		('wp_ajax_nopriv_pz_lkc_click_count',	[$this, 'action_ajax_pz_lkc_click_count'] );
 	}
@@ -865,12 +1049,19 @@ class class_pz_linkcard {
 		}
 
 		// キャッシュから取得
+		$is_preview		=	isset($atts['preview-data'] ) && is_array($atts['preview-data'] );
 		$data			=	array('url' => $url );
-		$result			=	$this->pz_GetCache($data );
-		if	(isset($result ) && is_array($result ) && isset($result['url'] ) ) {
-			$data		=	$result;
-			$data_id	=	$data['id'];
-			$url		=	$data['url'];
+		if	($is_preview ) {
+			$data		=	array_merge($data, $atts['preview-data'] );
+			$data_id	=	'preview';
+			$class_id	.=	' pz-preview-linkcard';
+		} else {
+			$result		=	$this->pz_GetCache($data );
+			if	(isset($result ) && is_array($result ) && isset($result['url'] ) ) {
+				$data	=	$result;
+				$data_id	=	$data['id'];
+				$url	=	$data['url'];
+			}
 		}
 
 		// 内部リンクの処理
@@ -890,7 +1081,9 @@ class class_pz_linkcard {
 			}
 
 			// 記事の取得方法
-			if	($this->options['in-get-from'] == 2 ) {	// 常にカード管理から
+			if	($is_preview ) {
+				// 設定画面プレビューでは取得・保存を行わず、指定されたサンプルデータを使う。
+			} elseif	($this->options['in-get-from'] == 2 ) {	// 常にカード管理から
 				if	(!$data_id || (isset($atts['force'] ) && $atts['force'] == true ) ) {	// キャッシュに無いとき
 					$data		=	$this->pz_GetPost($data );		// 最新記事内容を取得
 					$result		=	$this->pz_SetCache($data );		// 保存
@@ -924,7 +1117,7 @@ class class_pz_linkcard {
 			$rel			=	' rel="'.$rel.'"';
 
 			// キャッシュが無い、もしくは強制取得
-			if	((!$data_id ) || ($this->options['debug-mode']	==	true  && $this->options['debug-nocache']	==	true ) || (isset($atts['force'] ) && $atts['force'] == true ) ) {
+			if	(!$is_preview && ((!$data_id ) || ($this->options['debug-mode']	==	true  && $this->options['debug-nocache']	==	true ) || (isset($atts['force'] ) && $atts['force'] == true ) ) ) {
 				$result		=	$this->pz_GetRemote($data );			// 記事内容を強制取得
 				if	(isset($result ) && is_array($result ) && isset($result['url'] ) ) {
 					$data	=	$result;
@@ -1010,13 +1203,7 @@ class class_pz_linkcard {
 
 		// 表示用サイト名の文字数
 		$title_sitename			=	'';
-		if	($this->options['info-length'] ) {
-			$before				=	$disp_sitename;
-			$disp_sitename		=	mb_strimwidth($before, 0, $this->options['info-length'] , '...' );
-			if	($disp_sitename	<>	$before ) {		// 省略された場合はtitleタグにセットする
-				$title_sitename	=	' title="'.esc_attr($site_name ).'"';
-			}
-		}
+		$disp_sitename		=	mb_strimwidth($disp_sitename, 0, 100 , '...' );
 
 		// タイトル
 		if	(!$title ) {
@@ -1040,11 +1227,7 @@ class class_pz_linkcard {
 		$temp			=	$title;												// タイトル
 		$temp			=	strip_tags($temp );									// HTMLタグ除去
 		$temp			=	str_replace(array("\r", "\n"), '', $temp );			// 改行を除去
-		if	($this->options['title-length'] ) {									// 文字数制限
-			$temp		=	mb_strimwidth($temp, 0, $this->options['title-length'] , '...' );
-		} else {
-			$temp		=	mb_strimwidth($temp, 0, 200 , '...' );
-		}
+		$temp			=	mb_strimwidth($temp, 0, 200 , '...' );
 		$title			=	esc_html($temp );
 		$html_title		=	'<div class="lkc-title">'.$title.'</div>';
 
@@ -1057,11 +1240,7 @@ class class_pz_linkcard {
 			$temp		=	str_replace(array("\r", "\n"), '', $temp );			// 改行を除去
 			$temp		=	preg_replace('/<!--more-->.+/is', '', $temp );		// moreタグ以降削除
 			$temp		=	preg_replace('/\[[^]]*\]/', '', $temp );			// ショートコードすべて除去
-			if	($this->options['excerpt-length'] ) {							// 文字数制限
-				$temp	=	mb_strimwidth($temp, 0, $this->options['excerpt-length'] , '...' );
-			} else {
-				$temp	=	mb_strimwidth($temp, 0, 500 , '...' );
-			}
+			$temp	=	mb_strimwidth($temp, 0, 500 , '...' );
 			$temp		=	esc_html($temp );									// HTMLエスケープ
 			$excerpt	=	$temp;
 		}
@@ -1095,7 +1274,7 @@ class class_pz_linkcard {
 		// サムネイル取得
 		if	($this->options['thumbnail-position'] ) {
 			if	($sw_thumbnail == 1 || $sw_thumbnail == 13 ) {						// 直接取得
-				if	($is_external ) {
+				if	($is_external && !$is_preview ) {
 					$thumbnail_url	=	$this->pz_GetImage($thumbnail_url );		// 外部サイトのサムネイルをキャッシュ
 				}
 				if	($thumbnail_url ) {
@@ -1125,7 +1304,7 @@ class class_pz_linkcard {
 			if	($sw_favicon == 1 || $sw_favicon == 13 ) {							// 直接取得
 				if	($is_internal ) {
 					$favicon_url	=	get_site_icon_url(16 );						// 自サイトのサイトアイコン
-				} else {
+				} elseif	(!$is_preview ) {
 					$favicon_url	=	$this->pz_GetImage($favicon_url );			// 外部サイトのファビコンをキャッシュ
 				}
 				if	($favicon_url ) {
@@ -1267,15 +1446,15 @@ class class_pz_linkcard {
 		}
 
 		// 見出し情報
-		if	($heading_text ) {
-			$html_heading	=	'<div class="lkc-heading">'.$heading_text.'</div>';
+		if	($heading_text || $is_preview ) {
+			$html_heading	=	'<div class="lkc-heading"'.($is_preview ? ' data-pz-preview-heading' : '').'>'.$heading_text.'</div>';
 		} else {
 			$html_heading	=	null;
 		}
 
 		// 続きを読むボタン
-		if	($more_text ) {
-			$html_moretag	=	$html_a_op.'<div class="lkc-more">'.$more_text.'</div>'.$html_a_cl;
+		if	($more_text || $is_preview ) {
+			$html_moretag	=	$html_a_op.'<div class="lkc-more"'.($is_preview ? ' data-pz-preview-more' : '').'>'.$more_text.'</div>'.$html_a_cl;
 
 		} else {
 			$html_moretag	=	null;
@@ -1289,7 +1468,7 @@ class class_pz_linkcard {
 		}
 
 		$html_domain	=	'<div class="lkc-domain"'.$title_sitename.'>'.$disp_sitename.'</div>';
-		$html_info		=	'<div class="lkc-info">'.$html_a_op.$html_favicon.$html_domain.$html_added.$html_a_cl.$html_sns_info.$html_url2.'</div>';
+		$html_info		=	'<div class="lkc-info"'.($is_preview ? ' data-pz-preview-info' : '').'>'.$html_a_op.$html_favicon.$html_domain.$html_added.$html_a_cl.$html_sns_info.$html_url2.'</div>';
 
 		// Google AMP用 簡易タグ作成
 		if	($this->amp <> 2 ) {
@@ -1315,23 +1494,23 @@ class class_pz_linkcard {
 		// HTMLタグ作成
 		switch	($this->options['info-position'] ) {
 		case	1:		// 上側
-			$html_tag	=	$html_wrap_op.$html_a_op_all.$html_heading.'<div class="lkc-card">'.$html_info.'<div class="lkc-content">'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear"></div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
+			$html_tag	=	$html_wrap_op.$html_a_op_all.$html_heading.'<div class="lkc-card">'.$html_info.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear"></div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 			break;
 		case	2:		// 下側
-			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content">'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.$html_info.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
+			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.$html_info.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 			break;
 		case	3:		// タイトルの上側
-			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content">'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
+			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 			break;
 		default:
-			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content">'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
+			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 		}
 		$enclose_tag	=	isset($this->options['enclose-tag'] ) ? strtolower($this->options['enclose-tag'] ) : (!empty($this->options['blockquote'] ) ? 'blockquote' : 'div');
 		if	(!in_array($enclose_tag, array('div', 'blockquote', 'figure', 'article', 'section', 'nav', 'aside' ), true ) ) {
 			$enclose_tag	=	'div';
 		}
 		$enclose_tag	=	tag_escape($enclose_tag ) ?: 'div';
-		$html_tag		=	'<'.$enclose_tag.' class="'.esc_attr($class_id ).'">'.$html_tag.'</'.$enclose_tag.'>';
+		$html_tag		=	'<'.$enclose_tag.' class="'.esc_attr($class_id ).'"'.($is_preview && !empty($atts['preview-card'] ) ? ' data-pz-preview-card="'.esc_attr($atts['preview-card'] ).'"' : '').'>'.$html_tag.'</'.$enclose_tag.'>';
 
 		return	$html_tag;
 	}
@@ -2600,6 +2779,7 @@ class class_pz_linkcard {
 				}
 			}
 		}
+		$this->options	=	array_merge(self::pz_GetDefaultOptions(), $this->options );
 
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 		return	true;
@@ -2881,7 +3061,16 @@ class class_pz_linkcard {
 		}
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			$admin_tabs_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-tabs.js' );
+			$preview_js_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/pz-linkcard-preview.js' );
 			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-tabs',	PZLKC_PZLKC_URL_ADMIN_TAB,			array('jquery' ),	$admin_tabs_version, true );
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-preview',	PZLKC_PZLKC_URL_PREVIEW_JS,		array(),	$preview_js_version, true );
+			wp_localize_script	(self::PLUGIN_SLUG.'-preview',	'pzLinkCardPreview', array(
+				'ajaxUrl'	=>	admin_url('admin-ajax.php' ),
+				'nonce'		=>	wp_create_nonce('pz_lkc_preview_render' ),
+				'action'	=>	'pz_lkc_preview_render',
+				'stateNonce'	=>	wp_create_nonce('pz_lkc_preview_state' ),
+				'stateAction'	=>	'pz_lkc_preview_state',
+			) );
 			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );
 			wp_localize_script	(self::PLUGIN_SLUG.'-color-picker',	'pz_lkc_color_picker', array(
 				'labels'	=>	array(
@@ -3193,6 +3382,109 @@ class class_pz_linkcard {
 			return	stripslashes($_POST['properties'][$key] );
 		}
 		return		(array_key_exists($key, $this->options ) ? $this->options[$key] : $default );
+	}
+
+	// 設定画面プレビュー用CSS生成
+	public	function	action_ajax_pz_lkc_preview_render() {
+		if	(!current_user_can('manage_options' ) ) {
+			wp_send_json_error('forbidden', 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_preview_render', 'nonce', false ) ) {
+			wp_send_json_error('invalid nonce', 403 );
+		}
+
+		$original_options	=	$this->options;
+		$properties			=	isset($_POST['properties'] ) && is_array($_POST['properties'] ) ? wp_unslash($_POST['properties'] ) : array();
+		$definitions		=	self::pz_GetOptionDefinitions();
+		$preview_options	=	array_merge(self::pz_GetDefaultOptions(), is_array($this->options ) ? $this->options : array() );
+
+		foreach	($definitions as $key => $definition ) {
+			if	(array_key_exists($key, $properties ) ) {
+				$preview_options[$key]	=	$properties[$key];
+			}
+		}
+
+		$this->options	=	$preview_options;
+		if	(!defined('LIST_BORDER' ) ) {
+			define('LIST_BORDER', array(
+				'none'		=>	'None',
+				'solid'		=>	'Solid',
+				'dotted'	=>	'Dotted',
+				'dashed'	=>	'Dashed',
+				'double'	=>	'Double',
+				'groove'	=>	'Groove',
+				'ridge'		=>	'Ridge',
+				'inset'		=>	'Inset',
+				'outset'	=>	'Outset',
+			) );
+		}
+		if	(!function_exists('pz_TrimNumPx' ) ) {
+			function	pz_TrimNumPx($val, $unit_percent = false ) {
+				$val	=	mb_convert_kana($val, 'n' );
+				$val	=	strtolower($val );
+				$unit	=	'px';
+				if	(($unit_percent == true ) && (substr($val, -1 ) == '%' ) ) {
+					$unit	=	'%';
+				}
+				$val	=	preg_replace('/[^0-9]/', '', $val );
+				switch	($val ) {
+				case	null:
+				case	0:
+					return	$val;
+				}
+				return	$val.$unit;
+			}
+		}
+		require('lib/pz-linkcard-settings-validate.php' );
+		$this->pz_SetStyle('preview' );
+
+		$css_file	=	PZLKC_DIR_STYLE.'preview.css';
+		$css		=	file_exists($css_file ) ? file_get_contents($css_file ) : '';
+		$this->options	=	$original_options;
+
+		wp_send_json_success(array(
+			'css'	=>	$css,
+		) );
+	}
+
+	// 設定画面プレビュー位置保存
+	public	function	action_ajax_pz_lkc_preview_state() {
+		if	(!current_user_can('manage_options' ) ) {
+			wp_send_json_error('forbidden', 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_preview_state', 'nonce', false ) ) {
+			wp_send_json_error('invalid nonce', 403 );
+		}
+
+		$mode	=	isset($_POST['preview-mode'] ) ? sanitize_key(wp_unslash($_POST['preview-mode'] ) ) : 'window';
+		if	(!in_array($mode, array('window', 'docked' ), true ) ) {
+			$mode	=	'window';
+		}
+		$this->options['preview-mode']	=	$mode;
+
+		foreach	(array('preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height' ) as $key ) {
+			if	(!isset($_POST[$key] ) || $_POST[$key] === '' ) {
+				$this->options[$key]	=	null;
+				continue;
+			}
+			$value	=	intval(wp_unslash($_POST[$key] ) );
+			if	(in_array($key, array('preview-width', 'preview-height', 'preview-docked-height' ), true ) ) {
+				$value	=	max(0, $value );
+			}
+			$this->options[$key]	=	$value;
+		}
+
+		$options	=	get_option(self::OPTION_NAME, self::pz_GetDefaultOptions() );
+		if	(!is_array($options ) ) {
+			$options	=	self::pz_GetDefaultOptions();
+		}
+		foreach	(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height' ) as $key ) {
+			$options[$key]	=	$this->options[$key] ?? null;
+		}
+		update_option(self::OPTION_NAME, $options );
+		$this->options	=	$options;
+
+		wp_send_json_success();
 	}
 
 	// URLパラメーターエラー通知を閉じたときにエラー状態を解除

@@ -5,6 +5,7 @@
 		array( 'name' => 'in',	'type' => 'internal',	'title' => __('Internal Link Settings',		'pz-linkcard' )	),
 		array( 'name' => 'th',	'type' => 'samepage',	'title' => __('Same Page Link Settings',	'pz-linkcard' )	),
 	);
+	$default_definitions	=	self::pz_GetOptionDefinitions();
 	foreach ($title_list as $t) {
 		echo	'<div class="pz-page'.$pz_page_active('pz-'.$t['type'] ).'" id="pz-'.$t['type'].'">';
 		echo	'<div class="pz-submit-float">';
@@ -94,13 +95,79 @@
 			echo				'</span></td></tr>';
 		};
 
+		$echo_part_appearance	=	function($t, $prop, $part ) {
+			$prefix				=	$t['name'].'-'.$part;
+			$enabled_default	=	0;
+
+			echo				'<tr><th scope="row">'.__('Adjustment', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+			$item_name			=	$prefix.'-transform-enabled';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			foreach	(array('x' => array(__('Horizontal', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'y' => array(__('Vertical', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'rotate' => array(__('Rotate', 'pz-linkcard' ), -360, 360, 0, 'deg' ), 'scale' => array(__('Scale', 'pz-linkcard' ), 1, 200, 100, '%' ) ) as $transform_key => $transform_item ) {
+				$item_name		=	$prefix.'-transform-'.$transform_key;
+				$item_value		=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : $transform_item[3];
+				$item_center	=	($transform_item[1] < 0 || $transform_key === 'scale') ? ' data-center="'.esc_attr($transform_item[3] ).'"' : '';
+				echo			'<label class="pz-card-prop-number"><span>'.esc_html($transform_item[0] ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1" /><span>'.esc_html($transform_item[4] ).'</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1"'.$item_center.' /></span></label>';
+			}
+			echo				'</span></td></tr>';
+
+			echo				'<tr><th scope="row">'.__('Background Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+			$item_name			=	$prefix.'-bg-enabled';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$prefix.'-bg-color';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+			echo				'</span></td></tr>';
+
+			echo				'<tr><th scope="row">'.__('Border Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+			$item_name			=	$prefix.'-border-enabled';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$prefix.'-border-color';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+			$item_name			=	$prefix.'-border-style';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 'solid';
+			echo				'<label class="pz-card-prop-select"><span>'.esc_html__('Style', 'pz-linkcard' ).'</span><select name="properties['.$item_name.']">';
+			foreach	(LIST_BORDER as $option_value => $option_text ) {
+				echo			'<option value="'.esc_attr($option_value ).'"'.selected($item_value, $option_value, false ).'>'.esc_html($option_text ).'</option>';
+			}
+			echo				'</select></label>';
+			$item_name			=	$prefix.'-border-width';
+			$item_value			=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : 1;
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Width', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /></span></label>';
+			$item_name			=	$prefix.'-border-radius';
+			$item_value			=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : 4;
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Round a square', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /></span></label>';
+			echo				'</span></td></tr>';
+
+			echo				'<tr><th scope="row">'.__('Shadow', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+			$item_name			=	$prefix.'-shadow-enabled';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$prefix.'-shadow-color';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '#aaaacc';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+			foreach	(array('x' => __('Horizontal', 'pz-linkcard' ), 'y' => __('Vertical', 'pz-linkcard' ), 'blur' => __('Blur', 'pz-linkcard' ), 'spread' => __('Spread', 'pz-linkcard' ) ) as $shadow_key => $shadow_label ) {
+				$item_name		=	$prefix.'-shadow-'.$shadow_key;
+				$item_value		=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : ($shadow_key === 'spread' ? 0 : 8);
+				$item_min		=	in_array($shadow_key, array('blur', 'spread' ), true ) ? 0 : -64;
+				echo			'<label class="pz-card-prop-number"><span>'.esc_html($shadow_label ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1" /></span></label>';
+			}
+			$item_name			=	$prefix.'-shadow-inset';
+			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 0;
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Inner Shadow', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			echo				'</span></td></tr>';
+		};
+
 		// 基本設定
 		echo	'<h3>'.__('Basic', 'pz-linkcard' ).'</h3>';
 		echo	'<table class="form-table">';
 
 		// リンクを新しいウィンドウまたはタブで開く
 		$item_name			=	$t['name'].'-target';
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$item_value		=	esc_attr($prop[$item_name] );
 			$item_list		=	LIST_NEWTAB;
 			$item_title		=	__('Open New Window/Tab', 'pz-linkcard' );
@@ -135,13 +202,13 @@
 		// 記事内容の設定
 		$item_title		=	__('Article Content',	'pz-linkcard' );
 		echo			'<h3>'.$item_title.'</h3>';
-		echo			'<table class="form-table">';
+		echo			'<table class="form-table pz-card-article-content-table">';
 
 		// 記事内容の取得方法
 		$item_title	=		__('Get Contents', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-get-from';
 		$item_notice		=		'';
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$s_name			=	'name="properties['.$item_name.']"';
 			$item_class		=	'pz-sync-check';
 			$s_switch		=	'';
@@ -185,7 +252,7 @@
 		$item_notice		=	'';
 		$item_class			=	'';
 		$item_disabled		=	null;
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$item_value		=	$prop[$item_name];
 		} else {
 			if	($t['name'] == 'th' ) {
@@ -203,7 +270,7 @@
 		$item_notice		=	'';
 		$item_class			=	'';
 		$item_disabled		=	null;
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$item_value		=	$prop[$item_name];
 		} else {
 			if	($t['name'] == 'th' ) {
@@ -294,6 +361,7 @@
 			echo		'<p>'.$item_notice.'</p>';
 		}
 		echo			'</td></tr>';
+		$echo_part_appearance($t, $prop, 'heading' );
 		echo			'</table>';
 
 		// 見出し設定の終了
@@ -327,6 +395,7 @@
 			echo		'<p>'.$item_notice.'</p>';
 		}
 		echo			'</td></tr>';
+		$echo_part_appearance($t, $prop, 'more' );
 		echo			'</table>';
 
 		// サイト情報の設定
@@ -361,7 +430,7 @@
 		$item_title	=			__('How to get Site-Icon', 'pz-linkcard' );
 		$item_name			=	$t['name'].'-favicon';
 		$item_notice		=	'';
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$s_name			=	'name="properties['.$item_name.']"';
 			$item_class		=	'';
 			$s_switch		=	'';
@@ -392,7 +461,7 @@
 		$s_len		=		'';
 		$item_class	=		'regular-text';
 		$item_notice		=		'';
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$s_name		=	'name="properties['.$item_name.']"';
 			$item_value	=	esc_attr($prop[$item_name] );
 			$s_switch	=	'';
@@ -413,7 +482,7 @@
 		$item_title	=		__('Thumbnail', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-thumbnail';
 		$item_notice		=		'';
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$s_name			=	'name="properties['.$item_name.']"';
 			$item_class		=	'pz-sync-check';
 			$s_switch		=	'';
@@ -442,7 +511,7 @@
 		$item_title	=		__('Thumbnail Size', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-thumbnail-size';
 		$item_notice		=		'';
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$s_name			=	'name="properties['.$item_name.']"';
 			$item_class		=	'pz-sync-check';
 			$s_switch		=	'';
@@ -473,7 +542,7 @@
 		$s_len		=		'';
 		$item_class	=		'regular-text';
 		$item_notice		=		'';
-		if	(array_key_exists($item_name, Self::DEFAULTS ) ) {
+		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$s_name		=	'name="properties['.$item_name.']"';
 			$item_value	=	esc_attr($prop[$item_name] );
 			$s_switch	=	'';
@@ -483,6 +552,7 @@
 			$s_switch	=	'disabled="disabled"';
 		}
 		echo	sprintf($temp_text, $item_title, $s_name, $item_value, $s_len, $item_class, $s_switch, $item_notice );
+		$echo_part_appearance($t, $prop, 'thumbnail' );
 
 		echo	'</table>';
 

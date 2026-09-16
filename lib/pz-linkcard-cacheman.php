@@ -30,7 +30,7 @@
 	$header			=	isset($_POST['header'] )		?	esc_attr(strtolower($_POST['header'] ) )	:	null;
 	$orderby		=	isset($_POST['orderby'] )		?	esc_attr(strtolower($_POST['orderby'] ) )	:	'id';
 	$order			=	isset($_POST['order'] )			?	esc_attr(strtolower($_POST['order'] ) )		:	'desc';
-	$scroll_now		=	isset($_POST['scroll-now'] )		?	esc_attr($_POST['scroll-now'] )			:	null;
+	$scroll_now		=	isset($_POST['scroll_now'] )	?	intval($_POST['scroll_now'] )				:	0;
 	$page_now		=	(isset($_POST['page_button'] )	?	intval($_POST['page_button'] )				:	
 						(isset($_POST['page_trans'] )	?	intval($_POST['page_trans'] )				:	
 						(isset($_POST['page_now'] )		?	intval($_POST['page_now'] )					:	0 ) ) );
@@ -123,11 +123,11 @@
 		array(
 			'page'				=>		$page,
 			'page_now'			=>		intval($page_now ),
+			'scroll_now'		=>		$scroll_now,
 			'refine'			=>		$param_refine,
 			'filter'			=>		$filter,
 			'orderby'			=>		$orderby,
 			'order'				=>		$order,
-			'scroll-now'		=>		esc_attr($scroll_now ),
 			'debug-mode'		=>		$debug_mode,
 			'admin-mode'		=>		$admin_mode,
 			'develop-mode'		=>		$develop_mode,
@@ -150,9 +150,6 @@
 		echo	'<div id="pz-overlay-proc" style="display: flex;"><div class="pz-loader"></div></div>';
 	} else {
 		echo	'<div id="pz-overlay-proc" style="display: none;"><div class="pz-loader"></div></div>';
-	}
-	if	($scroll_now !== null && is_numeric($scroll_now ) && intval($scroll_now ) > 0 ) {
-		echo	'<script>(function(y){if("scrollRestoration" in history){history.scrollRestoration="manual";}var n=0;function r(){window.scrollTo(0,y);if(++n<30&&Math.abs(window.scrollY-y)>2){requestAnimationFrame(r);}}r();document.addEventListener("DOMContentLoaded",r,{once:true});window.addEventListener("load",r,{once:true});})('.intval($scroll_now ).');</script>';
 	}
 	echo	'<div class="pz-dashboard'.$page_class.' wrap">';
 	echo	$html_style;
@@ -377,12 +374,8 @@
 	echo	$html_input;
 
 	// キャッシュ一覧
-	if	(!$show_list ) {
-		echo	'<div style="display: none;">';
-	}
-	require_once ('pz-linkcard-cacheman-list.php');
-	if	(!$show_list ) {
-		echo	'</div>';
+	if	($show_list ) {
+		require_once ('pz-linkcard-cacheman-list.php');
 	}
 
 	echo	'</form>';

@@ -396,10 +396,6 @@ img.lkc-favicon {
 	color: #dd4e42 /*IMPORTANT*/;
 	background-color: #ffffff /*IMPORTANT*/;
 }
-.lkc-sns-po {
-	color: #eeeeee /*IMPORTANT*/;
-	background-color: #ee4055 /*IMPORTANT*/;
-}
 .lkc-url-info {
 	font-weight: normal;
 	text-decoration: underline;
@@ -434,10 +430,38 @@ img.lkc-favicon {
 
 	/*THUMBNAIL-IMG-WIDTH*/
 	/*THUMBNAIL-IMG-HEIGHT*/
-	/*THUMBNAIL-BORDER*/
-	/*THUMBNAIL-SHADOW*/
 	/*THUMBNAIL-RADIUS*/
 	/*TRANSFORM*/
+}
+.lkc-external-wrap .lkc-content, .lkc-external-wrap .lkc-thumbnail {
+	/*EX-THUMBNAIL-OVERFLOW*/
+}
+.lkc-external-wrap .lkc-thumbnail-img {
+	/*EX-THUMBNAIL-TRANSFORM*/
+	/*EX-THUMBNAIL-BG-COLOR*/
+	/*EX-THUMBNAIL-BORDER*/
+	/*EX-THUMBNAIL-SHADOW*/
+	/*EX-THUMBNAIL-RADIUS*/
+}
+.lkc-internal-wrap .lkc-content, .lkc-internal-wrap .lkc-thumbnail {
+	/*IN-THUMBNAIL-OVERFLOW*/
+}
+.lkc-internal-wrap .lkc-thumbnail-img {
+	/*IN-THUMBNAIL-TRANSFORM*/
+	/*IN-THUMBNAIL-BG-COLOR*/
+	/*IN-THUMBNAIL-BORDER*/
+	/*IN-THUMBNAIL-SHADOW*/
+	/*IN-THUMBNAIL-RADIUS*/
+}
+.lkc-this-wrap .lkc-content, .lkc-this-wrap .lkc-thumbnail {
+	/*TH-THUMBNAIL-OVERFLOW*/
+}
+.lkc-this-wrap .lkc-thumbnail-img {
+	/*TH-THUMBNAIL-TRANSFORM*/
+	/*TH-THUMBNAIL-BG-COLOR*/
+	/*TH-THUMBNAIL-BORDER*/
+	/*TH-THUMBNAIL-SHADOW*/
+	/*TH-THUMBNAIL-RADIUS*/
 }
 .lkc-error {
 	display: block;
@@ -466,6 +490,70 @@ blockquote.lkc-quote::after {
 	padding: 0;
 	margin: 0;
 	width: 100%;
+}
+/* Link type specific options */
+.lkc-external-wrap {
+	/*EX-WRAP-TRANSFORM*/
+	/*EX-WRAP-TRANSITION*/
+}
+.lkc-external-wrap:hover {
+	/*EX-HOVER-OPTION*/
+}
+.lkc-external-wrap .lkc-heading {
+	/*EX-HEADING-TRANSFORM-OPTION*/
+	/*EX-HEADING-BG-COLOR-OPTION*/
+	/*EX-HEADING-BORDER-OPTION*/
+	/*EX-HEADING-SHADOW-OPTION*/
+	/*EX-HEADING-RADIUS-OPTION*/
+}
+.lkc-external-wrap .lkc-more {
+	/*EX-MORE-TRANSFORM-OPTION*/
+	/*EX-MORE-BG-COLOR-OPTION*/
+	/*EX-MORE-BORDER-OPTION*/
+	/*EX-MORE-SHADOW-OPTION*/
+	/*EX-MORE-RADIUS-OPTION*/
+}
+.lkc-internal-wrap {
+	/*IN-WRAP-TRANSFORM*/
+	/*IN-WRAP-TRANSITION*/
+}
+.lkc-internal-wrap:hover {
+	/*IN-HOVER-OPTION*/
+}
+.lkc-internal-wrap .lkc-heading {
+	/*IN-HEADING-TRANSFORM-OPTION*/
+	/*IN-HEADING-BG-COLOR-OPTION*/
+	/*IN-HEADING-BORDER-OPTION*/
+	/*IN-HEADING-SHADOW-OPTION*/
+	/*IN-HEADING-RADIUS-OPTION*/
+}
+.lkc-internal-wrap .lkc-more {
+	/*IN-MORE-TRANSFORM-OPTION*/
+	/*IN-MORE-BG-COLOR-OPTION*/
+	/*IN-MORE-BORDER-OPTION*/
+	/*IN-MORE-SHADOW-OPTION*/
+	/*IN-MORE-RADIUS-OPTION*/
+}
+.lkc-this-wrap {
+	/*TH-WRAP-TRANSFORM*/
+	/*TH-WRAP-TRANSITION*/
+}
+.lkc-this-wrap:hover {
+	/*TH-HOVER-OPTION*/
+}
+.lkc-this-wrap .lkc-heading {
+	/*TH-HEADING-TRANSFORM-OPTION*/
+	/*TH-HEADING-BG-COLOR-OPTION*/
+	/*TH-HEADING-BORDER-OPTION*/
+	/*TH-HEADING-SHADOW-OPTION*/
+	/*TH-HEADING-RADIUS-OPTION*/
+}
+.lkc-this-wrap .lkc-more {
+	/*TH-MORE-TRANSFORM-OPTION*/
+	/*TH-MORE-BG-COLOR-OPTION*/
+	/*TH-MORE-BORDER-OPTION*/
+	/*TH-MORE-SHADOW-OPTION*/
+	/*TH-MORE-RADIUS-OPTION*/
 }
 /*OPTION*/
 /*CSS-ADD*/

@@ -290,7 +290,7 @@
 			}
 
 			// テキスト選択を禁止
-			if		($prop['flg-unti-select'] ) {
+			if		($prop['flg-anti-select'] ) {
 				$file_text			=	str_replace('/*SELECTION*/',		'user-select: none;',		$file_text );
 			}
 
@@ -464,24 +464,7 @@
 				break;
 			}
 
-			// サムネイルの枠線
-			if (isset($prop['thumbnail-border'] ) && $prop['thumbnail-border'] ) {
-				$file_text	=	str_replace('/*THUMBNAIL-BORDER*/',			'border: 1px solid rgba(0, 0, 0, 0.4) !IMPORTANT;', $file_text );
-			}
-
-			// サムネイルの影
 			$thumbnail_adjust		=	2;
-			if (isset($prop['thumbnail-shadow'] ) && $prop['thumbnail-shadow'] == '1' ) {
-				$file_text			=	str_replace('/*THUMBNAIL-SHADOW*/',			'box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.7);', $file_text );
-				$thumbnail_adjust	=	10;		// 影のぶんだけ表示幅を広げる
-			}
-
-			// サムネイルの角丸
-			if	(isset($prop['thumbnail-radius'] ) && $prop['thumbnail-radius'] ) {
-				$file_text	=	str_replace('/*THUMBNAIL-RADIUS*/',			'border-radius: '.$prop['thumbnail-radius'].'; -webkit-border-radius: '.$prop['thumbnail-radius'].'; -moz-border-radius: '.$prop['thumbnail-radius'].';',		$file_text );
-			} else {
-				$file_text	=	str_replace('/*THUMBNAIL-RADIUS*/',			'',		$file_text );
-			}
 
 			// サムネイルの位置とサイズ
 			$thumbnail_width	= intval($prop['thumbnail-width'] );
@@ -552,13 +535,13 @@
 			}
 
 			// 抜粋エリアを内側に見せる
+			// 記事情報エリアの余白
 			if (isset($prop['content-inset'] ) && $prop['content-inset'] == '1' ) {
 				$file_text	=	str_replace('/*CONTENT-PADDING*/',	'padding: 6px;', $file_text );
 				$file_text	=	str_replace('/*CONTENT-INSET*/',	'box-shadow:  inset 4px 4px 4px rgba(255,255,255,1);', $file_text );
 				$file_text	=	str_replace('/*CONTENT-BG-COLOR*/',	'background-color: rgba(255, 255, 255, 0.8 );', $file_text );
 			}
 
-			// 記事情報エリアの余白
 			switch ($prop['info-position'] ) {
 			case 1:				// サイト情報を上に表示
 				$file_text	=	str_replace('/*CONTENT-MARGIN*/',		'margin: 6px 0 0 0;', $file_text );
@@ -591,10 +574,47 @@
 			}
 
 			// リンク種別ごとの設定
-			$option_css		=	'';
+			$replace_part_style	=	function($prefix, $placeholder_prefix, $placeholder_suffix = '' ) use (&$file_text, $prop ) {
+				if	(!empty($prop[$prefix.'-transform-enabled'] ) ) {
+					$value_transform_x		= isset($prop[$prefix.'-transform-x'] ) ? intval($prop[$prefix.'-transform-x'] ) : 0;
+					$value_transform_y		= isset($prop[$prefix.'-transform-y'] ) ? intval($prop[$prefix.'-transform-y'] ) : 0;
+					$value_transform_rotate	= isset($prop[$prefix.'-transform-rotate'] ) ? intval($prop[$prefix.'-transform-rotate'] ) : 0;
+					$value_transform_scale	= isset($prop[$prefix.'-transform-scale'] ) ? intval($prop[$prefix.'-transform-scale'] ) : 100;
+					if	($value_transform_x || $value_transform_y || $value_transform_rotate || $value_transform_scale != 100 ) {
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-TRANSFORM'.$placeholder_suffix.'*/',		'transform: translate('.$value_transform_x.'px, '.$value_transform_y.'px) rotate('.$value_transform_rotate.'deg) scale('.($value_transform_scale / 100).');', $file_text );
+					}
+				}
+
+				if	(!empty($prop[$prefix.'-bg-enabled'] ) && !empty($prop[$prefix.'-bg-color'] ) ) {
+					$file_text	=	str_replace('/*'.$placeholder_prefix.'-BG-COLOR'.$placeholder_suffix.'*/',		'background-color: '.$prop[$prefix.'-bg-color'].';', $file_text );
+				}
+
+				if	(!empty($prop[$prefix.'-border-enabled'] ) ) {
+					$value_style		=	isset($prop[$prefix.'-border-style'] ) ? $prop[$prefix.'-border-style'] : 'solid';
+					$value_width		=	isset($prop[$prefix.'-border-width'] ) ? $prop[$prefix.'-border-width'] : '1px';
+					$value_width_num	=	strval(intval(preg_replace('/[^0-9]/', '', $value_width ) ) );
+					$value_color		=	isset($prop[$prefix.'-border-color'] ) ? $prop[$prefix.'-border-color'] : '';
+					$value_radius		=	isset($prop[$prefix.'-border-radius'] ) ? $prop[$prefix.'-border-radius'] : '';
+					if	($value_style ) {
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-BORDER'.$placeholder_suffix.'*/',		'border: '.($value_color ? $value_color : '' ).' '.($value_style ? $value_style : '' ).' '.($value_width_num ? $value_width_num.'px' : '' ).' !important;', $file_text );
+					}
+					if	($value_radius ) {
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-RADIUS'.$placeholder_suffix.'*/',		'border-radius: '.$value_radius.'; -webkit-border-radius: '.$value_radius.'; -moz-border-radius: '.$value_radius.';', $file_text );
+					}
+				}
+
+				if	(!empty($prop[$prefix.'-shadow-enabled'] ) ) {
+					$value_shadow_color		= !empty($prop[$prefix.'-shadow-color'] ) ? $prop[$prefix.'-shadow-color'] : 'rgba(0,0,0,0.3)';
+					$value_shadow_x			= isset($prop[$prefix.'-shadow-x'] ) ? intval($prop[$prefix.'-shadow-x'] ) : 8;
+					$value_shadow_y			= isset($prop[$prefix.'-shadow-y'] ) ? intval($prop[$prefix.'-shadow-y'] ) : 8;
+					$value_shadow_blur		= isset($prop[$prefix.'-shadow-blur'] ) ? intval($prop[$prefix.'-shadow-blur'] ) : 8;
+					$value_shadow_spread	= isset($prop[$prefix.'-shadow-spread'] ) ? intval($prop[$prefix.'-shadow-spread'] ) : 0;
+					$value_shadow_inset		= isset($prop[$prefix.'-shadow-inset'] ) ? $prop[$prefix.'-shadow-inset'] : 0;
+					$file_text	=	str_replace('/*'.$placeholder_prefix.'-SHADOW'.$placeholder_suffix.'*/',			'box-shadow: '.($value_shadow_inset ? 'inset ' : '' ).$value_shadow_x.'px '.$value_shadow_y.'px '.$value_shadow_blur.'px '.$value_shadow_spread.'px '.$value_shadow_color.';', $file_text );
+				}
+			};
 			foreach		(array('ex', 'in', 'th' )	as	$t ) {
 				$T		=	strtoupper($t );
-				$wrap_class	= ($t == 'ex' ? '.lkc-external-wrap' : ($t == 'in' ? '.lkc-internal-wrap' : '.lkc-this-wrap' ) );
 
 				$value_transform_enabled	= isset($prop[$t.'-transform-enabled'] ) ? $prop[$t.'-transform-enabled'] : 1;
 				if	($value_transform_enabled ) {
@@ -603,12 +623,12 @@
 					$value_transform_rotate	= isset($prop[$t.'-transform-rotate'] ) ? intval($prop[$t.'-transform-rotate'] ) : 0;
 					$value_transform_scale	= isset($prop[$t.'-transform-scale'] ) ? intval($prop[$t.'-transform-scale'] ) : 100;
 					if	($value_transform_x || $value_transform_y || $value_transform_rotate || $value_transform_scale != 100 ) {
-						$option_css			.= $wrap_class.' { transform: translate('.$value_transform_x.'px, '.$value_transform_y.'px) rotate('.$value_transform_rotate.'deg) scale('.($value_transform_scale / 100).'); }';
+						$file_text	=	str_replace('/*'.$T.'-WRAP-TRANSFORM*/',		'transform: translate('.$value_transform_x.'px, '.$value_transform_y.'px) rotate('.$value_transform_rotate.'deg) scale('.($value_transform_scale / 100).');', $file_text );
 					}
 				}
 				$value_transition	= isset($prop[$t.'-transition'] ) ? floatval($prop[$t.'-transition'] ) : 0;
 				if	($value_transition > 0 ) {
-					$option_css		.= $wrap_class.' { transition: all '.$value_transition.'s ease; }';
+					$file_text	=	str_replace('/*'.$T.'-WRAP-TRANSITION*/',	'transition: all '.$value_transition.'s ease;', $file_text );
 				}
 				// 背景色
 				$key				=	$t.'-bg-color';
@@ -662,7 +682,7 @@
 					$value_shadow_y			=	isset($prop[$t.'-shadow-y'] ) ? intval($prop[$t.'-shadow-y'] ) : 8;
 					$value_shadow_blur		=	isset($prop[$t.'-shadow-blur'] ) ? intval($prop[$t.'-shadow-blur'] ) : 8;
 					$value_shadow_spread	=	isset($prop[$t.'-shadow-spread'] ) ? intval($prop[$t.'-shadow-spread'] ) : 0;
-					$value_shadow_inset		=	isset($prop[$t.'-shadow-inset'] ) ? $prop[$t.'-shadow-inset'] : $prop['shadow-inset'];
+					$value_shadow_inset		=	isset($prop[$t.'-shadow-inset'] ) ? $prop[$t.'-shadow-inset'] : 0;
 					$param					=	($value_shadow_inset ? 'inset ' : '' ).
 												$value_shadow_x.'px '.$value_shadow_y.'px '.$value_shadow_blur.'px '.$value_shadow_spread.'px '.$value_shadow_color;
 				}
@@ -732,7 +752,7 @@
 					$hover_css[]	=	'transition: all '.$value_hover_transition.'s ease;';
 				}
 				if	($hover_css ) {
-					$option_css		.=	$wrap_class.':hover { '.implode(' ', $hover_css ).' }';
+					$file_text	=	str_replace('/*'.$T.'-HOVER-OPTION*/',		implode(' ', $hover_css ), $file_text );
 				}
 
 				// ヘッダーの位置
@@ -803,13 +823,20 @@
 					$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		'display: none;',		$file_text );
 					break;
 				}
+
+				$replace_part_style($t.'-heading',	$T.'-HEADING',		'-OPTION' );
+				$replace_part_style($t.'-more',		$T.'-MORE',		'-OPTION' );
+				$replace_part_style($t.'-thumbnail',	$T.'-THUMBNAIL' );
+				if	(!empty($prop[$t.'-thumbnail-transform-enabled'] ) || !empty($prop[$t.'-thumbnail-shadow-enabled'] ) ) {
+					$file_text	=	str_replace('/*'.$T.'-THUMBNAIL-OVERFLOW*/',	'overflow: visible;', $file_text );
+				}
 			}
 
 			// 追加CSS
 			if (isset($prop['css-add'] ) ) {
-				$file_text	=	str_replace('/*CSS-ADD*/',			$option_css.esc_html($prop['css-add'] ), $file_text );
+				$file_text	=	str_replace('/*CSS-ADD*/',			esc_html($prop['css-add'] ), $file_text );
 			} else {
-				$file_text	=	str_replace('/*CSS-ADD*/',			$option_css, $file_text );
+				$file_text	=	str_replace('/*CSS-ADD*/',			'', $file_text );
 			}
 
 			// クレジットリンクを表示する

@@ -1,0 +1,790 @@
+﻿document.addEventListener("DOMContentLoaded", () => {
+    const dashboard = document.querySelector(".pz-dashboard");
+    if (!dashboard) return;
+
+    function initSettingsPreviewWindow() {
+        const win = document.querySelector(".pz-settings-preview-window");
+        const handle = win?.querySelector("[data-pz-preview-handle]");
+        const modeButton = win?.querySelector("[data-pz-preview-mode]");
+        const closeButton = win?.querySelector("[data-pz-preview-close]");
+        if (!win || !handle) return;
+        const form = document.querySelector(".pz-settings form");
+        const storageKey = "pz-linkcard-preview-state";
+        let previewFadeTimer = null;
+        const showPreviewWindow = () => {
+            window.clearTimeout(previewFadeTimer);
+            win.style.display = "";
+            window.requestAnimationFrame(() => {
+                win.classList.add("pz-settings-preview-ready");
+            });
+        };
+        const hidePreviewWindow = () => {
+            window.clearTimeout(previewFadeTimer);
+            win.classList.remove("pz-settings-preview-ready");
+
+            const finish = () => {
+                win.removeEventListener("transitionend", onTransitionEnd);
+                if (!win.classList.contains("pz-settings-preview-ready")) {
+                    win.style.display = "none";
+                }
+            };
+            const onTransitionEnd = e => {
+                if (e.target === win && e.propertyName === "opacity") finish();
+            };
+
+            win.addEventListener("transitionend", onTransitionEnd);
+            previewFadeTimer = window.setTimeout(finish, 220);
+        };
+
+        const preventPreviewLink = e => {
+            if (!e.target?.closest?.(".pz-settings-preview-window a")) return;
+            e.preventDefault();
+            e.stopPropagation();
+        };
+        win.addEventListener("click", preventPreviewLink, true);
+        win.addEventListener("auxclick", preventPreviewLink, true);
+
+        const minPreviewWidth = 320;
+        const minPreviewHeight = 180;
+        const dockedMinHeightFallback = 28;
+        let previewDocked = false;
+        let floatingPreviewRect = null;
+        let suppressHandleDblClick = false;
+        let lastHandleClick = { time: 0, x: 0, y: 0 };
+        const stateInput = name => form?.querySelector(`[data-pz-preview-state="${name}"]`) || null;
+        const setStateInput = (name, value) => {
+            const input = stateInput(name);
+            if (input) input.value = value ?? "";
+        };
+        const readStateInput = name => stateInput(name)?.value ?? "";
+        const readStateNumber = (state, name) => {
+            const raw = state && Object.prototype.hasOwnProperty.call(state, name) ? state[name] : readStateInput(name);
+            const parsed = parseInt(raw, 10);
+            return Number.isFinite(parsed) ? parsed : null;
+        };
+        const readStoredState = () => {
+            try {
+                const stored = window.localStorage?.getItem(storageKey);
+                if (!stored) return null;
+                const parsed = JSON.parse(stored);
+                return parsed && typeof parsed === "object" ? parsed : null;
+            } catch (err) {
+                return null;
+            }
+        };
+        const updateModeButton = () => {
+            if (!modeButton) return;
+            modeButton.textContent = previewDocked ? "□" : "_";
+            modeButton.setAttribute("aria-label", previewDocked ? "Window preview" : "Dock preview");
+            modeButton.title = previewDocked ? "ウィンドウ状態にする" : "ドッキング";
+        };
+
+        const getAdminBarBottom = () => {
+            const adminBar = document.querySelector("#wpadminbar");
+            return adminBar ? Math.max(0, adminBar.getBoundingClientRect().bottom) : 0;
+        };
+
+        const clampToViewport = (left, top) => {
+            const margin = 8;
+            const rect = win.getBoundingClientRect();
+            const minTop = Math.max(margin, getAdminBarBottom());
+            const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+            const maxTop = Math.max(minTop, window.innerHeight - rect.height - margin);
+            return {
+                left: Math.min(maxLeft, Math.max(margin, left)),
+                top: Math.min(maxTop, Math.max(minTop, top)),
+            };
+        };
+
+        const getViewportBounds = () => {
+            const margin = 8;
+            return {
+                minLeft: margin,
+                minTop: Math.max(margin, getAdminBarBottom()),
+                maxRight: window.innerWidth - margin,
+                maxBottom: window.innerHeight - margin,
+            };
+        };
+        const getDockLeft = () => {
+            const wpContent = document.getElementById("wpcontent");
+            return wpContent ? Math.max(0, wpContent.getBoundingClientRect().left) : 0;
+        };
+        const getViewportClientRight = () => {
+            return document.documentElement?.clientWidth || window.innerWidth;
+        };
+        const getDockedMinHeight = () => {
+            const handleHeight = Math.ceil(handle.getBoundingClientRect().height);
+            return Math.max(dockedMinHeightFallback, handleHeight);
+        };
+        const getWindowRect = () => {
+            const rect = win.getBoundingClientRect();
+            return {
+                left: rect.left,
+                top: rect.top,
+                width: rect.width,
+                height: rect.height,
+            };
+        };
+        const syncPreviewState = () => {
+            if (win.style.display === "none") return;
+            const rect = getWindowRect();
+            if (rect.width <= 0 || rect.height <= 0) return null;
+
+            const state = {
+                "preview-mode": previewDocked ? "docked" : "window",
+                "preview-left": Math.round(rect.left),
+                "preview-top": Math.round(rect.top),
+                "preview-width": Math.round(rect.width),
+                "preview-height": Math.round(rect.height),
+                "preview-docked-height": Math.round(previewDocked ? rect.height : (readStateNumber(null, "preview-docked-height") || rect.height)),
+            };
+            Object.entries(state).forEach(([name, value]) => setStateInput(name, value));
+            try {
+                window.localStorage?.setItem(storageKey, JSON.stringify(state));
+            } catch (err) {
+                // Ignore storage failures such as private browsing quota errors.
+            }
+            return state;
+        };
+        const persistPreviewState = async () => {
+            if (typeof pzLinkCardPreview === "undefined" || !pzLinkCardPreview.ajaxUrl) return;
+            const state = syncPreviewState();
+            if (!state) return;
+
+            const fd = new FormData();
+            fd.append("action", pzLinkCardPreview.stateAction || "pz_lkc_preview_state");
+            fd.append("nonce", pzLinkCardPreview.stateNonce || "");
+            Object.entries(state).forEach(([name, value]) => fd.append(name, value));
+            try {
+                await fetch(pzLinkCardPreview.ajaxUrl, { method: "POST", body: fd });
+            } catch (err) {
+                console.warn("Pz-LinkCard preview state failed:", err);
+            }
+        };
+        const setDockedScrollSpace = (height = 0) => {
+            const active = previewDocked && height > 0;
+            document.body.classList.toggle("pz-settings-preview-docked-active", active);
+            if (active) {
+                document.documentElement.style.setProperty("--pz-settings-preview-docked-height", `${Math.round(height)}px`);
+            } else {
+                document.documentElement.style.removeProperty("--pz-settings-preview-docked-height");
+            }
+        };
+        const getResizeEdges = e => {
+            const rect = win.getBoundingClientRect();
+            const edgeSize = 8;
+            if (previewDocked) {
+                return e.clientY - rect.top <= edgeSize ? { top: true, right: false, bottom: false, left: false } : null;
+            }
+            const edges = {
+                top: e.clientY - rect.top <= edgeSize,
+                right: rect.right - e.clientX <= edgeSize,
+                bottom: rect.bottom - e.clientY <= edgeSize,
+                left: e.clientX - rect.left <= edgeSize,
+            };
+            return Object.values(edges).some(Boolean) ? edges : null;
+        };
+        const getResizeCursor = edges => {
+            if (!edges) return "";
+            if ((edges.top && edges.left) || (edges.bottom && edges.right)) return "nwse-resize";
+            if ((edges.top && edges.right) || (edges.bottom && edges.left)) return "nesw-resize";
+            if (edges.top || edges.bottom) return "ns-resize";
+            if (edges.left || edges.right) return "ew-resize";
+            return "";
+        };
+        const setResizeCursor = e => {
+            if (win.classList.contains("pz-settings-preview-resizing")) return;
+            if (!previewDocked && e.target?.closest?.("[data-pz-preview-handle]")) {
+                win.style.cursor = "";
+                handle.style.cursor = "";
+                return;
+            }
+            const cursor = getResizeCursor(getResizeEdges(e));
+            win.style.cursor = cursor;
+            handle.style.cursor = cursor || "";
+        };
+        const clearResizeCursor = () => {
+            if (win.classList.contains("pz-settings-preview-resizing")) return;
+            win.style.cursor = "";
+            handle.style.cursor = "";
+        };
+
+        const setPosition = (left, top) => {
+            if (previewDocked) return;
+            const next = clampToViewport(left, top);
+            win.style.left = `${next.left}px`;
+            win.style.top = `${next.top}px`;
+            win.style.right = "auto";
+            win.style.bottom = "auto";
+        };
+
+        const keepInViewport = () => {
+            if (previewDocked) {
+                applyDockedRect(getWindowRect().height);
+                return;
+            }
+            const bounds = getViewportBounds();
+            const rect = win.getBoundingClientRect();
+            const maxWidth = Math.max(1, bounds.maxRight - bounds.minLeft);
+            const maxHeight = Math.max(1, bounds.maxBottom - bounds.minTop);
+            if (rect.width > maxWidth) win.style.width = `${Math.round(maxWidth)}px`;
+            if (rect.height > maxHeight) {
+                win.style.height = `${Math.round(maxHeight)}px`;
+                win.style.maxHeight = "none";
+            }
+            setPosition(rect.left, rect.top);
+        };
+
+        const applyFloatingRect = rect => {
+            const next = rect || floatingPreviewRect;
+            previewDocked = false;
+            win.classList.remove("pz-settings-preview-docked");
+            setDockedScrollSpace(0);
+            updateModeButton();
+            if (!next) {
+                keepInViewport();
+                syncPreviewState();
+                return;
+            }
+
+            const bounds = getViewportBounds();
+            const width = Math.min(Math.max(minPreviewWidth, next.width), Math.max(minPreviewWidth, bounds.maxRight - bounds.minLeft));
+            const height = Math.min(Math.max(minPreviewHeight, next.height), Math.max(minPreviewHeight, bounds.maxBottom - bounds.minTop));
+            win.style.width = `${Math.round(width)}px`;
+            win.style.height = `${Math.round(height)}px`;
+            win.style.maxHeight = "none";
+            setPosition(next.left, next.top);
+            floatingPreviewRect = getWindowRect();
+            syncPreviewState();
+        };
+        const applyDockedRect = height => {
+            const bounds = getViewportBounds();
+            const dockLeft = getDockLeft();
+            const dockedMinHeight = getDockedMinHeight();
+            const maxHeight = Math.max(dockedMinHeight, window.innerHeight - bounds.minTop);
+            const nextHeight = Math.min(maxHeight, Math.max(dockedMinHeight, height || getWindowRect().height));
+
+            previewDocked = true;
+            win.classList.add("pz-settings-preview-docked");
+            updateModeButton();
+            win.style.left = `${Math.round(dockLeft)}px`;
+            win.style.top = `${Math.round(window.innerHeight - nextHeight)}px`;
+            win.style.right = "auto";
+            win.style.bottom = "auto";
+            win.style.width = `${Math.round(Math.max(minPreviewWidth, getViewportClientRight() - dockLeft))}px`;
+            win.style.height = `${Math.round(nextHeight)}px`;
+            win.style.maxHeight = "none";
+            setDockedScrollSpace(nextHeight);
+            syncPreviewState();
+        };
+        const animatePreviewWindow = () => {
+            win.classList.add("pz-settings-preview-animating");
+            window.setTimeout(() => {
+                win.classList.remove("pz-settings-preview-animating");
+            }, 150);
+        };
+        const toggleDockedPreview = () => {
+            animatePreviewWindow();
+            if (previewDocked) {
+                applyFloatingRect(floatingPreviewRect);
+                persistPreviewState();
+                return;
+            }
+
+            floatingPreviewRect = getWindowRect();
+            applyDockedRect(floatingPreviewRect.height);
+            persistPreviewState();
+        };
+        const restorePreviewState = () => {
+            const stored = readStoredState() || {};
+            const mode = stored["preview-mode"] || readStateInput("preview-mode");
+            const left = readStateNumber(stored, "preview-left");
+            const top = readStateNumber(stored, "preview-top");
+            const width = readStateNumber(stored, "preview-width");
+            const height = readStateNumber(stored, "preview-height");
+            const dockedHeight = readStateNumber(stored, "preview-docked-height") || height;
+
+            if (mode === "docked") {
+                applyDockedRect(dockedHeight);
+                return;
+            }
+            if (left !== null && top !== null && width !== null && height !== null) {
+                applyFloatingRect({ left, top, width, height });
+                return;
+            }
+            keepInViewport();
+            syncPreviewState();
+        };
+
+        win.addEventListener("pointermove", setResizeCursor);
+        win.addEventListener("pointerleave", clearResizeCursor);
+        win.addEventListener("pointerdown", e => {
+            if (e.button !== undefined && e.button !== 0) return;
+            if (e.target?.closest?.(".pz-settings-preview-button")) return;
+            if (!previewDocked && e.target?.closest?.("[data-pz-preview-handle]")) return;
+            const edges = getResizeEdges(e);
+            if (!edges) return;
+
+            const startRect = win.getBoundingClientRect();
+            const start = {
+                left: startRect.left,
+                top: startRect.top,
+                right: startRect.right,
+                bottom: startRect.bottom,
+                width: startRect.width,
+                height: startRect.height,
+            };
+
+            win.setPointerCapture?.(e.pointerId);
+            win.classList.add("pz-settings-preview-resizing");
+            win.style.cursor = getResizeCursor(edges);
+            handle.style.cursor = win.style.cursor;
+            e.preventDefault();
+            e.stopPropagation();
+
+            const move = moveEvent => {
+                if (previewDocked) {
+                    applyDockedRect(start.height + start.top - moveEvent.clientY);
+                    return;
+                }
+
+                const bounds = getViewportBounds();
+                let left = start.left;
+                let top = start.top;
+                let width = start.width;
+                let height = start.height;
+
+                if (edges.left) {
+                    const minWidth = Math.min(minPreviewWidth, start.right - bounds.minLeft);
+                    left = Math.min(start.right - minWidth, Math.max(bounds.minLeft, moveEvent.clientX));
+                    width = start.right - left;
+                }
+                if (edges.right) {
+                    const minWidth = Math.min(minPreviewWidth, bounds.maxRight - left);
+                    width = Math.min(bounds.maxRight - left, Math.max(minWidth, moveEvent.clientX - left));
+                }
+                if (edges.top) {
+                    const minHeight = Math.min(minPreviewHeight, start.bottom - bounds.minTop);
+                    top = Math.min(start.bottom - minHeight, Math.max(bounds.minTop, moveEvent.clientY));
+                    height = start.bottom - top;
+                }
+                if (edges.bottom) {
+                    const minHeight = Math.min(minPreviewHeight, bounds.maxBottom - top);
+                    height = Math.min(bounds.maxBottom - top, Math.max(minHeight, moveEvent.clientY - top));
+                }
+
+                win.style.left = `${Math.round(left)}px`;
+                win.style.top = `${Math.round(top)}px`;
+                win.style.width = `${Math.round(width)}px`;
+                win.style.height = `${Math.round(height)}px`;
+                win.style.right = "auto";
+                win.style.bottom = "auto";
+                win.style.maxHeight = "none";
+            };
+            const up = upEvent => {
+                win.classList.remove("pz-settings-preview-resizing");
+                win.releasePointerCapture?.(upEvent.pointerId);
+                clearResizeCursor();
+                if (!previewDocked) floatingPreviewRect = getWindowRect();
+                syncPreviewState();
+                persistPreviewState();
+                window.removeEventListener("pointermove", move);
+                window.removeEventListener("pointerup", up);
+                window.removeEventListener("pointercancel", up);
+            };
+
+            window.addEventListener("pointermove", move);
+            window.addEventListener("pointerup", up);
+            window.addEventListener("pointercancel", up);
+        }, true);
+
+        handle.addEventListener("pointerdown", e => {
+            if (e.button !== undefined && e.button !== 0) return;
+            if (e.target?.closest?.(".pz-settings-preview-button")) return;
+
+            const now = Date.now();
+            const distance = Math.hypot(e.clientX - lastHandleClick.x, e.clientY - lastHandleClick.y);
+            const isDoubleClick = now - lastHandleClick.time < 400 && distance < 8;
+            lastHandleClick = { time: now, x: e.clientX, y: e.clientY };
+
+            if (e.detail >= 2 || isDoubleClick) {
+                e.preventDefault();
+                suppressHandleDblClick = true;
+                toggleDockedPreview();
+                return;
+            }
+
+            const rect = win.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+
+            handle.setPointerCapture?.(e.pointerId);
+            win.classList.add("pz-settings-preview-dragging");
+            e.preventDefault();
+
+            const move = moveEvent => {
+                if (previewDocked) {
+                    applyDockedRect(rect.height + e.clientY - moveEvent.clientY);
+                    return;
+                }
+                setPosition(moveEvent.clientX - offsetX, moveEvent.clientY - offsetY);
+            };
+            const up = upEvent => {
+                win.classList.remove("pz-settings-preview-dragging");
+                handle.releasePointerCapture?.(upEvent.pointerId);
+                if (!previewDocked) floatingPreviewRect = getWindowRect();
+                syncPreviewState();
+                persistPreviewState();
+                window.removeEventListener("pointermove", move);
+                window.removeEventListener("pointerup", up);
+                window.removeEventListener("pointercancel", up);
+            };
+
+            window.addEventListener("pointermove", move);
+            window.addEventListener("pointerup", up);
+            window.addEventListener("pointercancel", up);
+        });
+        handle.addEventListener("dblclick", e => {
+            if (e.target?.closest?.(".pz-settings-preview-button")) return;
+            e.preventDefault();
+            if (suppressHandleDblClick) {
+                suppressHandleDblClick = false;
+                return;
+            }
+            toggleDockedPreview();
+        });
+        modeButton?.addEventListener("click", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleDockedPreview();
+            modeButton.blur();
+        });
+        closeButton?.addEventListener("click", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            previewDocked = false;
+            win.classList.remove("pz-settings-preview-docked");
+            setDockedScrollSpace(0);
+            updateModeButton();
+            syncPreviewState();
+            persistPreviewState();
+            hidePreviewWindow();
+            closeButton.blur();
+        });
+
+        window.addEventListener("resize", keepInViewport);
+        updateModeButton();
+        restorePreviewState();
+        initSettingsPreviewLiveStyles(win);
+        showPreviewWindow();
+    }
+
+    function initSettingsPreviewLiveStyles(win) {
+        const form = document.querySelector(".pz-settings form");
+        if (!form) return;
+
+        let previewCssTimer = null;
+        let previewCssRequestSeq = 0;
+        const isControlDisabled = el => {
+            if (!el) return false;
+            if (el.disabled || el.classList.contains("pz-disabled")) return true;
+            if (el.closest(".pz-card-prop-switch")) return false;
+            return el.readOnly ||
+                el.getAttribute("aria-disabled") === "true" ||
+                el.closest(".pz-card-prop-disabled") !== null;
+        };
+        const getPreviewStyleElement = () => {
+            let styleEl = document.getElementById("pz-linkcard-preview-css");
+            if (!styleEl) {
+                styleEl = document.createElement("style");
+                styleEl.id = "pz-linkcard-preview-css";
+                document.head.appendChild(styleEl);
+            }
+            return styleEl;
+        };
+        const collectAllProperties = () => {
+            const fd = new FormData();
+            const values = new Map();
+            form.querySelectorAll("input[name^='properties['], select[name^='properties['], textarea[name^='properties[']").forEach(el => {
+                if (isControlDisabled(el)) {
+                    values.set(el.name, "");
+                    return;
+                }
+                if (el.type === "checkbox" || el.type === "radio") {
+                    if (el.type === "checkbox") values.set(el.name, el.checked ? el.value : "");
+                    if (el.type === "radio" && el.checked) values.set(el.name, el.value);
+                    return;
+                }
+                values.set(el.name, el.value ?? "");
+            });
+            values.forEach((value, name) => {
+                fd.append(name, value);
+            });
+            return fd;
+        };
+        const kickPreviewCssCallback = async () => {
+            if (typeof pzLinkCardPreview === "undefined" || !pzLinkCardPreview.ajaxUrl) return;
+
+            const seq = ++previewCssRequestSeq;
+            const fd = collectAllProperties();
+            fd.append("action", pzLinkCardPreview.action || "pz_lkc_preview_render");
+            fd.append("nonce", pzLinkCardPreview.nonce || "");
+
+            try {
+                const response = await fetch(pzLinkCardPreview.ajaxUrl, { method: "POST", body: fd });
+                const json = await response.json();
+                if (seq !== previewCssRequestSeq || !json?.success) return;
+                getPreviewStyleElement().textContent = json.data?.css || "";
+            } catch (err) {
+                console.warn("Pz-LinkCard preview CSS failed:", err);
+            }
+        };
+        const schedulePreviewCssCallback = (delay = 120) => {
+            if (previewCssTimer) clearTimeout(previewCssTimer);
+            previewCssTimer = setTimeout(kickPreviewCssCallback, delay);
+        };
+
+        const findControl = name => {
+            const controls = Array.from(form.querySelectorAll(`[name="properties[${name}]"]`));
+            return controls.find(el => el.type !== "hidden" && !isControlDisabled(el)) ||
+                controls.find(el => el.type !== "hidden") ||
+                controls[0] ||
+                null;
+        };
+        const value = name => {
+            const control = findControl(name);
+            if (!control || isControlDisabled(control)) return "";
+            if (control.type === "checkbox" || control.type === "radio") return control.checked ? control.value : "";
+            return control.value ?? "";
+        };
+        const checked = name => value(name) !== "";
+        const intValue = (name, fallback = 0) => {
+            const parsed = parseInt(value(name), 10);
+            return Number.isFinite(parsed) ? parsed : fallback;
+        };
+        const cssSize = name => {
+            const raw = value(name);
+            if (raw === "" || raw === null || raw === undefined) return "";
+            return /^-?\d+(\.\d+)?$/.test(String(raw)) ? `${raw}px` : String(raw);
+        };
+        const applyDisplay = (node, show) => {
+            if (node) node.style.display = show ? "" : "none";
+        };
+        const resetStyle = (node, props) => {
+            if (!node) return;
+            props.forEach(prop => node.style[prop] = "");
+        };
+        const resetCardOrder = card => {
+            const info = card.querySelector("[data-pz-preview-info]");
+            const content = card.querySelector("[data-pz-preview-content]");
+            const cardBody = card.querySelector(".lkc-card");
+            const title = card.querySelector(".lkc-title");
+            const thumbnail = card.querySelector(".lkc-thumbnail");
+            if (info && content && cardBody && info.parentElement !== cardBody) {
+                cardBody.insertBefore(info, content);
+            }
+            if (thumbnail && title && thumbnail.parentElement) {
+                thumbnail.parentElement.insertBefore(thumbnail, title);
+            }
+        };
+        const textStyle = (selector, prefix) => {
+            win.querySelectorAll(selector).forEach(node => {
+                resetStyle(node, ["color", "background", "backgroundColor", "padding", "fontSize", "lineHeight", "fontWeight", "fontStyle", "textDecoration", "maxHeight", "webkitLineClamp"]);
+                const color = value(`${prefix}-color`);
+                const bg = value(`${prefix}-bg-color`);
+                if (color) node.style.color = color;
+                if (bg) {
+                    node.style.padding = "4px";
+                    node.style.backgroundColor = bg;
+                }
+                const size = cssSize(`${prefix}-size`);
+                const height = cssSize(`${prefix}-height`);
+                if (size) node.style.fontSize = size;
+                if (height) node.style.lineHeight = height;
+                node.style.fontWeight = checked(`${prefix}-bold`) ? "bold" : "normal";
+                node.style.fontStyle = checked(`${prefix}-italic`) ? "italic" : "normal";
+                node.style.textDecoration = checked(`${prefix}-underline`) ? "underline" : "none";
+                const maxLine = intValue(`${prefix}-maxline`, 0);
+                if (maxLine > 0) node.style.webkitLineClamp = String(maxLine);
+            });
+        };
+        const applyPartBox = (card, selector, prefix) => {
+            const node = card.querySelector(selector);
+            if (!node) return;
+            resetStyle(node, ["transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
+        };
+        const applySpecialFormat = () => {
+            schedulePreviewCssCallback();
+        };
+        const updatePreview = () => {
+            const thumbnailPosition = value("thumbnail-position");
+            const infoPosition = value("info-position");
+            const displayUrl = value("display-url");
+            const displayDate = value("display-date");
+            const width = value("width");
+            const widthUnit = value("width-unit") || "px";
+            const contentHeight = intValue("content-height", 0);
+            const thumbnailWidth = intValue("thumbnail-width", 100);
+            const thumbnailHeight = intValue("thumbnail-height", 100);
+
+            win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
+                const prefix = card.dataset.pzPreviewCard;
+                const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap, .lkc-this-wrap");
+                const cardBody = card.querySelector(".lkc-card");
+                const content = card.querySelector("[data-pz-preview-content]");
+                const info = card.querySelector("[data-pz-preview-info]");
+                const title = card.querySelector(".lkc-title");
+                const heading = card.querySelector("[data-pz-preview-heading]");
+                const more = card.querySelector("[data-pz-preview-more]");
+                const thumbnail = card.querySelector(".lkc-thumbnail");
+                const thumbnailImg = card.querySelector(".lkc-thumbnail-img");
+                const url = card.querySelector(".lkc-url");
+                const infoUrl = card.querySelector(".lkc-url-info");
+                const date = card.querySelector(".lkc-date");
+                const excerpt = card.querySelector(".lkc-excerpt");
+
+                resetCardOrder(card);
+                resetStyle(card, ["marginTop", "marginBottom", "paddingLeft", "paddingRight"]);
+                resetStyle(wrap, ["maxWidth", "width", "height", "margin", "transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
+                resetStyle(cardBody, ["marginTop", "marginBottom", "marginLeft", "marginRight", "padding", "border", "background", "backgroundColor", "boxShadow"]);
+                resetStyle(content, ["height", "margin", "padding", "boxShadow", "background", "backgroundColor", "borderTop", "borderBottom"]);
+                resetStyle(info, ["color", "background", "backgroundColor"]);
+                resetStyle(thumbnail, ["display", "float", "width", "margin", "transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
+                resetStyle(thumbnailImg, ["width", "height"]);
+
+                card.style.marginTop = cssSize("margin-top") || "";
+                card.style.marginBottom = cssSize("margin-bottom") || "";
+                card.style.paddingLeft = cssSize("margin-left") || "";
+                card.style.paddingRight = cssSize("margin-right") || "";
+
+                if (wrap) {
+                    if (width) {
+                        if (widthUnit === "%") {
+                            wrap.style.width = `${intValue("width", 100)}%`;
+                        } else {
+                            wrap.style.maxWidth = `${intValue("width", 500)}px`;
+                        }
+                    }
+                    wrap.style.margin = checked("centering") ? "0 auto" : "0";
+                    applyPartBox(card, ".lkc-external-wrap, .lkc-internal-wrap, .lkc-this-wrap", prefix);
+                }
+
+                if (cardBody) {
+                    cardBody.style.marginTop = cssSize("card-top") || "8px";
+                    cardBody.style.marginBottom = cssSize("card-bottom") || "8px";
+                    cardBody.style.marginLeft = cssSize("card-left") || "8px";
+                    cardBody.style.marginRight = cssSize("card-right") || "8px";
+                }
+
+                if (thumbnail && thumbnailImg) {
+                    applyDisplay(thumbnail, thumbnailPosition !== "0");
+                    if (thumbnailPosition === "1") {
+                        thumbnail.style.float = "right";
+                        thumbnail.style.width = `${thumbnailWidth + 2}px`;
+                        thumbnail.style.margin = "0 0 0 8px";
+                        thumbnailImg.style.width = `${thumbnailWidth}px`;
+                        thumbnailImg.style.height = `${thumbnailHeight}px`;
+                    } else if (thumbnailPosition === "2") {
+                        thumbnail.style.float = "left";
+                        thumbnail.style.width = `${thumbnailWidth + 2}px`;
+                        thumbnail.style.margin = "0 8px 0 0";
+                        thumbnailImg.style.width = `${thumbnailWidth}px`;
+                        thumbnailImg.style.height = `${thumbnailHeight}px`;
+                    } else if (thumbnailPosition === "3") {
+                        thumbnail.style.display = "block";
+                        thumbnail.style.margin = "0 0 8px 0";
+                        thumbnailImg.style.width = "calc(100% - 2px)";
+                        thumbnailImg.style.height = `${thumbnailHeight}px`;
+                    }
+                }
+
+                if (content) {
+                    const totalHeight = thumbnailPosition === "3" ? contentHeight + thumbnailHeight : contentHeight;
+                    if (totalHeight > 0) content.style.height = `${totalHeight}px`;
+                    if (checked("content-inset")) {
+                        content.style.padding = "6px";
+                        content.style.boxShadow = "inset 4px 4px 4px rgba(255,255,255,1)";
+                        content.style.backgroundColor = "rgba(255,255,255,0.8)";
+                    }
+                    content.style.margin = infoPosition === "1" ? "6px 0 0 0" : (infoPosition === "2" ? "0 0 8px 0" : "0");
+                    if (checked("separator")) {
+                        if (infoPosition === "1") content.style.borderTop = `1px solid ${value("info-color") || "#222"}`;
+                        if (infoPosition === "2") content.style.borderBottom = `1px solid ${value("info-color") || "#222"}`;
+                    }
+                }
+
+                applyDisplay(info, infoPosition !== "");
+                if (info && content && title) {
+                    if (infoPosition === "2") {
+                        cardBody.appendChild(info);
+                    } else if (infoPosition === "3") {
+                        content.insertBefore(info, title);
+                    }
+                }
+
+                const showDate = prefix !== "ex" && displayDate !== "";
+                applyDisplay(date, showDate);
+                applyDisplay(url, displayUrl === "1" && !showDate);
+                applyDisplay(infoUrl, displayUrl === "2" && !showDate);
+                applyDisplay(excerpt, checked("display-excerpt"));
+
+                if (heading) {
+                    heading.textContent = value(`${prefix}-heading-text`);
+                    applyDisplay(heading, heading.textContent !== "");
+                    applyPartBox(card, ".lkc-heading", `${prefix}-heading`);
+                }
+                if (more) {
+                    more.textContent = value(`${prefix}-more-text`);
+                    applyDisplay(more, more.textContent !== "" && value("more-style") !== "");
+                    applyPartBox(card, ".lkc-more", `${prefix}-more`);
+                }
+                const addedText = value(`${prefix}-added-text`);
+                let added = info?.querySelector(".lkc-added");
+                if (!addedText && added) {
+                    added.remove();
+                    added = null;
+                }
+                if (addedText && !added && info) {
+                    added = document.createElement("div");
+                    added.className = "lkc-added";
+                    info.appendChild(added);
+                }
+                if (added) {
+                    added.textContent = addedText;
+                    applyDisplay(added, true);
+                }
+            });
+
+            textStyle(".lkc-title", "title");
+            textStyle(".lkc-url, .lkc-url-info", "url");
+            textStyle(".lkc-excerpt", "excerpt");
+            textStyle(".lkc-date", "date");
+            textStyle(".lkc-info, .lkc-domain", "info");
+            textStyle(".lkc-added", "added");
+            textStyle(".lkc-heading", "heading");
+            textStyle(".lkc-more", "more");
+            applySpecialFormat();
+        };
+
+        const syncPreview = () => {
+            updatePreview();
+            schedulePreviewCssCallback();
+        };
+
+        form.addEventListener("input", syncPreview);
+        form.addEventListener("change", syncPreview);
+        const observer = new MutationObserver(mutations => {
+            if (!mutations.some(m => m.type === "attributes")) return;
+            syncPreview();
+        });
+        observer.observe(form, {
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["class", "disabled", "readonly", "aria-disabled"],
+        });
+        updatePreview();
+        schedulePreviewCssCallback(0);
+    }
+
+    initSettingsPreviewWindow();
+});

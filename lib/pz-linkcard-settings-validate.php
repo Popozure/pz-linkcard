@@ -4,7 +4,7 @@
 	$flg_error					=	false;
 	$test_item					=	$this->options;
 
-	foreach	(self::DEFAULTS as $key => $definition ) {
+	foreach	(self::pz_GetOptionDefinitions() as $key => $definition ) {
 		$temp_value				=	array_key_exists($key, $this->options ) ? $this->options[$key] : $definition['default'];
 		$type					=	$definition['type'];
 		$allow_null				=	!empty($definition['null'] );

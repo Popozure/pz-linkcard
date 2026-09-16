@@ -21,7 +21,9 @@
 			</td>
 		</tr>
 	</table>
-	<?php submit_button(); ?>
+	<div class="pz-admin-only">
+		<?php submit_button(); ?>
+	</div>
 
 	<h2><?php echo	__('Deletion Settings', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">

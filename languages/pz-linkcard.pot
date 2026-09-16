@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "X-Generator: Poedit 3.9\n"
-"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-KeywordsList: __;_e;esc_html_e;esc_html__;esc_attr__;esc_attr_e\n"
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
@@ -1868,4 +1868,45 @@ msgstr ""
 
 #: ../pz-linkcard.php:3012
 msgid "Pz Card"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:61
+#: ../lib/pz-linkcard-settings.php:457
+msgid "Preview"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:66
+msgid "Display the LinkCard preview window on the settings screen."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:459
+msgid "Dock preview"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:460
+msgid "Close preview"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:464
+msgid "External Link Preview"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:464
+msgid "This is a sample of an external link card."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:465
+msgid "Internal Link Preview"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:465
+msgid "This is a sample of an internal link card."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:466
+msgid "Same Page Link Preview"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:466
+msgid "This is a sample of a same-page link card."
 msgstr ""

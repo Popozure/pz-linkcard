@@ -126,7 +126,7 @@
 	top: 0;
 	left: 0;
 	width: 100%;
-	height: 120%;
+	height: 100vh;
 	background-color: rgba(0,0,0,0);
 	cursor: wait;
 	transition: background-color 0.2s ease;
@@ -937,7 +937,9 @@
 }
 
 .pz-man-body-url {
-	width: 200px;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
 	height: calc(20px * 1);
 	line-height: 20px;
 	display: flex;
@@ -2012,6 +2014,34 @@ a.pz-thx {
 	text-align: center;
 }
 
+@media screen and (max-width: 782px) {
+	#pz-admin .form-table {
+		width: 100%;
+		max-width: 100%;
+		table-layout: fixed;
+	}
+
+	#pz-admin .form-table th,
+	#pz-admin .form-table td {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	#pz-admin input[type="text"],
+	#pz-admin input[type="url"],
+	#pz-admin input[type="number"] {
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	#pz-admin input[name="properties[error-url]"] {
+		width: 100%;
+	}
+}
+
 .pz-submit-float {
 	position: sticky;
 	top: var(--pz-submit-sticky-top, 72px);
@@ -2050,6 +2080,11 @@ a.pz-thx {
 	margin: 8px;
 }
 
+.pz-cron-list-wrap {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
 .pz-cron-all {
 }
 
@@ -2080,6 +2115,20 @@ a.pz-thx {
 .pz-cron-body-schedule {
 }
 
+@media screen and (max-width: 782px) {
+	.pz-cron-log {
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		box-sizing: border-box;
+		resize: vertical;
+	}
+
+	.pz-cron-list {
+		min-width: 560px;
+	}
+}
+
 /* Settings - basic */
 .pz-changelog {
 	position: relative;
@@ -2097,6 +2146,16 @@ a.pz-thx {
 	overflow: scroll;
 	resize: both;
 	line-height: 28px;
+}
+
+@media screen and (max-width: 782px) {
+	.pz-changelog {
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		box-sizing: border-box;
+		resize: vertical;
+	}
 }
 
 .pz-card-prop-row {
@@ -2131,6 +2190,20 @@ a.pz-thx {
 
 .pz-card-prop-switch input[type="checkbox"]:checked + .pz-card-switch-ui:before {
 	left: 18px;
+}
+
+.pz-card-prop-row.pz-card-prop-disabled label:not(.pz-card-prop-switch) {
+	opacity: 0.42;
+	filter: grayscale(1);
+	pointer-events: none;
+}
+
+.pz-card-prop-row.pz-card-prop-disabled label:not(.pz-card-prop-switch) input,
+.pz-card-prop-row.pz-card-prop-disabled label:not(.pz-card-prop-switch) select,
+.pz-card-prop-row.pz-card-prop-disabled label:not(.pz-card-prop-switch) textarea {
+	background-color: #f1f1f1;
+	border-color: #dcdcde;
+	color: #8c8f94;
 }
 
 .pz-card-switch-ui {
@@ -2241,8 +2314,70 @@ a.pz-thx {
 	width: 100%;
 }
 
+@media screen and (max-width: 782px) {
+	.pz-card-article-content-table {
+		width: 100%;
+		max-width: 100%;
+		table-layout: fixed;
+	}
+
+	.pz-card-article-content-table th,
+	.pz-card-article-content-table td {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.pz-card-article-content-table select,
+	.pz-card-article-content-table input.pz-combo {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.pz-card-article-content-table label {
+		max-width: 100%;
+		box-sizing: border-box;
+		white-space: normal;
+	}
+}
+
 .pz-shortcode {
 	width: 8em;
+}
+
+@media screen and (max-width: 782px) {
+	.pz-editor-shortcode-table {
+		width: 100%;
+		max-width: 100%;
+		table-layout: fixed;
+	}
+
+	.pz-editor-shortcode-table th,
+	.pz-editor-shortcode-table td {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	.pz-editor-shortcode-table .pz-shortcode,
+	.pz-editor-shortcode-table .pz-shortcode-enabled {
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.pz-editor-shortcode-table .pz-shortcode-example {
+		display: block;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		box-sizing: border-box;
+		white-space: normal;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
 }
 
 .pz-shortcode-title {
@@ -2297,6 +2432,36 @@ a.pz-thx {
 	min-height: 2em;
 	min-width: 100px;
 	resize: both;
+}
+
+@media screen and (max-width: 782px) {
+	#pz-etc .form-table {
+		width: 100%;
+		max-width: 100%;
+		table-layout: fixed;
+	}
+
+	#pz-etc .form-table th,
+	#pz-etc .form-table td {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
+
+	#pz-etc input[type="text"],
+	#pz-etc input[type="url"],
+	#pz-etc textarea {
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	#pz-etc .pz-css-add {
+		resize: vertical;
+	}
 }
 
 .pz-letter-table {
@@ -2445,6 +2610,11 @@ a.pz-thx {
 	text-align: center;
 }
 
+.pz-position-scroll {
+	max-width: 100%;
+	overflow-x: auto;
+}
+
 .pz-position-margin th {
 }
 
@@ -2534,6 +2704,28 @@ a.pz-thx {
 
 .pz-position-thumbnail select {
 	width: 100%;
+}
+
+@media screen and (max-width: 782px) {
+	.pz-position-margin {
+		width: max-content;
+		min-width: 640px;
+	}
+
+	#pz-position .form-table {
+		width: 100%;
+		max-width: 100%;
+		table-layout: fixed;
+	}
+
+	#pz-position .form-table th,
+	#pz-position .form-table td {
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		overflow-wrap: anywhere;
+		word-break: break-word;
+	}
 }
 
 .pz-man-file-button {
@@ -2841,4 +3033,145 @@ a.pz-thx {
 .pz-develop-message:hover {
 	opacity: 0.3;
 	transition: 0.6s;
+}
+
+.pz-settings-preview-window {
+	position: fixed;
+	top: 116px;
+	right: 24px;
+	z-index: 10010;
+	display: flex;
+	flex-direction: column;
+	width: min(760px, calc(100vw - 32px));
+	max-height: calc(100vh - 132px);
+	overflow: hidden;
+	padding: 0;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+	box-sizing: border-box;
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.16s ease, visibility 0s linear 0.16s;
+}
+
+.pz-settings-preview-window.pz-settings-preview-ready {
+	visibility: visible;
+	opacity: 1;
+	pointer-events: auto;
+	transition-delay: 0s;
+}
+
+.pz-settings-preview-handle {
+	z-index: 1;
+	flex: 0 0 auto;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin: 0;
+	min-height: 20px;
+	padding: 2px 8px;
+	border-bottom: 1px solid #c3c4c7;
+	background: #1d2327;
+	color: #fff;
+	cursor: move;
+	user-select: none;
+	touch-action: none;
+}
+
+.pz-settings-preview-title {
+	color: inherit;
+	font-size: 12px;
+	font-weight: 600;
+	line-height: 16px;
+}
+
+.pz-settings-preview-controls {
+	margin-left: auto;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	cursor: default;
+}
+
+.pz-settings-preview-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 18px;
+	margin: 0;
+	padding: 0;
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	border-radius: 2px;
+	background: rgba(255, 255, 255, 0.08);
+	color: #dcdcde;
+	font-size: 13px;
+	line-height: 1;
+	white-space: nowrap;
+	cursor: pointer;
+}
+
+.pz-settings-preview-button:hover,
+.pz-settings-preview-button:focus-visible {
+	border-color: rgba(255, 255, 255, 0.7);
+	background: rgba(255, 255, 255, 0.18);
+	color: #fff;
+	outline: none;
+}
+
+.pz-settings-preview-dragging,
+.pz-settings-preview-resizing {
+	opacity: 0.96;
+}
+
+.pz-settings-preview-window.pz-settings-preview-docked {
+	border-radius: 0;
+}
+
+.pz-settings-preview-window.pz-settings-preview-docked .pz-settings-preview-handle {
+	cursor: ns-resize;
+}
+
+.pz-settings-preview-window.pz-settings-preview-animating {
+	transition: left 0.1s, top 0.1s, right 0.1s, bottom 0.1s, width 0.1s, height 0.1s, border-radius 0.1s, box-shadow 0.1s, opacity 0.16s ease, visibility 0s linear 0.16s;
+}
+
+body.pz-settings-preview-docked-active #wpbody-content {
+	padding-bottom: calc(var(--pz-settings-preview-docked-height, 0px) + 24px);
+}
+
+.pz-settings-preview-list {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 18px;
+	align-items: start;
+	min-height: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 16px 18px 20px;
+}
+
+.pz-settings-preview-item h3 {
+	margin: 0 0 10px;
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.pz-settings-preview-item .pz-preview-linkcard {
+	margin: 0;
+}
+
+@media screen and (max-width: 782px) {
+	.pz-settings-preview-window {
+		top: 72px;
+		right: 8px;
+		width: calc(100vw - 16px);
+		max-height: calc(100vh - 88px);
+	}
+
+	.pz-settings-preview-list {
+		grid-template-columns: 1fr;
+	}
 }

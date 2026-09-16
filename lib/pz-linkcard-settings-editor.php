@@ -98,7 +98,7 @@
 	<?php submit_button(); ?>
 
 	<h2><?php echo	__('Shortcode Settings', 'pz-linkcard' ).$help_open.'editor'.$help_close; ?></h2>
-	<table class="form-table">
+	<table class="form-table pz-editor-shortcode-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('ShortCode 1', 'pz-linkcard' ); ?></th>
 			<td>[<input name="properties[code1]" type="text" class="pz-shortcode pz-shortcode-1" value="<?php echo	esc_attr($prop['code1'] ); ?>" /> url="http://popozure.info" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]<p><?php esc_html_e('Case-sensitive', 'pz-linkcard' ); ?></p></td>

@@ -3,6 +3,7 @@
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 	<h2><?php echo	__('Position Settings', 'pz-linkcard' ).$help_open.'position'.$help_close; ?></h2>
 
+	<div class="pz-position-scroll">
 	<table class="pz-position-margin">
 		<tr>
 			<td colspan="3">
@@ -167,6 +168,7 @@
 			</td>
 		</tr>
 	</table>
+	</div>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Wrapper Tag', 'pz-linkcard' ); ?></th>
@@ -188,8 +190,8 @@
 			<th scope="row"><?php esc_html_e('Text Selection', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
-					<input type="hidden"   name="properties[flg-unti-select]" value="" />
-					<input type="checkbox" name="properties[flg-unti-select]" value="1" <?php checked($this->options['flg-unti-select'] ); ?> />
+					<input type="hidden"   name="properties[flg-anti-select]" value="" />
+					<input type="checkbox" name="properties[flg-anti-select]" value="1" <?php checked($this->options['flg-anti-select'] ); ?> />
 					<?php esc_html_e('Prohibit the selection of text in the Link-Card.', 'pz-linkcard' ); ?>
 				</label>
 			</td>

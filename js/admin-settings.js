@@ -8,11 +8,6 @@
     document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
     document.querySelector("#pz-overlay-proc")?.style.setProperty("display", "none");
 
-	// スクロール位置を復元
-    const scrollNow = document.querySelector("input[name='scroll-now']");
-    const cacheEditor = document.querySelector(".pz-man-cache-editor");
-    if (scrollNow && !cacheEditor) window.scrollTo(0, scrollNow.value);
-
     window.addEventListener("load", () => {
         document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
         document.querySelector("#pz-overlay-proc")?.classList.add("hidden");
@@ -53,7 +48,6 @@
                     submitter.classList.add("is-spinning");
                 }
 
-                if (scrollNow && !cacheEditor) scrollNow.value = window.scrollY;
                 if (submitter?.dataset?.noOverlay === "1") return;
                 showProcessingOverlay();
             });
@@ -69,6 +63,7 @@
         document.addEventListener("click", clearCachemanImage);
         initCharacterCounts();
         initUnsavedFormWarnings();
+        initCachemanEditorShortcuts();
         initSettingsTabs();
         initCachemanSearch();
         initCachemanPaginationKeys();
@@ -99,6 +94,7 @@
         document.querySelectorAll(".pz-copy-card-to-hover").forEach(el =>
             el.addEventListener("click", copyCardSettingsToHover)
         );
+        initCardEnabledSwitches();
         updateCardRangeFills();
 
         // Auto switch checks
@@ -291,6 +287,52 @@
         document.querySelectorAll(".pz-card-range").forEach(updateCardRangeFill);
     }
 
+    function initCardEnabledSwitches() {
+        document.querySelectorAll(".pz-card-prop-switch input[type=checkbox]").forEach(el => {
+            if (!/-enabled\]$/.test(el.name || "")) return;
+            el.addEventListener("change", updateCardEnabledSwitch);
+            updateCardEnabledSwitch({ target: el });
+        });
+    }
+
+    function updateCardEnabledSwitch(e) {
+        const switchInput = e.target;
+        const row = switchInput.closest(".pz-card-prop-row");
+        if (!row) return;
+
+        const disabled = !switchInput.checked;
+        row.classList.toggle("pz-card-prop-disabled", disabled);
+        row.setAttribute("aria-disabled", disabled ? "true" : "false");
+
+        row.querySelectorAll("input, select, textarea, button").forEach(el => {
+            if (el === switchInput || el.type === "hidden" || el.closest(".pz-card-prop-switch")) return;
+
+            el.disabled = false;
+            el.setAttribute("aria-disabled", disabled ? "true" : "false");
+            if (disabled) {
+                if (el.dataset.pzCardTabindex === undefined) {
+                    el.dataset.pzCardTabindex = el.hasAttribute("tabindex") ? el.getAttribute("tabindex") : "";
+                }
+                el.setAttribute("tabindex", "-1");
+                if (el.matches("input, textarea")) {
+                    el.readOnly = true;
+                }
+            } else {
+                if (el.dataset.pzCardTabindex !== undefined) {
+                    if (el.dataset.pzCardTabindex === "") {
+                        el.removeAttribute("tabindex");
+                    } else {
+                        el.setAttribute("tabindex", el.dataset.pzCardTabindex);
+                    }
+                    delete el.dataset.pzCardTabindex;
+                }
+                if (el.matches("input, textarea")) {
+                    el.readOnly = false;
+                }
+            }
+        });
+    }
+
     function updateCardRangeFill(range) {
         const min = Number(range.min || 0);
         const max = Number(range.max || 100);
@@ -350,6 +392,9 @@
 
             if (to.type === "checkbox") {
                 to.checked = from.checked;
+                if (/-enabled\]$/.test(to.name || "")) {
+                    updateCardEnabledSwitch({ target: to });
+                }
             } else {
                 to.value = from.value;
             }
@@ -481,7 +526,7 @@
         Array.from(form.elements).forEach(el => {
             if (!el.name || el.disabled) return;
             if (["button", "submit", "reset"].includes(el.type)) return;
-            if (["scroll-now", "tab-now"].includes(el.name)) return;
+            if (["scroll-now", "scroll_now", "tab-now"].includes(el.name)) return;
             if ((el.type === "checkbox" || el.type === "radio") && !el.checked) return;
             if (el.type === "file") return;
 
@@ -547,6 +592,32 @@
             confirmNonUpdateSubmit: true,
         });
         initUnsavedFormWarning(document.querySelector(".pz-settings form"));
+    }
+
+    function initCachemanEditorShortcuts() {
+        const editor = document.querySelector(".pz-man-cache-dirty-check");
+        const form = editor?.closest("form");
+        if (!editor || !form) return;
+
+        const clickActionButton = action => {
+            const button = form.querySelector(`button[name="action"][value="${action}"]`);
+            if (button && !button.disabled) button.click();
+        };
+
+        document.addEventListener("keydown", e => {
+            if (e.isComposing || e.repeat) return;
+
+            if (e.key === "Escape" || e.key === "Esc") {
+                e.preventDefault();
+                clickActionButton("cancel");
+                return;
+            }
+
+            if (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key.toLowerCase() === "s") {
+                e.preventDefault();
+                clickActionButton("update");
+            }
+        });
     }
 
     function initSettingsTabs() {

@@ -88,7 +88,6 @@
 			</td>
 		</tr>
 	</table>
-	<?php submit_button(); ?>
 
 	<h2><?php esc_html_e('for Debug', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
@@ -159,25 +158,26 @@
 			<?php esc_html_e('View all schedules.', 'pz-linkcard' ); ?>
 		</label>
 	</div>
-	<table class="pz-cron-list widefat striped">
-		<thead>
-			<tr>
-				<th scope="col" class="pz-cron-head-run"><?php esc_html_e('Run', 'pz-linkcard' ); ?></th>
-				<th scope="col" class="pz-cron-head-hook"><?php esc_html_e('Hook', 'pz-linkcard' ); ?></th>
-				<th scope="col" class="pz-cron-head-next-time"><?php echo __('Next Time', 'pz-linkcard' ).__('▼', 'pz-linkcard' ); ?></th>
-				<th scope="col" class="pz-cron-head-schedule"><?php esc_html_e('Schedule', 'pz-linkcard' ); ?></th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php foreach ($cron_list as $key => $cron ) { ?>
-				<tr <?php echo $cron['display']; ?>>
-					<td class="pz-cron-body-run"><?php echo $cron['button']; ?></td>
-					<td class="pz-cron-body-hook"><?php echo $cron['hook']; ?></td>
-					<td class="pz-cron-body-next-time"><?php echo $cron['next_time']; ?></td>
-					<td class="pz-cron-body-schedule"><?php echo $cron['schedule']; ?></td>
+	<div class="pz-cron-list-wrap">
+		<table class="pz-cron-list widefat striped">
+			<thead>
+				<tr>
+					<th scope="col" class="pz-cron-head-run"><?php esc_html_e('Run', 'pz-linkcard' ); ?></th>
+					<th scope="col" class="pz-cron-head-hook"><?php esc_html_e('Hook', 'pz-linkcard' ); ?></th>
+					<th scope="col" class="pz-cron-head-next-time"><?php echo __('Next Time', 'pz-linkcard' ).__('▼', 'pz-linkcard' ); ?></th>
+					<th scope="col" class="pz-cron-head-schedule"><?php esc_html_e('Schedule', 'pz-linkcard' ); ?></th>
 				</tr>
-			<?php } ?>
-		</tbody>
-	</table>
-	<?php submit_button(); ?>
+			</thead>
+			<tbody>
+				<?php foreach ($cron_list as $key => $cron ) { ?>
+					<tr <?php echo $cron['display']; ?>>
+						<td class="pz-cron-body-run"><?php echo $cron['button']; ?></td>
+						<td class="pz-cron-body-hook"><?php echo $cron['hook']; ?></td>
+						<td class="pz-cron-body-next-time"><?php echo $cron['next_time']; ?></td>
+						<td class="pz-cron-body-schedule"><?php echo $cron['schedule']; ?></td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
 </div>

@@ -76,7 +76,6 @@
 			</td>
 		</tr>
 	</table>
-	<?php submit_button(); ?>
 
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 	<h2><?php echo	__('Site List', 'pz-linkcard' ).$help_open.'multisite'.$help_close; ?></h2>
@@ -106,5 +105,4 @@
 			<?php } ?>
 		</tbody>
 	</table>
-	<?php submit_button(); ?>
 </div>

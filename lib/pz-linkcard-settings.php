@@ -232,6 +232,10 @@
 	foreach		($temp_param		as	$temp_name => $temp_value ) {
 		$html_input	.=	'<input type="hidden" name="'.$temp_name.'" value="'.$temp_value.'" title="'.$temp_name.'" size="4" />';
 	}
+	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height' ) as $temp_name ) {
+		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
+		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
+	}
 
 	// モードによって表示させる
 	$html_style		.=	$debug_mode		==	0	?	'.pz-debug-only { display: none; } '	:	'';
@@ -264,7 +268,8 @@
 			'thumbnail-url',
 			'blockquote',
 		);
-		foreach	(self::DEFAULTS as $key => $value ) {
+		$default_definitions	=	self::pz_GetOptionDefinitions();
+		foreach	($default_definitions as $key => $value ) {
 			if	(!array_key_exists($key, $prop ) ) {
 				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%s" in Properties.<br>It may be a glitch. Please inform the developer. (%s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank">@'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
 			}
@@ -273,7 +278,7 @@
 			if	(in_array($key, $default_check_exceptions, true ) ) {
 				continue;
 			}
-			if	(!array_key_exists($key, self::DEFAULTS ) ) {
+			if	(!array_key_exists($key, $default_definitions ) ) {
 				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%1$s" in DEFAULTS.<br>It may be a glitch. Please inform the developer. (%2$s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank">'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
 			}
 		}
@@ -416,6 +421,53 @@
 	$logo_az		=	'<img src="'.$this->plugin_dir_url.'img/icon_amazon.png"      width="16" height="16" alt="'.__('Amazon Logo',		'pz-linkcard' ).'">';
 
 	// 修正履歴
+	$html_preview	=	'';
+	if	(true ) {
+		$preview_css		=	'';
+		$preview_css_file	=	PZLKC_DIR_STYLE.'preview.css';
+		if	(file_exists($preview_css_file ) ) {
+			$preview_css	=	file_get_contents($preview_css_file );
+		}
+		$preview_image	=	esc_url($this->plugin_dir_url.'img/example.png' );
+		$preview_icon	=	esc_url($this->plugin_dir_url.'img/icon-pz-linkcard.png' );
+		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_icon) {
+			return	$this->pz_GetHTML(array(
+				'url'			=>	$url,
+				'title'			=>	$title,
+				'excerpt'		=>	$excerpt,
+				'preview-card'	=>	$prefix,
+				'preview-data'	=>	array(
+					'url'				=>	$url,
+					'site_name'			=>	$site_name,
+					'title'				=>	$title,
+					'excerpt'			=>	$excerpt,
+					'thumbnail'			=>	$preview_image,
+					'favicon'			=>	$preview_icon,
+					'post_date'			=>	'2026-09-12 00:00:00',
+					'post_modified'		=>	'2026-09-12 00:00:00',
+					'update_result'		=>	200,
+					'alive_result'		=>	200,
+					'no_failure'		=>	true,
+				),
+			) );
+		};
+		$html_preview	=	'<style id="pz-linkcard-preview-css" type="text/css">'.$preview_css.'</style>'.
+							'<section class="pz-settings-preview-window" role="dialog" aria-labelledby="pz-settings-preview-title">'.
+							'<div class="pz-settings-preview-handle" data-pz-preview-handle>'.
+							'<span id="pz-settings-preview-title" class="pz-settings-preview-title">'.esc_html__('Preview', 'pz-linkcard' ).'</span>'.
+							'<span class="pz-settings-preview-controls">'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview', 'pz-linkcard' ).'">_</button>'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'">×</button>'.
+							'</span>'.
+							'</div>'.
+							'<div class="pz-settings-preview-list">'.
+							'<div class="pz-settings-preview-item"><h3>'.esc_html__('External Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item"><h3>'.esc_html__('Internal Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('in', home_url('/pz-linkcard-preview/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item"><h3>'.esc_html__('Same Page Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('th', home_url('/#pz-linkcard-preview' ), get_bloginfo('name' ), __('Same Page Link Preview', 'pz-linkcard' ), __('This is a sample of a same-page link card.', 'pz-linkcard' ) ).'</div>'.
+							'</div>'.
+							'</section>';
+	}
+
 	$changelog		=	'';
 	if	(!function_exists('wp_is_mobile' ) || !wp_is_mobile() ) {
 		$changelog	=	file_get_contents($this->plugin_dir_path.'/readme.txt' );											// readme.txt を読み込み
@@ -539,6 +591,7 @@ echo	$html_style;
 			?>
 			<div class="pz-indicator"><div class="pz-button-top" title="<?php esc_attr_e('Scroll to the top', 'pz-linkcard' ); ?>"><?php echo wp_kses_post(__('^<br>Top', 'pz-linkcard' ) ); ?></div><div class="pz-tab-name">&nbsp;</div></div>
 		</form>
+		<?php echo $html_preview; ?>
 		</article>
 		<?php require_once dirname(__DIR__).'/includes/pz-color-picker.php'; ?>
 </div>

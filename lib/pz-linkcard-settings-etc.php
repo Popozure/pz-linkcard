@@ -73,7 +73,6 @@
 			</td>
 		</tr>
 	</table>
-	<?php submit_button(); ?>
 
 	<div class="pz-debug-only">
 		<h2><?php echo	__('Survey Settings', 'pz-linkcard' ); ?></h2>
@@ -94,6 +93,5 @@
 				</td>
 			</tr>
 		</table>
-		<?php submit_button(); ?>
 	</div>
 </div>

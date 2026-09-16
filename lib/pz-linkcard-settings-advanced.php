@@ -57,6 +57,16 @@
 				</label>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Preview', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-preview]" value="" />
+					<input type="checkbox" name="properties[flg-preview]" value="1" <?php checked(!array_key_exists('flg-preview', $this->options ) || !empty($this->options['flg-preview'] ) ); ?> />
+					<?php esc_html_e('Display the LinkCard preview window on the settings screen.', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
 	</table>
 	<?php submit_button(); ?>
 

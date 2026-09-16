@@ -64,8 +64,6 @@
 		'css-url-add'			=>		'css-add-url',				// Ver.2.5.5 パラメータ名変更のため
 		'nofollow'				=>		'flg-nofollow',				// Ver.2.5.6 パラメータ名変更のため
 		'noopener'				=>		'flg-noopener',				// Ver.2.5.6 パラメータ名変更のため
-		'title-trim'			=>		'title-length',				// Ver.2.5.6 パラメータ名変更のため
-		'excerpt-trim'			=>		'excerpt-length',			// Ver.2.5.6 パラメータ名変更のため
 		'ex-get'				=>		'ex-get-from',				// パラメータ名変更のため
 		'in-get'				=>		'in-get-from',				// パラメータ名変更のため
 		'flg-get-pid'			=>		'in-get-url',				// Ver.2.5.6 パラメータ名変更のため
@@ -80,7 +78,7 @@
 	}
 
 	// Ver.2.6.1で共通指定からリンク種別ごとの指定に変わった項目を移行
-	if	(!$stored_version || version_compare($stored_version, '2.6.1', '<' ) ) {
+	if	(!$stored_version || version_compare($stored_version, '2.6.1', '<=' ) ) {
 		foreach	(array(
 			'link-all'			=>	'flg-linkall',
 			'thumbnail-resize'	=>	'flg-resize',
@@ -111,6 +109,10 @@
 			$old_radius	=	'64px';
 			break;
 		}
+		$old_thumbnail_border	=	array_key_exists('thumbnail-border', $this->options ) ? $this->options['thumbnail-border'] : null;
+		$old_thumbnail_shadow	=	array_key_exists('thumbnail-shadow', $this->options ) ? $this->options['thumbnail-shadow'] : null;
+		$old_thumbnail_radius	=	array_key_exists('thumbnail-radius', $this->options ) ? $this->options['thumbnail-radius'] : null;
+		$old_shadow_inset		=	array_key_exists('shadow-inset', $this->options ) ? $this->options['shadow-inset'] : null;
 
 		foreach	(array('ex', 'in', 'th' ) as $t ) {
 			foreach	(array('color', 'style', 'width') as $item ) {
@@ -134,12 +136,62 @@
 					$this->options[$t.'-shadow-inset']	=	!empty($this->options['shadow-inset'] ) ? 1 : 0;
 				}
 			}
+			if	($old_shadow_inset !== null ) {
+				$this->options[$t.'-shadow-inset']	=	!empty($old_shadow_inset ) ? 1 : 0;
+				if	(!empty($old_shadow_inset ) && !array_key_exists($t.'-shadow-enabled', $this->options ) ) {
+					$this->options[$t.'-shadow-enabled']	=	1;
+				}
+			}
+			if	($old_thumbnail_border !== null || $old_thumbnail_radius !== null ) {
+				if	(!array_key_exists($t.'-thumbnail-border-enabled', $this->options ) ) {
+					$this->options[$t.'-thumbnail-border-enabled']	=	!empty($old_thumbnail_border ) || !empty($old_thumbnail_radius ) ? 1 : 0;
+				}
+				if	(!array_key_exists($t.'-thumbnail-border-style', $this->options ) ) {
+					$this->options[$t.'-thumbnail-border-style']	=	'solid';
+				}
+				if	(!array_key_exists($t.'-thumbnail-border-width', $this->options ) ) {
+					$this->options[$t.'-thumbnail-border-width']	=	!empty($old_thumbnail_border ) ? '1px' : '0px';
+				}
+				if	(!array_key_exists($t.'-thumbnail-border-color', $this->options ) ) {
+					$this->options[$t.'-thumbnail-border-color']	=	!empty($old_thumbnail_border ) ? 'rgba(0, 0, 0, 0.4)' : '';
+				}
+				if	($old_thumbnail_radius !== null && !array_key_exists($t.'-thumbnail-border-radius', $this->options ) ) {
+					$this->options[$t.'-thumbnail-border-radius']	=	$old_thumbnail_radius;
+				}
+			}
+			if	($old_thumbnail_shadow !== null ) {
+				if	(!array_key_exists($t.'-thumbnail-shadow-enabled', $this->options ) ) {
+					$this->options[$t.'-thumbnail-shadow-enabled']	=	!empty($old_thumbnail_shadow ) ? 1 : 0;
+				}
+				if	(!array_key_exists($t.'-thumbnail-shadow-color', $this->options ) ) {
+					$this->options[$t.'-thumbnail-shadow-color']	=	'rgba(0, 0, 0, 0.7)';
+				}
+				if	(!array_key_exists($t.'-thumbnail-shadow-x', $this->options ) ) {
+					$this->options[$t.'-thumbnail-shadow-x']	=	4;
+				}
+				if	(!array_key_exists($t.'-thumbnail-shadow-y', $this->options ) ) {
+					$this->options[$t.'-thumbnail-shadow-y']	=	4;
+				}
+				if	(!array_key_exists($t.'-thumbnail-shadow-blur', $this->options ) ) {
+					$this->options[$t.'-thumbnail-shadow-blur']	=	8;
+				}
+				if	(!array_key_exists($t.'-thumbnail-shadow-spread', $this->options ) ) {
+					$this->options[$t.'-thumbnail-shadow-spread']	=	0;
+				}
+				if	(!array_key_exists($t.'-thumbnail-shadow-inset', $this->options ) ) {
+					$this->options[$t.'-thumbnail-shadow-inset']	=	0;
+				}
+			}
 		}
 		unset($this->options['border-color'] );
 		unset($this->options['border-style'] );
 		unset($this->options['border-width'] );
 		unset($this->options['border'] );
 		unset($this->options['radius'] );
+		unset($this->options['thumbnail-border'] );
+		unset($this->options['thumbnail-shadow'] );
+		unset($this->options['thumbnail-radius'] );
+		unset($this->options['shadow-inset'] );
 	}
 
 	// 足りない項目
@@ -164,7 +216,7 @@
 		}
 	}
 
-	foreach	(Self::DEFAULTS		as	$key => $value ) {
+	foreach	(self::pz_GetOptionDefinitions()	as	$key => $value ) {
 		if	(!array_key_exists($key, $this->options ) ) {
 			$this->options[$key]	=	self::pz_GetDefaultOption($key );
 		}
