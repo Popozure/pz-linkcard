@@ -231,6 +231,7 @@ const previewCircle = document.getElementById("previewCircle");
 const inputWrap = document.getElementById("inputWrap");
 const modeLabel = document.getElementById("modeLabel"); // button想定
 const palette = document.getElementById("palette");
+const savedColorsKey = "pz-linkcard-color-picker-saved-colors";
 
 if (!picker || !svArea || !svCursor || !hueSlider || !hueThumb || !alphaSlider || !alphaInner || !alphaThumb || !previewCircle || !inputWrap || !modeLabel || !palette) {
   return;
@@ -361,7 +362,8 @@ dragHandler(alphaSlider, moveAlphaSlider);
       isControl ||
       e.target.closest(".pz-input-wrap input, .pz-input-wrap button") ||
       e.target.closest(".pz-mode-label") ||
-      e.target.closest(".pz-palette");
+      e.target.closest(".pz-palette") ||
+      e.target.closest(".pz-color-context-menu");
 
     if (isBlocked) return;
 
@@ -435,6 +437,36 @@ function createLabelRow(labels) {
     row.appendChild(s);
   });
   return row;
+}
+
+function bindSmallInputControls(input) {
+  const adjust = direction => {
+    const inputs = Array.from(inputWrap.querySelectorAll("input"));
+    const index = inputs.indexOf(input);
+    if (index < 0) return;
+
+    const max = inputMode === 1 && index < 3
+      ? 255
+      : inputMode === 2 && index === 0
+        ? 359
+        : 100;
+    const current = toNum(input.value, 0);
+    input.value = clamp(current + direction, 0, max);
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
+  input.addEventListener("keydown", e => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    adjust(e.key === "ArrowUp" ? 1 : -1);
+  });
+  input.addEventListener("wheel", e => {
+    if (!e.shiftKey) return;
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    if (delta === 0) return;
+    e.preventDefault();
+    adjust(delta > 0 ? -1 : 1);
+  }, { passive: false });
 }
 
 function renderInputFields() {
@@ -544,6 +576,7 @@ function renderInputFields() {
       input.inputMode = "numeric";
       input.className = "pz-hex-input pz-small";
       input.value = val;
+      bindSmallInputControls(input);
 
       input.addEventListener("input", () => {
         const ins = inputWrap.querySelectorAll("input");
@@ -576,6 +609,7 @@ function renderInputFields() {
         input.inputMode = "numeric";
         input.className = "pz-hex-input pz-small";
         input.value = val;
+        bindSmallInputControls(input);
 
         input.addEventListener("input", () => {
           const ins = inputWrap.querySelectorAll("input");
@@ -607,26 +641,138 @@ modeLabel.addEventListener("click", (e) => {
 // Palette
 // ======================================================
 palette.innerHTML = "";
-[
-  "#000000", "#333333", "#666666", "#999999",
-  "#cccccc", "#ffffff", "#ff0000", "#ff7f00",
-  "#ffff00", "#00ff00", "#00ffff", "#0000ff",
-  "#8b00ff", "#ff00ff", "#a6f5a2", "#ffc0cb"
-].forEach(color => {
+const defaultPaletteColors = [
+  "#000000", "#ff0000", "#ffff00", "#00ff00",
+  "#00ffff", "#0000ff", "#ff00ff", "#ffffff",
+  "#444444", "#888888", "#ffcc44", "#aaffaa",
+  "#ddeeff", "#ccddff", "#ffcccc", "#cccccc"
+];
+let selectedPaletteSlot = null;
+
+function addPaletteColor(color) {
   const div = document.createElement("div");
   div.className = "pz-palette-color";
   div.style.backgroundColor = color;
+  div.dataset.color = color;
 
   div.addEventListener("click", () => {
-    const parsed = hexToRgbaSafe(color);
+    const parsed = hexToRgbaSafe(div.dataset.color);
     if (!parsed) return;
     const hsv = rgbToHsv(parsed.r, parsed.g, parsed.b);
     state.h = hsv.h; state.s = hsv.s; state.v = hsv.v; state.a = 1;
     isColorEmpty = false;
     updateUI();
   });
+  div.addEventListener("contextmenu", e => {
+    e.preventDefault();
+    e.stopPropagation();
+    selectedPaletteSlot = div;
+    colorMenu.style.left = `${e.clientX - picker.getBoundingClientRect().left}px`;
+    colorMenu.style.top = `${e.clientY - picker.getBoundingClientRect().top}px`;
+    colorMenu.hidden = false;
+  });
+  div.addEventListener("dblclick", e => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    e.stopPropagation();
+    closeColorPicker();
+  });
 
   palette.appendChild(div);
+}
+
+const paletteColors = [...defaultPaletteColors];
+try {
+  const savedColors = JSON.parse(localStorage.getItem(savedColorsKey) || "[]");
+  if (Array.isArray(savedColors)) {
+    savedColors.slice(0, paletteColors.length).forEach((color, index) => {
+      if (hexToRgbaSafe(color)) paletteColors[index] = color;
+    });
+  }
+} catch (e) {
+  // Ignore unavailable or invalid local storage.
+}
+paletteColors.forEach(addPaletteColor);
+
+const colorMenu = document.createElement("div");
+colorMenu.className = "pz-color-context-menu";
+colorMenu.hidden = true;
+const saveColorItem = document.createElement("button");
+saveColorItem.type = "button";
+saveColorItem.textContent = "今の色を保存";
+colorMenu.appendChild(saveColorItem);
+const resetColorItem = document.createElement("button");
+resetColorItem.type = "button";
+resetColorItem.textContent = "オフセットに戻す";
+colorMenu.appendChild(resetColorItem);
+picker.appendChild(colorMenu);
+
+const hideColorMenu = () => {
+  colorMenu.hidden = true;
+  selectedPaletteSlot = null;
+};
+document.addEventListener("pointerdown", e => {
+  if (!colorMenu.hidden && !colorMenu.contains(e.target)) hideColorMenu();
+});
+colorMenu.addEventListener("contextmenu", e => {
+  e.preventDefault();
+  e.stopPropagation();
+});
+colorMenu.addEventListener("click", e => {
+  if (e.target === colorMenu) hideColorMenu();
+});
+saveColorItem.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  e.stopPropagation();
+});
+saveColorItem.addEventListener("click", e => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!selectedPaletteSlot || isColorEmpty) {
+    hideColorMenu();
+    return;
+  }
+
+  const rgb = hsvToRgb(state.h, state.s, state.v);
+  const color = rgbToHex(rgb.r, rgb.g, rgb.b, state.a);
+  const index = Array.from(palette.children).indexOf(selectedPaletteSlot);
+  if (index >= 0) {
+    paletteColors[index] = color;
+    selectedPaletteSlot.dataset.color = color;
+    selectedPaletteSlot.style.backgroundColor = color;
+    try {
+      localStorage.setItem(savedColorsKey, JSON.stringify(paletteColors));
+    } catch (e) {
+      // Ignore unavailable local storage.
+    }
+  }
+  hideColorMenu();
+});
+resetColorItem.addEventListener("pointerdown", e => {
+  e.preventDefault();
+  e.stopPropagation();
+});
+resetColorItem.addEventListener("click", e => {
+  e.preventDefault();
+  e.stopPropagation();
+  if (!selectedPaletteSlot) {
+    hideColorMenu();
+    return;
+  }
+
+  const index = Array.from(palette.children).indexOf(selectedPaletteSlot);
+  const color = defaultPaletteColors[index];
+  if (color) {
+    paletteColors[index] = color;
+    selectedPaletteSlot.dataset.color = color;
+    selectedPaletteSlot.style.backgroundColor = color;
+    try {
+      localStorage.setItem(savedColorsKey, JSON.stringify(paletteColors));
+    } catch (e) {
+      // Ignore unavailable local storage.
+    }
+  }
+  hideColorMenu();
 });
 
 // ======================================================
@@ -738,6 +884,7 @@ document.querySelectorAll(".pz-color-picker").forEach(input => {
 // ======================================================
 function closeColorPicker() {
   picker.style.display = "none";
+  hideColorMenu();
   activeColorInput = null;
   activeTriggerWrap = null;
 }
@@ -771,7 +918,7 @@ window.addEventListener("keydown", e => {
 });
 
 // ダブルクリックで閉じる
-[svArea, hueSlider, alphaSlider, palette].forEach(el => {
+[svArea, hueSlider, alphaSlider].forEach(el => {
   el.addEventListener("dblclick", () => closeColorPicker());
 });
 
