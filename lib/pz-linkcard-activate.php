@@ -14,8 +14,12 @@
 	}
 
 	// オプション取得
+	$stored_options	=	get_option(self::OPTION_NAME );
 	$result			=	$this->pz_LoadOptions();
 	$stored_version	=	isset($this->options['plugin-version'] ) ? $this->options['plugin-version'] : null;
+	if	(is_array($stored_options ) && isset($stored_options['plugin-version'] ) ) {
+		$stored_version	=	$stored_options['plugin-version'];
+	}
 
 	// 項目名称変更
 	$rename_key	=	array(
@@ -67,9 +71,6 @@
 		'ex-get'				=>		'ex-get-from',				// パラメータ名変更のため
 		'in-get'				=>		'in-get-from',				// パラメータ名変更のため
 		'flg-get-pid'			=>		'in-get-url',				// Ver.2.5.6 パラメータ名変更のため
-		'ex-image'				=>		'ex-bg-image',				// パラメータ名変更のため
-		'in-image'				=>		'in-bg-image',				// パラメータ名変更のため
-		'th-image'				=>		'th-bg-image',				// パラメータ名変更のため
 		);
 	foreach ($rename_key		as	$old => $new ) {
 		if	(array_key_exists($old, $this->options ) ) {
@@ -77,6 +78,25 @@
 				$this->options[$new]	=	$this->options[$old];
 			}
 			unset($this->options[$old] );
+		}
+	}
+
+	// Ver.2.6.0.4からVer.2.6.1で背景画像項目の名称を変更
+	if	($stored_version && version_compare($stored_version, '2.6.0.4', '>=') && version_compare($stored_version, '2.6.1', '<') ) {
+		foreach	(array(
+			'ex-image'				=>	'ex-bg-image',
+			'ex-hover-image'		=>	'ex-hover-bg-image',
+			'in-image'				=>	'in-bg-image',
+			'in-hover-image'		=>	'in-hover-bg-image',
+			'th-image'				=>	'th-bg-image',
+			'th-hover-image'		=>	'th-hover-bg-image',
+		) as $old => $new ) {
+			if	(array_key_exists($old, $this->options ) ) {
+				if	(!is_array($stored_options ) || !array_key_exists($new, $stored_options ) ) {
+					$this->options[$new]	=	$this->options[$old];
+				}
+				unset($this->options[$old] );
+			}
 		}
 	}
 

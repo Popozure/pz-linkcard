@@ -19,9 +19,9 @@
 			// 特殊フォーマットごとの固定スタイル
 			switch ($prop['special-format'] ) {
 			case 'LkC': // Pz-LkC Default
-				$file_text		=	str_replace('/*EX-IMAGE*/',			'background-image: linear-gradient(#78f 0%, #78f 10%, #fff 30%);', $file_text );
-				$file_text		=	str_replace('/*IN-IMAGE*/',			'background-image: linear-gradient(#ca4 0%, #ca4 10%, #fff 30%);', $file_text );
-				$file_text		=	str_replace('/*TH-IMAGE*/',			'background-image: linear-gradient(#ca4 0%, #ca4 10%, #eee 30%);', $file_text );
+				$file_text	=	str_replace('/*EX-BG-IMAGE*/',				'background-image: linear-gradient(#78f 0%, #78f 10%, #fff 30%);', $file_text );
+				$file_text	=	str_replace('/*IN-BG-IMAGE*/',				'background-image: linear-gradient(#ca4 0%, #ca4 10%, #fff 30%);', $file_text );
+				$file_text	=	str_replace('/*TH-BG-IMAGE*/',				'background-image: linear-gradient(#ca4 0%, #ca4 10%, #eee 30%);', $file_text );
 				break;
 			case 'hbc': // プリセット: はてなブログカード風
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
@@ -30,8 +30,14 @@
 				$file_text	=	str_replace('/*SHADOW*/',				'box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);', $file_text );
 				break;
 			case 'smp': // プリセット: シンプル
+				$file_text	=	str_replace('/*EX-BG-COLOR*/',			'', $file_text );
+				$file_text	=	str_replace('/*EX-BG-IMAGE*/',				'', $file_text );
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: none;', $file_text );
+				$file_text	=	str_replace('/*IN-BG-IMAGE*/',				'', $file_text );
+				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: none;', $file_text );
+				$file_text	=	str_replace('/*TH-BG-IMAGE*/',				'', $file_text );
+				$file_text	=	str_replace('/*TH-BG-COLOR*/',			'', $file_text );
 				$file_text	=	str_replace('/*TH-BORDER*/',			'border: none;', $file_text );
 				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
 				$file_text	=	str_replace('/*NONE-EXCERPT*/',			'display: none !important;', $file_text );
@@ -68,12 +74,22 @@
 				$file_text	=	str_replace('/*MARGIN-BOTTOM*/',		'', $file_text );
 				$file_text	=	str_replace('/*MARGIN-LEFT*/',			'', $file_text );
 				$file_text	=	str_replace('/*MARGIN-RIGHT*/',			'', $file_text );
-				$file_text	=	str_replace('/*CARD-TOP*/',				'margin: 24px 20px 20px 20px;', $file_text );
+
+				$file_text	=	str_replace('/*CARD-TOP*/',				'margin: 24px 20px 20px 20px !important;', $file_text );
 				$file_text	=	str_replace('/*CARD-BOTTOM*/',			'', $file_text );
 				$file_text	=	str_replace('/*CARD-LEFT*/',			'', $file_text );
 				$file_text	=	str_replace('/*CARD-RIGHT*/',			'', $file_text );
+
 				$file_text	=	str_replace('/*WIDTH*/',				'max-width: 96%;', $file_text );
 				$file_text	=	str_replace('/*WRAP-MARGIN*/',			'margin: 0 auto;', $file_text );
+
+				$file_text	=	str_replace('/*EX-BG-COLOR*/',			'', $file_text );
+				$file_text	=	str_replace('/*EX-BG-IMAGE*/',				'', $file_text );
+				$file_text	=	str_replace('/*IN-BG-IMAGE*/',				'', $file_text );
+				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'', $file_text );
+				$file_text	=	str_replace('/*TH-BG-IMAGE*/',				'', $file_text );
+				$file_text	=	str_replace('/*TH-BG-COLOR*/',			'', $file_text );
+
 				$file_text	=	str_replace('/*THUMBNAIL- WIDTH*/',		'max-width: 150px;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL- HEIGHT*/',	'height: 108px; overflow: hidden;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL- IMG-WIDTH*/',	'width: 150px;', $file_text );
@@ -83,9 +99,23 @@
 				$file_text	=	str_replace('/*ADDED-SIZE*/',			'font-size: 12px;', $file_text );
 				$file_text	=	str_replace('/*ADDED-HEIGHT*/',			'line-height: 30px;', $file_text );
 				$added_height	=	intval(preg_replace('/[^0-9]/', '', isset($prop['added-height'] ) ? $prop['added-height']  : self::pz_GetDefaultOption('added-height' )  ) );
-				$file_text		=	str_replace('/*EX-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; '.txt_color('background-color: ', $prop['ex-border-color'] ).' border-radius: 2px;', $file_text );
-				$file_text		=	str_replace('/*IN-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; '.txt_color('background-color: ', $prop['in-border-color'] ).' border-radius: 2px;', $file_text );
-				$file_text		=	str_replace('/*TH-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; '.txt_color('background-color: ', $prop['th-border-color'] ).' border-radius: 2px;', $file_text );
+
+				$file_text		=	str_replace('/*EX-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px;'.txt_color('background-color: ', $prop['ex-border-color'] ).';', $file_text );
+				$file_text		=	str_replace('/*IN-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px; '.txt_color('background-color: ', $prop['in-border-color'] ).';', $file_text );
+				$file_text		=	str_replace('/*TH-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px; '.txt_color('background-color: ', $prop['th-border-color'] ).';', $file_text );
+
+				foreach		(array('ex', 'in', 'th' )	as	$t ) {
+					$T		=	strtoupper($t );
+					$value_border	=	'border: solid '.($prop[$t.'-border-color'] ?? '').' 4px;';
+					$file_text		=	str_replace('/*'.$T.'-BORDER*/',			$value_border, $file_text );
+					$file_text		=	str_replace('/*'.$T.'-HEADING-BORDER*/',	$value_border, $file_text );
+					$value_radius	=	'border-radius: '.$prop[$t.'-border-radius'] ?? '';
+					$file_text		=	str_replace('/*'.$T.'-RADIUS*/',			$value_radius.';', $file_text );
+					$file_text		=	str_replace('/*'.$T.'-HEADING-RADIUS*/',	$value_radius.';', $file_text );
+					$value_bg_color	=	'background-color: '.$prop[$t.'-border-color'] ?? '';
+					$file_text		=	str_replace('/*'.$T.'-HEADING-BG-COLOR*/',	$value_bg_color.';', $file_text );
+				}
+
 				if (isset($prop['flg-resize'] ) && $prop['flg-resize'] == '1' ) {
 					$size_title			=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-size'] ) ? $prop['title-size'] : self::pz_GetDefaultOption('title-size' ) ) );
 					$size_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-size'] ) ? $prop['excerpt-size'] : self::pz_GetDefaultOption('excerpt-size' ) ) );
@@ -134,7 +164,8 @@
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 0; border: 3px #1f61e3 solid; border-radius: 5px; background: #eeecdf; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; background: linear-gradient(to bottom, #2790ff, #1f61e3); background: -webkit-linear-gradient(top, #2790ff, #1f61e3); font-weight: bold; font-size: 11px; line-height: 16px; }';
-				$css	.=	'.lkc-info *	{ color: #fff; }';
+				$css	.=	'.lkc-info *	{ color: #fff !important; }';
+				$css	.=	'.lkc-thumbnail	{ margin: 0 8px !important; }';
 				$css	.=	'.lkc-title		{ padding: 0; }';
 				$css	.=	'.lkc-url		{ padding: 4px; cursor: pointer; }';
 				$css	.=	'.lkc-excerpt	{ padding: 4px; }';
@@ -149,7 +180,8 @@
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 4px; border: 3px #c0c7c8 solid; background: #e0e0e0; border: 1px #87888f solid; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; border: 1px #87888f solid; background: #0000a8; font-weight: bold; font-size: 11px; line-height: 16px; }';
-				$css	.=	'.lkc-info *	{ color: #fff; font-weight: normal; }';
+				$css	.=	'.lkc-info *	{ color: #fff !important; font-weight: normal; }';
+				$css	.=	'.lkc-thumbnail	{ margin: 0 4px !important; }';
 				$css	.=	'.lkc-title		{ padding: 0; }';
 				$css	.=	'.lkc-url		{ padding: 4px; cursor: pointer; }';
 				$css	.=	'.lkc-excerpt	{ padding: 4px; }';
@@ -640,7 +672,7 @@
 				}
 
 				// 背景画像
-				$key				=	$t.'-image';
+				$key				=	$t.'-bg-image';
 				$value				=	$prop[$key];
 				$pname				=	strtoupper($key );
 				if		($value_bg_enabled && $value ) {
@@ -714,7 +746,7 @@
 					if	($value_hover_bg_color ) {
 						$hover_css[]	=	'background-color: '.$value_hover_bg_color.';';
 					}
-					$value_hover_image	= isset($prop[$t.'-hover-image'] ) ? $prop[$t.'-hover-image'] : '';
+					$value_hover_image	= isset($prop[$t.'-hover-bg-image'] ) ? $prop[$t.'-hover-bg-image'] : '';
 					if	($value_hover_image ) {
 						if	(preg_match('/https?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)$/',	$value_hover_image ) ) {
 							$hover_css[]	=	'background-image: url("'.esc_url($value_hover_image ).'");';

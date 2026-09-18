@@ -439,7 +439,7 @@
             "transform-scale",
             "bg-enabled",
             "bg-color",
-            "image",
+            "bg-image",
             "border-enabled",
             "border-color",
             "border-style",
@@ -879,6 +879,46 @@
             openTab(tabs[nextIndex], focusTab);
         };
 
+        const changeWheelControl = (control, delta) => {
+            if (!control || !dashboard.contains(control) || control.disabled || control.readOnly) return false;
+
+            if (control.matches("input[type='checkbox']")) {
+                const nextChecked = delta < 0;
+                if (control.checked === nextChecked) return false;
+                control.checked = nextChecked;
+            } else if (control.matches("select")) {
+                const options = Array.from(control.options);
+                const currentIndex = control.selectedIndex;
+                let nextIndex = currentIndex;
+                const direction = delta > 0 ? 1 : -1;
+                do {
+                    nextIndex += direction;
+                } while (nextIndex >= 0 && nextIndex < options.length && options[nextIndex].disabled);
+
+                if (nextIndex < 0 || nextIndex >= options.length || nextIndex === currentIndex) return false;
+                control.selectedIndex = nextIndex;
+            } else {
+                const currentValue = Number(control.value);
+                const stepValue = control.step && control.step !== "any" ? Number(control.step) : 1;
+                if (!Number.isFinite(currentValue) || !Number.isFinite(stepValue) || stepValue <= 0) return false;
+
+                const min = control.min === "" ? -Infinity : Number(control.min);
+                const max = control.max === "" ? Infinity : Number(control.max);
+                const nextValue = Math.min(max, Math.max(min, currentValue + (delta > 0 ? -stepValue : stepValue)));
+                if (nextValue === currentValue) return false;
+                control.value = String(nextValue);
+            }
+
+            control.dispatchEvent(new Event("input", { bubbles: true }));
+            control.dispatchEvent(new Event("change", { bubbles: true }));
+            return true;
+        };
+
+        const getWheelControl = (target, includeCheckbox = false) => {
+            const checkboxSelector = includeCheckbox ? ", input[type='checkbox']" : "";
+            return target?.closest?.(`select, input:not([type='hidden']):not([type='checkbox']):not([type='radio']):not([type='button']):not([type='submit']):not([type='reset']):not([type='file'])${checkboxSelector}`);
+        };
+
         dashboard.addEventListener("wheel", e => {
             if (!e.shiftKey) return;
 
@@ -910,37 +950,11 @@
                 return;
             }
 
-            const control = e.target.closest("select, input[type='number'], input[type='numeric'], input[type='range']");
-            if (!control || !dashboard.contains(control) || control.disabled || control.readOnly) return;
-
-            if (control.matches("select")) {
-                const options = Array.from(control.options);
-                const currentIndex = control.selectedIndex;
-                let nextIndex = currentIndex;
-                const direction = delta > 0 ? 1 : -1;
-                do {
-                    nextIndex += direction;
-                } while (nextIndex >= 0 && nextIndex < options.length && options[nextIndex].disabled);
-
-                if (nextIndex < 0 || nextIndex >= options.length || nextIndex === currentIndex) return;
-                control.selectedIndex = nextIndex;
-            } else {
-                const currentValue = Number(control.value);
-                const stepValue = control.step && control.step !== "any" ? Number(control.step) : 1;
-                if (!Number.isFinite(currentValue) || !Number.isFinite(stepValue) || stepValue <= 0) return;
-
-                const min = control.min === "" ? -Infinity : Number(control.min);
-                const max = control.max === "" ? Infinity : Number(control.max);
-                const direction = control.type === "number" || control.type === "range" ? -1 : 1;
-                const nextValue = Math.min(max, Math.max(min, currentValue + (delta > 0 ? stepValue * direction : -stepValue * direction)));
-                if (nextValue === currentValue) return;
-                control.value = String(nextValue);
-            }
+            const control = getWheelControl(e.target);
+            if (!changeWheelControl(control, delta)) return;
 
             e.preventDefault();
             e.stopPropagation();
-            control.dispatchEvent(new Event("input", { bubbles: true }));
-            control.dispatchEvent(new Event("change", { bubbles: true }));
         }, { passive: false });
 
         tabbar.addEventListener("click", e => {
@@ -967,8 +981,25 @@
             const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
             if (delta === 0) return;
 
-            if (rightButtonDown) rightWheelUsed = true;
+            rightWheelUsed = true;
             e.preventDefault();
+            e.stopPropagation();
+
+            const switchUi = e.target.closest(".pz-card-switch-ui");
+            if (switchUi && dashboard.contains(switchUi)) {
+                const checkbox = switchUi.closest(".pz-card-prop-switch")?.querySelector("input[type='checkbox']");
+                if (changeWheelControl(checkbox, delta)) {
+                    return;
+                }
+            }
+
+            const control = getWheelControl(e.target, true);
+            if (changeWheelControl(control, delta)) {
+                return;
+            }
+
+            if (!tabbar.contains(e.target)) return;
+
             const now = Date.now();
             if (now - lastWheelAt < 120) return;
             lastWheelAt = now;

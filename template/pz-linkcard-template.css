@@ -31,7 +31,7 @@
 	/*EX-SHADOW*/
 	/*EX-RADIUS*/
 	/*EX-BG-COLOR*/
-	/*EX-IMAGE*/
+	/*EX-BG-IMAGE*/
 }
 .lkc-external-wrap:hover {
 	/*EX-HOVER*/
@@ -41,7 +41,7 @@
 	/*IN-SHADOW*/
 	/*IN-RADIUS*/
 	/*IN-BG-COLOR*/
-	/*IN-IMAGE*/
+	/*IN-BG-IMAGE*/
 }
 .lkc-internal-wrap:hover {
 	/*IN-HOVER*/
@@ -51,7 +51,7 @@
 	/*TH-SHADOW*/
 	/*TH-RADIUS*/
 	/*TH-BG-COLOR*/
-	/*TH-IMAGE*/
+	/*TH-BG-IMAGE*/
 }
 .lkc-this-wrap:hover {
 	/*TH-HOVER*/

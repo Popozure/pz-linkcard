@@ -7,6 +7,7 @@
         const handle = win?.querySelector("[data-pz-preview-handle]");
         const modeButton = win?.querySelector("[data-pz-preview-mode]");
         const closeButton = win?.querySelector("[data-pz-preview-close]");
+        const backgroundButtons = win?.querySelectorAll("[data-pz-preview-background]");
         if (!win || !handle) return;
         const form = document.querySelector(".pz-settings form");
         const storageKey = "pz-linkcard-preview-state";
@@ -66,6 +67,43 @@
             win.style.display = "none";
             showRestoreButton();
         };
+
+        const previewBackgrounds = {
+            white: { background: "#fff", image: "none" },
+            black: { background: "#000", image: "none" },
+            red: { background: "#f00", image: "none" },
+            green: { background: "#008000", image: "none" },
+            blue: { background: "#00f", image: "none" },
+            rectangles: {
+                background: "#fff8df",
+                image: "repeating-linear-gradient(45deg, #f6d978 25%, transparent 25%, transparent 75%, #f6d978 75%, #f6d978), repeating-linear-gradient(45deg, #f6d978 25%, #fff8df 25%, #fff8df 75%, #f6d978 75%, #f6d978)",
+                position: "0 0, 20px 20px",
+                size: "40px 40px",
+            },
+            diagonal: {
+                background: "#fff",
+                image: "repeating-linear-gradient(135deg, #c8c8c8 0, #c8c8c8 4px, transparent 4px, transparent 10px)",
+            },
+        };
+        const applyPreviewBackground = name => {
+            const background = previewBackgrounds[name] || previewBackgrounds.white;
+            win.style.backgroundColor = background.background;
+            win.style.backgroundImage = background.image;
+            win.style.backgroundPosition = background.position || "";
+            win.style.backgroundSize = background.size || "";
+            backgroundButtons?.forEach(button => {
+                button.classList.toggle("is-selected", button.dataset.pzPreviewBackground === name);
+            });
+        };
+        backgroundButtons?.forEach(button => {
+            button.addEventListener("click", e => {
+                e.preventDefault();
+                e.stopPropagation();
+                applyPreviewBackground(button.dataset.pzPreviewBackground);
+                button.blur();
+            });
+        });
+        applyPreviewBackground("white");
 
         const preventPreviewLink = e => {
             if (!e.target?.closest?.(".pz-settings-preview-window a")) return;
@@ -401,7 +439,7 @@
         win.addEventListener("pointerleave", clearResizeCursor);
         win.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
-            if (e.target?.closest?.(".pz-settings-preview-button")) return;
+            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
             if (!previewDocked && e.target?.closest?.("[data-pz-preview-handle]")) return;
             const edges = getResizeEdges(e);
             if (!edges) return;
@@ -481,7 +519,7 @@
 
         handle.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
-            if (e.target?.closest?.(".pz-settings-preview-button")) return;
+            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
 
             const now = Date.now();
             const distance = Math.hypot(e.clientX - lastHandleClick.x, e.clientY - lastHandleClick.y);
@@ -597,6 +635,31 @@
             }
             return styleEl;
         };
+        const getPreviewHoverStyleElement = () => {
+            let styleEl = document.getElementById("pz-linkcard-preview-hover-css");
+            if (!styleEl) {
+                styleEl = document.createElement("style");
+                styleEl.id = "pz-linkcard-preview-hover-css";
+                document.head.appendChild(styleEl);
+            }
+            return styleEl;
+        };
+        const getPreviewHoverCss = () => {
+            const items = [
+                ["title", ".lkc-title"],
+                ["excerpt", ".lkc-excerpt"],
+                ["url", ".lkc-url, .lkc-url-info"],
+                ["date", ".lkc-date"],
+                ["heading", ".lkc-heading"],
+                ["more", ".lkc-more"],
+                ["info", ".lkc-info"],
+                ["added", ".lkc-added"],
+            ];
+            return ["ex", "in", "th"].flatMap(prefix => items.map(([name, selector]) => {
+                const decoration = value(`${prefix}-${name}-hover`) !== "" ? "underline" : "none";
+                return `.pz-settings-preview-window [data-pz-preview-card="${prefix}"] ${selector}:hover { text-decoration: ${decoration} !important; }`;
+            })).join("\n");
+        };
         const collectAllProperties = () => {
             const fd = new FormData();
             const values = new Map();
@@ -706,6 +769,25 @@
                 node.style.textDecoration = checked(`${prefix}-underline`) ? "underline" : "none";
                 const maxLine = intValue(`${prefix}-maxline`, 0);
                 if (maxLine > 0) node.style.webkitLineClamp = String(maxLine);
+            });
+        };
+        const bindHoverTextStyle = (selector, prefix) => {
+            win.querySelectorAll(selector).forEach(node => {
+                if (!node.dataset.pzPreviewHoverBound) {
+                    node.addEventListener("pointerenter", () => {
+                        const decoration = checked(`${prefix}-hover`) ? "underline" : "none";
+                        node.style.setProperty("text-decoration", decoration, "important");
+                    });
+                    node.addEventListener("pointerleave", () => {
+                        const decoration = checked(`${prefix}-underline`) ? "underline" : "none";
+                        node.style.setProperty("text-decoration", decoration, "important");
+                    });
+                    node.dataset.pzPreviewHoverBound = "1";
+                }
+                if (node.matches(":hover")) {
+                    const decoration = checked(`${prefix}-hover`) ? "underline" : "none";
+                    node.style.setProperty("text-decoration", decoration, "important");
+                }
             });
         };
         const applyPartBox = (card, selector, prefix) => {
@@ -869,6 +951,14 @@
             textStyle(".lkc-added", "added");
             textStyle(".lkc-heading", "heading");
             textStyle(".lkc-more", "more");
+            bindHoverTextStyle(".lkc-title", "title");
+            bindHoverTextStyle(".lkc-excerpt", "excerpt");
+            bindHoverTextStyle(".lkc-url, .lkc-url-info", "url");
+            bindHoverTextStyle(".lkc-date", "date");
+            bindHoverTextStyle(".lkc-heading", "heading");
+            bindHoverTextStyle(".lkc-more", "more");
+            bindHoverTextStyle(".lkc-info", "info");
+            bindHoverTextStyle(".lkc-added", "added");
             win.querySelectorAll("[data-pz-preview-heading], [data-pz-preview-more], .lkc-added").forEach(node => {
                 if (node.textContent.trim() === "") {
                     node.style.setProperty("display", "none", "important");
@@ -879,6 +969,7 @@
 
         const syncPreview = () => {
             updatePreview();
+            getPreviewHoverStyleElement().textContent = getPreviewHoverCss();
             schedulePreviewCssCallback();
         };
 
@@ -894,6 +985,7 @@
             attributeFilter: ["class", "disabled", "readonly", "aria-disabled"],
         });
         updatePreview();
+        getPreviewHoverStyleElement().textContent = getPreviewHoverCss();
         schedulePreviewCssCallback(0);
     }
 

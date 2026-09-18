@@ -3096,6 +3096,40 @@ a.pz-thx {
 	cursor: default;
 }
 
+.pz-settings-preview-background {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	border: 1px solid rgba(255, 255, 255, 0.7);
+	border-radius: 1px;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+	cursor: pointer;
+}
+
+.pz-settings-preview-background:hover,
+.pz-settings-preview-background:focus-visible {
+	outline: 2px solid #fff;
+	outline-offset: 1px;
+}
+
+.pz-settings-preview-background-white { background: #fff; }
+.pz-settings-preview-background-black { background: #000; }
+.pz-settings-preview-background-red { background: #f00; }
+.pz-settings-preview-background-green { background: #008000; }
+.pz-settings-preview-background-blue { background: #00f; }
+.pz-settings-preview-background-rectangles {
+	background-color: #fff8df;
+	background-image: repeating-linear-gradient(45deg, #f6d978 25%, transparent 25%, transparent 75%, #f6d978 75%, #f6d978), repeating-linear-gradient(45deg, #f6d978 25%, #fff8df 25%, #fff8df 75%, #f6d978 75%, #f6d978);
+	background-position: 0 0, 4px 4px;
+	background-size: 8px 8px;
+}
+.pz-settings-preview-background-diagonal {
+	background-color: #fff;
+	background-image: repeating-linear-gradient(135deg, #c8c8c8 0, #c8c8c8 2px, transparent 2px, transparent 5px);
+}
+
 .pz-settings-preview-button {
 	display: inline-flex;
 	align-items: center;
