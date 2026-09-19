@@ -3215,7 +3215,29 @@ body.pz-settings-preview-docked-active #wpbody-content {
 	padding-bottom: calc(var(--pz-settings-preview-docked-height, 0px) + 24px);
 }
 
+.pz-settings-preview-body {
+	flex: 1 1 auto;
+	display: flex;
+	min-height: 0;
+	overflow: hidden;
+}
+
+.pz-settings-preview-palette {
+	flex: 0 0 24px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	overflow-x: hidden;
+	overflow-y: auto;
+	padding: 4px;
+	border-right: 1px solid #c3c4c7;
+	background: #1d2327;
+	box-sizing: border-box;
+}
+
 .pz-settings-preview-list {
+	flex: 1 1 auto;
 	display: grid;
 	grid-template-columns: 1fr;
 	gap: 18px;

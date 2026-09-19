@@ -405,35 +405,72 @@
         const toggleDockedPreview = () => {
             animatePreviewWindow();
             if (previewDocked) {
-                applyFloatingRect(floatingPreviewRect);
+                syncPreviewState();
+                const stored = readStoredState() || {};
+                const windowRect = {
+                    left: readStateNumber(stored, "window-left"),
+                    top: readStateNumber(stored, "window-top"),
+                    width: readStateNumber(stored, "window-width"),
+                    height: readStateNumber(stored, "window-height"),
+                };
+                const hasWindowRect = Object.values(windowRect).every(value => value !== null);
+                applyFloatingRect(hasWindowRect ? windowRect : floatingPreviewRect);
                 persistPreviewState();
                 return;
             }
 
             floatingPreviewRect = getWindowRect();
-            applyDockedRect(floatingPreviewRect.height);
+            syncPreviewState();
+            const stored = readStoredState() || {};
+            const dockedHeight = readStateNumber(stored, "docked-height")
+                ?? readStateNumber(stored, "preview-docked-height")
+                ?? floatingPreviewRect.height;
+            applyDockedRect(dockedHeight);
             persistPreviewState();
         };
         const restorePreviewState = () => {
             const stored = readStoredState() || {};
             const storedMode = stored["preview-mode"] || readStateInput("preview-mode");
             const mode = storedMode === "icon" ? (stored["preview-restore-mode"] || "window") : storedMode;
-            const statePrefix = mode === "docked" ? "docked" : "window";
-            const left = readStateNumber(stored, `${statePrefix}-left`) ?? readStateNumber(stored, "preview-left");
-            const top = readStateNumber(stored, `${statePrefix}-top`) ?? readStateNumber(stored, "preview-top");
-            const width = readStateNumber(stored, `${statePrefix}-width`) ?? readStateNumber(stored, "preview-width");
-            const height = readStateNumber(stored, `${statePrefix}-height`) ?? readStateNumber(stored, "preview-height");
-            const dockedHeight = readStateNumber(stored, "docked-height") ?? readStateNumber(stored, "preview-docked-height") ?? height;
+            const initialFloatingRect = !previewDocked ? getWindowRect() : null;
+            const windowRect = {
+                left: readStateNumber(stored, "window-left"),
+                top: readStateNumber(stored, "window-top"),
+                width: readStateNumber(stored, "window-width"),
+                height: readStateNumber(stored, "window-height"),
+            };
+            const dockLeft = getDockLeft();
+            const dockWidth = getViewportClientRight() - dockLeft;
+            const isStoredDockRect = windowRect.left !== null
+                && windowRect.width !== null
+                && Math.abs(windowRect.left - dockLeft) <= 1
+                && windowRect.width >= dockWidth - 1;
+            const hasWindowRect = Object.values(windowRect).every(value => value !== null) && !isStoredDockRect;
+            if (hasWindowRect) {
+                floatingPreviewRect = windowRect;
+            } else if (initialFloatingRect?.width > 0 && initialFloatingRect?.height > 0) {
+                floatingPreviewRect = initialFloatingRect;
+            }
 
             if (mode === "docked") {
-                if (left !== null && top !== null && width !== null && height !== null) {
-                    floatingPreviewRect = { left, top, width, height };
-                }
+                const dockedHeight = readStateNumber(stored, "docked-height")
+                    ?? readStateNumber(stored, "preview-docked-height")
+                    ?? readStateNumber(stored, "preview-height");
                 applyDockedRect(dockedHeight);
                 return;
             }
-            if (left !== null && top !== null && width !== null && height !== null) {
-                applyFloatingRect({ left, top, width, height });
+            if (hasWindowRect) {
+                applyFloatingRect(windowRect);
+                return;
+            }
+            const fallbackRect = {
+                left: readStateNumber(stored, "preview-left"),
+                top: readStateNumber(stored, "preview-top"),
+                width: readStateNumber(stored, "preview-width"),
+                height: readStateNumber(stored, "preview-height"),
+            };
+            if (Object.values(fallbackRect).every(value => value !== null)) {
+                applyFloatingRect(fallbackRect);
                 return;
             }
             keepInViewport();

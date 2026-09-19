@@ -459,6 +459,12 @@
 							'<div class="pz-settings-preview-handle" data-pz-preview-handle>'.
 							'<span id="pz-settings-preview-title" class="pz-settings-preview-title">'.esc_html__('Preview', 'pz-linkcard' ).'</span>'.
 							'<span class="pz-settings-preview-controls">'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview', 'pz-linkcard' ).'">_</button>'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'">×</button>'.
+							'</span>'.
+							'</div>'.
+							'<div class="pz-settings-preview-body">'.
+							'<div class="pz-settings-preview-palette">'.
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-white" data-pz-preview-background="white" aria-label="'.esc_attr__('White background', 'pz-linkcard' ).'" title="'.esc_attr__('White background', 'pz-linkcard' ).'"></button>'.
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-gray" data-pz-preview-background="gray" aria-label="'.esc_attr__('Gray background', 'pz-linkcard' ).'" title="'.esc_attr__('Gray background', 'pz-linkcard' ).'"></button>'.
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-black" data-pz-preview-background="black" aria-label="'.esc_attr__('Black background', 'pz-linkcard' ).'" title="'.esc_attr__('Black background', 'pz-linkcard' ).'"></button>'.
@@ -468,14 +474,12 @@
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-rectangles" data-pz-preview-background="rectangles" aria-label="'.esc_attr__('Rectangle pattern background', 'pz-linkcard' ).'" title="'.esc_attr__('Rectangle pattern background', 'pz-linkcard' ).'"></button>'.
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-diagonal" data-pz-preview-background="diagonal" aria-label="'.esc_attr__('Diagonal pattern background', 'pz-linkcard' ).'" title="'.esc_attr__('Diagonal pattern background', 'pz-linkcard' ).'"></button>'.
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-crosshatch" data-pz-preview-background="crosshatch" aria-label="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'" title="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'"></button>'.
-							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview', 'pz-linkcard' ).'">_</button>'.
-							'<button type="button" class="pz-settings-preview-button" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'">×</button>'.
-							'</span>'.
 							'</div>'.
 							'<div class="pz-settings-preview-list">'.
 							'<div class="pz-settings-preview-item"><h3>'.esc_html__('External Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
 							'<div class="pz-settings-preview-item"><h3>'.esc_html__('Internal Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('in', home_url('/pz-linkcard-preview/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
 							'<div class="pz-settings-preview-item"><h3>'.esc_html__('Same Page Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('th', home_url('/#pz-linkcard-preview' ), get_bloginfo('name' ), __('Same Page Link Preview', 'pz-linkcard' ), __('This is a sample of a same-page link card.', 'pz-linkcard' ) ).'</div>'.
+							'</div>'.
 							'</div>'.
 							'</section>';
 	}
