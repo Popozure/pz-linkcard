@@ -329,18 +329,31 @@
 		}
 	}
 
+	// DEFAULTSから削除された旧項目を参照する移行処理
+	if	(version_compare($this->options['plugin-version'], '2.5.6', '<' ) ) {
+		foreach	(array('title', 'excerpt', 'url', 'date', 'heading', 'more', 'info', 'added', 'cat' ) as $t ) {
+			if	(array_key_exists($t.'-outline', $this->options ) && !$this->options[$t.'-outline'] ) {
+				$this->options[$t.'-outline-color']	=	null;
+			}
+		}
+	}
+	if	(array_key_exists('flg-ssl', $this->options ) ) {
+		$this->options['flg-sslverify']	=	$this->options['flg-ssl'] ? 0 : 1;
+	}
+
+	// DEFAULTSに存在しない項目を削除
+	$definitions	=	self::pz_GetOptionDefinitions();
+	foreach	(array_keys($this->options ) as $key ) {
+		if	(!array_key_exists($key, $definitions ) ) {
+			unset($this->options[$key] );
+		}
+	}
+
 	// 個別に設定しなおす
 	if		(version_compare($this->options['plugin-version'],	'2.5.6', '<' ) ) {
 		if	(intval($this->options['width'] ) == 0 ) {
 			$this->options['width']					=	500;
 			$this->options['width-unit']			=	'px';
-		}
-
-		// 縁取りの色をクリアする
-		foreach		(array('title', 'excerpt', 'url', 'date', 'heading', 'more', 'info', 'added', 'cat' ) as $t ) {
-			if	(array_key_exists($t.'-outline', $this->options ) && !$this->options[$t.'-outline'] ) {
-				$this->options[$t.'-outline-color']	=	null;
-			}
 		}
 	}
 
@@ -368,11 +381,6 @@
 		}
 	}
 
-	// 2.6.1
-	if	(array_key_exists('flg-ssl', $this->options ) ) {
-		$this->options['flg-sslverify']	=	$this->options['flg-ssl'] ? 0 : 1 ;
-		unset($this->options['flg-ssl'] );
-	}
 	// プラグインバージョンの更新
 	$plugin_version_changed	=	($this->options['plugin-version']	<>	PZLKC_PLUGIN_VERSION );
 	if		($plugin_version_changed ) {

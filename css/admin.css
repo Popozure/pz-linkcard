@@ -2220,8 +2220,12 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 	width: 34px;
 	height: 18px;
 	border-radius: 999px;
-	background-color: #ccd0d4;
+	background-color: #666688;
 	vertical-align: middle;
+}
+
+.pz-card-prop-switch input[type="checkbox"]:disabled + .pz-card-switch-ui {
+	background-color: #cccccc;
 }
 
 .pz-card-switch-ui:before {
@@ -3187,6 +3191,12 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 
 .pz-settings-preview-window.pz-settings-preview-docked-right .pz-settings-preview-handle {
 	cursor: default;
+}
+
+.pz-settings-preview-window.pz-settings-preview-docked-right .pz-settings-preview-palette {
+	cursor: ew-resize;
+	touch-action: none;
+	user-select: none;
 }
 
 .pz-settings-preview-window.pz-settings-preview-animating {

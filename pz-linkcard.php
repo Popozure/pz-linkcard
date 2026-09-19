@@ -312,12 +312,12 @@ class class_pz_linkcard {
 			'in-field-excerpt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-get-url'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
 			'in-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'in-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888', ],
 			'in-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
@@ -377,111 +377,20 @@ class class_pz_linkcard {
 			'in-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'th-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'th-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'th-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#f4f4f4', ],
 			'th-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-
-			'th-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#666666', ],
-			'th-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'th-border-width'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
-			'th-border-radius'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-
-			'th-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'th-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
-
-			'th-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'th-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'th-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
 			'th-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'th-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0],
-		 	'th-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid'],
-			'th-hover-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1],
-			'th-hover-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4],
-			'th-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'th-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0, ],
 			'th-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'th-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'th-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'th-heading-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
-			'th-heading-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'th-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'th-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'th-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'th-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'th-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
-			'th-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'th-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
-			'th-more-border-radius'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'th-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'th-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'th-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'th-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'th-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
-			'th-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'th-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'th-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'th-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'th-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
 			'flg-nofollow'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'flg-noopener'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
@@ -621,6 +530,31 @@ class class_pz_linkcard {
 	private	static	function	pz_GetDefaultOption($key ) {
 		$definitions	=	self::pz_GetOptionDefinitions();
 		return	array_key_exists($key, $definitions ) ? $definitions[$key]['default'] : null;
+	}
+
+	// 同一ページリンクに専用項目がない場合は、内部リンクの設定を使用する
+	private	static	function	pz_ApplyThisLinkFallback($options ) {
+		$definitions	=	self::pz_GetOptionDefinitions();
+		foreach	($definitions as $key => $definition ) {
+			if	(substr($key, 0, 3 ) !== 'in-' ) {
+				continue;
+			}
+			$th_key	=	'th-'.substr($key, 3 );
+			if	(!array_key_exists($th_key, $definitions ) && array_key_exists($key, $options ) ) {
+				$options[$th_key]	=	$options[$key];
+			}
+		}
+		return	$options;
+	}
+
+	private	static	function	pz_RemoveThisLinkFallback($options ) {
+		$definitions	=	self::pz_GetOptionDefinitions();
+		foreach	(array_keys($options ) as $key ) {
+			if	(substr($key, 0, 3 ) === 'th-' && !array_key_exists($key, $definitions ) ) {
+				unset($options[$key] );
+			}
+		}
+		return	$options;
 	}
 
 	public	function	__construct() {
@@ -1326,8 +1260,10 @@ class class_pz_linkcard {
 				}
 			}
 			if	($sw_favicon == 3 ) {												// WebAPIを利用
+				if	($is_preview && $favicon_url ) {
+					$html_favicon	=	'<div class="lkc-favicon"><img src="'.esc_url($favicon_url ).'" alt="'.esc_attr($favicon_alt ).'" width="16" height="16" /></div>';
 				// サイトアイコン取得WebAPI
-				if	($this->options['favicon-api'] ) {
+				} elseif	($this->options['favicon-api'] ) {
 					$temp					=	$this->options['favicon-api'];
 					if	(strstr($temp, '%' )	<>	'' ) {
 						$temp				=	preg_replace('/%TITLE%/',		$title,					$temp );
@@ -2795,6 +2731,7 @@ class class_pz_linkcard {
 			}
 		}
 		$this->options	=	array_merge(self::pz_GetDefaultOptions(), $this->options );
+		$this->options	=	self::pz_ApplyThisLinkFallback($this->options );
 
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 		return	true;
@@ -2803,6 +2740,7 @@ class class_pz_linkcard {
 	// 設定を更新する
 	private	function	pz_SaveOptions($increment_css_count = true ) {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
+		$this->options	=	self::pz_RemoveThisLinkFallback($this->options );
 
 		// 変更前
 		$return_status	=	false;
@@ -2861,6 +2799,7 @@ class class_pz_linkcard {
 		} else {
 			$this->options	=	$saved_options;
 		}
+		$this->options	=	self::pz_ApplyThisLinkFallback($this->options );
 		// 返却
 		return	$return_status;
 	}
@@ -2869,20 +2808,30 @@ class class_pz_linkcard {
 	private	function	pz_InitializeOptions() {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 
-		// 初期化
-		$before				=	$this->options;
-		$this->options		=	self::pz_GetDefaultOptions();
-		
 		// 引き継ぐ設定値
 		$takeover			=	array('saved-date', 'db-version' );
-		if	($before['initialize-exception'] ) {
+		if	(!empty($this->options['initialize-exception'] ) ) {
 			// 初期化例外が有効の時に引き継ぐ設定値
 			array_push($takeover, 'initialize-exception', 'admin-mode', 'debug-mode' );
 		}
-		
-		// 設定を引き継ぐ
-		foreach($takeover as $key ) {
-			$this->options[$key]			=	$before[$key];
+
+		// 引き継ぐ設定値を一時保存
+		$takeover_options	=	array();
+		foreach	($takeover as $key ) {
+			if	(array_key_exists($key, $this->options ) ) {
+				$takeover_options[$key]	=	$this->options[$key];
+			}
+		}
+
+		// DEFAULTSに存在する項目を初期値で再構築
+		$this->options	=	array();
+		foreach	(self::DEFAULTS as $key => $value ) {
+			$this->options[$key]	=	$value['default'];
+		}
+
+		// 一時保存した設定値を戻す
+		foreach	($takeover_options as $key => $value ) {
+			$this->options[$key]	=	$value;
 		}
 		
 		// ブログID
@@ -3422,6 +3371,7 @@ class class_pz_linkcard {
 				$preview_options[$key]	=	$properties[$key];
 			}
 		}
+		$preview_options	=	self::pz_ApplyThisLinkFallback($preview_options );
 
 		$this->options	=	$preview_options;
 		if	(!defined('LIST_BORDER' ) ) {

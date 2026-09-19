@@ -13,16 +13,36 @@
 		echo	'</div>';
 
 		echo	'<h2>'.$t['title'].$help_open.$t['type'].'-link'.$help_close.'</h2>';
-
 		// 入力項目のHTMLテンプレート
 		$temp_color			=	'<tr><th scope="row">%s</th><td><input name="properties[%s]" type="color" value="%s" class="pz-sync-text pz-letter-color-code" /><input name="properties[%s]" type="text"  value="%s" class="pz-sync-text" /></td></tr>';
 		$temp_text			=	'<tr><th scope="row">%s</th><td><input name="properties[%s]" type="text" value="%s" size="%s" class="%s" %s />%s</td></tr>';
 		$temp_checkbox		=	'<tr><th scope="row">%s</th><td><label><input type="hidden" name="properties[%s]" value="" /><input type="checkbox" %s value="1" %s />%s</label></td></tr>';
 		$temp_select		=	'<tr><th scope="row">%s</th><td><select %s class="%s" %s >%s</select></td>%s</tr>';
-		$echo_card_appearance	=	function($t, $prop, $state = '' ) {
+		$echo_internal_fallback	=	function($title ) {
+			echo	'<tr><th scope="row">'.esc_html($title ).'</th><td><span class="description">'.esc_html__('Use the same setting as Internal Link', 'pz-linkcard' ).'</span></td></tr>';
+		};
+		$echo_card_appearance	=	function($t, $prop, $state = '' ) use ($default_definitions, $echo_internal_fallback ) {
 			$prefix			=	$t['name'].$state;
 			$is_hover		=	($state === '-hover' );
 			$enabled_default	=	$is_hover ? 0 : 1;
+			if	($t['name'] === 'th' ) {
+				$echo_internal_fallback(__('Adjustment', 'pz-linkcard' ) );
+				echo	'<tr><th scope="row">'.esc_html__('Background Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+				$item_name	=	$prefix.'-bg-enabled';
+				$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
+				echo	'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+				$item_name	=	$prefix.'-bg-color';
+				$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
+				echo	'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+				$item_name	=	$prefix.'-bg-image';
+				$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
+				echo	'<label class="pz-card-prop-bulk"><span>'.esc_html__('Batch Specified Properties', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" size="80" class="large-text" maxlength="80" /></label>';
+				echo	'</span></td></tr>';
+				$echo_internal_fallback(__('Border Color', 'pz-linkcard' ) );
+				$echo_internal_fallback(__('Shadow', 'pz-linkcard' ) );
+				$echo_internal_fallback(__('Transition Speed', 'pz-linkcard' ) );
+				return;
+			}
 
 			echo				'<tr><th scope="row">'.__('Adjustment', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
 			$item_name			=	$prefix.'-transform-enabled';
@@ -95,9 +115,27 @@
 			echo				'</span></td></tr>';
 		};
 
-		$echo_part_appearance	=	function($t, $prop, $part ) {
+		$echo_part_appearance	=	function($t, $prop, $part ) use ($default_definitions, $echo_internal_fallback ) {
 			$prefix				=	$t['name'].'-'.$part;
 			$enabled_default	=	0;
+			if	($t['name'] === 'th' ) {
+				$echo_internal_fallback(__('Adjustment', 'pz-linkcard' ) );
+				if	(array_key_exists($prefix.'-bg-enabled', $default_definitions ) ) {
+					echo	'<tr><th scope="row">'.esc_html__('Background Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+					$item_name	=	$prefix.'-bg-enabled';
+					$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
+					echo	'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+					$item_name	=	$prefix.'-bg-color';
+					$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
+					echo	'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+					echo	'</span></td></tr>';
+				} else {
+					$echo_internal_fallback(__('Background Color', 'pz-linkcard' ) );
+				}
+				$echo_internal_fallback(__('Border Color', 'pz-linkcard' ) );
+				$echo_internal_fallback(__('Shadow', 'pz-linkcard' ) );
+				return;
+			}
 
 			echo				'<tr><th scope="row">'.__('Adjustment', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
 			$item_name			=	$prefix.'-transform-enabled';

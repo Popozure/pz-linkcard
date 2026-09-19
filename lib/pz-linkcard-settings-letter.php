@@ -35,7 +35,7 @@
 			$key		=		$t['name'].'-color';
 			if		(array_key_exists($key, self::DEFAULTS ) ) {
 				$value	=		$prop[$key];
-				echo	'<input type="text"     name="properties['.$key.']" value="'.$value.'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
+				echo	'<input type="text"     name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
 			} else {
 				echo	'<input type="text"     name="" value="" disabled="disabled" readonly="readonly" class="pz-color-dummy" />';
 			}
@@ -45,7 +45,7 @@
 			$key		=		$t['name'].'-outline-color';
 			if			(array_key_exists($key, self::DEFAULTS ) ) {
 				$value	=		$prop[$key];
-				echo	'<input type="text"     name="properties['.$key.']" value="'.$value.'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
+				echo	'<input type="text"     name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
 			} else {
 				echo	'<input type="text"     name="" value="" disabled="disabled" readonly="readonly" class="pz-color-dummy" />';
 			}
@@ -55,7 +55,7 @@
 			$key		=		$t['name'].'-bg-color';
 			if			(array_key_exists($key, self::DEFAULTS ) ) {
 				$value	=		$prop[$key];
-				echo	'<input type="text"     name="properties['.$key.']" value="'.$value.'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
+				echo	'<input type="text"     name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
 			} else {
 				echo	'<input type="text"     name="" value="" disabled="disabled" readonly="readonly" class="pz-color-dummy" />';
 			}
@@ -65,7 +65,7 @@
 			$key		=		$t['name'].'-size';
 			if		(array_key_exists($key, self::DEFAULTS ) ) {
 				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="number"   name="properties['.$key.']" value="'.$value.'" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
+				echo	'<input type="number"   name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
 			} else {
 				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
 			}
@@ -75,7 +75,7 @@
 			$key		=		$t['name'].'-height';
 			if		(array_key_exists($key, self::DEFAULTS ) ) {
 				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="number"   name="properties['.$key.']" value="'.$value.'" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
+				echo	'<input type="number"   name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
 			} else {
 				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
 			}
@@ -85,7 +85,7 @@
 			$key		=		$t['name'].'-maxline';
 			if		(array_key_exists($key, self::DEFAULTS ) ) {
 				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="number"   name="properties['.$key.']" value="'.$value.'" class="pz-letter-box-r" min="0" max="99" />';
+				echo	'<input type="number"   name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-letter-box-r" min="0" max="99" />';
 			} else {
 				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="99" />';
 			}

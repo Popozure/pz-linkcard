@@ -375,7 +375,17 @@
         row.setAttribute("aria-disabled", disabled ? "true" : "false");
 
         row.querySelectorAll("input, select, textarea, button").forEach(el => {
-            if (el === switchInput || el.type === "hidden" || el.closest(".pz-card-prop-switch")) return;
+            if (el === switchInput || el.type === "hidden") return;
+
+            if (el.type === "checkbox" && el.closest(".pz-card-prop-switch")) {
+                el.disabled = disabled;
+                el.setAttribute("aria-disabled", disabled ? "true" : "false");
+                const hiddenInput = el.previousElementSibling;
+                if (hiddenInput?.type === "hidden" && hiddenInput.name === el.name) {
+                    hiddenInput.disabled = disabled;
+                }
+                return;
+            }
 
             el.disabled = false;
             el.setAttribute("aria-disabled", disabled ? "true" : "false");

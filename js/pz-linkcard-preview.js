@@ -309,7 +309,11 @@
             const edgeSize = 8;
             if (previewDocked) {
                 if (previewDockSide === "right") {
-                    return e.clientX - rect.left <= edgeSize ? { top: false, right: false, bottom: false, left: true } : null;
+                    const draggablePalette = e.target?.closest?.(".pz-settings-preview-palette")
+                        && !e.target?.closest?.(".pz-settings-preview-background");
+                    return draggablePalette
+                        ? { top: false, right: false, bottom: false, left: true }
+                        : null;
                 }
                 return e.clientY - rect.top <= edgeSize ? { top: true, right: false, bottom: false, left: false } : null;
             }
@@ -532,6 +536,34 @@
             syncPreviewState();
         };
 
+        const dockFloatingDragAtEdge = (upEvent, offsetX, offsetY) => {
+            if (upEvent.type !== "pointerup") return false;
+            const rect = getWindowRect();
+            const dockThreshold = 64;
+            const pushedRight = upEvent.clientX - offsetX + rect.width - window.innerWidth;
+            const pushedBottom = upEvent.clientY - offsetY + rect.height - window.innerHeight;
+            const dockRight = pushedRight >= dockThreshold && pushedRight >= pushedBottom;
+            const dockBottom = pushedBottom >= dockThreshold && pushedBottom > pushedRight;
+            if (!dockRight && !dockBottom) return false;
+
+            const stored = readStoredState() || {};
+            floatingPreviewRect = rect;
+            animatePreviewWindow();
+            if (dockRight) {
+                const dockedWidth = readStateNumber(stored, "right-docked-width")
+                    ?? readStateNumber(stored, "preview-right-docked-width")
+                    ?? rect.width;
+                applyRightDockedRect(dockedWidth);
+            } else {
+                const dockedHeight = readStateNumber(stored, "docked-height")
+                    ?? readStateNumber(stored, "preview-docked-height")
+                    ?? rect.height;
+                applyDockedRect(dockedHeight);
+            }
+            persistPreviewState();
+            return true;
+        };
+
         win.addEventListener("pointermove", setResizeCursor);
         win.addEventListener("pointerleave", clearResizeCursor);
         win.addEventListener("pointerdown", e => {
@@ -550,6 +582,10 @@
                 width: startRect.width,
                 height: startRect.height,
             };
+            const startedRightDocked = previewDockSide === "right";
+            let undockedFromRight = false;
+            let dragOffsetX = 0;
+            let dragOffsetY = 0;
 
             win.setPointerCapture?.(e.pointerId);
             win.classList.add("pz-settings-preview-resizing");
@@ -559,9 +595,27 @@
             e.stopPropagation();
 
             const move = moveEvent => {
+                if (startedRightDocked && !undockedFromRight && Math.abs(moveEvent.clientY - e.clientY) >= 64) {
+                    applyFloatingRect(floatingPreviewRect);
+                    const floatingRect = getWindowRect();
+                    dragOffsetX = floatingRect.width / 2;
+                    dragOffsetY = Math.min(floatingRect.height, handle.getBoundingClientRect().height / 2);
+                    undockedFromRight = true;
+                    win.classList.remove("pz-settings-preview-resizing");
+                    win.classList.add("pz-settings-preview-dragging");
+                    win.style.cursor = "move";
+                    handle.style.cursor = "move";
+                    animatePreviewWindow();
+                    setPosition(moveEvent.clientX - dragOffsetX, moveEvent.clientY - dragOffsetY);
+                    return;
+                }
+                if (undockedFromRight) {
+                    setPosition(moveEvent.clientX - dragOffsetX, moveEvent.clientY - dragOffsetY);
+                    return;
+                }
                 if (previewDocked) {
                     if (previewDockSide === "right") {
-                        applyRightDockedRect(start.width + start.left - moveEvent.clientX);
+                        applyRightDockedRect(start.width + e.clientX - moveEvent.clientX);
                     } else {
                         applyDockedRect(start.height + start.top - moveEvent.clientY);
                     }
@@ -602,12 +656,16 @@
                 win.style.maxHeight = "none";
             };
             const up = upEvent => {
-                win.classList.remove("pz-settings-preview-resizing");
+                win.classList.remove("pz-settings-preview-resizing", "pz-settings-preview-dragging");
                 win.releasePointerCapture?.(upEvent.pointerId);
                 clearResizeCursor();
-                if (!previewDocked) floatingPreviewRect = getWindowRect();
-                syncPreviewState();
-                persistPreviewState();
+                const snappedToEdge = undockedFromRight
+                    && dockFloatingDragAtEdge(upEvent, dragOffsetX, dragOffsetY);
+                if (!snappedToEdge) {
+                    if (!previewDocked) floatingPreviewRect = getWindowRect();
+                    syncPreviewState();
+                    persistPreviewState();
+                }
                 window.removeEventListener("pointermove", move);
                 window.removeEventListener("pointerup", up);
                 window.removeEventListener("pointercancel", up);
@@ -636,14 +694,26 @@
             }
 
             const rect = win.getBoundingClientRect();
-            const offsetX = e.clientX - rect.left;
-            const offsetY = e.clientY - rect.top;
+            let offsetX = e.clientX - rect.left;
+            let offsetY = e.clientY - rect.top;
+            const startedBottomDocked = previewDockSide === "bottom";
+            let undockedFromBottom = false;
 
             handle.setPointerCapture?.(e.pointerId);
             win.classList.add("pz-settings-preview-dragging");
             e.preventDefault();
 
             const move = moveEvent => {
+                if (startedBottomDocked && !undockedFromBottom && Math.abs(moveEvent.clientX - e.clientX) >= 64) {
+                    applyFloatingRect(floatingPreviewRect);
+                    const floatingRect = getWindowRect();
+                    offsetX = floatingRect.width / 2;
+                    offsetY = Math.min(floatingRect.height, handle.getBoundingClientRect().height / 2);
+                    undockedFromBottom = true;
+                    animatePreviewWindow();
+                    setPosition(moveEvent.clientX - offsetX, moveEvent.clientY - offsetY);
+                    return;
+                }
                 if (previewDocked) {
                     applyDockedRect(rect.height + e.clientY - moveEvent.clientY);
                     return;
@@ -653,8 +723,9 @@
             const up = upEvent => {
                 win.classList.remove("pz-settings-preview-dragging");
                 handle.releasePointerCapture?.(upEvent.pointerId);
-                let snappedToEdge = false;
-                if (!previewDocked && upEvent.type === "pointerup") {
+                let snappedToEdge = undockedFromBottom
+                    && dockFloatingDragAtEdge(upEvent, offsetX, offsetY);
+                if (!previewDocked && !undockedFromBottom && upEvent.type === "pointerup") {
                     const dockThreshold = 64;
                     const pushedRight = upEvent.clientX - offsetX + rect.width - window.innerWidth;
                     const pushedBottom = upEvent.clientY - offsetY + rect.height - window.innerHeight;

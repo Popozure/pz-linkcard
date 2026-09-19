@@ -19,9 +19,9 @@
 			// 特殊フォーマットごとの固定スタイル
 			switch ($prop['special-format'] ) {
 			case 'LkC': // Pz-LkC Default
-				$file_text	=	str_replace('/*EX-BG-IMAGE*/',				'background-image: linear-gradient(#78f 0%, #78f 10%, #fff 30%);', $file_text );
-				$file_text	=	str_replace('/*IN-BG-IMAGE*/',				'background-image: linear-gradient(#ca4 0%, #ca4 10%, #fff 30%);', $file_text );
-				$file_text	=	str_replace('/*TH-BG-IMAGE*/',				'background-image: linear-gradient(#ca4 0%, #ca4 10%, #eee 30%);', $file_text );
+				$file_text	=	str_replace('/*EX-BG-IMAGE*/',			'background-image: linear-gradient(#78f 0%, #78f 10%, #fff 30%);', $file_text );
+				$file_text	=	str_replace('/*IN-BG-IMAGE*/',			'background-image: linear-gradient(#ca4 0%, #ca4 10%, #fff 30%);', $file_text );
+				$file_text	=	str_replace('/*TH-BG-IMAGE*/',			'background-image: linear-gradient(#ca4 0%, #ca4 10%, #eee 30%);', $file_text );
 				break;
 			case 'hbc': // プリセット: はてなブログカード風
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
@@ -537,7 +537,7 @@
 				if	($content_height	>	0 ) {
 					$content_height	.=	'px';
 				}
-				$file_text	=	str_replace('/*CONTENT-HEIGHT*/',		'height: '.$content_height.';',				$file_text );
+				$file_text	=	str_replace('/*CONTENT-HEIGHT*/',	'height: '.$content_height.';',				$file_text );
 			}
 
 			// 抜粋エリアを内側に見せる
@@ -550,13 +550,13 @@
 
 			switch ($prop['info-position'] ) {
 			case 1:				// サイト情報を上に表示
-				$file_text	=	str_replace('/*CONTENT-MARGIN*/',		'margin: 6px 0 0 0;', $file_text );
+				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 6px 0 0 0;', $file_text );
 				break;
 			case 2:				// サイト情報を下に表示
-				$file_text	=	str_replace('/*CONTENT-MARGIN*/',		'margin: 0 0 8px 0;', $file_text );
+				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 0 0 8px 0;', $file_text );
 				break;
 			default:
-				$file_text	=	str_replace('/*CONTENT-MARGIN*/',		'margin: 0;', $file_text );
+				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 0;', $file_text );
 				break;
 			}
 
@@ -698,9 +698,9 @@
 
 				// 角丸
 				if		($value_radius > 0 ) {
-					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',				'border-radius: '.$value_radius.'px; -webkit-border-radius: '.$value_radius.'px; -moz-border-radius: '.$value_radius.'px;',		$file_text );
+					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',			'border-radius: '.$value_radius.'px; -webkit-border-radius: '.$value_radius.'px; -moz-border-radius: '.$value_radius.'px;',		$file_text );
 				} else {
-					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',				'',		$file_text );
+					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',			'',		$file_text );
 				}
 
 				$hover_css		=	array();

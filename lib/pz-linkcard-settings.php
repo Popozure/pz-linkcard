@@ -260,7 +260,7 @@
 	}
 
 	// 定義漏れチェック
-	if	( ($this->options['admin-mode'] ) && ($prop ) ) {
+	if	( ($this->options['admin-mode'] ) && ($prop ) && ($action !== 'init-plugin' ) ) {
 		$default_check_exceptions	=	array(
 			'debug-dir',
 			'debug-url',
@@ -269,12 +269,13 @@
 			'blockquote',
 		);
 		$default_definitions	=	self::pz_GetOptionDefinitions();
+		$checked_prop		=	self::pz_RemoveThisLinkFallback($prop );
 		foreach	($default_definitions as $key => $value ) {
-			if	(!array_key_exists($key, $prop ) ) {
+			if	(!array_key_exists($key, $checked_prop ) ) {
 				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%s" in Properties.<br>It may be a glitch. Please inform the developer. (%s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank">@'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
 			}
 		}
-		foreach	($prop as $key => $value ) {
+		foreach	($checked_prop as $key => $value ) {
 			if	(in_array($key, $default_check_exceptions, true ) ) {
 				continue;
 			}
@@ -334,6 +335,7 @@
 			break;
 
 		case	'init-plugin':							// プラグインの再起動
+			$this->activate_now	=	false;
 			$this->hook_activate();
 			$flg_style			=	true;				// スタイルシートの再生成
 			break;
