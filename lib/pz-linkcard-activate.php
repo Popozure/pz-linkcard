@@ -24,8 +24,6 @@
 	// 項目名称変更
 	$rename_key	=	array(
 		'old_key_name'			=>		'new_key_name',
-		'anker'					=>		'anchor',					// パラメータ名変更のため
-		'opacity'				=>		'hover',					// パラメータ名変更のため
 		'flg-invalid'			=>		'error-mode',				// Ver.2.4.4 パラメータ名変更のため：エラー状態
 		'invalid-url'			=>		'error-url',				// Ver.2.4.4 パラメータ名変更のため：エラーURL
 		'invalid-time'			=>		'error-time',				// Ver.2.4.4 パラメータ名変更のため：エラー発生日時
@@ -71,6 +69,12 @@
 		'ex-get'				=>		'ex-get-from',				// パラメータ名変更のため
 		'in-get'				=>		'in-get-from',				// パラメータ名変更のため
 		'flg-get-pid'			=>		'in-get-url',				// Ver.2.5.6 パラメータ名変更のため
+		'ex-image'				=>		'ex-bg-image',				// Ver.2.6.1 パラメータ名変更のため
+		'ex-hover-image'		=>		'ex-hover-bg-image',		// Ver.2.6.1 パラメータ名変更のため
+		'in-image'				=>		'in-bg-image',				// Ver.2.6.1 パラメータ名変更のため
+		'in-hover-image'		=>		'in-hover-bg-image',		// Ver.2.6.1 パラメータ名変更のため
+		'th-image'				=>		'th-bg-image',				// Ver.2.6.1 パラメータ名変更のため
+		'th-hover-image'		=>		'th-hover-bg-image',		// Ver.2.6.1 パラメータ名変更のため
 		);
 	foreach ($rename_key		as	$old => $new ) {
 		if	(array_key_exists($old, $this->options ) ) {
@@ -81,24 +85,104 @@
 		}
 	}
 
-	// Ver.2.6.0.4からVer.2.6.1で背景画像項目の名称を変更
-	if	($stored_version && version_compare($stored_version, '2.6.0.4', '>=') && version_compare($stored_version, '2.6.1', '<') ) {
-		foreach	(array(
-			'ex-image'				=>	'ex-bg-image',
-			'ex-hover-image'		=>	'ex-hover-bg-image',
-			'in-image'				=>	'in-bg-image',
-			'in-hover-image'		=>	'in-hover-bg-image',
-			'th-image'				=>	'th-bg-image',
-			'th-hover-image'		=>	'th-hover-bg-image',
-		) as $old => $new ) {
-			if	(array_key_exists($old, $this->options ) ) {
-				if	(!is_array($stored_options ) || !array_key_exists($new, $stored_options ) ) {
-					$this->options[$new]	=	$this->options[$old];
+	// 共通のホバー効果をリンク種別ごとの設定へ移行
+	$old_hover	=	is_array($stored_options ) && array_key_exists('hover', $stored_options )
+		?	$stored_options['hover']
+		:	($this->options['hover'] ?? null );
+	$hover_migrated	=	false;
+	if	($old_hover !== null ) {
+		$add_alpha	=	function($color, $alpha = '88' ) {
+			if	(preg_match('/^#([0-9a-f]{3})$/i', (string)$color, $matches ) ) {
+				$hex	=	$matches[1];
+				return	'#'.$hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2].$alpha;
+			}
+			if	(preg_match('/^#([0-9a-f]{6})(?:[0-9a-f]{2})?$/i', (string)$color, $matches ) ) {
+				return	'#'.$matches[1].$alpha;
+			}
+			return	$color;
+		};
+
+		foreach	(array('ex', 'in', 'th' ) as $t ) {
+			switch	((string)$old_hover ) {
+			case	'1':
+				$this->options[$t.'-hover-bg-enabled']			=	1;
+				$this->options[$t.'-hover-bg-color']			=	$add_alpha($this->options[$t.'-bg-color'] ?? '' );
+				break;
+			case	'2':
+			case	'3':
+			case	'4':
+				$is_dark								=	(string)$old_hover === '3';
+				$is_retract							=	(string)$old_hover === '4';
+				$this->options[$t.'-hover-transform-enabled']	=	1;
+				$this->options[$t.'-hover-transform-x']		=	$is_retract ? 4 : -4;
+				$this->options[$t.'-hover-transform-y']		=	$is_retract ? 4 : -4;
+				$this->options[$t.'-hover-shadow-enabled']	=	1;
+				$this->options[$t.'-hover-shadow-color']		=	$is_dark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.25)';
+				$this->options[$t.'-hover-shadow-x']			=	$is_dark ? 16 : ($is_retract ? 1 : 4 );
+				$this->options[$t.'-hover-shadow-y']			=	$is_dark ? 16 : 4;
+				$this->options[$t.'-hover-shadow-blur']		=	$is_dark ? 16 : 8;
+				$this->options[$t.'-hover-shadow-spread']	=	0;
+				$this->options[$t.'-hover-shadow-inset']		=	0;
+				$this->options[$t.'-hover-transition']		=	0.3;
+				break;
+			case	'7':
+				$this->options[$t.'-hover-border-enabled']	=	1;
+				$this->options[$t.'-hover-border-style']		=	'none';
+				$this->options[$t.'-hover-border-width']		=	0;
+				$this->options[$t.'-hover-border-radius']	=	40;
+				$this->options[$t.'-hover-transition']		=	0.3;
+				break;
+			}
+		}
+		unset($this->options['hover'] );
+		$hover_migrated	=	true;
+	}
+
+	// 共通の続きを読むボタン形式をリンク種別ごとの設定へ移行
+	$more_style_exists	=	is_array($stored_options ) && array_key_exists('more-style', $stored_options );
+	$old_more_style		=	$more_style_exists ? $stored_options['more-style'] : null;
+	if	(!$more_style_exists && array_key_exists('flg-more', $this->options ) ) {
+		$more_style_exists	=	true;
+		$old_more_style		=	array(
+			'0'	=>	'',
+			'1'	=>	'SMP',
+			'3'	=>	'BTN',
+			'4'	=>	'PSH',
+			'5'	=>	'PSH',
+		)[(string)$this->options['flg-more']] ?? null;
+	}
+	if	($more_style_exists ) {
+		foreach	(array('ex', 'in', 'th' ) as $t ) {
+			$this->options[$t.'-more-transform-enabled']	=	0;
+			$this->options[$t.'-more-bg-enabled']			=	0;
+			$this->options[$t.'-more-border-enabled']		=	0;
+			$this->options[$t.'-more-shadow-enabled']		=	0;
+
+			switch	((string)$old_more_style ) {
+			case	'':
+				$this->options[$t.'-more-text']			=	null;
+				break;
+			case	'SMP':
+			case	'BTN':
+			case	'PSH':
+				$this->options[$t.'-more-bg-enabled']	=	1;
+				$this->options[$t.'-more-bg-color']		=	!empty($this->options['more-bg-color'] )
+					?	$this->options['more-bg-color']
+					:	($this->options[$t.'-bg-color'] ?? '' );
+				if	($old_more_style === 'BTN' || $old_more_style === 'PSH' ) {
+					$this->options[$t.'-more-shadow-enabled']	=	1;
+					$this->options[$t.'-more-shadow-color']		=	'rgba(0, 0, 0, 0.5)';
+					$this->options[$t.'-more-shadow-x']			=	4;
+					$this->options[$t.'-more-shadow-y']			=	4;
+					$this->options[$t.'-more-shadow-blur']		=	4;
+					$this->options[$t.'-more-shadow-spread']	=	0;
+					$this->options[$t.'-more-shadow-inset']		=	0;
 				}
-				unset($this->options[$old] );
+				break;
 			}
 		}
 	}
+	unset($this->options['more-style'], $this->options['flg-more'] );
 
 	// Ver.2.6.1で共通指定からリンク種別ごとの指定に変わった項目を移行
 	if	(!$stored_version || version_compare($stored_version, '2.6.1', '<=' ) ) {
@@ -146,7 +230,7 @@
 			}
 			if	($old_radius !== null && !array_key_exists($t.'-border-radius', $this->options ) ) {
 				$this->options[$t.'-border-enabled']	=	1;
-				$this->options[$t.'-border-radius']		=	$old_radius;
+				$this->options[$t.'-border-radius']		=	intval($old_radius );
 			}
 			if	(!empty($this->options['shadow'] ) ) {
 				$this->options[$t.'-shadow-enabled']	=	1;
@@ -173,13 +257,13 @@
 					$this->options[$t.'-thumbnail-border-style']	=	'solid';
 				}
 				if	(!array_key_exists($t.'-thumbnail-border-width', $this->options ) ) {
-					$this->options[$t.'-thumbnail-border-width']	=	!empty($old_thumbnail_border ) ? '1px' : '0px';
+					$this->options[$t.'-thumbnail-border-width']	=	!empty($old_thumbnail_border ) ? 1 : 0;
 				}
 				if	(!array_key_exists($t.'-thumbnail-border-color', $this->options ) ) {
 					$this->options[$t.'-thumbnail-border-color']	=	!empty($old_thumbnail_border ) ? 'rgba(0, 0, 0, 0.4)' : '';
 				}
 				if	($old_thumbnail_radius !== null && !array_key_exists($t.'-thumbnail-border-radius', $this->options ) ) {
-					$this->options[$t.'-thumbnail-border-radius']	=	$old_thumbnail_radius;
+					$this->options[$t.'-thumbnail-border-radius']	=	intval($old_thumbnail_radius );
 				}
 			}
 			if	($old_thumbnail_shadow !== null ) {
@@ -247,28 +331,6 @@
 
 	// 個別に設定しなおす
 	if		(version_compare($this->options['plugin-version'],	'2.5.6', '<' ) ) {
-		// 続きを読むボタン
-		if	(isset($this->options['flg-more'] ) ) {
-			switch	($this->options['flg-more'] ) {
-			case	'0':
-				$this->options['more-style']		=	'';
-				break;
-			case	'1':
-				$this->options['more-style']		=	'SMP';
-				break;
-			case	'3':
-				$this->options['more-style']		=	'BTN';
-				break;
-			case	'4':
-				$this->options['more-style']		=	'PSH';
-				break;
-			case	'5':
-				$this->options['more-style']		=	'PSH';
-				break;
-			}
-			unset($this->options['flg-more'] );
-		}
-			
 		if	(intval($this->options['width'] ) == 0 ) {
 			$this->options['width']					=	500;
 			$this->options['width-unit']			=	'px';
@@ -325,6 +387,10 @@
 	if	(empty($this->options['mce-priority'] ) && (get_template() == 'jin' ) ) {
 		$this->options['mce-priority']	=	11;
 	}
+	if	($hover_migrated ) {
+		unset($this->options['hover'] );
+	}
+	unset($this->options['more-style'], $this->options['flg-more'] );
 
 	// オプションの更新
 	$result		=	$this->pz_SaveOptions(!$plugin_version_changed );

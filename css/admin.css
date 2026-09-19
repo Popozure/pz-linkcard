@@ -1885,6 +1885,14 @@ a.pz-thx {
 	transition: opacity 1s ease-in-out, visibility 0s linear 1s;
 }
 
+body.pz-settings-preview-docked-active .pz-indicator {
+	bottom: calc(var(--pz-settings-preview-docked-height, 0px) + 32px);
+}
+
+body.pz-settings-preview-right-docked-active .pz-indicator {
+	right: calc(var(--pz-settings-preview-right-docked-width, 0px) + 16px);
+}
+
 .pz-indicator.pz-indicator-active {
 	opacity: 1;
 	visibility: visible;
@@ -3177,6 +3185,10 @@ a.pz-thx {
 	cursor: ns-resize;
 }
 
+.pz-settings-preview-window.pz-settings-preview-docked-right .pz-settings-preview-handle {
+	cursor: default;
+}
+
 .pz-settings-preview-window.pz-settings-preview-animating {
 	transition: left 0.1s, top 0.1s, right 0.1s, bottom 0.1s, width 0.1s, height 0.1s, border-radius 0.1s, box-shadow 0.1s, opacity 0.16s ease, visibility 0s linear 0.16s;
 }
@@ -3213,6 +3225,10 @@ a.pz-thx {
 
 body.pz-settings-preview-docked-active #wpbody-content {
 	padding-bottom: calc(var(--pz-settings-preview-docked-height, 0px) + 24px);
+}
+
+body.pz-settings-preview-right-docked-active #wpbody-content {
+	width: calc(100% - var(--pz-settings-preview-right-docked-width, 0px));
 }
 
 .pz-settings-preview-body {

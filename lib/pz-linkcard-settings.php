@@ -232,7 +232,7 @@
 	foreach		($temp_param		as	$temp_name => $temp_value ) {
 		$html_input	.=	'<input type="hidden" name="'.$temp_name.'" value="'.$temp_value.'" title="'.$temp_name.'" size="4" />';
 	}
-	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height' ) as $temp_name ) {
+	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width' ) as $temp_name ) {
 		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
 		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
 	}

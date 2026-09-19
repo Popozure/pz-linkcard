@@ -12,7 +12,7 @@
 		</tr>
 
 		<tr>
-			<th scope="row" rowspan="5"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="4"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Option($prop, 'display-url', __('Position to display URL', 'pz-linkcard' ), array(
 								''		=>		__('None', 'pz-linkcard' ),
@@ -37,30 +37,6 @@
 		<tr>
 			<td>
 				<?php pz_Checkbox($prop, 'display-excerpt', __('Show Excerpt', 'pz-linkcard' ) ); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php
-					pz_Option($prop, 'more-style', __('More button', 'pz-linkcard' ), array(
-								''		=>		__('None',				'pz-linkcard' ),
-								'TXT'	=>		__('Text only',			'pz-linkcard' ),
-								'SMP'	=>		__('Simple button',		'pz-linkcard' ),
-								'BTN'	=>		__('Button',			'pz-linkcard' ),
-								'PSH'	=>		__('Push Button',		'pz-linkcard' ),) );
-				?>
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('On Hover', 'pz-linkcard' ); ?></th>
-			<td>
-				<?php pz_Option($prop, 'hover', __('When the mouse is on', 'pz-linkcard' ), array(
-								''		=>		__('None', 'pz-linkcard' ),
-								'1'		=>		__('Lighten', 'pz-linkcard' ),
-								'2'		=>		__('Hover (Light)', 'pz-linkcard' ),
-								'3'		=>		__('Hover (Dark)', 'pz-linkcard' ),
-								'4'		=>		__('Retract (for Shadow)', 'pz-linkcard' ),
-								'7'		=>		__('Radius', 'pz-linkcard' ), ) ); ?>
 			</td>
 		</tr>
 		<tr>

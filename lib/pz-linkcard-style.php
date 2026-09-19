@@ -109,7 +109,8 @@
 					$value_border	=	'border: solid '.($prop[$t.'-border-color'] ?? '').' 4px;';
 					$file_text		=	str_replace('/*'.$T.'-BORDER*/',			$value_border, $file_text );
 					$file_text		=	str_replace('/*'.$T.'-HEADING-BORDER*/',	$value_border, $file_text );
-					$value_radius	=	'border-radius: '.$prop[$t.'-border-radius'] ?? '';
+					$value_radius_num	=	isset($prop[$t.'-border-radius'] ) ? intval($prop[$t.'-border-radius'] ) : 0;
+					$value_radius	=	$value_radius_num > 0 ? 'border-radius: '.$value_radius_num.'px' : '';
 					$file_text		=	str_replace('/*'.$T.'-RADIUS*/',			$value_radius.';', $file_text );
 					$file_text		=	str_replace('/*'.$T.'-HEADING-RADIUS*/',	$value_radius.';', $file_text );
 					$value_bg_color	=	'background-color: '.$prop[$t.'-border-color'] ?? '';
@@ -470,35 +471,8 @@
 				}
 			}
 
-			// 共通のホバー効果
-			$file_text		=	str_replace('/*EX-HOVER*/',		'', $file_text );
-			$file_text		=	str_replace('/*IN-HOVER*/',		'', $file_text );
-			$file_text		=	str_replace('/*TH-HOVER*/',		'', $file_text );
-			switch ($prop['hover'] ) {
-			case '1':
-				$file_text	=	str_replace('/*HOVER*/',		'opacity: 0.8;', $file_text );
-				break;
-			case '2':
-				$file_text	=	str_replace('/*HOVER*/',		'box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.25); transform: translateX(-4px) translateY(-4px);', $file_text );
-				$file_text	=	str_replace('/*WRAP*/',			'transition: all 0.3s ease 0s;', $file_text );
-				break;
-			case '3':
-				$file_text	=	str_replace('/*WRAP*/',			'transition: all 0.3s ease 0s;', $file_text );
-				$file_text	=	str_replace('/*HOVER*/',		'box-shadow: 16px 16px 16px rgba(0, 0, 0, 0.5); transform: translateX(-4px) translateY(-4px);', $file_text );
-				break;
-			case '4':
-				$file_text	=	str_replace('/*WRAP*/',			'transition: all 0.3s ease 0s;', $file_text );
-				$file_text	=	str_replace('/*HOVER*/',		'box-shadow: 1px 4px 8px rgba(0, 0, 0, 0.25); transform: translateX(4px) translateY(4px);', $file_text );
-				break;
-			case '7':
-				$file_text	=	str_replace('/*WRAP*/',			'transition: all 0.3s ease 0s;', $file_text );
-				$file_text	=	str_replace('/*HOVER*/',		'border-radius: 40px;', $file_text );
-				break;
-			}
-
-			$thumbnail_adjust		=	2;
-
 			// サムネイルの位置とサイズ
+			$thumbnail_adjust		=	2;
 			$thumbnail_width	= intval($prop['thumbnail-width'] );
 			$thumbnail_height	= intval($prop['thumbnail-height'] );
 			switch ($prop['thumbnail-position'] ) {
@@ -626,12 +600,12 @@
 					$value_width		=	isset($prop[$prefix.'-border-width'] ) ? $prop[$prefix.'-border-width'] : '1px';
 					$value_width_num	=	strval(intval(preg_replace('/[^0-9]/', '', $value_width ) ) );
 					$value_color		=	isset($prop[$prefix.'-border-color'] ) ? $prop[$prefix.'-border-color'] : '';
-					$value_radius		=	isset($prop[$prefix.'-border-radius'] ) ? $prop[$prefix.'-border-radius'] : '';
+					$value_radius		=	isset($prop[$prefix.'-border-radius'] ) ? intval($prop[$prefix.'-border-radius'] ) : 0;
 					if	($value_style ) {
 						$file_text	=	str_replace('/*'.$placeholder_prefix.'-BORDER'.$placeholder_suffix.'*/',		'border: '.($value_color ? $value_color : '' ).' '.($value_style ? $value_style : '' ).' '.($value_width_num ? $value_width_num.'px' : '' ).' !important;', $file_text );
 					}
-					if	($value_radius ) {
-						$file_text	=	str_replace('/*'.$placeholder_prefix.'-RADIUS'.$placeholder_suffix.'*/',		'border-radius: '.$value_radius.'; -webkit-border-radius: '.$value_radius.'; -moz-border-radius: '.$value_radius.';', $file_text );
+					if	($value_radius > 0 ) {
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-RADIUS'.$placeholder_suffix.'*/',		'border-radius: '.$value_radius.'px; -webkit-border-radius: '.$value_radius.'px; -moz-border-radius: '.$value_radius.'px;', $file_text );
 					}
 				}
 
@@ -687,7 +661,7 @@
 				$value_style		=	isset($prop[$t.'-border-style'] ) ? $prop[$t.'-border-style'] : $prop['border-style'];
 				$value_width		=	isset($prop[$t.'-border-width'] ) ? $prop[$t.'-border-width'] : $prop['border-width'];
 				$value_width_num	=	strval(intval(preg_replace('/[^0-9]/', '', $value_width ) ) );
-				$value_radius		=	isset($prop[$t.'-border-radius'] ) ? $prop[$t.'-border-radius'] : '';
+				$value_radius		=	isset($prop[$t.'-border-radius'] ) ? intval($prop[$t.'-border-radius'] ) : 0;
 				$value_border_enabled	=	isset($prop[$t.'-border-enabled'] ) ? $prop[$t.'-border-enabled'] : 1;
 				if	($value_border_enabled && $value_style ) {
 					$value_color	=	$prop[$t.'-border-color'];
@@ -723,8 +697,8 @@
 				}
 
 				// 角丸
-				if		($value_radius ) {
-					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',				'border-radius: '.$value_radius.'; -webkit-border-radius: '.$value_radius.'; -moz-border-radius: '.$value_radius.';',		$file_text );
+				if		($value_radius > 0 ) {
+					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',				'border-radius: '.$value_radius.'px; -webkit-border-radius: '.$value_radius.'px; -moz-border-radius: '.$value_radius.'px;',		$file_text );
 				} else {
 					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',				'',		$file_text );
 				}
@@ -764,9 +738,9 @@
 					if	($value_hover_border_style ) {
 						$hover_css[]	=	'border: '.($value_hover_border_color ? $value_hover_border_color : '' ).' '.($value_hover_border_style ? $value_hover_border_style : '' ).' '.($value_hover_border_width_num ? $value_hover_border_width_num.'px' : '' ).';';
 					}
-					$value_hover_border_radius	= isset($prop[$t.'-hover-border-radius'] ) ? $prop[$t.'-hover-border-radius'] : '4px';
-					if	($value_hover_border_radius ) {
-						$hover_css[]	=	'border-radius: '.$value_hover_border_radius.'; -webkit-border-radius: '.$value_hover_border_radius.'; -moz-border-radius: '.$value_hover_border_radius.';';
+					$value_hover_border_radius	= isset($prop[$t.'-hover-border-radius'] ) ? intval($prop[$t.'-hover-border-radius'] ) : 4;
+					if	($value_hover_border_radius > 0 ) {
+						$hover_css[]	=	'border-radius: '.$value_hover_border_radius.'px; -webkit-border-radius: '.$value_hover_border_radius.'px; -moz-border-radius: '.$value_hover_border_radius.'px;';
 					}
 				}
 				$value_hover_shadow_enabled	= isset($prop[$t.'-hover-shadow-enabled'] ) ? $prop[$t.'-hover-shadow-enabled'] : 0;
@@ -798,13 +772,13 @@
 					$param				=	'border: '
 											.($prop[$t.'-border-color']  	?	$prop[$t.'-border-color'].' '	:	'' )
 											.($value_style  				?	$value_style.' '					:	'' )
-											.($value_width  				?	$value_width.' '					:	'' ).' /*IMPORTANT*/;';
+											.($value_width_num > 0			?	$value_width_num.'px '				:	'' ).' /*IMPORTANT*/;';
 					$file_text			=	str_replace('/*'.$T.'-HEADING-BORDER*/',			$param,		$file_text );
 				}
 
 				// ヘッダーの角丸
-				if	($value_radius ) {
-					$file_text			=	str_replace('/*'.$T.'-HEADING-RADIUS*/',			'border-radius: '.$value_radius.';',			$file_text );
+				if	($value_radius > 0 ) {
+					$file_text			=	str_replace('/*'.$T.'-HEADING-RADIUS*/',			'border-radius: '.$value_radius.'px;',			$file_text );
 				}
 
 				// ヘッダーの影
@@ -822,31 +796,8 @@
 
 				// 続きを読むボタン
 				$border					=	'border: none;';
-				$position12				=	'position: absolute; bottom: 12px; right: 12px; padding: 0 12px; ';
-				$position10				=	'position: absolute; bottom: 10px; right: 10px; padding: 0 12px; ';
 				$position08				=	'position: absolute; bottom:  8px; right:  8px; padding: 0 12px; ';
-				$bg_color				=	'background-color: '.
-											($prop['more-bg-color']			?	$prop['more-bg-color']			:
-											($prop[$t.'-bg-color']	 	 	?	$prop[$t.'-bg-color']			:	'' ) ).'; ';
-				switch	($prop['more-style'] ) {
-				case	'TXT':
-					$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		$position08,						$file_text );
-					break;
-				case	'SMP':
-					$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		$position08.$border.$bg_color,		$file_text );
-					break;
-				case	'BTN':
-					$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		$position12.$border.$bg_color.'box-shadow: 4px 4px 4px rgba(0,0,0,0.5 );',		$file_text );
-					break;
-				case	'PSH':
-					$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		$position12.$border.$bg_color.'box-shadow: 4px 4px 4px rgba(0,0,0,0.5 ); transition: all 0.2s ease-in-out;',		$file_text );
-					$file_text			=	str_replace('/*MOREBTN-HOVER*/',		$position10.                  'box-shadow: 2px 2px 4px rgba(0,0,0,0.5 ); transition: all 0.2s ease-in-out;',		$file_text );
-					$file_text			=	str_replace('/*MOREBTN-ACTIVE*/',		$position08.                  'box-shadow: 0   0   4px rgba(0,0,0,0.5 ); transition: all 0.2s ease-in-out;',		$file_text );
-					break;
-				default:
-					$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		'display: none;',		$file_text );
-					break;
-				}
+				$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		$position08.$border,			$file_text );
 
 				$replace_part_style($t.'-heading',	$T.'-HEADING',		'-OPTION' );
 				if (empty($prop[$t.'-heading-bg-enabled'])) {
