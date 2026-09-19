@@ -3115,19 +3115,24 @@ a.pz-thx {
 }
 
 .pz-settings-preview-background-white { background: #fff; }
+.pz-settings-preview-background-gray { background: #888; }
 .pz-settings-preview-background-black { background: #000; }
-.pz-settings-preview-background-red { background: #f00; }
-.pz-settings-preview-background-green { background: #008000; }
-.pz-settings-preview-background-blue { background: #00f; }
+.pz-settings-preview-background-red { background: #f8d7da; }
+.pz-settings-preview-background-green { background: #d8f0df; }
+.pz-settings-preview-background-blue { background: #d9eafa; }
 .pz-settings-preview-background-rectangles {
-	background-color: #fff8df;
-	background-image: repeating-linear-gradient(45deg, #f6d978 25%, transparent 25%, transparent 75%, #f6d978 75%, #f6d978), repeating-linear-gradient(45deg, #f6d978 25%, #fff8df 25%, #fff8df 75%, #f6d978 75%, #f6d978);
+	background-color: #fffdf4;
+	background-image: repeating-linear-gradient(45deg, #f9edbd 25%, transparent 25%, transparent 75%, #f9edbd 75%, #f9edbd), repeating-linear-gradient(45deg, #f9edbd 25%, #fffdf4 25%, #fffdf4 75%, #f9edbd 75%, #f9edbd);
 	background-position: 0 0, 4px 4px;
 	background-size: 8px 8px;
 }
 .pz-settings-preview-background-diagonal {
 	background-color: #fff;
-	background-image: repeating-linear-gradient(135deg, #c8c8c8 0, #c8c8c8 2px, transparent 2px, transparent 5px);
+	background-image: repeating-linear-gradient(135deg, #d9eef7 0, #d9eef7 2px, transparent 2px, transparent 5px);
+}
+.pz-settings-preview-background-crosshatch {
+	background-color: #fff;
+	background-image: repeating-linear-gradient(45deg, rgba(224, 174, 194, 0.35), rgba(224, 174, 194, 0.35) 4px, transparent 0, transparent 8px), repeating-linear-gradient(315deg, rgba(224, 174, 194, 0.35), rgba(224, 174, 194, 0.35) 4px, transparent 0, transparent 8px);
 }
 
 .pz-settings-preview-button {

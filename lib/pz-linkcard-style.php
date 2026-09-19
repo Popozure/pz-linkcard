@@ -821,15 +821,7 @@
 				}
 
 				// 続きを読むボタン
-				if	($value_border_enabled && $value_style ) {
-					$border				=	'border: '
-											.($prop[$t.'-border-color']  	?	$prop[$t.'-border-color'].' '	:	'' )
-											.($value_style  				?	$value_style.' '					:	'' )
-											.($value_width  				?	$value_width.' '					:	'' ).' /*IMPORTANT*/; '
-											.'border-radius: 4px;';
-				} else {
-					$border				=	'';
-				}
+				$border					=	'border: none;';
 				$position12				=	'position: absolute; bottom: 12px; right: 12px; padding: 0 12px; ';
 				$position10				=	'position: absolute; bottom: 10px; right: 10px; padding: 0 12px; ';
 				$position08				=	'position: absolute; bottom:  8px; right:  8px; padding: 0 12px; ';
@@ -857,6 +849,12 @@
 				}
 
 				$replace_part_style($t.'-heading',	$T.'-HEADING',		'-OPTION' );
+				if (empty($prop[$t.'-heading-bg-enabled'])) {
+					$file_text = str_replace('/*'.$T.'-HEADING-BG-COLOR-OPTION*/', 'background-color: transparent !important;', $file_text);
+				}
+				if (empty($prop[$t.'-heading-border-enabled'])) {
+					$file_text = str_replace('/*'.$T.'-HEADING-BORDER-OPTION*/', 'border-color: transparent !important;', $file_text);
+				}
 				$replace_part_style($t.'-more',		$T.'-MORE',		'-OPTION' );
 				$replace_part_style($t.'-thumbnail',	$T.'-THUMBNAIL' );
 				if	(!empty($prop[$t.'-thumbnail-transform-enabled'] ) || !empty($prop[$t.'-thumbnail-shadow-enabled'] ) ) {

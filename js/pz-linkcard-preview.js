@@ -70,19 +70,24 @@
 
         const previewBackgrounds = {
             white: { background: "#fff", image: "none" },
+            gray: { background: "#888", image: "none" },
             black: { background: "#000", image: "none" },
-            red: { background: "#f00", image: "none" },
-            green: { background: "#008000", image: "none" },
-            blue: { background: "#00f", image: "none" },
+            red: { background: "#f8d7da", image: "none" },
+            green: { background: "#d8f0df", image: "none" },
+            blue: { background: "#d9eafa", image: "none" },
             rectangles: {
-                background: "#fff8df",
-                image: "repeating-linear-gradient(45deg, #f6d978 25%, transparent 25%, transparent 75%, #f6d978 75%, #f6d978), repeating-linear-gradient(45deg, #f6d978 25%, #fff8df 25%, #fff8df 75%, #f6d978 75%, #f6d978)",
+                background: "#fffdf4",
+                image: "repeating-linear-gradient(45deg, #f9edbd 25%, transparent 25%, transparent 75%, #f9edbd 75%, #f9edbd), repeating-linear-gradient(45deg, #f9edbd 25%, #fffdf4 25%, #fffdf4 75%, #f9edbd 75%, #f9edbd)",
                 position: "0 0, 20px 20px",
                 size: "40px 40px",
             },
             diagonal: {
                 background: "#fff",
-                image: "repeating-linear-gradient(135deg, #c8c8c8 0, #c8c8c8 4px, transparent 4px, transparent 10px)",
+                image: "repeating-linear-gradient(135deg, #d9eef7 0, #d9eef7 4px, transparent 4px, transparent 10px)",
+            },
+            crosshatch: {
+                background: "#fff",
+                image: "repeating-linear-gradient(45deg, rgba(224, 174, 194, 0.35), rgba(224, 174, 194, 0.35) 20px, transparent 0, transparent 40px), repeating-linear-gradient(315deg, rgba(224, 174, 194, 0.35), rgba(224, 174, 194, 0.35) 20px, transparent 0, transparent 40px)",
             },
         };
         const applyPreviewBackground = name => {
@@ -564,7 +569,7 @@
             window.addEventListener("pointercancel", up);
         });
         handle.addEventListener("dblclick", e => {
-            if (e.target?.closest?.(".pz-settings-preview-button")) return;
+            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
             e.preventDefault();
             if (suppressHandleDblClick) {
                 suppressHandleDblClick = false;
@@ -911,7 +916,12 @@
                 applyDisplay(excerpt, checked("display-excerpt"));
 
                 if (heading) {
-                    heading.textContent = value(`${prefix}-heading-text`);
+                    let headingText = value(`${prefix}-heading-text`);
+                    if (value("special-format") === "JIN" && headingText === "") {
+                        if (prefix === "ex") headingText = "参考にしました";
+                        if (prefix === "in") headingText = "あわせて読みたい";
+                    }
+                    heading.textContent = headingText;
                     const showHeading = heading.textContent !== "";
                     applyDisplay(heading, showHeading);
                     if (showHeading) {
@@ -935,7 +945,12 @@
                 if (addedText && !added && info) {
                     added = document.createElement("div");
                     added.className = "lkc-added";
-                    info.appendChild(added);
+                    const domain = info.querySelector(".lkc-domain");
+                    if (domain) {
+                        domain.insertAdjacentElement("afterend", added);
+                    } else {
+                        info.insertBefore(added, info.querySelector(".lkc-share"));
+                    }
                 }
                 if (added) {
                     added.textContent = addedText;
