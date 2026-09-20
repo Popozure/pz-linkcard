@@ -201,22 +201,21 @@
 	$flg_style		=	false;			// スタイルシートを再生成するか
 
 	// プラグイン名・バージョン・環境表示
-	$html_plugin		=	'<div class="pz-plugin">'.self::PLUGIN_NAME.' ver.'.PZLKC_PLUGIN_VERSION.$html_plugin.
-			($debug_mode			?	'<span class="pz-plugin-env pz-plugin-env-debug">'.__('Debug Mode', 'pz-linkcard' ).'</span>'				:	'' ).
-			($survey_mode			?	'<span class="pz-plugin-env pz-plugin-env-survey">'.__('Survey Mode', 'pz-linkcard' ).'</span>'			:	'' ).
-			($develop_mode	==	1	?	'<span class="pz-plugin-env pz-plugin-env-develop">'.__('Development Environment', 'pz-linkcard' ).'</span>'	:	'' ).
-			($develop_mode	==	2	?	'<span class="pz-plugin-env pz-plugin-env-product">'.__('Production Environment', 'pz-linkcard' ).'</span>'	:	'' ).
-			'</div>';
+	$html_mode		=	($debug_mode			?	'<span class="pz-infobar-env pz-infobar-env-debug">'.	__('Debug Mode', 'pz-linkcard' ).'</span>'				:	'' ).
+						($survey_mode			?	'<span class="pz-infobar-env pz-infobar-env-survey">'.	__('Survey Mode', 'pz-linkcard' ).'</span>'				:	'' ).
+						($develop_mode	==	1	?	'<span class="pz-infobar-env pz-infobar-env-develop">'.	__('Development Environment', 'pz-linkcard' ).'</span>'	:	'' ).
+						($develop_mode	==	2	?	'<span class="pz-infobar-env pz-infobar-env-product">'.	__('Production Environment', 'pz-linkcard' ).'</span>'	:	'' );
 
 	// ページの見出し表示（設定）
 	$page_class		=	' pz-settings';
 	$switch_link	=	esc_url($this->cacheman_url );
 	$switch_icon	=	'<span class="dashicons dashicons-archive" style="vertical-align: text-bottom;"></span>';
 	$switch_label	=	__('Manager', 'pz-linkcard' );
+	$html_plugin	=	'<div id="pz-infobar"><div class="pz-infobar-left"><a href="'.esc_url($this->settings_url ).'" class="pz-infobar-plugin-logo"><img src="'.esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg' ).'" width="156px" height="28px" alt="'.esc_attr(self::PLUGIN_NAME ).'"></a><span class="pz-infobar-plugin-ver pz-monospace">ver.'.esc_html(PZLKC_PLUGIN_VERSION ).'</span>'.$html_mode.'</div><div class="pz-infobar-right"><a href="'.$switch_link.'" class="pz-infobar-switch" title="'.esc_attr($switch_label ).'"><span class="pz-infobar-switch-icon">'.$switch_icon.'</span><span class="pz-infobar-switch-label">'.$switch_label.'</span></a></div></div>';
 	$title_icon		=	'<span class="dashicons dashicons-admin-generic" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Settings', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
-	$html_title		=	'<div class="pz-header"><a class="pz-header-switch" href="'.$switch_link.'"><span class="pz-header-switch-icon">'.$switch_icon.'</span><span class="pz-header-switch-label">'.$switch_label.'</span></a><h1><span class="pz-header-title"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
+	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
 
 	// POSTする値 INPUT要素
 	$temp_param		=
@@ -275,14 +274,14 @@
 				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%s" in Properties.<br>It may be a glitch. Please inform the developer. (%s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank">@'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
 			}
 		}
-		foreach	($checked_prop as $key => $value ) {
-			if	(in_array($key, $default_check_exceptions, true ) ) {
-				continue;
-			}
-			if	(!array_key_exists($key, $default_definitions ) ) {
-				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%1$s" in DEFAULTS.<br>It may be a glitch. Please inform the developer. (%2$s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank">'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
-			}
-		}
+		// foreach	($checked_prop as $key => $value ) {
+		// 	if	(in_array($key, $default_check_exceptions, true ) ) {
+		// 		continue;
+		// 	}
+		// 	if	(!array_key_exists($key, $default_definitions ) ) {
+		// 		$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%1$s" in DEFAULTS.<br>It may be a glitch. Please inform the developer. (%2$s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank">'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
+		// 	}
+		// }
 	}
 
 	// アクションの指示があったとき

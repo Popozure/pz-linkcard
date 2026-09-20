@@ -463,6 +463,55 @@ msgstr "&#x1f4c4;&#xfe0f;"
 msgid "File Menu"
 msgstr "ファイルメニュー"
 
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Import"
+msgstr "インポート"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Export"
+msgstr "エクスポート"
+
+#: ../lib/pz-linkcard-file-import-menu.php
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Return to Cache Manager"
+msgstr "カード管理画面へ戻る"
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Import LinkCard Data"
+msgstr "リンクカードデータのインポート"
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Import files exported from the Pz-LinkCard series and load them into the cache manager."
+msgstr "Pz-LinkCardシリーズからエクスポートしたファイルを読み込み、カード管理画面へ取り込みます。"
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Clear all cache entries"
+msgstr "すべてのキャッシュを消去する"
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Start the import immediately"
+msgstr "インポートを開始する"
+
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Export LinkCard Data"
+msgstr "リンクカードデータのエクスポート"
+
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Export the cache contents to a CSV file. All registered items will be exported."
+msgstr "キャッシュの内容をCSVファイルへ出力します。登録されているすべての項目が対象です。"
+
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Download the export file"
+msgstr "エクスポートファイルをダウンロード"
+
+#: ../lib/pz-linkcard-file-export.php
+msgid "No export data was found."
+msgstr "エクスポートするデータがありません。"
+
+#: ../lib/pz-linkcard-file-export.php
+msgid "Failed to write the export file."
+msgstr "エクスポートファイルの書き込みに失敗しました。"
+
 #: ../lib/pz-linkcard-cacheman-list.php:587
 msgid "Import From Local File"
 msgstr "ファイルからインポートする"

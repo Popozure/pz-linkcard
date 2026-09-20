@@ -13,46 +13,29 @@
 		echo	'</div>';
 
 		echo	'<h2>'.$t['title'].$help_open.$t['type'].'-link'.$help_close.'</h2>';
+
 		// 入力項目のHTMLテンプレート
 		$temp_color			=	'<tr><th scope="row">%s</th><td><input name="properties[%s]" type="color" value="%s" class="pz-sync-text pz-letter-color-code" /><input name="properties[%s]" type="text"  value="%s" class="pz-sync-text" /></td></tr>';
 		$temp_text			=	'<tr><th scope="row">%s</th><td><input name="properties[%s]" type="text" value="%s" size="%s" class="%s" %s />%s</td></tr>';
 		$temp_checkbox		=	'<tr><th scope="row">%s</th><td><label><input type="hidden" name="properties[%s]" value="" /><input type="checkbox" %s value="1" %s />%s</label></td></tr>';
 		$temp_select		=	'<tr><th scope="row">%s</th><td><select %s class="%s" %s >%s</select></td>%s</tr>';
-		$echo_internal_fallback	=	function($title ) {
-			echo	'<tr><th scope="row">'.esc_html($title ).'</th><td><span class="description">'.esc_html__('Use the same setting as Internal Link', 'pz-linkcard' ).'</span></td></tr>';
-		};
-		$echo_card_appearance	=	function($t, $prop, $state = '' ) use ($default_definitions, $echo_internal_fallback ) {
+		$echo_card_appearance	=	function($t, $prop, $state = '' ) {
 			$prefix			=	$t['name'].$state;
 			$is_hover		=	($state === '-hover' );
+			$is_samepage		=	($t['name'] === 'th' );
+			$inherit_prefix		=	$is_samepage ? 'in'.$state : $prefix;
+			$control_disabled	=	$is_samepage ? ' disabled="disabled"' : '';
 			$enabled_default	=	$is_hover ? 0 : 1;
-			if	($t['name'] === 'th' ) {
-				$echo_internal_fallback(__('Adjustment', 'pz-linkcard' ) );
-				echo	'<tr><th scope="row">'.esc_html__('Background Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-				$item_name	=	$prefix.'-bg-enabled';
-				$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
-				echo	'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-				$item_name	=	$prefix.'-bg-color';
-				$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
-				echo	'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
-				$item_name	=	$prefix.'-bg-image';
-				$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
-				echo	'<label class="pz-card-prop-bulk"><span>'.esc_html__('Batch Specified Properties', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" size="80" class="large-text" maxlength="80" /></label>';
-				echo	'</span></td></tr>';
-				$echo_internal_fallback(__('Border Color', 'pz-linkcard' ) );
-				$echo_internal_fallback(__('Shadow', 'pz-linkcard' ) );
-				$echo_internal_fallback(__('Transition Speed', 'pz-linkcard' ) );
-				return;
-			}
 
 			echo				'<tr><th scope="row">'.__('Adjustment', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-transform-enabled';
+			$item_name			=	$inherit_prefix.'-transform-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 1;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
 			foreach	(array('x' => array(__('Horizontal', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'y' => array(__('Vertical', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'rotate' => array(__('Rotate', 'pz-linkcard' ), -360, 360, 0, 'deg' ), 'scale' => array(__('Scale', 'pz-linkcard' ), 1, 200, 100, '%' ) ) as $transform_key => $transform_item ) {
-				$item_name		=	$prefix.'-transform-'.$transform_key;
+				$item_name		=	$inherit_prefix.'-transform-'.$transform_key;
 				$item_value		=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : $transform_item[3];
 				$item_center	=	($transform_item[1] < 0 || $transform_key === 'scale') ? ' data-center="'.esc_attr($transform_item[3] ).'"' : '';
-				echo			'<label class="pz-card-prop-number"><span>'.esc_html($transform_item[0] ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1" /><span>'.esc_html($transform_item[4] ).'</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1"'.$item_center.' /></span></label>';
+				echo			'<label class="pz-card-prop-number"><span>'.esc_html($transform_item[0] ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1"'.$control_disabled.' /><span>'.esc_html($transform_item[4] ).'</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1"'.$item_center.$control_disabled.' /></span></label>';
 			}
 			echo				'</span></td></tr>';
 
@@ -63,139 +46,127 @@
 			$item_name			=	$prefix.'-bg-color';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
 			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
-			$item_name			=	$prefix.'-image';
+			$item_name			=	$prefix.($is_samepage ? '-bg-image' : '-image' );
 			$item_value			=	isset($prop[$item_name] ) ? esc_attr($prop[$item_name] ) : '';
 			echo				'<label class="pz-card-prop-bulk"><span>'.esc_html__('Batch Specified Properties', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.$item_value.'" size="80" class="large-text" maxlength="80" /></label>';
 			echo				'</span></td></tr>';
 
-			echo				'<tr><th scope="row">'.__('Border Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-border-enabled';
+			$border_row_class	=	$is_hover ? ' class="pz-admin-only"' : '';
+			echo				'<tr'.$border_row_class.'><th scope="row">'.__('Border Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+			$item_name			=	$inherit_prefix.'-border-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-			$item_name			=	$prefix.'-border-color';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$inherit_prefix.'-border-color';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
-			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
-			$item_name			=	$prefix.'-border-style';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker"'.$control_disabled.' /></label>';
+			$item_name			=	$inherit_prefix.'-border-style';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 'solid';
-			echo				'<label class="pz-card-prop-select"><span>'.esc_html__('Style', 'pz-linkcard' ).'</span><select name="properties['.$item_name.']">';
+			echo				'<label class="pz-card-prop-select"><span>'.esc_html__('Style', 'pz-linkcard' ).'</span><select name="properties['.$item_name.']"'.$control_disabled.'>';
 			foreach	(LIST_BORDER as $option_value => $option_text ) {
 				echo			'<option value="'.esc_attr($option_value ).'"'.selected($item_value, $option_value, false ).'>'.esc_html($option_text ).'</option>';
 			}
 			echo				'</select></label>';
-			$item_name			=	$prefix.'-border-width';
+			$item_name			=	$inherit_prefix.'-border-width';
 			$item_value			=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : 1;
-			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Width', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /></span></label>';
-			$item_name			=	$prefix.'-border-radius';
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Width', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /></span></label>';
+			$item_name			=	$inherit_prefix.'-border-radius';
 			$item_value			=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : 4;
-			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Round a square', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /></span></label>';
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Round a square', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /></span></label>';
 			echo				'</span></td></tr>';
 
 			echo				'<tr><th scope="row">'.__('Shadow', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-shadow-enabled';
+			$item_name			=	$inherit_prefix.'-shadow-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 0;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-			$item_name			=	$prefix.'-shadow-color';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$inherit_prefix.'-shadow-color';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '#aaaacc';
-			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker"'.$control_disabled.' /></label>';
 			foreach	(array('x' => __('Horizontal', 'pz-linkcard' ), 'y' => __('Vertical', 'pz-linkcard' ), 'blur' => __('Blur', 'pz-linkcard' ), 'spread' => __('Spread', 'pz-linkcard' ) ) as $shadow_key => $shadow_label ) {
-				$item_name		=	$prefix.'-shadow-'.$shadow_key;
+				$item_name		=	$inherit_prefix.'-shadow-'.$shadow_key;
 				$item_value		=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : ($shadow_key === 'spread' ? 0 : 8);
 				$item_min		=	in_array($shadow_key, array('blur', 'spread' ), true ) ? 0 : -64;
-				echo			'<label class="pz-card-prop-number"><span>'.esc_html($shadow_label ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1" /></span></label>';
+				echo			'<label class="pz-card-prop-number"><span>'.esc_html($shadow_label ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1"'.$control_disabled.' /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1"'.$control_disabled.' /></span></label>';
 			}
-			$item_name			=	$prefix.'-shadow-inset';
+			$item_name			=	$inherit_prefix.'-shadow-inset';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 0;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Inner Shadow', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Inner Shadow', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
 			echo				'</span></td></tr>';
 
 			echo				'<tr><th scope="row">'.esc_html__('Transition Speed', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-transition';
+			$item_name			=	$inherit_prefix.'-transition';
 			$item_value			=	number_format(isset($prop[$item_name] ) ? floatval($prop[$item_name] ) : 0, 1, '.', '' );
-			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Seconds', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /><span>s</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /></span></label>';
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Seconds', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1"'.$control_disabled.' /><span>s</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1"'.$control_disabled.' /></span></label>';
 			echo				'</span></td></tr>';
 		};
 
-		$echo_part_appearance	=	function($t, $prop, $part ) use ($default_definitions, $echo_internal_fallback ) {
+		$echo_part_appearance	=	function($t, $prop, $part ) use ($default_definitions ) {
 			$prefix				=	$t['name'].'-'.$part;
+			$is_samepage		=	($t['name'] === 'th' );
+			$inherit_prefix		=	$is_samepage ? 'in-'.$part : $prefix;
+			$control_disabled	=	$is_samepage ? ' disabled="disabled"' : '';
 			$enabled_default	=	0;
-			if	($t['name'] === 'th' ) {
-				$echo_internal_fallback(__('Adjustment', 'pz-linkcard' ) );
-				if	(array_key_exists($prefix.'-bg-enabled', $default_definitions ) ) {
-					echo	'<tr><th scope="row">'.esc_html__('Background Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-					$item_name	=	$prefix.'-bg-enabled';
-					$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
-					echo	'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-					$item_name	=	$prefix.'-bg-color';
-					$item_value	=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
-					echo	'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
-					echo	'</span></td></tr>';
-				} else {
-					$echo_internal_fallback(__('Background Color', 'pz-linkcard' ) );
-				}
-				$echo_internal_fallback(__('Border Color', 'pz-linkcard' ) );
-				$echo_internal_fallback(__('Shadow', 'pz-linkcard' ) );
-				return;
-			}
 
 			echo				'<tr><th scope="row">'.__('Adjustment', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-transform-enabled';
+			$item_name			=	$inherit_prefix.'-transform-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
 			foreach	(array('x' => array(__('Horizontal', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'y' => array(__('Vertical', 'pz-linkcard' ), -100, 100, 0, 'px' ), 'rotate' => array(__('Rotate', 'pz-linkcard' ), -360, 360, 0, 'deg' ), 'scale' => array(__('Scale', 'pz-linkcard' ), 1, 200, 100, '%' ) ) as $transform_key => $transform_item ) {
-				$item_name		=	$prefix.'-transform-'.$transform_key;
+				$item_name		=	$inherit_prefix.'-transform-'.$transform_key;
 				$item_value		=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : $transform_item[3];
 				$item_center	=	($transform_item[1] < 0 || $transform_key === 'scale') ? ' data-center="'.esc_attr($transform_item[3] ).'"' : '';
-				echo			'<label class="pz-card-prop-number"><span>'.esc_html($transform_item[0] ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1" /><span>'.esc_html($transform_item[4] ).'</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1"'.$item_center.' /></span></label>';
+				echo			'<label class="pz-card-prop-number"><span>'.esc_html($transform_item[0] ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1"'.$control_disabled.' /><span>'.esc_html($transform_item[4] ).'</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($transform_item[1] ).'" max="'.esc_attr($transform_item[2] ).'" step="1"'.$item_center.$control_disabled.' /></span></label>';
 			}
 			echo				'</span></td></tr>';
 
 			echo				'<tr><th scope="row">'.__('Background Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-bg-enabled';
+			$background_prefix	=	array_key_exists($prefix.'-bg-enabled', $default_definitions ) ? $prefix : $inherit_prefix;
+			$background_disabled	=	($background_prefix === $prefix ) ? '' : ' disabled="disabled"';
+			$item_name			=	$background_prefix.'-bg-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-			$item_name			=	$prefix.'-bg-color';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$background_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$background_disabled.' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$background_prefix.'-bg-color';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
-			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker"'.$background_disabled.' /></label>';
 			echo				'</span></td></tr>';
 
 			echo				'<tr><th scope="row">'.__('Border Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-border-enabled';
+			$item_name			=	$inherit_prefix.'-border-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-			$item_name			=	$prefix.'-border-color';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$inherit_prefix.'-border-color';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '';
-			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
-			$item_name			=	$prefix.'-border-style';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker"'.$control_disabled.' /></label>';
+			$item_name			=	$inherit_prefix.'-border-style';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 'solid';
-			echo				'<label class="pz-card-prop-select"><span>'.esc_html__('Style', 'pz-linkcard' ).'</span><select name="properties['.$item_name.']">';
+			echo				'<label class="pz-card-prop-select"><span>'.esc_html__('Style', 'pz-linkcard' ).'</span><select name="properties['.$item_name.']"'.$control_disabled.'>';
 			foreach	(LIST_BORDER as $option_value => $option_text ) {
 				echo			'<option value="'.esc_attr($option_value ).'"'.selected($item_value, $option_value, false ).'>'.esc_html($option_text ).'</option>';
 			}
 			echo				'</select></label>';
-			$item_name			=	$prefix.'-border-width';
+			$item_name			=	$inherit_prefix.'-border-width';
 			$item_value			=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : 1;
-			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Width', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /></span></label>';
-			$item_name			=	$prefix.'-border-radius';
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Width', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /></span></label>';
+			$item_name			=	$inherit_prefix.'-border-radius';
 			$item_value			=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : 4;
-			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Round a square', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1" /></span></label>';
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Round a square', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="64" step="1"'.$control_disabled.' /></span></label>';
 			echo				'</span></td></tr>';
 
 			echo				'<tr><th scope="row">'.__('Shadow', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
-			$item_name			=	$prefix.'-shadow-enabled';
+			$item_name			=	$inherit_prefix.'-shadow-enabled';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : $enabled_default;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
-			$item_name			=	$prefix.'-shadow-color';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Enabled', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
+			$item_name			=	$inherit_prefix.'-shadow-color';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : '#aaaacc';
-			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" /></label>';
+			echo				'<label class="pz-card-prop-color"><span>'.esc_html__('Color', 'pz-linkcard' ).'</span><input type="text" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker"'.$control_disabled.' /></label>';
 			foreach	(array('x' => __('Horizontal', 'pz-linkcard' ), 'y' => __('Vertical', 'pz-linkcard' ), 'blur' => __('Blur', 'pz-linkcard' ), 'spread' => __('Spread', 'pz-linkcard' ) ) as $shadow_key => $shadow_label ) {
-				$item_name		=	$prefix.'-shadow-'.$shadow_key;
+				$item_name		=	$inherit_prefix.'-shadow-'.$shadow_key;
 				$item_value		=	isset($prop[$item_name] ) ? intval($prop[$item_name] ) : ($shadow_key === 'spread' ? 0 : 8);
 				$item_min		=	in_array($shadow_key, array('blur', 'spread' ), true ) ? 0 : -64;
-				echo			'<label class="pz-card-prop-number"><span>'.esc_html($shadow_label ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1" /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1" /></span></label>';
+				echo			'<label class="pz-card-prop-number"><span>'.esc_html($shadow_label ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1"'.$control_disabled.' /><span>px</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="'.esc_attr($item_min ).'" max="64" step="1"'.$control_disabled.' /></span></label>';
 			}
-			$item_name			=	$prefix.'-shadow-inset';
+			$item_name			=	$inherit_prefix.'-shadow-inset';
 			$item_value			=	isset($prop[$item_name] ) ? $prop[$item_name] : 0;
-			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Inner Shadow', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value="" /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
+			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Inner Shadow', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.$item_name.']" value=""'.$control_disabled.' /><input type="checkbox" name="properties['.$item_name.']" value="1" '.checked($item_value, 1, false ).$control_disabled.' /><span class="pz-card-switch-ui"></span></label>';
 			echo				'</span></td></tr>';
 		};
 
@@ -466,7 +437,7 @@
 
 		// サイトアイコンの取得方法
 		$item_title	=			__('How to get Site-Icon', 'pz-linkcard' );
-		$item_name			=	$t['name'].'-favicon';
+		$item_name			=	$t['name'].'-siteicon';
 		$item_notice		=	'';
 		if	(array_key_exists($item_name, $default_definitions ) ) {
 			$s_name			=	'name="properties['.$item_name.']"';
@@ -495,7 +466,7 @@
 
 		// サイトアイコンの代替テキスト
 		$item_title	=		__('Alternative text', 'pz-linkcard' );
-		$item_name		=		$t['name'].'-favicon-alt';
+		$item_name		=		$t['name'].'-siteicon-alt';
 		$s_len		=		'';
 		$item_class	=		'regular-text';
 		$item_notice		=		'';

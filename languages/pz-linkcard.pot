@@ -296,6 +296,55 @@ msgstr ""
 msgid "File Menu"
 msgstr ""
 
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Import"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Export"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-menu.php
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Return to Cache Manager"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Import LinkCard Data"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Import files exported from the Pz-LinkCard series and load them into the cache manager."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Clear all cache entries"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-menu.php
+msgid "Start the import immediately"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Export LinkCard Data"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Export the cache contents to a CSV file. All registered items will be exported."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-export-menu.php
+msgid "Download the export file"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-export.php
+msgid "No export data was found."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-export.php
+msgid "Failed to write the export file."
+msgstr ""
+
 #: ../lib/pz-linkcard-cacheman-list.php:587
 msgid "Import From Local File"
 msgstr ""

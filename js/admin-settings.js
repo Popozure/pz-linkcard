@@ -3,6 +3,7 @@
 	const dashboard = document.querySelector(".pz-dashboard");
     if (!dashboard) return;
     let processingOverlayTimer = null;
+	initInfobarPosition();
 
 	// 処理中オーバーレイを非表示
     document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
@@ -63,12 +64,14 @@
         document.addEventListener("click", clearCachemanImage);
         initCharacterCounts();
         initUnsavedFormWarnings();
+        initSettingsSaveShortcut();
         initCachemanEditorShortcuts();
         initSettingsTabs();
         initCachemanSearch();
         initCachemanPaginationKeys();
         initImageBox();
         initScreenOptions();
+        initFileImport();
         // readonly checkbox guard
         document.querySelectorAll("input[type=checkbox]").forEach(el =>
             el.addEventListener("click", checkboxReadonly)
@@ -108,6 +111,42 @@
     });
 
     // ----------- 関数群 -----------
+
+	function initInfobarPosition() {
+		const infobar = document.querySelector("#pz-infobar");
+		if (!infobar) return;
+
+		const adminBar = document.querySelector("#wpadminbar");
+		let frame = null;
+		const updatePosition = () => {
+			frame = null;
+			const adminBarBottom = adminBar ? adminBar.getBoundingClientRect().bottom : 0;
+			infobar.style.top = `${Math.max(0, Math.round(adminBarBottom))}px`;
+		};
+		const scheduleUpdate = () => {
+			if (frame !== null) return;
+			frame = window.requestAnimationFrame(updatePosition);
+		};
+
+		updatePosition();
+		window.addEventListener("resize", scheduleUpdate);
+		window.addEventListener("scroll", scheduleUpdate, { passive: true });
+		if (adminBar && "ResizeObserver" in window) {
+			new ResizeObserver(scheduleUpdate).observe(adminBar);
+		}
+	}
+
+    function initFileImport() {
+        const fileInput = document.querySelector("#import_file");
+        const importButton = document.querySelector("#import_button");
+        if (!fileInput || !importButton) return;
+
+        const updateImportButton = () => {
+            importButton.disabled = !fileInput.files?.length;
+        };
+        fileInput.addEventListener("change", updateImportButton);
+        updateImportButton();
+    }
 
     // ページ上部へ戻る
     function buttonTopClick(e) {
@@ -700,6 +739,28 @@
         });
     }
 
+    function initSettingsSaveShortcut() {
+        const settings = document.querySelector(".pz-settings");
+        const form = settings?.querySelector("form");
+        if (!settings || !form) return;
+
+        document.addEventListener("keydown", e => {
+            if (e.isComposing || e.repeat) return;
+            if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.key.toLowerCase() !== "s") return;
+
+            const submitButton = form.querySelector(".pz-page-active .pz-submit-float input[type='submit']:not(:disabled)")
+                || form.querySelector("input[type='submit']:not(:disabled)");
+            if (!submitButton) return;
+
+            e.preventDefault();
+            if (form.requestSubmit) {
+                form.requestSubmit(submitButton);
+            } else {
+                submitButton.click();
+            }
+        });
+    }
+
     function initSettingsTabs() {
         const wrapper = document.querySelector("#pz-tabbar-wrapper");
         const tabbar = document.querySelector("#pz-tabbar");
@@ -725,8 +786,10 @@
         const getFixedTop = () => {
             const adminBar = document.querySelector("#wpadminbar");
             const adminBarBottom = adminBar ? Math.max(0, adminBar.getBoundingClientRect().bottom) : 0;
+            const infobar = document.querySelector("#pz-infobar");
+            const infobarBottom = infobar ? Math.max(0, infobar.getBoundingClientRect().bottom) : 0;
             const viewportTop = window.visualViewport ? Math.max(0, window.visualViewport.offsetTop) : 0;
-            return Math.max(adminBarBottom, viewportTop);
+            return Math.max(adminBarBottom, infobarBottom, viewportTop);
         };
 
         const measureSubmitGap = () => {

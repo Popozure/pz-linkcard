@@ -44,7 +44,7 @@ class class_pz_linkcard {
 			'thumbnail-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
 			'width'								=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	500, ],
 			'width-unit'						=>	['type'	=>	'unit',			'null'	=>	true,	'default'	=>	'px', ],
-			'content-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100, ],
+			'content-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	104, ],
 			'centering'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'enclose-tag'						=>	['type'	=>	'html_tag',		'null'	=>	false,	'default'	=>	'div', ],
 			'flg-use-sitename'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
@@ -220,8 +220,8 @@ class class_pz_linkcard {
 			'ex-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
-			'ex-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
+			'ex-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'ex-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
@@ -229,18 +229,18 @@ class class_pz_linkcard {
 			'ex-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#446688', ],
 			'ex-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
-			'ex-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
+			'ex-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'ex-more-border-radius'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
 			'ex-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#44668888', ],
 			'ex-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
 			'ex-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
-			'ex-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
+			'ex-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'ex-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-favicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
-			'ex-favicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-siteicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
+			'ex-siteicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	13, ],
 			'ex-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
 			'ex-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -250,9 +250,9 @@ class class_pz_linkcard {
 			'ex-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'ex-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'ex-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'ex-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
@@ -320,7 +320,7 @@ class class_pz_linkcard {
 			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'in-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888', ],
 			'in-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'in-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-heading-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-heading-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
@@ -338,22 +338,22 @@ class class_pz_linkcard {
 			'in-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'in-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#8c8c70', ],
 			'in-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
 			'in-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-more-border-radius'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
 			'in-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
-			'in-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
-			'in-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
+			'in-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#66330088', ],
+			'in-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
+			'in-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
 			'in-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'in-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-favicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
-			'in-favicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-siteicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
+			'in-siteicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	1, ],
 			'in-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
 			'in-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -363,9 +363,9 @@ class class_pz_linkcard {
 			'in-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'in-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'in-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
@@ -381,14 +381,14 @@ class class_pz_linkcard {
 			'th-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#f4f4f4', ],
 			'th-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'th-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'th-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'th-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'', ],
+			'th-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'th-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'th-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
@@ -438,7 +438,6 @@ class class_pz_linkcard {
 			'preview-docked-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-right-docked-width'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'flg-anti-select'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-filemenu'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'flg-compress'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
@@ -1104,9 +1103,9 @@ class class_pz_linkcard {
 				$heading_text		=	isset($this->options['th-heading-text'] )	?	esc_attr($this->options['th-heading-text'] )	:	null ;
 				$more_text			=	isset($this->options['th-more-text'] )		?	esc_attr($this->options['th-more-text'] )		:	null ;
 				$thumbnail_alt		=	isset($this->options['in-thumbnail-alt'] )	?	esc_attr($this->options['in-thumbnail-alt'] )	:	null ;
-				$favicon_alt		=	isset($this->options['in-favicon-alt'] )	?	esc_attr($this->options['in-favicon-alt'] )		:	null ;
+				$favicon_alt		=	isset($this->options['in-siteicon-alt'] )	?	esc_attr($this->options['in-siteicon-alt'] )		:	null ;
 				$sw_thumbnail		=	isset($this->options['in-thumbnail'] )		?	esc_attr($this->options['in-thumbnail'] )		:	0 ;
-				$sw_favicon			=	isset($this->options['in-favicon'] )		?	esc_attr($this->options['in-favicon'] )			:	0 ;
+				$sw_favicon			=	isset($this->options['in-siteicon'] )		?	esc_attr($this->options['in-siteicon'] )			:	0 ;
 			} else {
 				$html_wrap_op		=	'<div class="lkc-internal-wrap">';
 				$html_wrap_cl		=	'</div>';
@@ -1114,9 +1113,9 @@ class class_pz_linkcard {
 				$heading_text		=	isset($this->options['in-heading-text'] )	?	esc_attr($this->options['in-heading-text'] )	:	null ;
 				$more_text			=	isset($this->options['in-more-text'] )		?	esc_attr($this->options['in-more-text'] )		:	null ;
 				$thumbnail_alt		=	isset($this->options['in-thumbnail-alt'] )	?	esc_attr($this->options['in-thumbnail-alt'] )	:	null ;
-				$favicon_alt		=	isset($this->options['in-favicon-alt'] )	?	esc_attr($this->options['in-favicon-alt'] )		:	null ;
+				$favicon_alt		=	isset($this->options['in-siteicon-alt'] )	?	esc_attr($this->options['in-siteicon-alt'] )		:	null ;
 				$sw_thumbnail		=	isset($this->options['in-thumbnail'] )		?	esc_attr($this->options['in-thumbnail'] )		:	0 ;
-				$sw_favicon			=	isset($this->options['in-favicon'] )		?	esc_attr($this->options['in-favicon'] )			:	0 ;
+				$sw_favicon			=	isset($this->options['in-siteicon'] )		?	esc_attr($this->options['in-siteicon'] )			:	0 ;
 			}
 		} else {
 			$html_wrap_op			=	'<div class="lkc-external-wrap">';
@@ -1125,9 +1124,9 @@ class class_pz_linkcard {
 			$heading_text			=	isset($this->options['ex-heading-text'] )	?	esc_attr($this->options['ex-heading-text'] )	:	null ;
 			$more_text				=	isset($this->options['ex-more-text'] )		?	esc_attr($this->options['ex-more-text'] )		:	null ;
 			$thumbnail_alt			=	isset($this->options['ex-thumbnail-alt'] )	?	esc_attr($this->options['ex-thumbnail-alt'] )	:	null ;
-			$favicon_alt			=	isset($this->options['ex-favicon-alt'] )	?	esc_attr($this->options['ex-favicon-alt'] )		:	null ;
+			$favicon_alt			=	isset($this->options['ex-siteicon-alt'] )	?	esc_attr($this->options['ex-siteicon-alt'] )		:	null ;
 			$sw_thumbnail			=	isset($this->options['ex-thumbnail'] )		?	esc_attr($this->options['ex-thumbnail'] )		:	0 ;
-			$sw_favicon				=	isset($this->options['ex-favicon'] )		?	esc_attr($this->options['ex-favicon'] )			:	0 ;
+			$sw_favicon				=	isset($this->options['ex-siteicon'] )		?	esc_attr($this->options['ex-siteicon'] )			:	0 ;
 		}
 
 		// ドメイン名の準備
@@ -2981,6 +2980,19 @@ class class_pz_linkcard {
 	}
 
 	// ファイルエクスポート
+	private	function	pz_GetFilesystem() {
+		global	$wp_filesystem;
+
+		if	($wp_filesystem instanceof WP_Filesystem_Base ) {
+			return	$wp_filesystem;
+		}
+		require_once ABSPATH.'wp-admin/includes/file.php';
+		if	(!WP_Filesystem() ) {
+			return	false;
+		}
+		return	$wp_filesystem;
+	}
+
 	function action_export_file() {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 

@@ -85,6 +85,19 @@
 		}
 	}
 
+	// Read stored keys before defaults are merged so existing values survive the rename.
+	foreach (array(
+		'ex-favicon' => 'ex-siteicon',
+		'ex-favicon-alt' => 'ex-siteicon-alt',
+		'in-favicon' => 'in-siteicon',
+		'in-favicon-alt' => 'in-siteicon-alt',
+	) as $old => $new ) {
+		if (is_array($stored_options ) && array_key_exists($old, $stored_options ) && !array_key_exists($new, $stored_options ) ) {
+			$this->options[$new] = $stored_options[$old];
+		}
+		unset($this->options[$old] );
+	}
+
 	// 共通のホバー効果をリンク種別ごとの設定へ移行
 	$old_hover	=	is_array($stored_options ) && array_key_exists('hover', $stored_options )
 		?	$stored_options['hover']

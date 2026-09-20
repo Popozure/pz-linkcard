@@ -1,10 +1,12 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
+	check_admin_referer('pz-cacheman' );
+
 	// DBの宣言
 	global	$wpdb;
 
 	// DBの列名取得
-	$col_name	=	$wpdb->get_col("DESC $this->db_name" );
+	$col_name	=	$wpdb->get_col($wpdb->prepare('DESC %i', $this->db_name ), 0 );
 	if	(!$col_name || $wpdb->last_error ) {
 		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
@@ -73,10 +75,13 @@
 	};
 
 	// アップロードされたファイルの一時保存先を取得
-	$temp_path		=	isset($_FILES['import_file']['tmp_name'] )	? $_FILES['import_file']['tmp_name'] : null;
+	$upload_error	=	isset($_FILES['import_file']['error'] ) ? absint($_FILES['import_file']['error'] ) : UPLOAD_ERR_NO_FILE;
+	$temp_path		=	(isset($_FILES['import_file']['tmp_name'] ) && is_string($_FILES['import_file']['tmp_name'] ) )
+		?	$_FILES['import_file']['tmp_name']
+		:	'';
 
 	// キャッシュDBクリア
-	$clear			=	isset($_POST['import_clear'] ) ? $_POST['import_clear'] : false;
+	$clear			=	isset($_POST['import_clear'] ) ? (bool) sanitize_text_field(wp_unslash($_POST['import_clear'] ) ) : false;
 
 	// カウンター
 	$read_count		=	0;
@@ -84,7 +89,7 @@
 	$success_count	=	0;
 
 	// アップロードされたファイルの存在チェック
-	if	(!is_uploaded_file($temp_path ) ) {
+	if	($upload_error !== UPLOAD_ERR_OK || !$temp_path || !is_uploaded_file($temp_path ) ) {
 		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import File Not Found.', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
 	}
@@ -110,14 +115,14 @@
 	// DBの削除
 	if	($clear ) {
 		// DBクリア
-		$result	=	$wpdb->query("DELETE FROM $this->db_name" );
+		$result	=	$wpdb->query($wpdb->prepare('DELETE FROM %i', $this->db_name ) );
 		if	($wpdb->last_error ) {
 			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;
 		}
 
 		// AUTO INCLIMENTのリセット
-		$result	=	$wpdb->query("ALTER TABLE $this->db_name AUTO_INCREMENT=1;" );
+		$result	=	$wpdb->query($wpdb->prepare('ALTER TABLE %i AUTO_INCREMENT = 1', $this->db_name ) );
 		if	($wpdb->last_error ) {
 			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;
@@ -179,3 +184,4 @@
 	} else {
 		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import Failure.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Read:', 'pz-linkcard' ).$read_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
 	}
+	echo	'<p><a href="'.esc_url($this->cacheman_url ).'" class="pz-man-return-button button">'.esc_html__('Return to Cache Manager', 'pz-linkcard' ).'</a></p>';

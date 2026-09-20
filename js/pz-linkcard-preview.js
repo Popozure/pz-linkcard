@@ -157,17 +157,21 @@
 
         const getAdminBarBottom = () => {
             const adminBar = document.querySelector("#wpadminbar");
-            return adminBar ? Math.max(0, adminBar.getBoundingClientRect().bottom) : 0;
+            const infobar = document.querySelector("#pz-infobar");
+            const adminBarBottom = adminBar ? Math.max(0, adminBar.getBoundingClientRect().bottom) : 0;
+            const infobarBottom = infobar ? Math.max(0, infobar.getBoundingClientRect().bottom) : 0;
+            return Math.max(adminBarBottom, infobarBottom);
         };
 
         const clampToViewport = (left, top) => {
             const margin = 8;
             const rect = win.getBoundingClientRect();
+            const minLeft = Math.max(margin, getDockLeft() + margin);
             const minTop = Math.max(margin, getAdminBarBottom());
-            const maxLeft = Math.max(margin, window.innerWidth - rect.width - margin);
+            const maxLeft = Math.max(minLeft, window.innerWidth - rect.width - margin);
             const maxTop = Math.max(minTop, window.innerHeight - rect.height - margin);
             return {
-                left: Math.min(maxLeft, Math.max(margin, left)),
+                left: Math.min(maxLeft, Math.max(minLeft, left)),
                 top: Math.min(maxTop, Math.max(minTop, top)),
             };
         };
@@ -175,7 +179,7 @@
         const getViewportBounds = () => {
             const margin = 8;
             return {
-                minLeft: margin,
+                minLeft: Math.max(margin, getDockLeft() + margin),
                 minTop: Math.max(margin, getAdminBarBottom()),
                 maxRight: window.innerWidth - margin,
                 maxBottom: window.innerHeight - margin,
@@ -335,7 +339,7 @@
         };
         const setResizeCursor = e => {
             if (win.classList.contains("pz-settings-preview-resizing")) return;
-            if (!previewDocked && e.target?.closest?.("[data-pz-preview-handle]")) {
+            if (e.target?.closest?.("[data-pz-preview-handle]")) {
                 win.style.cursor = "";
                 handle.style.cursor = "";
                 return;
@@ -569,7 +573,7 @@
         win.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
             if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
-            if (!previewDocked && e.target?.closest?.("[data-pz-preview-handle]")) return;
+            if (e.target?.closest?.("[data-pz-preview-handle]")) return;
             const edges = getResizeEdges(e);
             if (!edges) return;
 
@@ -679,7 +683,6 @@
         handle.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
             if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
-            if (previewDockSide === "right") return;
 
             const now = Date.now();
             const distance = Math.hypot(e.clientX - lastHandleClick.x, e.clientY - lastHandleClick.y);
@@ -697,7 +700,9 @@
             let offsetX = e.clientX - rect.left;
             let offsetY = e.clientY - rect.top;
             const startedBottomDocked = previewDockSide === "bottom";
+            const startedRightDocked = previewDockSide === "right";
             let undockedFromBottom = false;
+            let undockedFromRight = false;
 
             handle.setPointerCapture?.(e.pointerId);
             win.classList.add("pz-settings-preview-dragging");
@@ -714,7 +719,22 @@
                     setPosition(moveEvent.clientX - offsetX, moveEvent.clientY - offsetY);
                     return;
                 }
+                if (startedRightDocked && !undockedFromRight && Math.hypot(moveEvent.clientX - e.clientX, moveEvent.clientY - e.clientY) >= 4) {
+                    applyFloatingRect(floatingPreviewRect);
+                    const floatingRect = getWindowRect();
+                    offsetX = Math.min(floatingRect.width, Math.max(0, e.clientX - rect.left));
+                    offsetY = Math.min(floatingRect.height, handle.getBoundingClientRect().height / 2);
+                    undockedFromRight = true;
+                    animatePreviewWindow();
+                    setPosition(moveEvent.clientX - offsetX, moveEvent.clientY - offsetY);
+                    return;
+                }
+                if (startedRightDocked && !undockedFromRight) return;
                 if (previewDocked) {
+                    if (previewDockSide === "right") {
+                        applyRightDockedRect(rect.width + e.clientX - moveEvent.clientX);
+                        return;
+                    }
                     applyDockedRect(rect.height + e.clientY - moveEvent.clientY);
                     return;
                 }
@@ -723,9 +743,10 @@
             const up = upEvent => {
                 win.classList.remove("pz-settings-preview-dragging");
                 handle.releasePointerCapture?.(upEvent.pointerId);
-                let snappedToEdge = undockedFromBottom
+                const undockedFromDock = undockedFromBottom || undockedFromRight;
+                let snappedToEdge = undockedFromDock
                     && dockFloatingDragAtEdge(upEvent, offsetX, offsetY);
-                if (!previewDocked && !undockedFromBottom && upEvent.type === "pointerup") {
+                if (!previewDocked && !undockedFromDock && upEvent.type === "pointerup") {
                     const dockThreshold = 64;
                     const pushedRight = upEvent.clientX - offsetX + rect.width - window.innerWidth;
                     const pushedBottom = upEvent.clientY - offsetY + rect.height - window.innerHeight;

@@ -100,16 +100,6 @@
 	<h2><?php echo	__('Extension Settings', 'pz-linkcard' ).$help_open.'extension'.$help_close; ?></h2>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php esc_html_e('File Menu', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-filemenu]" value="" />
-					<input type="checkbox" name="properties[flg-filemenu]" value="1" <?php checked($this->options['flg-filemenu'] ); ?> />
-					<?php esc_html_e('Display the file menu on the card management screen.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-		<tr>
 			<th scope="row"><?php esc_html_e('Admin Bar', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>

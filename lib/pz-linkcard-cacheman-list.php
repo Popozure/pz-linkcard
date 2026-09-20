@@ -229,6 +229,7 @@
 		</div>
 	</div>
 
+	<div class="pz-man-filter-row">
 	<div class="pz-man-count-list">
 		<?php
 			$items	=
@@ -256,6 +257,7 @@
 				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action"><?php esc_html_e('Search', 'pz-linkcard' ); ?></button>
 			</label>
 		</p>
+	</div>
 	</div>
 	
 	<div class="pz-man-navi tablenav top">
@@ -579,17 +581,6 @@
 	</table>
 	<?php /* ページネーション */ echo $paging_bottom; ?></div>
 <?php
-	// ファイルメニュー（インポート・エクスポート）
-	if	($this->options['flg-filemenu'] ) {
-		echo	'<div  class="pz-man-filemenu">';
-		echo	'<span class="pz-man-filemenu-icon">'.__('&#x1f4c4;&#xfe0f;', 'pz-linkcard' ).'</span>';
-		echo	'<span class="pz-man-filemenu-text">'.__('File Menu', 'pz-linkcard' ).'</span>';
-		echo	'<button type="submit" name="action" value="show-import" class="pz-man-filemenu-button button">'.__('Import From Local File', 'pz-linkcard' ).'</button>';
-		echo	'<a href="'.esc_url(wp_nonce_url(admin_url( 'admin-post.php?action=pz_export_file' ), 'pz_export_file_action' ) ).'" class="button">'.__('Export To Local File', 'pz-linkcard' ).' ('.sprintf(($count_list['all'] == 1 ? __('%s item', 'pz-linkcard' ) : __('%s items', 'pz-linkcard' ) ), number_format($count_list['all'] ) ).'</a>';
-		echo	'</div>';
-
-	}
-
 // 関数
 
 // HTTP結果コード
