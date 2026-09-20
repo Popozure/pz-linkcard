@@ -73,8 +73,6 @@
 		'ex-hover-image'		=>		'ex-hover-bg-image',		// Ver.2.6.1 パラメータ名変更のため
 		'in-image'				=>		'in-bg-image',				// Ver.2.6.1 パラメータ名変更のため
 		'in-hover-image'		=>		'in-hover-bg-image',		// Ver.2.6.1 パラメータ名変更のため
-		'th-image'				=>		'th-bg-image',				// Ver.2.6.1 パラメータ名変更のため
-		'th-hover-image'		=>		'th-hover-bg-image',		// Ver.2.6.1 パラメータ名変更のため
 		);
 	foreach ($rename_key		as	$old => $new ) {
 		if	(array_key_exists($old, $this->options ) ) {
@@ -115,33 +113,33 @@
 			return	$color;
 		};
 
-		foreach	(array('ex', 'in', 'th' ) as $t ) {
+		foreach	(array('ex', 'in' ) as $t ) {
 			switch	((string)$old_hover ) {
 			case	'1':
-				$this->options[$t.'-hover-bg-enabled']			=	1;
-				$this->options[$t.'-hover-bg-color']			=	$add_alpha($this->options[$t.'-bg-color'] ?? '' );
+				$this->options[$t.'-hover-bg-enabled']		=	1;
+				$this->options[$t.'-hover-bg-color']		=	$add_alpha($this->options[$t.'-bg-color'] ?? '' );
 				break;
 			case	'2':
 			case	'3':
 			case	'4':
 				$is_dark								=	(string)$old_hover === '3';
-				$is_retract							=	(string)$old_hover === '4';
+				$is_retract								=	(string)$old_hover === '4';
 				$this->options[$t.'-hover-transform-enabled']	=	1;
 				$this->options[$t.'-hover-transform-x']		=	$is_retract ? 4 : -4;
 				$this->options[$t.'-hover-transform-y']		=	$is_retract ? 4 : -4;
 				$this->options[$t.'-hover-shadow-enabled']	=	1;
-				$this->options[$t.'-hover-shadow-color']		=	$is_dark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.25)';
-				$this->options[$t.'-hover-shadow-x']			=	$is_dark ? 16 : ($is_retract ? 1 : 4 );
-				$this->options[$t.'-hover-shadow-y']			=	$is_dark ? 16 : 4;
+				$this->options[$t.'-hover-shadow-color']	=	$is_dark ? 'rgba(0, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.25)';
+				$this->options[$t.'-hover-shadow-x']		=	$is_dark ? 16 : ($is_retract ? 1 : 4 );
+				$this->options[$t.'-hover-shadow-y']		=	$is_dark ? 16 : 4;
 				$this->options[$t.'-hover-shadow-blur']		=	$is_dark ? 16 : 8;
 				$this->options[$t.'-hover-shadow-spread']	=	0;
-				$this->options[$t.'-hover-shadow-inset']		=	0;
+				$this->options[$t.'-hover-shadow-inset']	=	0;
 				$this->options[$t.'-hover-transition']		=	0.3;
 				break;
 			case	'7':
 				$this->options[$t.'-hover-border-enabled']	=	1;
-				$this->options[$t.'-hover-border-style']		=	'none';
-				$this->options[$t.'-hover-border-width']		=	0;
+				$this->options[$t.'-hover-border-style']	=	'none';
+				$this->options[$t.'-hover-border-width']	=	0;
 				$this->options[$t.'-hover-border-radius']	=	40;
 				$this->options[$t.'-hover-transition']		=	0.3;
 				break;
@@ -165,7 +163,7 @@
 		)[(string)$this->options['flg-more']] ?? null;
 	}
 	if	($more_style_exists ) {
-		foreach	(array('ex', 'in', 'th' ) as $t ) {
+		foreach	(array('ex', 'in' ) as $t ) {
 			$this->options[$t.'-more-transform-enabled']	=	0;
 			$this->options[$t.'-more-bg-enabled']			=	0;
 			$this->options[$t.'-more-border-enabled']		=	0;
@@ -234,7 +232,7 @@
 		$old_thumbnail_radius	=	array_key_exists('thumbnail-radius', $this->options ) ? $this->options['thumbnail-radius'] : null;
 		$old_shadow_inset		=	array_key_exists('shadow-inset', $this->options ) ? $this->options['shadow-inset'] : null;
 
-		foreach	(array('ex', 'in', 'th' ) as $t ) {
+		foreach	(array('ex', 'in' ) as $t ) {
 			foreach	(array('color', 'style', 'width') as $item ) {
 				if	(array_key_exists('border-'.$item, $this->options ) && !array_key_exists($t.'-border-'.$item, $this->options ) ) {
 					$this->options[$t.'-border-enabled']	=	1;
@@ -315,7 +313,7 @@
 	}
 
 	// 足りない項目
-	foreach	(array('ex', 'in', 'th' ) as $t ) {
+	foreach	(array('ex', 'in' ) as $t ) {
 		if	(!array_key_exists($t.'-bg-enabled', $this->options ) ) {
 			$this->options[$t.'-bg-enabled']		=	1;
 		}

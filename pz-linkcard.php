@@ -160,6 +160,7 @@ class class_pz_linkcard {
 			'ex-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'ex-opacity'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'ex-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'ex-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff', ],
 			'ex-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -181,6 +182,7 @@ class class_pz_linkcard {
 			'ex-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'ex-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'ex-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'ex-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff88', ],
 			'ex-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -249,10 +251,10 @@ class class_pz_linkcard {
 			'ex-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'ex-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
+			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888', ],
 			'ex-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'ex-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'ex-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
@@ -270,6 +272,7 @@ class class_pz_linkcard {
 			'in-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'in-opacity'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'in-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'in-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf0', ],
 			'in-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -291,6 +294,7 @@ class class_pz_linkcard {
 			'in-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'in-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
+			'in-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'in-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'in-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf088', ],
 			'in-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -362,10 +366,10 @@ class class_pz_linkcard {
 			'in-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'in-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
+			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888', ],
 			'in-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
@@ -376,21 +380,6 @@ class class_pz_linkcard {
 			'in-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-
-			'th-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'th-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#f4f4f4', ],
-			'th-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'th-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'th-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'th-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
 			'flg-nofollow'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'flg-noopener'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
@@ -529,21 +518,6 @@ class class_pz_linkcard {
 	private	static	function	pz_GetDefaultOption($key ) {
 		$definitions	=	self::pz_GetOptionDefinitions();
 		return	array_key_exists($key, $definitions ) ? $definitions[$key]['default'] : null;
-	}
-
-	// 同一ページリンクに専用項目がない場合は、内部リンクの設定を使用する
-	private	static	function	pz_ApplyThisLinkFallback($options ) {
-		$definitions	=	self::pz_GetOptionDefinitions();
-		foreach	($definitions as $key => $definition ) {
-			if	(substr($key, 0, 3 ) !== 'in-' ) {
-				continue;
-			}
-			$th_key	=	'th-'.substr($key, 3 );
-			if	(!array_key_exists($th_key, $definitions ) && array_key_exists($key, $options ) ) {
-				$options[$th_key]	=	$options[$key];
-			}
-		}
-		return	$options;
 	}
 
 	private	static	function	pz_RemoveThisLinkFallback($options ) {
@@ -886,7 +860,7 @@ class class_pz_linkcard {
 					$result	=	$this->pz_SaveOptions();
 				}
 			}
-			$tag		=	'<div class="linkcard"><a id="lkc-error" class="lkc-error" style="display:block;scroll-margin-top:33vh;"></a><div class="lkc-this-wrap"><div class="lkc-info">'.self::PLUGIN_NAME.'</div><div class="lkc-excerpt">'.__('-', 'pz-linkcard' ).' '.__('Incorrect URL specification.', 'pz-linkcard' ).'<br>'.__('-', 'pz-linkcard' ).' '.__('URL', 'pz-linkcard' ).'='.esc_url($url_org ).'</div></div></div>';
+			$tag		=	'<div class="linkcard"><a id="lkc-error" class="lkc-error" style="display:block;scroll-margin-top:33vh;"></a><div class="lkc-internal-wrap"><div class="lkc-info">'.self::PLUGIN_NAME.'</div><div class="lkc-excerpt">'.__('-', 'pz-linkcard' ).' '.__('Incorrect URL specification.', 'pz-linkcard' ).'<br>'.__('-', 'pz-linkcard' ).' '.__('URL', 'pz-linkcard' ).'='.esc_url($url_org ).'</div></div></div>';
 			return			PHP_EOL.$tag.PHP_EOL;
 		}
 
@@ -953,7 +927,6 @@ class class_pz_linkcard {
 
 		// 変数の用意
 		$is_internal	=	false;
-		$is_samepage	=	false;
 		$is_mobile		=	false;
 		$data_id		=	'';
 		$site_name		=	'';
@@ -983,7 +956,6 @@ class class_pz_linkcard {
 		$domain_url		=	$url_info['domain_url'];	// ドメインURL
 		$is_external	=	$url_info['is_external'];	// 外部リンク
 		$is_internal	=	$url_info['is_internal'];	// 内部リンク
-		$is_samepage	=	$url_info['is_samepage'];	// 同一ページ
 
 		// モバイルかPCかのクラス名を追加
 		$class_id		=	'linkcard';
@@ -1096,27 +1068,15 @@ class class_pz_linkcard {
 
 		// ラッピング
 		if	($is_internal ) {
-			if	($is_samepage ) {
-				$html_wrap_op		=	'<div class="lkc-this-wrap">';
-				$html_wrap_cl		=	'</div>';
-				$added_text			=	isset($this->options['th-added-text'] )		?	esc_attr($this->options['th-added-text'] )		:	null ;
-				$heading_text		=	isset($this->options['th-heading-text'] )	?	esc_attr($this->options['th-heading-text'] )	:	null ;
-				$more_text			=	isset($this->options['th-more-text'] )		?	esc_attr($this->options['th-more-text'] )		:	null ;
-				$thumbnail_alt		=	isset($this->options['in-thumbnail-alt'] )	?	esc_attr($this->options['in-thumbnail-alt'] )	:	null ;
-				$favicon_alt		=	isset($this->options['in-siteicon-alt'] )	?	esc_attr($this->options['in-siteicon-alt'] )		:	null ;
-				$sw_thumbnail		=	isset($this->options['in-thumbnail'] )		?	esc_attr($this->options['in-thumbnail'] )		:	0 ;
-				$sw_favicon			=	isset($this->options['in-siteicon'] )		?	esc_attr($this->options['in-siteicon'] )			:	0 ;
-			} else {
-				$html_wrap_op		=	'<div class="lkc-internal-wrap">';
-				$html_wrap_cl		=	'</div>';
-				$added_text			=	isset($this->options['in-added-text'] )		?	esc_attr($this->options['in-added-text'] )		:	null ;
-				$heading_text		=	isset($this->options['in-heading-text'] )	?	esc_attr($this->options['in-heading-text'] )	:	null ;
-				$more_text			=	isset($this->options['in-more-text'] )		?	esc_attr($this->options['in-more-text'] )		:	null ;
-				$thumbnail_alt		=	isset($this->options['in-thumbnail-alt'] )	?	esc_attr($this->options['in-thumbnail-alt'] )	:	null ;
-				$favicon_alt		=	isset($this->options['in-siteicon-alt'] )	?	esc_attr($this->options['in-siteicon-alt'] )		:	null ;
-				$sw_thumbnail		=	isset($this->options['in-thumbnail'] )		?	esc_attr($this->options['in-thumbnail'] )		:	0 ;
-				$sw_favicon			=	isset($this->options['in-siteicon'] )		?	esc_attr($this->options['in-siteicon'] )			:	0 ;
-			}
+			$html_wrap_op		=	'<div class="lkc-internal-wrap">';
+			$html_wrap_cl		=	'</div>';
+			$added_text			=	isset($this->options['in-added-text'] )		?	esc_attr($this->options['in-added-text'] )		:	null ;
+			$heading_text		=	isset($this->options['in-heading-text'] )	?	esc_attr($this->options['in-heading-text'] )	:	null ;
+			$more_text			=	isset($this->options['in-more-text'] )		?	esc_attr($this->options['in-more-text'] )		:	null ;
+			$thumbnail_alt		=	isset($this->options['in-thumbnail-alt'] )	?	esc_attr($this->options['in-thumbnail-alt'] )	:	null ;
+			$favicon_alt		=	isset($this->options['in-siteicon-alt'] )	?	esc_attr($this->options['in-siteicon-alt'] )		:	null ;
+			$sw_thumbnail		=	isset($this->options['in-thumbnail'] )		?	esc_attr($this->options['in-thumbnail'] )		:	0 ;
+			$sw_favicon			=	isset($this->options['in-siteicon'] )		?	esc_attr($this->options['in-siteicon'] )			:	0 ;
 		} else {
 			$html_wrap_op			=	'<div class="lkc-external-wrap">';
 			$html_wrap_cl			=	'</div>';
@@ -1393,7 +1353,7 @@ class class_pz_linkcard {
 		}
 
 		// 見出し情報
-		if (($this->options['special-format'] ?? null) === 'JIN' && ($heading_text === null || $heading_text === '') && !$is_samepage) {
+		if (($this->options['special-format'] ?? null) === 'JIN' && ($heading_text === null || $heading_text === '')) {
 			$heading_text = $is_internal ? 'あわせて読みたい' : '参考にしました';
 		}
 		if	($heading_text || $is_preview ) {
@@ -2219,7 +2179,8 @@ class class_pz_linkcard {
 		$rget_args['user-agent']	=	$this->options['flg-agent']		?	$this->options['user-agent']	// ユーザーエージェントにPz-LinkCard-Crawlerを使う
 																		:	'WordPress/'.$wp_version.'; '.get_bloginfo( 'url' );
 		$rget_args['sslverify']		=	$this->options['flg-sslverify']		?	true	:	false ;
-		$rget_args['redirection']	=	$this->options['flg-redir']			?	8		:	0;
+		$redirect_limit				=	$this->options['flg-redir']			?	8		:	0;
+		$rget_args['redirection']	=	0;
 
 		// URLエンコード
 		$url			=	$this->pz_EncodeURL($url ,true );
@@ -2252,12 +2213,15 @@ class class_pz_linkcard {
 			}
 			return	$this->pz_EncodeURL($location, true );
 		};
-		$trace_redirect_url	=	function($start_url ) use ($rget_args, $get_response_url, $get_location_url ) {
+		$trace_redirect_url	=	function($start_url ) use ($rget_args, $get_response_url, $get_location_url, $redirect_limit ) {
 			$current_url	=	$start_url;
 			$trace_args		=	$rget_args;
 			$trace_args['redirection']	=	0;
 
-			for	($i = 0; $i < 8; $i++ ) {
+			for	($i = 0; $i < $redirect_limit; $i++ ) {
+				if	($this->pz_IsLocalAddress($current_url ) ) {
+					return	$current_url;
+				}
 				$head_args				=	$trace_args;
 				$head_args['method']	=	'HEAD';
 				$response				=	wp_safe_remote_head($current_url, $head_args );
@@ -2271,6 +2235,9 @@ class class_pz_linkcard {
 				$response_url	=	$get_response_url($response );
 				if	($response_url && $response_url !== $current_url ) {
 					$current_url	=	$this->pz_EncodeURL($response_url, true );
+					if	($this->pz_IsLocalAddress($current_url ) ) {
+						return	$current_url;
+					}
 					continue;
 				}
 
@@ -2278,6 +2245,9 @@ class class_pz_linkcard {
 				$location_url	=	$get_location_url($response, $current_url );
 				if	($http_code >= 300 && $http_code < 400 && $location_url && $location_url !== $current_url ) {
 					$current_url	=	$location_url;
+					if	($this->pz_IsLocalAddress($current_url ) ) {
+						return	$current_url;
+					}
 					continue;
 				}
 
@@ -2288,17 +2258,15 @@ class class_pz_linkcard {
 		};
 
 		// リンク先サイトのアクセス
-		$rget_data					=	wp_safe_remote_get($url_access, $rget_args );	// wp_remote_get実行
-		if	($this->options['flg-redir'] ) {
-			$last_url	=	$get_response_url($rget_data );
-			if	(!$last_url || $last_url === $url ) {
-				$last_url	=	$trace_redirect_url($url );
-			}
+		if	($redirect_limit > 0 ) {
+			$last_url	=	$trace_redirect_url($url );
 			if	($last_url && $url !== $last_url ) {
 				$url_redir	=	$this->pz_EncodeURL($last_url, true );
 				$url_access	=	$url_redir;
 			}
 		}
+		$blocked_local_url	=	$this->pz_IsLocalAddress($url ) || ($url_redir && $this->pz_IsLocalAddress($url_redir ) );
+		$rget_data			=	$blocked_local_url ? new WP_Error('pz_lkc_local_redirect', 'Local address blocked' ) : wp_safe_remote_get($url_access, $rget_args );	// wp_remote_get実行
 
 		// 初期化
 		$domain			=	'';
@@ -2512,17 +2480,12 @@ class class_pz_linkcard {
 		$domain_url			=	$this->home_url;									// ドメインURL
 		if	(mb_substr($url, 0, mb_strlen($domain_url ) ) == $domain_url ) {
 			$is_external	=	false;
-			$is_samepage	=	false;
 			$is_internal	=	true;		// 内部リンク
 			$url_m			=	parse_url($domain_url );							// URLパース（ドメイン名などを抽出）
 			$scheme			=	isset($url_m['scheme'] ) ? $url_m['scheme']	: null;	// スキーム
 			$domain			=	mb_substr($domain_url, mb_strlen($scheme ) + 3 );	// ドメイン
-			if	(get_permalink() == $url ) {
-				$is_samepage	=	true;	// 同一ページリンク
-			}
 		} else {
 			$is_external	=	true;		// 外部リンク
-			$is_samepage	=	false;
 			$is_internal	=	false;
 			$url_m			=	parse_url($url );									// URLパース（ドメイン名などを抽出）
 			$scheme			=	isset($url_m['scheme'] )	? $url_m['scheme']				: null;		// スキーム
@@ -2545,7 +2508,6 @@ class class_pz_linkcard {
 						$domain_url		=	$blog_url;
 						$domain			=	preg_replace('/.*\/\/(.*)/', '$1', $blog_url );
 						$is_external	=	true;		// 外部リンク
-						$is_samepage	=	false;
 						$is_internal	=	false;
 						break;
 					}
@@ -2556,7 +2518,6 @@ class class_pz_linkcard {
 		// 返り値
 		$ret_arr['is_external']	=	$is_external;					// 外部リンク
 		$ret_arr['is_internal']	=	$is_internal;					// 内部リンク
-		$ret_arr['is_samepage']	=	$is_samepage;					// 同一ページリンク
 		$ret_arr['scheme']		=	$scheme;						// スキーム
 		$ret_arr['domain']		=	$domain;						// ドメイン
 		$ret_arr['domain_url']	=	$domain_url;					// ドメインURL
@@ -2730,7 +2691,6 @@ class class_pz_linkcard {
 			}
 		}
 		$this->options	=	array_merge(self::pz_GetDefaultOptions(), $this->options );
-		$this->options	=	self::pz_ApplyThisLinkFallback($this->options );
 
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 		return	true;
@@ -2798,7 +2758,6 @@ class class_pz_linkcard {
 		} else {
 			$this->options	=	$saved_options;
 		}
-		$this->options	=	self::pz_ApplyThisLinkFallback($this->options );
 		// 返却
 		return	$return_status;
 	}
@@ -3032,7 +2991,7 @@ class class_pz_linkcard {
 		) );
 		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
 
-		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE ) {
+		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			wp_enqueue_media();
 		}
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
@@ -3159,7 +3118,7 @@ class class_pz_linkcard {
 	public	function	render_block_linkcard($attributes, $content = '' ) {
 		$url	=	esc_url_raw($attributes['url'] ?? '' );
 		if	(!$url ) {
-			return	'<div class="linkcard"><div class="lkc-this-wrap"><div class="lkc-info">'.esc_html(self::PLUGIN_NAME).'</div><div class="lkc-excerpt">'.esc_html__('No URL was specified.', 'pz-linkcard' ).'</div></div></div>';
+			return	'<div class="linkcard"><div class="lkc-internal-wrap"><div class="lkc-info">'.esc_html(self::PLUGIN_NAME).'</div><div class="lkc-excerpt">'.esc_html__('No URL was specified.', 'pz-linkcard' ).'</div></div></div>';
 		}
 		$shortcode	=	preg_replace('/[^a-zA-Z0-9]/', '', $attributes['shortcode'] ?? '' );
 		$available_shortcodes	=	array();
@@ -3342,6 +3301,17 @@ class class_pz_linkcard {
 	//	}
 	}
 
+	private	function	pz_GetAdminBarIconSvg() {
+		return	'<svg class="pz-lkc-adminbar-icon" width="20" height="20" viewBox="0 0 920 720" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" style="width: 20px; height: 20px; margin-right: 4px; vertical-align: sub; color: currentColor;">'.
+				'<path d="m 212.20737,246.02307 h 363.915" stroke="currentColor" stroke-width="46.9792" stroke-linecap="round" stroke-miterlimit="8" fill="none" fill-rule="evenodd" />'.
+				'<path d="m 212.20737,379.02307 h 206.796" stroke="currentColor" stroke-width="46.9792" stroke-linecap="round" stroke-miterlimit="8" fill="none" fill-rule="evenodd" />'.
+				'<path d="m 759.5039,252.24389 c -25.0068,0.18279 -50.0786,8.39512 -70.6035,25.02343 l -52.4609,42.5293 a 73.737587,75.212334 0 0 1 7.8105,-0.42383 73.737587,75.212334 0 0 1 47.5313,17.71094 l 28.791,-23.33984 c 13.2574,-10.74062 29.5717,-15.28849 45.3555,-13.95508 h 0.01 c 15.7837,1.33337 31.0307,8.55424 42.1504,21.35156 22.2351,25.59039 18.8419,63.01751 -7.6699,84.49609 L 658.4219,520.74193 c -26.511,21.47395 -65.2546,18.20002 -87.4941,-7.38281 -16.1178,-18.57162 -18.7691,-43.38191 -8.8829,-63.80273 l -53.1757,43.70312 c 1e-4,6.4e-4 -10e-5,0.001 0,0.002 3.2097,18.12781 11.2461,35.66986 24.2812,50.68945 v 0.008 c 39.3609,45.29988 110.0193,51.26928 156.9336,13.26172 L 832.0703,442.11303 v -0.008 C 878.9804,404.09382 885.1768,335.83074 845.8145,290.52904 826.1343,267.87912 798.6261,255.0598 770.1758,252.656 h 0.027 c -3.5563,-0.30047 -7.1269,-0.43823 -10.6993,-0.41211 z" fill="currentColor" stroke="currentColor" stroke-width="3.54463" fill-rule="evenodd" />'.
+				'<path d="m 483.2719,669.21419 c 25.0068,-0.18279 50.0786,-8.39512 70.6035,-25.02343 l 52.4609,-42.5293 a 73.737587,75.212334 0 0 1 -7.8105,0.42383 73.737587,75.212334 0 0 1 -47.5313,-17.71094 l -28.791,23.33984 c -13.2574,10.74062 -29.5717,15.28849 -45.3555,13.95508 h -0.01 c -15.7837,-1.33337 -31.0307,-8.55424 -42.1504,-21.35156 -22.2351,-25.59039 -18.8419,-63.01751 7.6699,-84.49609 L 584.3539,400.71616 c 26.511,-21.47395 65.2546,-18.20002 87.4941,7.38281 16.1178,18.57162 18.7691,43.38191 8.8829,63.80273 l 53.1757,-43.70313 c -10e-5,-6.3e-4 10e-5,-9.9e-4 0,-0.002 -3.2097,-18.12781 -11.2461,-35.66986 -24.2812,-50.68945 v -0.008 C 670.2645,332.19925 599.6061,326.22985 552.6918,364.23741 L 410.7055,479.34485 v 0.008 c -46.9101,38.0114 -53.1065,106.27448 -13.7442,151.57618 19.6802,22.64992 47.1884,35.46924 75.6387,37.87304 h -0.027 c 3.5563,0.30047 7.1269,0.43823 10.6993,0.41211 z" fill="currentColor" stroke="currentColor" stroke-width="3.54463" fill-rule="evenodd" />'.
+				'<path d="m 838.28841,490.2264 10e-6,69.2172 c 0,24.97305 -20.71999,45.07772 -46.45737,45.07772 l -89.85895,-10e-6" fill="none" stroke="currentColor" stroke-width="45.7624" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="50" />'.
+				'<path d="m 336.05804,601.11245 h -208.8833 c -27.7,0 -50.000004,-22.3 -50.000004,-50 V 151.88977 c 0,-27.7 22.300004,-50 50.000004,-50 v 0 h 657.30431 c 27.7,0 50,22.3 50,50 l -10e-5,74.25782" fill="none" stroke="currentColor" stroke-width="50" stroke-linecap="round" stroke-linejoin="miter" stroke-miterlimit="50" />'.
+				'</svg>';
+	}
+
 	// 管理バーのメニュー追加（記述エラーやリンク切れなど）（未実装）
 	public	function	action_wp_before_admin_bar_render() {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
@@ -3351,7 +3321,7 @@ class class_pz_linkcard {
 		}
 
 		global $wp_admin_bar;
-		$wp_admin_bar->add_menu(array('id' => 'pz-lkc',									'title' => __('Pz Card', 'pz-linkcard' ),				'href' => '#' ) );
+		$wp_admin_bar->add_menu(array('id' => 'pz-lkc',									'title' => $this->pz_GetAdminBarIconSvg().esc_html__('Pz Card', 'pz-linkcard' ),				'href' => '#' ) );
 		$wp_admin_bar->add_menu(array('id' => 'pz-settings',	'parent' => 'pz-lkc',	'title' => __('Pz-LinkCard Manager',	'pz-linkcard' ),	'href' => $this->cacheman_url,	'meta' => array('target' => '_parent' ) ) );
 		$wp_admin_bar->add_menu(array('id' => 'pz-cacheman',	'parent' => 'pz-lkc',	'title' => __('Pz-LinkCard Settings',	'pz-linkcard' ),	'href' => $this->settings_url,	'meta' => array('target' => '_parent' ) ) );
 	}
@@ -3383,8 +3353,6 @@ class class_pz_linkcard {
 				$preview_options[$key]	=	$properties[$key];
 			}
 		}
-		$preview_options	=	self::pz_ApplyThisLinkFallback($preview_options );
-
 		$this->options	=	$preview_options;
 		if	(!defined('LIST_BORDER' ) ) {
 			define('LIST_BORDER', array(

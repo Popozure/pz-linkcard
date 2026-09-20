@@ -877,7 +877,7 @@
                 ["info", ".lkc-info"],
                 ["added", ".lkc-added"],
             ];
-            return ["ex", "in", "th"].flatMap(prefix => items.map(([name, selector]) => {
+            return ["ex", "in"].flatMap(prefix => items.map(([name, selector]) => {
                 const decoration = value(`${prefix}-${name}-hover`) !== "" ? "underline" : "none";
                 return `.pz-settings-preview-window [data-pz-preview-card="${prefix}"] ${selector}:hover { text-decoration: ${decoration} !important; }`;
             })).join("\n");
@@ -946,6 +946,13 @@
             const raw = value(name);
             if (raw === "" || raw === null || raw === undefined) return "";
             return /^-?\d+(\.\d+)?$/.test(String(raw)) ? `${raw}px` : String(raw);
+        };
+        const cssBackgroundImage = name => {
+            const raw = String(value(name) || "").trim();
+            if (!raw) return "";
+            if (/^url\(/i.test(raw)) return raw;
+            if (/^https?:\/\//i.test(raw)) return `url("${raw}")`;
+            return raw;
         };
         const applyDisplay = (node, show) => {
             if (!node) return;
@@ -1016,6 +1023,10 @@
             const node = card.querySelector(selector);
             if (!node) return;
             resetStyle(node, ["transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
+            const bgImage = cssBackgroundImage(`${prefix}-bg-image`);
+            if (checked(`${prefix}-bg-enabled`) && bgImage) {
+                node.style.backgroundImage = bgImage;
+            }
         };
         const applySpecialFormat = () => {
             schedulePreviewCssCallback();
@@ -1033,7 +1044,7 @@
 
             win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
                 const prefix = card.dataset.pzPreviewCard;
-                const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap, .lkc-this-wrap");
+                const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap");
                 const cardBody = card.querySelector(".lkc-card");
                 const content = card.querySelector("[data-pz-preview-content]");
                 const info = card.querySelector("[data-pz-preview-info]");
@@ -1070,7 +1081,7 @@
                         }
                     }
                     wrap.style.margin = checked("centering") ? "0 auto" : "0";
-                    applyPartBox(card, ".lkc-external-wrap, .lkc-internal-wrap, .lkc-this-wrap", prefix);
+                    applyPartBox(card, ".lkc-external-wrap, .lkc-internal-wrap", prefix);
                 }
 
                 if (cardBody) {

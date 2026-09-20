@@ -21,12 +21,10 @@
 			case 'LkC': // Pz-LkC Default
 				$file_text	=	str_replace('/*EX-BG-IMAGE*/',			'background-image: linear-gradient(#78f 0%, #78f 10%, #fff 30%);', $file_text );
 				$file_text	=	str_replace('/*IN-BG-IMAGE*/',			'background-image: linear-gradient(#ca4 0%, #ca4 10%, #fff 30%);', $file_text );
-				$file_text	=	str_replace('/*TH-BG-IMAGE*/',			'background-image: linear-gradient(#ca4 0%, #ca4 10%, #eee 30%);', $file_text );
 				break;
 			case 'hbc': // プリセット: はてなブログカード風
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
 				$file_text	=	str_replace('/*SHADOW*/',				'box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);', $file_text );
 				break;
 			case 'smp': // プリセット: シンプル
@@ -36,16 +34,12 @@
 				$file_text	=	str_replace('/*IN-BG-IMAGE*/',				'', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: none;', $file_text );
-				$file_text	=	str_replace('/*TH-BG-IMAGE*/',				'', $file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',			'', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/',			'border: none;', $file_text );
 				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
 				$file_text	=	str_replace('/*NONE-EXCERPT*/',			'display: none !important;', $file_text );
 				break;
 			case 'cmp': // プリセット: コンパクト
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
 				$file_text	=	str_replace('/*CONTENT-HEIGHT*/',		'height: 108px;', $file_text );
 				$file_text	=	str_replace('/*WRAP-MARGIN*/',			'margin: 0;', $file_text );
 				$file_text	=	str_replace('/*PADDING*/',				'padding: 0;', $file_text );
@@ -87,8 +81,6 @@
 				$file_text	=	str_replace('/*EX-BG-IMAGE*/',				'', $file_text );
 				$file_text	=	str_replace('/*IN-BG-IMAGE*/',				'', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'', $file_text );
-				$file_text	=	str_replace('/*TH-BG-IMAGE*/',				'', $file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',			'', $file_text );
 
 				$file_text	=	str_replace('/*THUMBNAIL- WIDTH*/',		'max-width: 150px;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL- HEIGHT*/',	'height: 108px; overflow: hidden;', $file_text );
@@ -102,9 +94,8 @@
 
 				$file_text		=	str_replace('/*EX-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px;'.txt_color('background-color: ', $prop['ex-border-color'] ).';', $file_text );
 				$file_text		=	str_replace('/*IN-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px; '.txt_color('background-color: ', $prop['in-border-color'] ).';', $file_text );
-				$file_text		=	str_replace('/*TH-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px; '.txt_color('background-color: ', $prop['th-border-color'] ).';', $file_text );
 
-				foreach		(array('ex', 'in', 'th' )	as	$t ) {
+				foreach		(array('ex', 'in' )	as	$t ) {
 					$T		=	strtoupper($t );
 					$value_border	=	'border: solid '.($prop[$t.'-border-color'] ?? '').' 4px;';
 					$file_text		=	str_replace('/*'.$T.'-BORDER*/',			$value_border, $file_text );
@@ -124,44 +115,39 @@
 					$height_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-height'] ) ? $prop['excerpt-height'] : self::pz_GetDefaultOption('excerpt-height' ) ) );
 					$thumbnail_width	=	150;
 					$file_text	=	str_replace('/*RESIZE*/',
-						'@media screen and (max-width: 767px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-this-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.9).'px; line-height: '.intval($height_title * 0.9).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.95).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.9).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.9).'px; } }'.
-						'@media screen and (max-width: 512px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-this-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.8).'px; line-height: '.intval($height_title * 0.8).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.80).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.7).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.7).'px; } }'.
-						'@media screen and (max-width: 320px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-this-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.7).'px; line-height: '.intval($height_title * 0.7).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.60).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.5).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.5).'px; } }', $file_text );
+						'@media screen and (max-width: 767px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.9).'px; line-height: '.intval($height_title * 0.9).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.95).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.9).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.9).'px; } }'.
+						'@media screen and (max-width: 512px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.8).'px; line-height: '.intval($height_title * 0.8).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.80).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.7).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.7).'px; } }'.
+						'@media screen and (max-width: 320px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.7).'px; line-height: '.intval($height_title * 0.7).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.60).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.5).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.5).'px; } }', $file_text );
 				}
 				$file_text		=	str_replace('/*SCALE*/',		'transform: scale(1.1);', $file_text );
 				$file_text		=	str_replace('/*TRANSFORM*/',	'-webkit-transition: color 0.4s ease, background 0.4s ease, transform 0.4s ease, opacity 0.4s ease, border 0.4s ease, padding 0.4s ease, left 0.4s ease, box-shadow 0.4s ease; transition: color 0.4s ease, background 0.4s ease, transform 0.4s ease, opacity 0.4s ease, border 0.4s ease, padding 0.4s ease, left 0.4s ease, box-shadow 0.4s ease;', $file_text );
 				break;
 			case 'ecl': // プリセット: 囲み
-				$css	=	'.lkc-external-wrap         , .lkc-internal-wrap         , .lkc-this-wrap         { transition: all 0.7s ease-in-out; border-width: 2px; }';
-				$css	.=	'.lkc-external-wrap::before , .lkc-internal-wrap::before , .lkc-this-wrap::before { content: ""; display: block; position: absolute; border: 2px solid #888888; box-sizing: border-box; width: 24px; height: 24px; transition: all 0.7s ease-in-out; top: -6px; left: -6px; border-width: 2px 0 0 2px; }';
-				$css	.=	'.lkc-external-wrap::after  , .lkc-internal-wrap::after  , .lkc-this-wrap::after  { content: ""; display: block; position: absolute; border: 2px solid #888888; box-sizing: border-box; width: 24px; height: 24px; transition: all 0.7s ease-in-out; bottom: -6px; right: -6px; border-width: 0 2px 2px 0; }';
+				$css	=	'.lkc-external-wrap         , .lkc-internal-wrap { transition: all 0.7s ease-in-out; border-width: 2px; }';
+				$css	.=	'.lkc-external-wrap::before , .lkc-internal-wrap::before { content: ""; display: block; position: absolute; border: 2px solid #888888; box-sizing: border-box; width: 24px; height: 24px; transition: all 0.7s ease-in-out; top: -6px; left: -6px; border-width: 2px 0 0 2px; }';
+				$css	.=	'.lkc-external-wrap::after  , .lkc-internal-wrap::after  { content: ""; display: block; position: absolute; border: 2px solid #888888; box-sizing: border-box; width: 24px; height: 24px; transition: all 0.7s ease-in-out; bottom: -6px; right: -6px; border-width: 0 2px 2px 0; }';
 				$css	.=	'.lkc-external-wrap:hover         { '.txt_color('border-color: ', $prop['ex-bg-color'] ).' }';
 				$css	.=	'.lkc-internal-wrap:hover         { '.txt_color('border-color: ', $prop['in-bg-color'] ).' }';
-				$css	.=	'.lkc-this-wrap:hover             { '.txt_color('border-color: ', $prop['th-bg-color'] ).' }';
 				$css	.=	'.lkc-external-wrap:hover::before { width: calc(100% + 12px); height: calc(100% + 12px); '.txt_color('border-color: ', $prop['ex-bg-color'] ).' }';
 				$css	.=	'.lkc-internal-wrap:hover::before { width: calc(100% + 12px); height: calc(100% + 12px); '.txt_color('border-color: ', $prop['in-bg-color'] ).' }';
-				$css	.=	'.lkc-this-wrap:hover::before     { width: calc(100% + 12px); height: calc(100% + 12px); '.txt_color('border-color: ', $prop['th-bg-color'] ).' }';
 				$css	.=	'.lkc-external-wrap:hover::after  { width: calc(100% + 12px); height: calc(100% + 12px); '.txt_color('border-color: ', $prop['ex-bg-color'] ).' }';
 				$css	.=	'.lkc-internal-wrap:hover::after  { width: calc(100% + 12px); height: calc(100% + 12px); '.txt_color('border-color: ', $prop['in-bg-color'] ).' }';
-				$css	.=	'.lkc-this-wrap:hover::after      { width: calc(100% + 12px); height: calc(100% + 12px); '.txt_color('border-color: ', $prop['th-bg-color'] ).' }';
 				$file_text	=	str_replace('/*OPTION*/',			$css, $file_text );
 				break;
 			case 'ref': // プリセット: 反射
-				$css	=	'.lkc-external-wrap               , .lkc-internal-wrap               , .lkc-this-wrap               { overflow: hidden; }';
-				$css	.=	'.lkc-external-wrap:hover::before , .lkc-internal-wrap:hover::before , .lkc-this-wrap:hover::before { margin-left: 300% ; }';
-				$css	.=	'.lkc-external-wrap::before       , .lkc-internal-wrap::before       , .lkc-this-wrap::before       { content: ""; display: block; width: 500px; height: 120px; position: absolute; top: -10px; left: -500px; transform: rotate(-45deg); transition: all .3s ease-in-out; }';
+				$css	=	'.lkc-external-wrap               , .lkc-internal-wrap { overflow: hidden; }';
+				$css	.=	'.lkc-external-wrap:hover::before , .lkc-internal-wrap:hover::before { margin-left: 300% ; }';
+				$css	.=	'.lkc-external-wrap::before       , .lkc-internal-wrap::before       { content: ""; display: block; width: 500px; height: 120px; position: absolute; top: -10px; left: -500px; transform: rotate(-45deg); transition: all .3s ease-in-out; }';
 				$css	.=	'.lkc-external-wrap::before { '.txt_color('background-color: ',  $prop['ex-border-color'] ).' }';
 				$css	.=	'.lkc-internal-wrap::before { '.txt_color('background-color: ',  $prop['in-border-color'] ).' }';
-				$css	.=	'.lkc-this-wrap::before { '.	txt_color('background-color: ',  $prop['th-border-color'] ).' }';
 				$file_text	=	str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'wxp': // Windows XP
 				$file_text	=	str_replace('/*EX-BORDER*/',		'border: none;',	$file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',		'border: none;',	$file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/',		'border: none;',	$file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',	'margin: 0 8px;',	$file_text );
 				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 8px 0;',	$file_text );
-				$css	=	'.lkc-external-wrap a , .lkc-internal-wrap a , .lkc-this-wrap a { cursor: default; }';
+				$css	=	'.lkc-external-wrap a , .lkc-internal-wrap a { cursor: default; }';
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 0; border: 3px #1f61e3 solid; border-radius: 5px; background: #eeecdf; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; background: linear-gradient(to bottom, #2790ff, #1f61e3); background: -webkit-linear-gradient(top, #2790ff, #1f61e3); font-weight: bold; font-size: 11px; line-height: 16px; }';
@@ -175,9 +161,8 @@
 			case 'w95': // Windows 95
 				$file_text	=	str_replace('/*EX-BORDER*/',		'border: none;', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',		'border: none;', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/',		'border: none;', $file_text );
 				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 4px 0;', $file_text );
-				$css	=	'.lkc-external-wrap a , .lkc-internal-wrap a , .lkc-this-wrap a { cursor: default; }';
+				$css	=	'.lkc-external-wrap a , .lkc-internal-wrap a { cursor: default; }';
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 4px; border: 3px #c0c7c8 solid; background: #e0e0e0; border: 1px #87888f solid; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; border: 1px #87888f solid; background: #0000a8; font-weight: bold; font-size: 11px; line-height: 16px; }';
@@ -225,18 +210,14 @@
 			case 'sBR': // プリセット: 縫い目 赤系
 				$file_text	=	str_replace('/*EX-BORDER*/',		'border: 2px dashed rgba(255,255,255,0.5);', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',		'border: 2px dashed rgba(255,255,255,0.5);', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/',		'border: 2px dashed rgba(255,255,255,0.5);', $file_text );
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',		'background: #bcddff; box-shadow: 0 0 0 5px #aabbee, 3px 3px 6px 4px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 0 5px #aabbee, 3px 3px 6px 4px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 0 5px #aabbee, 3px 3px 6px 4px rgba(0,0,0,0.6);', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',		'background: #f8d0d0; box-shadow: 0 0 0 5px #e8a8a8, 3px 3px 6px 4px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 0 5px #e8a8a8, 3px 3px 6px 4px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 0 5px #e8a8a8, 3px 3px 6px 4px rgba(0,0,0,0.6);', $file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',		'background: #f29db0; box-shadow: 0 0 0 5px #de8899, 3px 3px 6px 4px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 0 5px #de8899, 3px 3px 6px 4px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 0 5px #de8899, 3px 3px 6px 4px rgba(0,0,0,0.6);', $file_text );
 				break;
 			case 'sGY': // プリセット: 縫い目 緑黄系
 				$file_text	=	str_replace('/*EX-BORDER*/',		'border: 2px dashed rgba(255,255,255,0.5);', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',		'border: 2px dashed rgba(255,255,255,0.5);', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/',		'border: 2px dashed rgba(255,255,255,0.5);', $file_text );
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',		'background: #acefdd; box-shadow: 0 0 0 5px #8abecb, 3px 3px 6px 4px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 0 5px #8abecb, 3px 3px 6px 4px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 0 5px #8abecb, 3px 3px 6px 4px rgba(0,0,0,0.6);', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',		'background: #ffde51; box-shadow: 0 0 0 5px #fbca4d, 3px 3px 6px 4px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 0 5px #fbca4d, 3px 3px 6px 4px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 0 5px #fbca4d, 3px 3px 6px 4px rgba(0,0,0,0.6);', $file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',		'background: #f0e0b0; box-shadow: 0 0 0 5px #decca0, 3px 3px 6px 4px rgba(0,0,0,0.6); -moz-box-shadow: 0 0 0 5px #decca0, 3px 3px 6px 4px rgba(0,0,0,0.6); -webkit-box-shadow: 0 0 0 5px #decca0, 3px 3px 6px 4px rgba(0,0,0,0.6);', $file_text );
 				break;
 			case 'pin': // プリセット: 押しピン
 				$file_text	=	str_replace('/*WRAP-AFTER*/',		'content: ""; display: block; position: absolute; background-image: url("'.$this->plugin_dir_url.'img/pin.png"); background-repeat: no-repeat; background-position: center; left: 47%; top: -16px; width: 40px; height: 40px; z-index: 1; pointer-events: none;', $file_text );
@@ -245,7 +226,6 @@
 				$color		=	'#59fbea';
 				$file_text	=	str_replace('/*EX-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
 				$file_text	=	str_replace('/*TITLE-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*URL-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*EXCERPT-COLOR*/',	'color: '.$color.';', $file_text );
@@ -254,13 +234,11 @@
 				$file_text	=	str_replace('/*ADDED-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',		'background-color: rgba(  35 , 100 ,  93 , 0.90 );', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',		'background-color: rgba(   8 ,  25 ,  23 , 0.90 );', $file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',		'background-color: rgba(  89 , 251 , 234 , 0.05 );', $file_text );
 				break;
 			case 'inI': // プリセット: Ingress Enlightened
 				$color		=	'#ebbc4a';
 				$file_text	=	str_replace('/*EX-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
 				$file_text	=	str_replace('/*TITLE-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*URL-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*EXCERPT-COLOR*/',	'color: '.$color.';', $file_text );
@@ -269,13 +247,11 @@
 				$file_text	=	str_replace('/*ADDED-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',		'background-color: rgba(  94 ,  75, 29 , 0.90 );', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',		'background-color: rgba(  23 ,  18,  7 , 0.90 );', $file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',		'background-color: rgba( 235 , 188, 74 , 0.05 );', $file_text );
 				break;
 			case 'inE': // プリセット: Ingress Enlightened Color
 				$color		=	'#28f428';
 				$file_text	=	str_replace('/*EX-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/', 		'border: 4px solid '.$color.';', $file_text );
 				$file_text	=	str_replace('/*TITLE-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*URL-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*EXCERPT-COLOR*/',	'color: '.$color.';', $file_text );
@@ -284,13 +260,11 @@
 				$file_text	=	str_replace('/*ADDED-COLOR*/',		'color: '.$color.';', $file_text );
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',		'background-color: rgba(  16 ,  97 ,  16 , 0.90 );', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',		'background-color: rgba(   4 ,  24 ,   4 , 0.90 );', $file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',		'background-color: rgba(  40 , 244 ,  40 , 0.05 );', $file_text );
 				break;
 			case 'inR': // プリセット: Ingress Resistance Color
 				$color		=	'#00c2ff';
 				$file_text	=	str_replace('/*EX-BORDER*/', 		'border: 4px solid '.$color.';',	$file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/', 		'border: 4px solid '.$color.';',	$file_text );
-				$file_text	=	str_replace('/*TH-BORDER*/', 		'border: 4px solid '.$color.';',	$file_text );
 				$file_text	=	str_replace('/*TITLE-COLOR*/',		'color: '.$color.';',	$file_text );
 				$file_text	=	str_replace('/*URL-COLOR*/',		'color: '.$color.';',	$file_text );
 				$file_text	=	str_replace('/*EXCERPT-COLOR*/',	'color: '.$color.';',	$file_text );
@@ -299,7 +273,6 @@
 				$file_text	=	str_replace('/*ADDED-COLOR*/',		'color: '.$color.';',	$file_text );
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',		'background-color: rgba(   0 ,  77 , 102 , 0.90 );',	$file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',		'background-color: rgba(   0 ,  19 ,  25 , 0.90 );',	$file_text );
-				$file_text	=	str_replace('/*TH-BG-COLOR*/',		'background-color: rgba(   0 , 194 , 255 , 0.05 );',	$file_text );
 				break;
 			case 'slt': // プリセット: 斜め
 				$file_text	=	str_replace('/*WRAP*/',					'transform:skew(-10deg) rotate(1deg); -webkit-transform: skew(-10deg) rotate(1deg); -moz-transform:skew(-10deg) rotate(1deg);', $file_text );
@@ -619,7 +592,7 @@
 					$file_text	=	str_replace('/*'.$placeholder_prefix.'-SHADOW'.$placeholder_suffix.'*/',			'box-shadow: '.($value_shadow_inset ? 'inset ' : '' ).$value_shadow_x.'px '.$value_shadow_y.'px '.$value_shadow_blur.'px '.$value_shadow_spread.'px '.$value_shadow_color.';', $file_text );
 				}
 			};
-			foreach		(array('ex', 'in', 'th' )	as	$t ) {
+			foreach		(array('ex', 'in' )	as	$t ) {
 				$T		=	strtoupper($t );
 
 				$value_transform_enabled	= isset($prop[$t.'-transform-enabled'] ) ? $prop[$t.'-transform-enabled'] : 1;
@@ -631,6 +604,10 @@
 					if	($value_transform_x || $value_transform_y || $value_transform_rotate || $value_transform_scale != 100 ) {
 						$file_text	=	str_replace('/*'.$T.'-WRAP-TRANSFORM*/',		'transform: translate('.$value_transform_x.'px, '.$value_transform_y.'px) rotate('.$value_transform_rotate.'deg) scale('.($value_transform_scale / 100).');', $file_text );
 					}
+				}
+				$value_opacity	= isset($prop[$t.'-opacity'] ) ? max(0, min(100, intval($prop[$t.'-opacity'] ) ) ) : 100;
+				if	($value_opacity != 100 ) {
+					$file_text	=	str_replace('/*'.$T.'-OPACITY*/',			'opacity: '.($value_opacity / 100).';', $file_text );
 				}
 				$value_transition	= isset($prop[$t.'-transition'] ) ? floatval($prop[$t.'-transition'] ) : 0;
 				if	($value_transition > 0 ) {
@@ -713,7 +690,13 @@
 					if	($value_hover_transform_x || $value_hover_transform_y || $value_hover_transform_rotate || $value_hover_transform_scale != 100 ) {
 						$hover_css[]	=	'transform: translate('.$value_hover_transform_x.'px, '.$value_hover_transform_y.'px) rotate('.$value_hover_transform_rotate.'deg) scale('.($value_hover_transform_scale / 100).');';
 					}
+
+					$value_hover_opacity	= isset($prop[$t.'-hover-opacity'] ) ? max(0, min(100, intval($prop[$t.'-hover-opacity'] ) ) ) : 100;
+					if	($value_hover_opacity != 100 ) {
+						$hover_css[]	=	'opacity: '.($value_hover_opacity / 100).';';
+					}
 				}
+
 				$value_hover_bg_enabled	= isset($prop[$t.'-hover-bg-enabled'] ) ? $prop[$t.'-hover-bg-enabled'] : 0;
 				if	($value_hover_bg_enabled ) {
 					$value_hover_bg_color	= isset($prop[$t.'-hover-bg-color'] ) ? $prop[$t.'-hover-bg-color'] : '';

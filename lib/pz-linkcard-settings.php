@@ -134,7 +134,6 @@
 		'pz-letter'			=>		true,
 		'pz-external'		=>		true,
 		'pz-internal'		=>		true,
-		'pz-samepage'		=>		true,
 		'pz-check'			=>		true,
 		'pz-editor'			=>		true,
 		'pz-multisite'		=>		($menu_multi			!=	0 ),
@@ -429,7 +428,7 @@
 		if	(file_exists($preview_css_file ) ) {
 			$preview_css	=	file_get_contents($preview_css_file );
 		}
-		$preview_image	=	esc_url($this->plugin_dir_url.'img/example.png' );
+		$preview_image	=	esc_url($this->plugin_dir_url.'img/logo_pz-linkcard.png' );
 		$preview_icon	=	esc_url($this->plugin_dir_url.'img/icon-pz-linkcard.png' );
 		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_icon) {
 			return	$this->pz_GetHTML(array(
@@ -479,7 +478,6 @@
 							'<div class="pz-settings-preview-list">'.
 							'<div class="pz-settings-preview-item"><h3>'.esc_html__('External Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
 							'<div class="pz-settings-preview-item"><h3>'.esc_html__('Internal Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('in', home_url('/pz-linkcard-preview/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
-							'<div class="pz-settings-preview-item"><h3>'.esc_html__('Same Page Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('th', home_url('/#pz-linkcard-preview' ), get_bloginfo('name' ), __('Same Page Link Preview', 'pz-linkcard' ), __('This is a sample of a same-page link card.', 'pz-linkcard' ) ).'</div>'.
 							'</div>'.
 							'</div>'.
 							'</section>';
@@ -544,7 +542,6 @@
 	$show_letter		=	'';
 	$show_external		=	'';
 	$show_internal		=	'';
-	$show_samepage		=	'';
 	$show_check			=	'';
 	$show_editor		=	'';
 	$show_multisite		=	($menu_multi		==	0	?	'style="display: none;"' : '' );
@@ -574,7 +571,6 @@ echo	$html_style;
 			<a class="pz-tab<?php echo $pz_tab_active('pz-letter' ); ?>"				name="pz-letter"		href="#pz-letter"		<?php echo $show_letter;		?>><?php esc_html_e('Letter', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab<?php echo $pz_tab_active('pz-external' ); ?>"				name="pz-external"		href="#pz-external"		<?php echo $show_external;		?>><?php esc_html_e('External Link', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab<?php echo $pz_tab_active('pz-internal' ); ?>"				name="pz-internal"		href="#pz-internal"		<?php echo $show_internal;		?>><?php esc_html_e('Internal Link', 'pz-linkcard' ); ?></a>
-			<a class="pz-tab<?php echo $pz_tab_active('pz-samepage' ); ?>"				name="pz-samepage"		href="#pz-samepage"		<?php echo $show_samepage;		?>><?php esc_html_e('Same Page Link', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab<?php echo $pz_tab_active('pz-check' ); ?>"					name="pz-check"			href="#pz-check"		<?php echo $show_check;			?>><?php esc_html_e('Link Check', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab<?php echo $pz_tab_active('pz-editor' ); ?>"				name="pz-editor"		href="#pz-editor"		<?php echo $show_editor;		?>><?php esc_html_e('Editor', 'pz-linkcard' ); ?></a>
 			<a class="pz-tab pz-orange<?php echo $pz_tab_active('pz-multisite' ); ?>"	name="pz-multisite"		href="#pz-multisite"	<?php echo $show_multisite;		?>><?php esc_html_e('Multisite', 'pz-linkcard' ); ?></a>
@@ -597,7 +593,7 @@ echo	$html_style;
 				require_once('pz-linkcard-settings-position.php' );			// 「配置」タブ
 				require_once('pz-linkcard-settings-display.php' );			// 「表示」タブ
 				require_once('pz-linkcard-settings-letter.php' );			// 「文字」タブ
-				require_once('pz-linkcard-settings-card.php' );				// 「外部リンク」「内部リンク」「同ページ」タブ
+				require_once('pz-linkcard-settings-card.php' );				// 「外部リンク」「内部リンク」タブ
 				require_once('pz-linkcard-settings-check.php' );			// 「リンク先の検査」タブ
 				require_once('pz-linkcard-settings-editor.php' );			// 「エディター」タブ
 				require_once('pz-linkcard-settings-multisite.php' );		// 「マルチサイト」タブ

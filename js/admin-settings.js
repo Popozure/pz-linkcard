@@ -65,6 +65,7 @@
         initCharacterCounts();
         initUnsavedFormWarnings();
         initSettingsSaveShortcut();
+        initSettingsScrollMemory();
         initCachemanEditorShortcuts();
         initSettingsTabs();
         initCachemanSearch();
@@ -72,6 +73,7 @@
         initImageBox();
         initScreenOptions();
         initFileImport();
+        initSettingsSectionJump();
         // readonly checkbox guard
         document.querySelectorAll("input[type=checkbox]").forEach(el =>
             el.addEventListener("click", checkboxReadonly)
@@ -146,6 +148,84 @@
         };
         fileInput.addEventListener("change", updateImportButton);
         updateImportButton();
+    }
+
+    function initSettingsSectionJump() {
+        const pages = document.querySelectorAll(".pz-page");
+        const jumpButtonPages = document.querySelectorAll("#pz-external, #pz-internal");
+        if (!pages.length) return;
+
+        const fixedTop = () => {
+            const edges = ["#wpadminbar", "#pz-infobar", "#pz-tabbar-wrapper"]
+                .map(selector => document.querySelector(selector))
+                .filter(Boolean)
+                .map(el => Math.max(0, el.getBoundingClientRect().bottom));
+            return Math.max(0, ...edges) + 4;
+        };
+
+        const scrollToHeading = heading => {
+            window.scrollTo({
+                top: Math.max(0, window.scrollY + heading.getBoundingClientRect().top - fixedTop()),
+                behavior: "smooth",
+            });
+        };
+
+        const activeHeadings = () => {
+            const page = Array.from(pages).find(item => item.classList.contains("pz-page-active"));
+            return page ? Array.from(page.querySelectorAll("h2, h3")) : [];
+        };
+
+        const keyboardJump = direction => {
+            const headings = activeHeadings();
+            if (!headings.length) return;
+
+            const marker = fixedTop() + 4;
+            const currentIndex = headings.reduce((closest, heading, index) => {
+                const distance = Math.abs(heading.getBoundingClientRect().top - marker);
+                return distance < closest.distance ? { index, distance } : closest;
+            }, { index: 0, distance: Infinity }).index;
+            const target = headings[currentIndex + direction];
+            if (target) scrollToHeading(target);
+        };
+
+        jumpButtonPages.forEach(page => {
+            const headings = Array.from(page.querySelectorAll("h3"));
+            headings.forEach((heading, index) => {
+                if (heading.querySelector(".pz-section-jump")) return;
+
+                const jump = document.createElement("span");
+                jump.className = "pz-section-jump";
+
+                [
+                    { label: "🔺", title: "前の見出しへ", target: headings[index - 1], disabled: index === 0 },
+                    { label: "🔻", title: "次の見出しへ", target: headings[index + 1], disabled: index === headings.length - 1 },
+                ].forEach(item => {
+                    const button = document.createElement("button");
+                    button.type = "button";
+                    button.className = "pz-section-jump-button";
+                    button.textContent = item.label;
+                    button.title = item.title;
+                    button.setAttribute("aria-label", item.title);
+                    button.disabled = item.disabled;
+                    button.addEventListener("click", event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        if (item.target) scrollToHeading(item.target);
+                    });
+                    jump.appendChild(button);
+                });
+
+                heading.appendChild(jump);
+            });
+        });
+
+        document.addEventListener("keydown", event => {
+            if (!event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || event.isComposing) return;
+            if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+
+            event.preventDefault();
+            keyboardJump(event.key === "ArrowDown" ? 1 : -1);
+        });
     }
 
     // ページ上部へ戻る
@@ -486,6 +566,7 @@
             "transform-y",
             "transform-rotate",
             "transform-scale",
+            "opacity",
             "bg-enabled",
             "bg-color",
             "bg-image",
@@ -599,7 +680,7 @@
         frame.on("select", () => {
             const attachment = frame.state().get("selection").first()?.toJSON();
             if (!attachment?.url) return;
-            input.value = attachment.url;
+            input.value = button.dataset.format === "css-url" ? `url(${attachment.url})` : attachment.url;
             input.dispatchEvent(new Event("input", { bubbles: true }));
             input.dispatchEvent(new Event("change", { bubbles: true }));
             updateImagePreview(input, attachment.url);
@@ -759,6 +840,16 @@
                 submitButton.click();
             }
         });
+    }
+
+    function initSettingsScrollMemory() {
+        const form = document.querySelector(".pz-settings form");
+        const scrollNow = form?.querySelector('input[name="scroll-now"]');
+        if (!form || !scrollNow) return;
+
+        form.addEventListener("submit", () => {
+            scrollNow.value = String(Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)));
+        }, true);
     }
 
     function initSettingsTabs() {

@@ -198,6 +198,26 @@
 		sprintf($temp_button,	($page_max ),		(($page_now < $page_max ) ? '' : 'disabled="disabled"' ),	__('&raquo;', 'pz-linkcard' ) ).		// 最後のページ
 		'</span></div>';
 ?>
+	<div class="pz-man-filter-row">
+	<div class="pz-man-count-list">
+		<?php
+			$items	=
+				array(
+					'all'		=>	__('All', 'pz-linkcard' ),
+					'internal'	=>	__('Internal', 'pz-linkcard' ),
+					'external'	=>	__('External', 'pz-linkcard' ),
+					'modify'	=>	__('Modify', 'pz-linkcard' ),
+					'unlink'	=>	__('Unlink', 'pz-linkcard' ),
+				);
+			$sep		=	'';
+			foreach	($items as $i_code => $i_name ) {
+				echo	$sep;
+				echo	'<button type="submit" name="filter" value="'.$i_code.'" class="pz-filter-item"><span class="pz-filter-label'.($filter === $i_code ? ' pz-current' : '').'">'.$i_name.'</span><span class="pz-filter-count">'.esc_attr('('.number_format($count_list[$i_code] ).')' ).'</span></button>';
+				$sep	=	' | ';
+			}
+		?>
+	</div>
+
 	<div class="pz-man-screen-options">
 		<button type="button" id="pz-man-screen-options-toggle" class="pz-man-screen-options-toggle" aria-expanded="false" aria-controls="pz-man-screen-options-panel" data-no-overlay="1">
 			<?php echo esc_html(__('Screen Options', 'pz-linkcard' ) ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
@@ -227,26 +247,6 @@
 				</label>
 			</fieldset>
 		</div>
-	</div>
-
-	<div class="pz-man-filter-row">
-	<div class="pz-man-count-list">
-		<?php
-			$items	=
-				array(
-					'all'		=>	__('All', 'pz-linkcard' ),
-					'internal'	=>	__('Internal', 'pz-linkcard' ),
-					'external'	=>	__('External', 'pz-linkcard' ),
-					'modify'	=>	__('Modify', 'pz-linkcard' ),
-					'unlink'	=>	__('Unlink', 'pz-linkcard' ),
-				);
-			$sep		=	'';
-			foreach	($items as $i_code => $i_name ) {
-				echo	$sep;
-				echo	'<button type="submit" name="filter" value="'.$i_code.'" class="pz-filter-item"><span class="pz-filter-label'.($filter === $i_code ? ' pz-current' : '').'">'.$i_name.'</span><span class="pz-filter-count">'.esc_attr('('.number_format($count_list[$i_code] ).')' ).'</span></button>';
-				$sep	=	' | ';
-			}
-		?>
 	</div>
 	
 	<div class="pz-man-search">
@@ -437,7 +437,6 @@
 					$domain_url		=	$url_info['domain_url'];	// ドメインURL
 					$is_external	=	$url_info['is_external'];	// 外部リンク
 					$is_internal	=	$url_info['is_internal'];	// 内部リンク
-					$is_samepage	=	$url_info['is_samepage'];	// 同一ページ
 
 					// URLの警告マーク
 					$html_url_error		=	'';
@@ -467,8 +466,8 @@
 					$html_url			=	$html_url_error.'<a href="'.$temp_href.'" title="'.$temp_href.'" rel="'.$temp_rel.'" target="'.$temp_target.'" referrerpolicy="no-referrer">'.esc_url($this->pz_DecodeURL($url ) ).'</a>';
 
 					// タイトル
-					$title			=	esc_attr(stripslashes($data->title ) );		// 代入しながら判定
-					$html_title		=	mb_strimwidth($title, 0, 200 , '...' );		// 200文字にする
+					$title				=	esc_attr(stripslashes($data->title ) );		// 代入しながら判定
+					$html_title			=	mb_strimwidth($title, 0, 200 , '...' );		// 200文字にする
 					if	($data->title	<>	$data->regist_title ) {
 						$html_title		=	'<b>'.$html_title.'</b>';
 					}
@@ -528,7 +527,7 @@
 					}
 
 					// クリック数
-					$html_click		=	number_format(intval($data->click_count ), 0  );
+					$html_click			=	number_format(intval($data->click_count ), 0  );
 
 					// HTTPレスポンス
 					$html_result		=	'<span class="pz-man-body-result-update">'.strHTTPCode($data->update_result, $this->pz_HTTPMessage($data->update_result ) ).'</span>';

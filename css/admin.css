@@ -403,6 +403,42 @@ body.folded #pz-infobar {
 	font-weight: bold;
 }
 
+#pz-external h3,
+#pz-internal h3 {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.pz-section-jump {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	margin-left: auto;
+	padding-right: 120px;
+}
+
+.pz-section-jump-button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 16px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: inherit;
+	font-size: 11px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.pz-section-jump-button:disabled {
+	opacity: 0.25;
+	cursor: default;
+}
+
 .pz-dashboard h4 {
 	margin: 16px 0 12px 0;
 	font-size: 20px;
@@ -1785,8 +1821,18 @@ body.folded #pz-infobar {
 }
 
 .pz-page input[type="checkbox"]:enabled:focus-visible {
-	border: 1px solid #000;
-	background-color: #dff !important;
+	border: 1px solid #135e96;
+	outline: 2px solid transparent;
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px #2271b1;
+}
+
+.pz-page input[type="checkbox"]:enabled:focus-visible:not(:checked) {
+	background-color: #fff !important;
+}
+
+.pz-page input[type="checkbox"]:enabled:checked:focus-visible {
+	border-color: #135e96;
+	background-color: #2271b1 !important;
 }
 
 .pz-page select:focus-visible {
@@ -2517,6 +2563,21 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 	flex: 1 1 auto;
 	width: 100%;
 	min-width: 180px;
+}
+
+.pz-card-prop-media {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+}
+
+.pz-card-prop-media input {
+	min-width: 0;
+}
+
+.pz-card-prop-media .button {
+	flex: 0 0 auto;
 }
 
 .pz-card-prop-select {

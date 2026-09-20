@@ -55,6 +55,9 @@
 			if	(preg_match('/-scale$/', $key ) ) {
 				$temp_value			=	max(1, $temp_value );
 			}
+			if	(preg_match('/-opacity$/', $key ) ) {
+				$temp_value			=	min(100, max(0, $temp_value ) );
+			}
 			$this->options[$key]	=	$temp_value;
 			break;
 
