@@ -1089,7 +1089,48 @@
                 node.style.boxShadow = `${shadowInset}${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowSpread}px ${shadowColor}`;
             }
         };
+        const applyHeadlinePreset = () => {
+            win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
+                const prefix = card.dataset.pzPreviewCard;
+                if (prefix !== "ex" && prefix !== "in") return;
+
+                const borderColor = value(`${prefix}-border-color`);
+                const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap");
+                const cardBody = card.querySelector(".lkc-card");
+                const heading = card.querySelector("[data-pz-preview-heading]");
+
+                card.style.margin = "24px auto 30px auto";
+                card.style.paddingLeft = "";
+                card.style.paddingRight = "";
+                card.querySelectorAll("p").forEach(node => {
+                    node.style.setProperty("display", "none", "important");
+                });
+
+                if (wrap) {
+                    wrap.style.margin = "0 auto";
+                    wrap.style.background = "";
+                    wrap.style.backgroundColor = "";
+                    wrap.style.backgroundImage = "";
+                    wrap.style.setProperty("border", `solid ${borderColor || ""} 4px`);
+                }
+                if (cardBody) {
+                    cardBody.style.setProperty("margin", "24px 20px 20px 20px", "important");
+                }
+                if (heading && heading.textContent.trim() !== "") {
+                    heading.style.setProperty("padding", "0 10px", "important");
+                    heading.style.position = "absolute";
+                    heading.style.top = "-15px";
+                    heading.style.left = "20px";
+                    heading.style.height = "20px";
+                    heading.style.backgroundColor = borderColor;
+                    heading.style.setProperty("border", `solid ${borderColor || ""} 4px`);
+                }
+            });
+        };
         const applySpecialFormat = () => {
+            if (value("special-format") === "JIN") {
+                applyHeadlinePreset();
+            }
             schedulePreviewCssCallback();
         };
         const updatePreview = () => {

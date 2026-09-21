@@ -89,6 +89,19 @@
 					$file_text		=	str_replace('/*'.$T.'-HOVER-HEADING-BG-COLOR*/',	$value_bg_color.';', $file_text );
 					$file_text		=	str_replace('/*'.$T.'-HOVER-OPTION*/',		'', $file_text );
 				}
+				if (isset($prop['flg-resize'] ) && $prop['flg-resize'] == '1' ) {
+					$size_title			=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-size'] ) ? $prop['title-size'] : self::pz_GetDefaultOption('title-size' ) ) );
+					$size_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-size'] ) ? $prop['excerpt-size'] : self::pz_GetDefaultOption('excerpt-size' ) ) );
+					$height_title		=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-height'] ) ? $prop['title-height'] : self::pz_GetDefaultOption('title-height' ) ) );
+					$height_excerpt		=	intval(preg_replace('/[^0-9]/', '', isset($prop['excerpt-height'] ) ? $prop['excerpt-height'] : self::pz_GetDefaultOption('excerpt-height' ) ) );
+					$thumbnail_width	=	150;
+					$file_text	=	str_replace('/*RESIZE*/',
+						'@media screen and (max-width: 767px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.9).'px; line-height: '.intval($height_title * 0.9).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.95).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.9).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.9).'px; } }'.
+						'@media screen and (max-width: 512px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.8).'px; line-height: '.intval($height_title * 0.8).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.80).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.7).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.7).'px; } }'.
+						'@media screen and (max-width: 320px)  { .lkc-internal-wrap { max-width: 100% } .lkc-external-wrap { max-width: 100% } .lkc-title { font-size: '.intval($size_title * 0.7).'px; line-height: '.intval($height_title * 0.7).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.60).'px; } .lkc-thumbnail { max-width: '.intval($thumbnail_width * 0.5).'px; } .lkc-thumbnail-img { max-width: '.intval($thumbnail_width * 0.5).'px; } }', $file_text );
+				}
+				$file_text		=	str_replace('/*SCALE*/',		'transform: scale(1.1);', $file_text );
+				$file_text		=	str_replace('/*TRANSFORM*/',	'-webkit-transition: color 0.4s ease, background 0.4s ease, transform 0.4s ease, opacity 0.4s ease, border 0.4s ease, padding 0.4s ease, left 0.4s ease, box-shadow 0.4s ease; transition: color 0.4s ease, background 0.4s ease, transform 0.4s ease, opacity 0.4s ease, border 0.4s ease, padding 0.4s ease, left 0.4s ease, box-shadow 0.4s ease;', $file_text );
 				break;
 			case 'ecl': // プリセット: 囲み
 				$css	=	'.lkc-external-wrap         , .lkc-internal-wrap { transition: all 0.7s ease-in-out; border-width: 2px; }';
