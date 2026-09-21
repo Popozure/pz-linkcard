@@ -1047,9 +1047,46 @@
             const node = card.querySelector(selector);
             if (!node) return;
             resetStyle(node, ["transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
-            const bgImage = cssBackgroundImage(`${prefix}-bg-image`);
-            if (checked(`${prefix}-bg-enabled`) && bgImage) {
-                node.style.backgroundImage = bgImage;
+            if (checked(`${prefix}-transform-enabled`)) {
+                const transformX = intValue(`${prefix}-transform-x`, 0);
+                const transformY = intValue(`${prefix}-transform-y`, 0);
+                const transformRotate = intValue(`${prefix}-transform-rotate`, 0);
+                const transformScale = intValue(`${prefix}-transform-scale`, 100);
+                if (transformX || transformY || transformRotate || transformScale !== 100) {
+                    node.style.transform = `translate(${transformX}px, ${transformY}px) rotate(${transformRotate}deg) scale(${transformScale / 100})`;
+                }
+            }
+            const ignoreLinkBackground = value("special-format") === "JIN" && (prefix === "ex" || prefix === "in");
+            if (!ignoreLinkBackground) {
+                const bgColor = value(`${prefix}-bg-color`);
+                const bgImage = cssBackgroundImage(`${prefix}-bg-image`);
+                if (checked(`${prefix}-bg-enabled`) && bgColor) {
+                    node.style.backgroundColor = bgColor;
+                }
+                if (checked(`${prefix}-bg-enabled`) && bgImage) {
+                    node.style.backgroundImage = bgImage;
+                }
+            }
+            if (checked(`${prefix}-border-enabled`)) {
+                const borderColor = value(`${prefix}-border-color`);
+                const borderStyle = value(`${prefix}-border-style`) || "solid";
+                const borderWidth = intValue(`${prefix}-border-width`, 1);
+                const borderRadius = intValue(`${prefix}-border-radius`, 0);
+                if (borderStyle) {
+                    node.style.setProperty("border", `${borderColor ? `${borderColor} ` : ""}${borderStyle} ${borderWidth}px`, "important");
+                }
+                if (borderRadius > 0) {
+                    node.style.borderRadius = `${borderRadius}px`;
+                }
+            }
+            if (checked(`${prefix}-shadow-enabled`)) {
+                const shadowColor = value(`${prefix}-shadow-color`) || "rgba(0,0,0,0.3)";
+                const shadowX = intValue(`${prefix}-shadow-x`, 8);
+                const shadowY = intValue(`${prefix}-shadow-y`, 8);
+                const shadowBlur = intValue(`${prefix}-shadow-blur`, 8);
+                const shadowSpread = intValue(`${prefix}-shadow-spread`, 0);
+                const shadowInset = checked(`${prefix}-shadow-inset`) ? "inset " : "";
+                node.style.boxShadow = `${shadowInset}${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowSpread}px ${shadowColor}`;
             }
         };
         const applySpecialFormat = () => {
@@ -1069,6 +1106,7 @@
             const usePresetLayout = specialFormat === "sqr";
 
             win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
+                try {
                 const prefix = card.dataset.pzPreviewCard;
                 const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap");
                 const cardBody = card.querySelector(".lkc-card");
@@ -1155,7 +1193,7 @@
                 }
 
                 applyDisplay(info, infoPosition !== "");
-                if (info && content && title) {
+                if (info && content && title && cardBody) {
                     if (infoPosition === "2") {
                         cardBody.appendChild(info);
                     } else if (infoPosition === "3") {
@@ -1209,6 +1247,9 @@
                 if (added) {
                     added.textContent = addedText;
                     applyDisplay(added, true);
+                }
+                } catch (err) {
+                    console.warn("Pz-LinkCard preview card failed:", card.dataset.pzPreviewCard || "", err);
                 }
             });
 
