@@ -17,7 +17,7 @@
 				<?php pz_Option($prop, 'display-url', __('Position to display URL', 'pz-linkcard' ), array(
 								''		=>		__('None', 'pz-linkcard' ),
 								'1'		=>		__('Under Title', 'pz-linkcard' ),
-								'2'		=>		__('Bihind Site-Info', 'pz-linkcard' ), ) ); ?>
+								'2'		=>		__('Behind site info', 'pz-linkcard' ), ) ); ?>
 			</td>
 		</tr>
 		<tr>
@@ -45,7 +45,7 @@
 				<select name="properties[sns-position]">
 					<option value=""  <?php selected($prop['sns-position'] == ''  ); ?>><?php esc_html_e('None',				'pz-linkcard' ); ?></option>
 					<option value="1" <?php selected($prop['sns-position'] == '1' ); ?>><?php esc_html_e('Under Title',			'pz-linkcard' ); ?></option>
-					<option value="2" <?php selected($prop['sns-position'] == '2' ); ?>><?php esc_html_e('Bihind Site-Info',	'pz-linkcard' ); ?></option>
+					<option value="2" <?php selected($prop['sns-position'] == '2' ); ?>><?php esc_html_e('Behind site info',	'pz-linkcard' ); ?></option>
 				</select>
 				<ul>
 					<li>

@@ -104,13 +104,13 @@
 			<td>[<input name="properties[code1]" type="text" class="pz-shortcode pz-shortcode-1" value="<?php echo	esc_attr($prop['code1'] ); ?>" /> url="http://popozure.info" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]<p><?php esc_html_e('Case-sensitive', 'pz-linkcard' ); ?></p></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Use InLineText', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Use inline text', 'pz-linkcard' ); ?></th>
 			<td>
 				[<span class="pz-shortcode-copy"><?php echo	esc_attr($prop['code1'] ); ?></span> url="http://xxx"]
 				<select name="properties[use-inline]" class="pz-shortcode-enabled">
-					<option value=""	<?php selected($prop['use-inline'] == ''  ); ?>><?php esc_html_e('No use',			'pz-linkcard' ); ?></option>
-					<option value="1"	<?php selected($prop['use-inline'] == '1' ); ?>><?php esc_html_e('Use to excerpt',	'pz-linkcard' ); ?></option>
-					<option value="2"	<?php selected($prop['use-inline'] == '2' ); ?>><?php esc_html_e('Use to title',	'pz-linkcard' ); ?></option>
+					<option value=""	<?php selected($prop['use-inline'] == ''  ); ?>><?php esc_html_e('Do not use',		'pz-linkcard' ); ?></option>
+					<option value="1"	<?php selected($prop['use-inline'] == '1' ); ?>><?php esc_html_e('Use as excerpt',	'pz-linkcard' ); ?></option>
+					<option value="2"	<?php selected($prop['use-inline'] == '2' ); ?>><?php esc_html_e('Use as title',	'pz-linkcard' ); ?></option>
 				</select>
 				[/<span class="pz-shortcode-copy"><?php echo	esc_attr($prop['code1'] ); ?></span>]
 				<p><?php esc_html_e('This setting applies only to the Shortcode1', 'pz-linkcard' ); ?></p></td>

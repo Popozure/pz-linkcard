@@ -292,6 +292,7 @@
 				$file_text	=	str_replace('/*THUMBNAIL-HEIGHT*/',		'',					$file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',	'width: calc(100% - 2px);',				$file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',	'height: 200px; overflow: hidden;',		$file_text );
+				$file_text	=	str_replace('/*OPTION*/',				'.lkc-external-wrap, .lkc-internal-wrap { overflow: visible; } .lkc-card { height: calc(100% - 16px); overflow: hidden; box-sizing: border-box; }', $file_text );
 				break;
 			}
 

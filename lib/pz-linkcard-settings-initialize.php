@@ -33,7 +33,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-delete-settings]" value="" />
 					<input type="checkbox" name="properties[flg-delete-settings]" value="1" <?php checked($this->options['flg-delete-settings'] ); ?> />
-					<?php echo __('Delete the settings when daleting the plugin.', 'pz-linkcard' ); ?>
+					<?php echo __('Delete the settings when deleting the plugin.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -48,7 +48,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Delete DataBase', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Delete Database', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-delete-db]" value="" />

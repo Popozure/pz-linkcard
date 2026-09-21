@@ -540,7 +540,7 @@
 		echo	sprintf($temp_select,   $item_title, $s_name, $item_class, $s_switch, $s_option, $item_notice );
 
 		// サムネイルの代替テキスト
-		$item_title	=		__('Thubnail Alt Text', 'pz-linkcard' );
+		$item_title	=		__('Thumbnail Alt Text', 'pz-linkcard' );
 		$item_name		=		$t['name'].'-thumbnail-alt';
 		$s_len		=		'';
 		$item_class	=		'regular-text';

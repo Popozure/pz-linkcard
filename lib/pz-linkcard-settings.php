@@ -66,7 +66,7 @@
 	define('LIST_NEWTAB',	array(
 		''				=>		__('None',				'pz-linkcard' ),
 		'1'				=>		__('All Devices',		'pz-linkcard' ),
-		'2'				=>		__('Non-Mobile Devices',	'pz-linkcard' ),
+		'2'				=>		__('Non-mobile devices',	'pz-linkcard' ),
 	) );
 
 	// 引数・変数の設定
@@ -202,6 +202,7 @@
 	// プラグイン名・バージョン・環境表示
 	$html_mode		=	($debug_mode			?	'<span class="pz-infobar-env pz-infobar-env-debug">'.	__('Debug Mode', 'pz-linkcard' ).'</span>'				:	'' ).
 						($survey_mode			?	'<span class="pz-infobar-env pz-infobar-env-survey">'.	__('Survey Mode', 'pz-linkcard' ).'</span>'				:	'' ).
+						($admin_mode			?	'<span class="pz-infobar-env pz-infobar-env-admin">'.	__('Admin Mode', 'pz-linkcard' ).'</span>'				:	'' ).
 						($develop_mode	==	1	?	'<span class="pz-infobar-env pz-infobar-env-develop">'.	__('Development Environment', 'pz-linkcard' ).'</span>'	:	'' ).
 						($develop_mode	==	2	?	'<span class="pz-infobar-env pz-infobar-env-product">'.	__('Production Environment', 'pz-linkcard' ).'</span>'	:	'' );
 
@@ -230,7 +231,7 @@
 	foreach		($temp_param		as	$temp_name => $temp_value ) {
 		$html_input	.=	'<input type="hidden" name="'.$temp_name.'" value="'.$temp_value.'" title="'.$temp_name.'" size="4" />';
 	}
-	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width' ) as $temp_name ) {
+	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards' ) as $temp_name ) {
 		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
 		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
 	}
@@ -476,9 +477,12 @@
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-crosshatch" data-pz-preview-background="crosshatch" aria-label="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'" title="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'"></button>'.
 							'</div>'.
 							'<div class="pz-settings-preview-list">'.
-							'<div class="pz-settings-preview-item"><h3>'.esc_html__('External Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
-							'<div class="pz-settings-preview-item"><h3>'.esc_html__('Internal Link', 'pz-linkcard' ).'</h3>'.$make_preview_card('in', home_url('/pz-linkcard-preview/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item">'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview-2', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item">'.$make_preview_card('in', home_url('/pz-linkcard-preview/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$make_preview_card('in', home_url('/pz-linkcard-preview-2/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
 							'</div>'.
+							'<label class="pz-settings-preview-two-cards-control"><input type="checkbox" data-pz-preview-two-cards data-no-overlay="1" /> '.esc_html__('Show two cards for each type', 'pz-linkcard' ).'</label>'.
 							'</div>'.
 							'</section>';
 	}
@@ -559,7 +563,9 @@ echo	$html_style;
 		<?php
 			echo	$html_plugin;
 			echo	$html_title;
-			echo	$html_notice;
+			if	($html_notice ) {
+				echo	'<div class="pz-toast-container" role="status" aria-live="polite" style="display:none;">'.$html_notice.'</div>';
+			}
 		?>
 		<div id="pz-tabbar-wrapper" class="pz-tabbar-wrapper">
 			<button type="button" class="pz-tab-scroll pz-tab-left" aria-label="<?php esc_attr_e('Scroll tabs left', 'pz-linkcard' ); ?>"><span class="dashicons dashicons-arrow-left-alt2"></span></button>

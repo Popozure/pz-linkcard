@@ -8,6 +8,7 @@
 	// 処理中オーバーレイを非表示
     document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
     document.querySelector("#pz-overlay-proc")?.style.setProperty("display", "none");
+    initSettingsToasts();
 
     window.addEventListener("load", () => {
         document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
@@ -636,7 +637,7 @@
 
     function errorModeNoticeDismiss(e) {
         const notice = e.target.closest(".pz-lkc-error-mode-notice");
-        if (!notice || !e.target.closest(".notice-dismiss")) return;
+        if (!notice || !e.target.closest(".notice-dismiss, .pz-toast-dismiss")) return;
 
         const checkbox = document.querySelector('input[type=checkbox][name="properties[error-mode]"]');
         if (checkbox) {
@@ -655,6 +656,125 @@
             credentials: "same-origin",
             body: data
         }).catch(() => {});
+    }
+
+    function initSettingsToasts() {
+        const dashboard = document.querySelector(".pz-dashboard.pz-settings");
+        if (!dashboard) return;
+
+        let container = document.body.querySelector(":scope > .pz-toast-container") || dashboard.querySelector(".pz-toast-container");
+        if (!container) {
+            container = document.createElement("div");
+            container.className = "pz-toast-container";
+            container.setAttribute("role", "status");
+            container.setAttribute("aria-live", "polite");
+        }
+        if (container.parentElement !== document.body) {
+            document.body.appendChild(container);
+        }
+
+        Object.assign(container.style, {
+            position: "fixed",
+            top: "84px",
+            right: "24px",
+            zIndex: "100000",
+            display: "flex",
+            flexDirection: "column",
+            gap: "10px",
+            width: "min(520px, calc(100vw - 48px))",
+            pointerEvents: "none"
+        });
+
+        const notices = Array.from(dashboard.querySelectorAll(".notice")).filter(notice => !notice.closest(".pz-toast-container"));
+        notices.forEach(notice => container.appendChild(notice));
+
+        const pendingToasts = [];
+        container.querySelectorAll(".notice, .pz-toast").forEach(toast => {
+            if (toast.dataset.pzToastReady === "1") return;
+            toast.dataset.pzToastReady = "1";
+            toast.classList.add("pz-toast");
+            toast.classList.remove("notice", "is-dismissible");
+            Object.assign(toast.style, {
+                position: "relative",
+                margin: "0",
+                padding: "12px 44px 12px 16px",
+                boxSizing: "border-box",
+                borderTop: "1px solid #c3c4c7",
+                borderRight: "1px solid #c3c4c7",
+                borderBottom: "1px solid #c3c4c7",
+                borderRadius: "6px",
+                background: "#fff",
+                boxShadow: "0 8px 24px rgba(0, 0, 0, 0.22)",
+                pointerEvents: "auto",
+                transition: "opacity 0.8s ease, transform 0.8s ease"
+            });
+            let closeButton = toast.querySelector(".notice-dismiss, .pz-toast-dismiss");
+            if (!closeButton) {
+                closeButton = document.createElement("button");
+                closeButton.type = "button";
+                closeButton.className = "pz-toast-dismiss";
+                closeButton.setAttribute("aria-label", "Dismiss this notice.");
+                closeButton.innerHTML = '<span class="dashicons dashicons-no-alt" aria-hidden="true"></span>';
+                toast.appendChild(closeButton);
+            } else {
+                closeButton.classList.remove("notice-dismiss");
+                closeButton.classList.add("pz-toast-dismiss");
+            }
+            const dismiss = () => {
+                if (toast.dataset.pzToastClosing === "1") return;
+                toast.dataset.pzToastClosing = "1";
+                toast.classList.add("pz-toast-hide");
+                window.setTimeout(() => {
+                    toast.style.visibility = "hidden";
+                    toast.style.pointerEvents = "none";
+                    toast.removeAttribute("data-pz-toast-visible");
+                    cleanupSettingsToasts();
+                }, 800);
+            };
+
+            toast.dataset.pzToastQueued = "1";
+            toast.style.display = "none";
+            pendingToasts.push(toast);
+            if (closeButton) {
+                closeButton.addEventListener("click", () => window.setTimeout(dismiss, 0));
+            }
+        });
+
+        container._pzToastQueue = (container._pzToastQueue || []).concat(pendingToasts);
+        scheduleSettingsToasts();
+
+        function scheduleSettingsToasts() {
+            if (container.dataset.pzToastScheduling === "1") return;
+            container.dataset.pzToastScheduling = "1";
+            showNextSettingsToast();
+        }
+
+        function showNextSettingsToast() {
+            const nextToast = container._pzToastQueue?.shift();
+            if (!nextToast) {
+                container.dataset.pzToastScheduling = "0";
+                return;
+            }
+            nextToast.dataset.pzToastVisible = "1";
+            nextToast.classList.remove("pz-toast-hide");
+            nextToast.style.display = "";
+            nextToast.addEventListener("animationend", () => {
+                nextToast.style.animation = "none";
+            }, { once: true });
+            window.setTimeout(() => {
+                const closeButton = nextToast.querySelector(".pz-toast-dismiss");
+                closeButton?.dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+            }, 6000);
+            window.setTimeout(showNextSettingsToast, 500);
+        }
+
+        function cleanupSettingsToasts() {
+            const hasQueuedToast = (container._pzToastQueue || []).length > 0;
+            const hasOpenToast = Array.from(container.querySelectorAll(".pz-toast")).some(toast => toast.dataset.pzToastClosing !== "1");
+            if (!hasQueuedToast && !hasOpenToast) {
+                container.innerHTML = "";
+            }
+        }
     }
 
     function selectImageFromMedia(e) {
@@ -956,9 +1076,72 @@
             }
         };
 
-        const openTab = (tab, focusTab = false) => {
+        const focusElement = control => {
+            if (typeof control?.focus !== "function") return;
+            try {
+                control.focus({ preventScroll: true });
+            } catch (e) {
+                control.focus();
+            }
+        };
+
+        const getFocusItem = element => {
+            if (!element) return "";
+
+            const target = element.dataset?.target || "";
+            let match = target.match(/^properties\[([^\]]+)\]$/);
+            if (match) return match[1];
+
+            const name = element.getAttribute?.("name") || "";
+            match = name.match(/^properties\[([^\]]+)\]$/);
+            return match ? match[1] : "";
+        };
+
+        const getTabByPageId = pageId => tabbar.querySelector(`.pz-tab[name="${pageId}"], .pz-tab[href="#${pageId}"]`);
+
+        const getFocusableControlByItem = (page, item) => {
+            if (!page || !item) return null;
+
+            return Array.from(page.querySelectorAll("input, select, textarea, button, a[href], [tabindex]")).find(control => {
+                if (control.type === "hidden" || control.disabled) return false;
+                const style = window.getComputedStyle(control);
+                if (style.display === "none" || style.visibility === "hidden" || !control.getClientRects().length) return false;
+                return getFocusItem(control) === item;
+            }) || null;
+        };
+
+        const mapFocusItemForTab = (item, tabName) => {
+            if (!item) return "";
+            if (tabName === "pz-external" && item.startsWith("in-")) return `ex-${item.slice(3)}`;
+            if (tabName === "pz-internal" && item.startsWith("ex-")) return `in-${item.slice(3)}`;
+            return item;
+        };
+
+        const saveActiveFocusItem = () => {
+            const activeTab = tabbar.querySelector(".pz-tab-active");
+            const activePage = document.getElementById(getTabName(activeTab));
+            const item = getFocusItem(document.activeElement);
+            if (activeTab && activePage?.contains(document.activeElement) && item) {
+                activeTab.dataset.focusItem = item;
+                return item;
+            }
+            return activeTab?.dataset.focusItem || "";
+        };
+
+        const getRestoreFocusItem = (tab, sourceFocusItem = "") => {
+            const tabName = getTabName(tab);
+            const page = document.getElementById(tabName);
+            const mappedItem = mapFocusItemForTab(sourceFocusItem, tabName);
+            if (getFocusableControlByItem(page, mappedItem)) return mappedItem;
+            if (getFocusableControlByItem(page, tab.dataset.focusItem || "")) return tab.dataset.focusItem;
+            return "";
+        };
+
+        const openTab = (tab, focusTab = false, options = {}) => {
             const tabName = getTabName(tab);
             if (!tabName) return;
+            const restoreFocus = options.restoreFocus !== false;
+            const sourceFocusItem = options.sourceFocusItem ?? saveActiveFocusItem();
 
             getTabs().forEach(item => item.classList.remove("pz-tab-active"));
             document.querySelectorAll(".pz-page").forEach(page => page.classList.remove("pz-page-active"));
@@ -970,16 +1153,20 @@
 
             adjustTabVisibility(tab);
             updateButtons();
+            if (restoreFocus) {
+                const focusItem = getRestoreFocusItem(tab, sourceFocusItem);
+                const focusControl = getFocusableControlByItem(document.getElementById(tabName), focusItem);
+                if (focusControl) {
+                    tab.dataset.focusItem = focusItem;
+                    window.setTimeout(() => focusElement(focusControl), 0);
+                    return;
+                }
+            }
             if (focusTab) tab.focus();
         };
 
         const focusControl = control => {
-            if (typeof control?.focus !== "function") return;
-            try {
-                control.focus({ preventScroll: true });
-            } catch (e) {
-                control.focus();
-            }
+            focusElement(control);
         };
 
         const isControlInView = control => {
@@ -1018,7 +1205,7 @@
             if (!page?.id) return;
 
             const tab = tabbar.querySelector(`.pz-tab[name="${page.id}"], .pz-tab[href="#${page.id}"]`);
-            if (tab) openTab(tab);
+            if (tab) openTab(tab, false, { restoreFocus: false });
 
             window.setTimeout(() => scrollToControl(control), 60);
         };
@@ -1026,6 +1213,15 @@
         document.querySelector(".pz-settings form")?.addEventListener("invalid", e => {
             showInvalidControl(e.target);
         }, true);
+
+        dashboard.addEventListener("focusin", e => {
+            const page = e.target.closest(".pz-page");
+            const item = getFocusItem(e.target);
+            if (!page?.id || !item) return;
+
+            const tab = getTabByPageId(page.id);
+            if (tab) tab.dataset.focusItem = item;
+        });
 
         const getCurrentIndex = (tabs, currentTab = null) => {
             const currentName = getTabName(currentTab) || tabNow?.value || getTabName(tabbar.querySelector(".pz-tab-active"));
@@ -1095,7 +1291,7 @@
                 const now = Date.now();
                 if (now - lastWheelAt < 120) return;
                 lastWheelAt = now;
-                moveTab(delta > 0 ? 1 : -1, true);
+                moveTab(delta > 0 ? 1 : -1, false);
                 return;
             }
 
@@ -1124,9 +1320,10 @@
         tabbar.addEventListener("click", e => {
             const tab = e.target.closest(".pz-tab");
             if (!tab || !tabbar.contains(tab)) return;
+            if (e.button !== 0) return;
 
             e.preventDefault();
-            openTab(tab);
+            openTab(tab, true);
         });
 
         tabbar.addEventListener("keydown", e => {
@@ -1134,9 +1331,27 @@
             if (!tab || !tabbar.contains(tab)) return;
             if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
 
+            if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
+                e.preventDefault();
+                e.stopPropagation();
+                moveTab(e.key === "ArrowRight" ? 1 : -1, false, tab);
+                return;
+            }
+            if (e.altKey || e.metaKey || e.shiftKey) return;
+
             e.preventDefault();
             e.stopPropagation();
             moveTab(e.key === "ArrowRight" ? 1 : -1, true, tab);
+        });
+
+        document.addEventListener("keydown", e => {
+            if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.isComposing) return;
+            if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+            if (tabbar.contains(e.target)) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+            moveTab(e.key === "ArrowRight" ? 1 : -1, false);
         });
 
         dashboard.addEventListener("wheel", e => {
@@ -1167,7 +1382,7 @@
             const now = Date.now();
             if (now - lastWheelAt < 120) return;
             lastWheelAt = now;
-            moveTab(delta > 0 ? 1 : -1, true);
+            moveTab(delta > 0 ? 1 : -1, false);
         }, { passive: false });
 
         dashboard.addEventListener("pointerdown", e => {

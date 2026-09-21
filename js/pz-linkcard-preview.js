@@ -8,6 +8,7 @@
         const modeButton = win?.querySelector("[data-pz-preview-mode]");
         const closeButton = win?.querySelector("[data-pz-preview-close]");
         const backgroundButtons = win?.querySelectorAll("[data-pz-preview-background]");
+        const twoCardsCheckbox = win?.querySelector("[data-pz-preview-two-cards]");
         if (!win || !handle) return;
         const form = document.querySelector(".pz-settings form");
         const storageKey = "pz-linkcard-preview-state";
@@ -138,6 +139,10 @@
             const parsed = parseInt(raw, 10);
             return Number.isFinite(parsed) ? parsed : null;
         };
+        const readStateFlag = (state, name) => {
+            const raw = state && Object.prototype.hasOwnProperty.call(state, name) ? state[name] : readStateInput(name);
+            return raw === true || raw === 1 || raw === "1" || raw === "true";
+        };
         const readStoredState = () => {
             try {
                 const stored = window.localStorage?.getItem(storageKey);
@@ -147,6 +152,12 @@
             } catch (err) {
                 return null;
             }
+        };
+        const applyTwoCards = enabled => {
+            const active = !!enabled;
+            win.classList.toggle("pz-settings-preview-two-cards", active);
+            if (twoCardsCheckbox) twoCardsCheckbox.checked = active;
+            setStateInput("preview-two-cards", active ? "1" : "0");
         };
         const updateModeButton = () => {
             if (!modeButton) return;
@@ -219,6 +230,7 @@
                 "preview-height": Math.round(rect.height),
                 "preview-docked-height": Math.round(previewDockSide === "bottom" ? rect.height : (readStateNumber(null, "preview-docked-height") || rect.height)),
                 "preview-right-docked-width": Math.round(previewDockSide === "right" ? rect.width : (readStateNumber(null, "preview-right-docked-width") || rect.width)),
+                "preview-two-cards": twoCardsCheckbox?.checked ? 1 : 0,
             };
             if (previewDockSide === "right") {
                 state["right-docked-width"] = Math.round(rect.width);
@@ -258,6 +270,7 @@
                 "preview-height": Math.round(rect.height),
                 "preview-docked-height": Math.round(previewDockSide === "bottom" ? rect.height : (readStateNumber(null, "preview-docked-height") || rect.height)),
                 "preview-right-docked-width": Math.round(previewDockSide === "right" ? rect.width : (readStateNumber(null, "preview-right-docked-width") || rect.width)),
+                "preview-two-cards": twoCardsCheckbox?.checked ? 1 : 0,
                 "window-left": readStateNumber(storedState, "window-left"),
                 "window-top": readStateNumber(storedState, "window-top"),
                 "window-width": readStateNumber(storedState, "window-width"),
@@ -339,6 +352,11 @@
         };
         const setResizeCursor = e => {
             if (win.classList.contains("pz-settings-preview-resizing")) return;
+            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) {
+                win.style.cursor = "";
+                handle.style.cursor = "";
+                return;
+            }
             if (e.target?.closest?.("[data-pz-preview-handle]")) {
                 win.style.cursor = "";
                 handle.style.cursor = "";
@@ -572,7 +590,7 @@
         win.addEventListener("pointerleave", clearResizeCursor);
         win.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
-            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
+            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
             if (e.target?.closest?.("[data-pz-preview-handle]")) return;
             const edges = getResizeEdges(e);
             if (!edges) return;
@@ -682,7 +700,7 @@
 
         handle.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
-            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
+            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
 
             const now = Date.now();
             const distance = Math.hypot(e.clientX - lastHandleClick.x, e.clientY - lastHandleClick.y);
@@ -786,7 +804,7 @@
             window.addEventListener("pointercancel", up);
         });
         handle.addEventListener("dblclick", e => {
-            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background")) return;
+            if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
             e.preventDefault();
             if (suppressHandleDblClick) {
                 suppressHandleDblClick = false;
@@ -810,6 +828,11 @@
             showIconPreview();
             closeButton.blur();
         });
+        twoCardsCheckbox?.addEventListener("change", () => {
+            applyTwoCards(twoCardsCheckbox.checked);
+            syncPreviewState();
+            persistPreviewState();
+        });
         restoreButton.addEventListener("click", e => {
             e.preventDefault();
             hideRestoreButton();
@@ -821,6 +844,7 @@
         });
 
         window.addEventListener("resize", keepInViewport);
+        applyTwoCards(readStateFlag(readStoredState() || {}, "preview-two-cards"));
         updateModeButton();
         if ((readStoredState() || {})["preview-mode"] === "icon" || readStateInput("preview-mode") === "icon") {
             showIconPreview();
@@ -1041,6 +1065,8 @@
             const contentHeight = intValue("content-height", 0);
             const thumbnailWidth = intValue("thumbnail-width", 100);
             const thumbnailHeight = intValue("thumbnail-height", 100);
+            const specialFormat = value("special-format");
+            const usePresetLayout = specialFormat === "sqr";
 
             win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
                 const prefix = card.dataset.pzPreviewCard;
@@ -1091,7 +1117,7 @@
                     cardBody.style.marginRight = cssSize("card-right") || "8px";
                 }
 
-                if (thumbnail && thumbnailImg) {
+                if (!usePresetLayout && thumbnail && thumbnailImg) {
                     applyDisplay(thumbnail, thumbnailPosition !== "0");
                     if (thumbnailPosition === "1") {
                         thumbnail.style.float = "right";
@@ -1113,7 +1139,7 @@
                     }
                 }
 
-                if (content) {
+                if (content && !usePresetLayout) {
                     const totalHeight = thumbnailPosition === "3" ? contentHeight + thumbnailHeight : contentHeight;
                     if (totalHeight > 0) content.style.height = `${totalHeight}px`;
                     if (checked("content-inset")) {
@@ -1146,8 +1172,8 @@
                 if (heading) {
                     let headingText = value(`${prefix}-heading-text`);
                     if (value("special-format") === "JIN" && headingText === "") {
-                        if (prefix === "ex") headingText = "参考にしました";
-                        if (prefix === "in") headingText = "あわせて読みたい";
+                        if (prefix === "ex") headingText = labels.referenced || "Referenced";
+                        if (prefix === "in") headingText = labels.youMayAlsoLike || "You may also like";
                     }
                     heading.textContent = headingText;
                     const showHeading = heading.textContent !== "";

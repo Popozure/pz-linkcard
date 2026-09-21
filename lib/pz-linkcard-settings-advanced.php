@@ -8,7 +8,7 @@
 			// 末尾のスラッシュの除去
 			$item_name		=	'trail-slash';
 			$item_list		=	array(
-				''			=>		__('As it',							'pz-linkcard' ),
+				''			=>		__('As is',							'pz-linkcard' ),
 				'1'			=> 		__('When only domain name, remove',	'pz-linkcard' ),
 				'2'			=>		__('Always remove',					'pz-linkcard' ),
 			);

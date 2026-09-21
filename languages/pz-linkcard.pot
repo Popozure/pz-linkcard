@@ -19,6 +19,42 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
+#: ../lib/pz-linkcard-settings.php:484
+msgid "Show two cards for each type"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:205
+msgid "Admin Mode"
+msgstr ""
+
+#: ../pz-linkcard.php:3012 ../pz-linkcard.php:1358
+msgid "Referenced"
+msgstr ""
+
+#: ../pz-linkcard.php:3013 ../pz-linkcard.php:1358
+msgid "You may also like"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-editor.php:107
+msgid "Use inline text"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-editor.php:111
+msgid "Do not use"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-editor.php:112
+msgid "Use as excerpt"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-editor.php:113
+msgid "Use as title"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-initialize.php:51
+msgid "Delete Database"
+msgstr ""
+
 #. Description of the plugin
 #: ../pz-linkcard.php
 msgid "Displays links in card format."
@@ -469,7 +505,7 @@ msgid "Renew SNS Count"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman.php:303
-msgid "Renew Post Id"
+msgid "Renew Post ID"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman.php:339
@@ -544,7 +580,7 @@ msgid "Senior Settings"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:11
-msgid "As it"
+msgid "As is"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:12
@@ -639,7 +675,7 @@ msgid "Cellophane tape \"long\""
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:32
-msgid "Cellophane tape \"digonal\""
+msgid "Cellophane tape \"diagonal\""
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:33
@@ -671,7 +707,7 @@ msgid "Reflection"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:40
-msgid "Infomation orange"
+msgid "Information orange"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:41
@@ -934,7 +970,7 @@ msgid "Original Size"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-card.php:428
-msgid "Thubnail Alt Text"
+msgid "Thumbnail Alt Text"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-check.php:4
@@ -974,7 +1010,7 @@ msgid "Under Title"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:20
-msgid "Bihind Site-Info"
+msgid "Behind site info"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:25
@@ -1249,7 +1285,7 @@ msgid "Deletion Settings"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-initialize.php:34
-msgid "Delete the settings when daleting the plugin."
+msgid "Delete the settings when deleting the plugin."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-initialize.php:44
@@ -1674,7 +1710,7 @@ msgid "All Devices"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php:69
-msgid "Non-Mobile Devices"
+msgid "Non-mobile devices"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php:206

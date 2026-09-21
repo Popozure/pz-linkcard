@@ -426,6 +426,7 @@ class class_pz_linkcard {
 			'preview-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-docked-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-right-docked-width'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'preview-two-cards'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'flg-anti-select'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
@@ -1354,7 +1355,7 @@ class class_pz_linkcard {
 
 		// 見出し情報
 		if (($this->options['special-format'] ?? null) === 'JIN' && ($heading_text === null || $heading_text === '')) {
-			$heading_text = $is_internal ? 'あわせて読みたい' : '参考にしました';
+			$heading_text = $is_internal ? __('You may also like', 'pz-linkcard' ) : __('Referenced', 'pz-linkcard' );
 		}
 		if	($heading_text || $is_preview ) {
 			$html_heading	=	'<div class="lkc-heading"'.($is_preview ? ' data-pz-preview-heading' : '').'>'.$heading_text.'</div>';
@@ -3008,6 +3009,8 @@ class class_pz_linkcard {
 				'labels'	=>	array(
 					'restorePreview'		=>	__('Preview', 'pz-linkcard' ),
 					'restorePreviewAria'	=>	__('Preview', 'pz-linkcard' ),
+					'referenced'			=>	__('Referenced', 'pz-linkcard' ),
+					'youMayAlsoLike'		=>	__('You may also like', 'pz-linkcard' ),
 				),
 			) );
 			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );
@@ -3410,6 +3413,7 @@ class class_pz_linkcard {
 			$mode	=	'window';
 		}
 		$this->options['preview-mode']	=	$mode;
+		$this->options['preview-two-cards']	=	isset($_POST['preview-two-cards'] ) && intval(wp_unslash($_POST['preview-two-cards'] ) ) ? 1 : 0;
 
 		foreach	(array('preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width' ) as $key ) {
 			if	(!isset($_POST[$key] ) || $_POST[$key] === '' ) {
@@ -3427,7 +3431,7 @@ class class_pz_linkcard {
 		if	(!is_array($options ) ) {
 			$options	=	self::pz_GetDefaultOptions();
 		}
-		foreach	(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width' ) as $key ) {
+		foreach	(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards' ) as $key ) {
 			$options[$key]	=	$this->options[$key] ?? null;
 		}
 		update_option(self::OPTION_NAME, $options );

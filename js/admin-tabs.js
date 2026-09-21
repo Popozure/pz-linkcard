@@ -63,18 +63,19 @@
 		document.querySelector(this.getAttribute('href'))?.classList.add('pz-page-active');
 		tabNow.value = this.getAttribute('name');
 		tab_update_name(this);
+		this.focus();
 	}
 
 	// タブをカーソルキーで移動する
 	function tab_move_key(e) {
 		if (e.ctrlKey) {
-			if (e.keyCode === 37) tab_select(-1);
-			if (e.keyCode === 39) tab_select(1);
+			if (e.keyCode === 37) tab_select(-1, false);
+			if (e.keyCode === 39) tab_select(1, false);
 		}
 	}
 
 	// 移動先のタブの処理
-	function tab_select(direction) {
+	function tab_select(direction, focusTab = true) {
 		let tabs = [...document.querySelectorAll('.pz-tab')].filter(tab => tab.style.display !== 'none');
 		if (!tabs.length) return;
 
@@ -91,7 +92,7 @@
 		const tabNow = document.querySelector('input[name="tab-now"]');
 		if (tabNow) tabNow.value = tabs[activeIndex].getAttribute('name');
 		tab_update_name(tabs[activeIndex]);
-		tabs[activeIndex].focus();
+		if (focusTab) tabs[activeIndex].focus();
 	}
 
 	function tab_update_name(tab) {

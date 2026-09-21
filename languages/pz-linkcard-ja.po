@@ -19,6 +19,22 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
+#: ../lib/pz-linkcard-settings.php:484
+msgid "Show two cards for each type"
+msgstr "2つずつ表示"
+
+#: ../lib/pz-linkcard-settings.php:205
+msgid "Admin Mode"
+msgstr "管理者モード"
+
+#: ../pz-linkcard.php:3012 ../pz-linkcard.php:1358
+msgid "Referenced"
+msgstr "参考にしました"
+
+#: ../pz-linkcard.php:3013 ../pz-linkcard.php:1358
+msgid "You may also like"
+msgstr "こちらもどうぞ"
+
 #. Description of the plugin
 #: ../pz-linkcard.php
 msgid "Displays links in card format."
@@ -637,10 +653,6 @@ msgstr "スキップ："
 msgid ")"
 msgstr "）"
 
-#: ../lib/pz-linkcard-cacheman.php:303
-msgid "Renew Post Id"
-msgstr "記事IDの再取得"
-
 #: ../lib/pz-linkcard-cacheman.php:339
 msgid "Alive check"
 msgstr "リンク先のチェック"
@@ -840,7 +852,7 @@ msgid "Senior Settings"
 msgstr "上級者向けの設定"
 
 #: ../lib/pz-linkcard-settings-advanced.php:11
-msgid "As it"
+msgid "As is"
 msgstr "そのまま"
 
 #: ../lib/pz-linkcard-settings-advanced.php:12
@@ -1045,7 +1057,7 @@ msgid "Cellophane tape \"long\""
 msgstr "セロハンテープ（長め）"
 
 #: ../lib/pz-linkcard-settings-basic.php:32
-msgid "Cellophane tape \"digonal\""
+msgid "Cellophane tape \"diagonal\""
 msgstr "セロハンテープ（斜め）"
 
 #: ../lib/pz-linkcard-settings-basic.php:33
@@ -1077,7 +1089,7 @@ msgid "Reflection"
 msgstr "反射"
 
 #: ../lib/pz-linkcard-settings-basic.php:40
-msgid "Infomation orange"
+msgid "Information orange"
 msgstr "インフォメーション オレンジ"
 
 #: ../lib/pz-linkcard-settings-basic.php:41
@@ -1463,7 +1475,7 @@ msgid "Original Size"
 msgstr "元のサイズ"
 
 #: ../lib/pz-linkcard-settings-card.php:471
-msgid "Thubnail Alt Text"
+msgid "Thumbnail Alt Text"
 msgstr "サムネイルの代替テキスト"
 
 #: ../lib/pz-linkcard-settings-check.php:4
@@ -1579,7 +1591,7 @@ msgstr "タイトルの下の行"
 
 #: ../lib/pz-linkcard-settings-display.php:20
 #: ../lib/pz-linkcard-settings-display.php:101
-msgid "Bihind Site-Info"
+msgid "Behind site info"
 msgstr "サイト情報の後ろ"
 
 #: ../lib/pz-linkcard-settings-display.php:25
@@ -1820,19 +1832,19 @@ msgid "Case-sensitive"
 msgstr "大文字と小文字を区別します"
 
 #: ../lib/pz-linkcard-settings-editor.php:107
-msgid "Use InLineText"
+msgid "Use inline text"
 msgstr "ショートコードで囲んだ文字列を使用する"
 
 #: ../lib/pz-linkcard-settings-editor.php:111
-msgid "No use"
+msgid "Do not use"
 msgstr "使用しない"
 
 #: ../lib/pz-linkcard-settings-editor.php:112
-msgid "Use to excerpt"
+msgid "Use as excerpt"
 msgstr "抜粋文として使用"
 
 #: ../lib/pz-linkcard-settings-editor.php:113
-msgid "Use to title"
+msgid "Use as title"
 msgstr "タイトルとして使用"
 
 #: ../lib/pz-linkcard-settings-editor.php:116
@@ -2050,7 +2062,7 @@ msgid "Delete Settings"
 msgstr "設定の削除"
 
 #: ../lib/pz-linkcard-settings-initialize.php:34
-msgid "Delete the settings when daleting the plugin."
+msgid "Delete the settings when deleting the plugin."
 msgstr "プラグインを削除するときに設定を削除する。"
 
 #: ../lib/pz-linkcard-settings-initialize.php:39
@@ -2062,7 +2074,7 @@ msgid "Delete the image cache when deleting the plugin."
 msgstr "プラグインを削除するときに画像キャッシュを削除する。"
 
 #: ../lib/pz-linkcard-settings-initialize.php:49
-msgid "Delete DataBase"
+msgid "Delete Database"
 msgstr "データベースの削除"
 
 #: ../lib/pz-linkcard-settings-initialize.php:54
@@ -2623,7 +2635,7 @@ msgid "All Devices"
 msgstr "すべての端末"
 
 #: ../lib/pz-linkcard-settings.php:69
-msgid "Non-Mobile Devices"
+msgid "Non-mobile devices"
 msgstr "モバイル端末以外"
 
 #: ../lib/pz-linkcard-settings.php:215 ../pz-linkcard.php:3234
