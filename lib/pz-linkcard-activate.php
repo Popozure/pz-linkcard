@@ -96,6 +96,32 @@
 		unset($this->options[$old] );
 	}
 
+	// Ver.2.6.0.5以降に名称変更した項目は、初期値をマージする前の保存値から転記する。
+	foreach (array(
+		'link-all'          => 'flg-linkall',
+		'thumbnail-resize'  => 'flg-resize',
+		'use-sitename'      => 'flg-use-sitename',
+		'style-reset-img'   => 'flg-style-reset',
+		'ex-image'          => 'ex-bg-image',
+		'ex-get'            => 'ex-get-from',
+		'in-image'          => 'in-bg-image',
+		'in-get'            => 'in-get-from',
+		'flg-unti-select'   => 'flg-anti-select',
+	) as $old => $new ) {
+		if	(is_array($stored_options ) && array_key_exists($old, $stored_options ) && !array_key_exists($new, $stored_options ) ) {
+			$this->options[$new]	=	$stored_options[$old];
+		}
+		unset($this->options[$old] );
+	}
+
+	// 真偽値だった囲みタグ設定をタグ名へ移行する。
+	if	(is_array($stored_options ) && array_key_exists('blockquote', $stored_options ) ) {
+		if	(!array_key_exists('enclose-tag', $stored_options ) ) {
+			$this->options['enclose-tag']	=	!empty($stored_options['blockquote'] ) ? 'blockquote' : 'div';
+		}
+		unset($this->options['blockquote'] );
+	}
+
 	// 共通のホバー効果をリンク種別ごとの設定へ移行
 	$old_hover	=	is_array($stored_options ) && array_key_exists('hover', $stored_options )
 		?	$stored_options['hover']
@@ -348,8 +374,11 @@
 			}
 		}
 	}
-	if	(array_key_exists('flg-ssl', $this->options ) ) {
-		$this->options['flg-sslverify']	=	$this->options['flg-ssl'] ? 0 : 1;
+	if	(is_array($stored_options ) && array_key_exists('flg-ssl', $stored_options ) ) {
+		if	(!array_key_exists('flg-sslverify', $stored_options ) ) {
+			$this->options['flg-sslverify']	=	$stored_options['flg-ssl'] ? 0 : 1;
+		}
+		unset($this->options['flg-ssl'] );
 	}
 
 	// DEFAULTSに存在しない項目を削除

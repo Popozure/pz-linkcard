@@ -51,8 +51,8 @@ class class_pz_linkcard {
 			'info-position'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 
 			'flg-style-reset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'display-url'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'display-date'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'display-url'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	1, ],
+			'display-date'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	1, ],
 			'separator'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'display-excerpt'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'content-inset'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
@@ -126,7 +126,7 @@ class class_pz_linkcard {
 
 			'heading-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
 			'heading-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'heading-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+//			'heading-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'heading-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12, ],
 			'heading-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	16, ],
 			'heading-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
@@ -136,7 +136,7 @@ class class_pz_linkcard {
 
 			'more-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
 			'more-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'more-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+//			'more-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'more-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12, ],
 			'more-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	24, ],
 			'more-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
@@ -154,7 +154,7 @@ class class_pz_linkcard {
 			'cat-underline'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 			'cat-hover'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'ex-target'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
+			'ex-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
 			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'ex-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
@@ -266,7 +266,7 @@ class class_pz_linkcard {
 			'ex-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
 
-			'in-target'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'in-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
 			'in-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
@@ -1337,10 +1337,11 @@ class class_pz_linkcard {
 
 		// 投稿日
 		$html_date	=	null;
-		if	($is_internal && $this->options['display-date'] ) {
+		$display_date_mode	=	$this->options['display-date'] ?: ($is_preview ? 1 : 0);
+		if	($is_internal && $display_date_mode ) {
 			$html_url1	=	null;
 			$html_url2	=	null;
-			switch		($this->options['display-date'] ) {
+			switch		($display_date_mode ) {
 			case	1:
 				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_date ) ).'</div>';
 				break;
@@ -1348,7 +1349,7 @@ class class_pz_linkcard {
 				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_modified ) ).'</div>';
 				break;
 			case	3:
-				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_date ) ).'&ensp;'.__('&#x1F501;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_date ) ).'</div>';
+				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_date ) ).'&ensp;'.__('&#x1F501;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_modified ) ).'</div>';
 				break;
 			}
 		}
@@ -3011,6 +3012,8 @@ class class_pz_linkcard {
 					'restorePreviewAria'	=>	__('Preview', 'pz-linkcard' ),
 					'referenced'			=>	__('Referenced', 'pz-linkcard' ),
 					'youMayAlsoLike'		=>	__('You may also like', 'pz-linkcard' ),
+					'previewPostDate'		=>	$this->pz_date(PZLKC_DATE_FORMAT, strtotime('2026-09-12 00:00:00' ) ),
+					'previewModifiedDate'	=>	$this->pz_date(PZLKC_DATE_FORMAT, strtotime('2026-09-13 00:00:00' ) ),
 				),
 			) );
 			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );

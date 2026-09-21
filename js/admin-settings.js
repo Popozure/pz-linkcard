@@ -685,7 +685,9 @@
             pointerEvents: "none"
         });
 
-        const notices = Array.from(dashboard.querySelectorAll(".notice")).filter(notice => !notice.closest(".pz-toast-container"));
+        const notices = Array.from(dashboard.querySelectorAll(".notice")).filter(notice =>
+            !notice.closest(".pz-toast-container") && !notice.classList.contains("pz-lkc-error-mode-notice")
+        );
         notices.forEach(notice => container.appendChild(notice));
 
         const pendingToasts = [];

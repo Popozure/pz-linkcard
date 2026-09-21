@@ -250,7 +250,7 @@
 	</div>
 	
 	<div class="pz-man-search">
-		<p class="search-box" title="<?php esc_attr_e('Text or field search. Examples: post:1234, id:10, domain:example.com', 'pz-linkcard' ); ?>">
+		<p class="search-box" title="<?php esc_attr_e('Text or field search. Examples: post:1234, id:10, domain:popozure.info', 'pz-linkcard' ); ?>">
 			<label>
 				<span class="dashicons dashicons-search" style="vertical-align: text-bottom;"></span>
 				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" />

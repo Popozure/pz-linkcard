@@ -502,6 +502,41 @@
             applyDockedRect(dockedHeight);
             persistPreviewState();
         };
+        const cyclePreviewMode = () => {
+            animatePreviewWindow();
+            syncPreviewState();
+            const stored = readStoredState() || {};
+
+            if (!previewDocked) {
+                floatingPreviewRect = getWindowRect();
+                const dockedHeight = readStateNumber(stored, "docked-height")
+                    ?? readStateNumber(stored, "preview-docked-height")
+                    ?? floatingPreviewRect.height;
+                applyDockedRect(dockedHeight);
+            } else if (previewDockSide === "bottom") {
+                const dockedWidth = readStateNumber(stored, "right-docked-width")
+                    ?? readStateNumber(stored, "preview-right-docked-width")
+                    ?? floatingPreviewRect?.width
+                    ?? getWindowRect().width;
+                applyRightDockedRect(dockedWidth);
+            } else {
+                const bounds = getViewportBounds();
+                const windowRect = {
+                    left: readStateNumber(stored, "window-left"),
+                    top: readStateNumber(stored, "window-top"),
+                    width: Math.max(minPreviewWidth, (bounds.maxRight - bounds.minLeft) * 0.7),
+                    height: Math.max(minPreviewHeight, (bounds.maxBottom - bounds.minTop) * 0.7),
+                };
+                const hasWindowPosition = windowRect.left !== null && windowRect.top !== null;
+                applyFloatingRect(hasWindowPosition ? windowRect : {
+                    left: floatingPreviewRect?.left ?? bounds.minLeft + (bounds.maxRight - bounds.minLeft) * 0.15,
+                    top: floatingPreviewRect?.top ?? bounds.minTop + (bounds.maxBottom - bounds.minTop) * 0.15,
+                    width: windowRect.width,
+                    height: windowRect.height,
+                });
+            }
+            persistPreviewState();
+        };
         const restorePreviewState = () => {
             const stored = readStoredState() || {};
             const storedMode = stored["preview-mode"] || readStateInput("preview-mode");
@@ -710,7 +745,7 @@
             if (e.detail >= 2 || isDoubleClick) {
                 e.preventDefault();
                 suppressHandleDblClick = true;
-                toggleDockedPreview();
+                cyclePreviewMode();
                 return;
             }
 
@@ -810,7 +845,7 @@
                 suppressHandleDblClick = false;
                 return;
             }
-            toggleDockedPreview();
+            cyclePreviewMode();
         });
         modeButton?.addEventListener("click", e => {
             e.preventDefault();
@@ -862,6 +897,7 @@
         const form = document.querySelector(".pz-settings form");
         if (!form) return;
 
+        const labels = (typeof pzLinkCardPreview !== "undefined" && pzLinkCardPreview.labels) || {};
         let previewCssTimer = null;
         let previewCssRequestSeq = 0;
         const isControlDisabled = el => {
@@ -1002,6 +1038,55 @@
             if (thumbnail && title && thumbnail.parentElement) {
                 thumbnail.parentElement.insertBefore(thumbnail, title);
             }
+        };
+        const ensureShareNode = (share, selector, className, text) => {
+            let node = share.querySelector(selector);
+            if (!node) {
+                node = document.createElement("span");
+                share.appendChild(node);
+            }
+            node.className = className;
+            node.textContent = text;
+            return node;
+        };
+        const syncShare = (card, content, info, title, infoUrl) => {
+            const position = value("sns-position");
+            const enabled = position !== "" && (checked("sns-tw") || checked("sns-fb") || checked("sns-hb"));
+            let share = card.querySelector(".lkc-share");
+            if (!share && enabled) {
+                share = document.createElement("div");
+                share.className = "lkc-share";
+            }
+            if (!share) return;
+
+            const twText = checked("sns-tw-x") ? "1234 tweets" : "1234 posts";
+            const tw = ensureShareNode(share, ".lkc-sns-tw, .lkc-sns-x", checked("sns-tw-x") ? "lkc-sns-tw no_icon" : "lkc-sns-x no_icon", twText);
+            const fb = ensureShareNode(share, ".lkc-sns-fb", "lkc-sns-fb no_icon", "1234 shares");
+            const hb = ensureShareNode(share, ".lkc-sns-hb", "lkc-sns-hb no_icon", "1234 users");
+            applyDisplay(tw, enabled && checked("sns-tw"));
+            applyDisplay(fb, enabled && checked("sns-fb"));
+            applyDisplay(hb, enabled && checked("sns-hb"));
+            applyDisplay(share, enabled);
+            if (!enabled) return;
+
+            if (position === "1" && content && title) {
+                const titleContainer = title.parentElement && title.parentElement.parentElement === content ? title.parentElement : title;
+                content.insertBefore(share, titleContainer.parentElement === content ? titleContainer.nextSibling : null);
+            } else if (info) {
+                info.insertBefore(share, infoUrl && infoUrl.parentElement === info ? infoUrl : null);
+            }
+        };
+        const previewUrlText = (card, fallbackPrefix) => {
+            const current = card.querySelector(".lkc-url, .lkc-url-info")?.textContent?.trim();
+            if (current) return current;
+            const href = card.querySelector("a.lkc-link")?.getAttribute("href");
+            if (href) return href;
+            return fallbackPrefix === "in" ? "/" : "https://example.com/pz-linkcard-preview";
+        };
+        const titleInsertReference = (content, title) => {
+            if (!content || !title) return null;
+            const titleContainer = title.parentElement && title.parentElement.parentElement === content ? title.parentElement : title;
+            return titleContainer.parentElement === content ? titleContainer.nextSibling : null;
         };
         const textStyle = (selector, prefix) => {
             win.querySelectorAll(selector).forEach(node => {
@@ -1158,9 +1243,9 @@
                 const more = card.querySelector("[data-pz-preview-more]");
                 const thumbnail = card.querySelector(".lkc-thumbnail");
                 const thumbnailImg = card.querySelector(".lkc-thumbnail-img");
-                const url = card.querySelector(".lkc-url");
-                const infoUrl = card.querySelector(".lkc-url-info");
-                const date = card.querySelector(".lkc-date");
+                let url = card.querySelector(".lkc-url");
+                let infoUrl = card.querySelector(".lkc-url-info");
+                let date = card.querySelector(".lkc-date");
                 const excerpt = card.querySelector(".lkc-excerpt");
 
                 resetCardOrder(card);
@@ -1243,9 +1328,40 @@
                 }
 
                 const showDate = prefix !== "ex" && displayDate !== "";
+                const urlText = previewUrlText(card, prefix);
+                if (!showDate && displayUrl === "1" && content && !url) {
+                    url = document.createElement("div");
+                    url.className = "lkc-url";
+                    url.title = urlText;
+                    url.textContent = urlText;
+                    content.insertBefore(url, titleInsertReference(content, title));
+                }
+                if (!showDate && displayUrl === "2" && info && !infoUrl) {
+                    infoUrl = document.createElement("div");
+                    infoUrl.className = "lkc-url-info";
+                    infoUrl.textContent = urlText;
+                    info.appendChild(infoUrl);
+                }
+                if (prefix !== "ex" && showDate && content && !date) {
+                    date = document.createElement("div");
+                    date.className = "lkc-date";
+                    content.insertBefore(date, excerpt || titleInsertReference(content, title));
+                }
+                if (date && showDate) {
+                    const postDate = labels.previewPostDate || "2026/09/12";
+                    const modifiedDate = labels.previewModifiedDate || postDate;
+                    if (displayDate === "2") {
+                        date.textContent = `\u{1f552}\ufe0f${modifiedDate}`;
+                    } else if (displayDate === "3") {
+                        date.textContent = `\u{1f552}\ufe0f${postDate}\u2002\u{1f501}\ufe0f${modifiedDate}`;
+                    } else {
+                        date.textContent = `\u{1f552}\ufe0f${postDate}`;
+                    }
+                }
                 applyDisplay(date, showDate);
                 applyDisplay(url, displayUrl === "1" && !showDate);
                 applyDisplay(infoUrl, displayUrl === "2" && !showDate);
+                syncShare(card, content, info, title, infoUrl);
                 applyDisplay(excerpt, checked("display-excerpt"));
 
                 if (heading) {

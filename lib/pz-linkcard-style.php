@@ -752,9 +752,9 @@
 				}
 
 				// ヘッダーの背景色
-				if	($prop['heading-bg-color'] || $prop[$t.'-bg-color'] ) {
+				if	((isset($prop['heading-bg-color'] ) && $prop['heading-bg-color'] ) || $prop[$t.'-bg-color'] ) {
 					$param				=	'background-color: '
-											.($prop['heading-bg-color']		?	$prop['heading-bg-color']	:	
+											.((isset($prop['heading-bg-color'] ) && $prop['heading-bg-color'] )		?	$prop['heading-bg-color']	:	
 											 ($prop[$t.'-bg-color']			?	$prop[$t.'-bg-color']			:	'' ) ).';';
 					$file_text			=	str_replace('/*'.$T.'-HEADING-BG-COLOR*/',			$param,		$file_text );
 				}

@@ -195,6 +195,7 @@
 	$html_title		=	'';
 	$html_input		=	'';
 	$html_notice	=	'';
+	$html_standard_notice	=	'';
 
 	// スタイルシート再生成の有無
 	$flg_style		=	false;			// スタイルシートを再生成するか
@@ -248,7 +249,7 @@
 	if	($this->options['error-mode'] ) {
 		if	(!$this->options['error-mode-hide'] ) {
 			$error_url		=	$this->options['error-url'];
-			$html_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank">'.esc_url($error_url ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
+			$html_standard_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank">'.esc_url($error_url ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
 		}
 	}
 
@@ -448,7 +449,7 @@
 					'sns_facebook'		=>	1234,
 					'sns_hatena'		=>	1234,
 					'post_date'			=>	'2026-09-12 00:00:00',
-					'post_modified'		=>	'2026-09-12 00:00:00',
+					'post_modified'		=>	'2026-09-13 00:00:00',
 					'update_result'		=>	200,
 					'alive_result'		=>	200,
 					'no_failure'		=>	true,
@@ -477,8 +478,8 @@
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-crosshatch" data-pz-preview-background="crosshatch" aria-label="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'" title="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'"></button>'.
 							'</div>'.
 							'<div class="pz-settings-preview-list">'.
-							'<div class="pz-settings-preview-item">'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
-							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$make_preview_card('ex', 'https://example.com/pz-linkcard-preview-2', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item">'.$make_preview_card('ex', 'https://popozure.info/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$make_preview_card('ex', 'https://popozure.info/pz-linkcard-preview-2', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
 							'<div class="pz-settings-preview-item">'.$make_preview_card('in', home_url('/pz-linkcard-preview/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
 							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$make_preview_card('in', home_url('/pz-linkcard-preview-2/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
 							'</div>'.
@@ -563,6 +564,7 @@ echo	$html_style;
 		<?php
 			echo	$html_plugin;
 			echo	$html_title;
+			echo	$html_standard_notice;
 			if	($html_notice ) {
 				echo	'<div class="pz-toast-container" role="status" aria-live="polite" style="display:none;">'.$html_notice.'</div>';
 			}

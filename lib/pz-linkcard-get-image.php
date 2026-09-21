@@ -19,11 +19,14 @@
 	}
 
 	$file_name		=	bin2hex(hash('sha256', esc_url($thumbnail_url ), true ) );
-	$file_path_webp	=	$file_dir.$file_name.'.webp';
-	$file_url_webp	=	$file_dir_url.$file_name.'.webp';
+	$use_webp		=	function_exists('imagewebp' );
+	$use_jpeg		=	!$use_webp && function_exists('imagejpeg' );
+	$file_extension	=	$use_webp ? '.webp' : '.jpg';
+	$file_path		=	$file_dir.$file_name.$file_extension;
+	$file_url		=	$file_dir_url.$file_name.$file_extension;
 	$is_ico_url		=	(bool) preg_match('/\.ico(?:[?#].*)?$/i', $thumbnail_url );
-	$create_null_file	=	function() use ($file_path_webp ) {
-		file_put_contents($file_path_webp, '' );
+	$create_null_file	=	function() use ($file_path ) {
+		file_put_contents($file_path, '' );
 	};
 
 	if	($this->pz_IsLocalAddress($thumbnail_url ) ) {
@@ -32,14 +35,14 @@
 	}
 
 	if	(!$force ) {
-		if	(file_exists($file_path_webp ) ) {
-			if	(filesize($file_path_webp ) < 12 ) {
+		if	(file_exists($file_path ) ) {
+			if	(filesize($file_path ) < 12 ) {
 				return	null;
 			} else {
 				if	($stamp === true ) {
-					$file_url_webp	.=	'?'.date('yyyymmdd-his', filemtime($file_path_webp ) );
+					$file_url	.=	'?'.date('yyyymmdd-his', filemtime($file_path ) );
 				}
-				return	$file_url_webp;
+				return	$file_url;
 			}
 		}
 	}
@@ -240,7 +243,7 @@
 		}
 	}
 
-	if	(!function_exists('imagecreatefromstring' ) || !function_exists('imagecreatetruecolor' ) || !function_exists('imagecopyresampled' ) || !function_exists('imagewebp' ) ) {
+	if	(!function_exists('imagecreatefromstring' ) || !function_exists('imagecreatetruecolor' ) || !function_exists('imagecopyresampled' ) || (!$use_webp && !$use_jpeg ) ) {
 		$create_null_file();
 		return	null;
 	}
@@ -304,12 +307,17 @@
 		return	null;
 	}
 
-	imagealphablending($image_pallet, false );
-	imagesavealpha($image_pallet, true );
-	$image_pallet_bg	=	imagecolorallocatealpha($image_pallet, 0, 0, 0, 127 );
+	imagealphablending($image_pallet, !$use_webp );
+	imagesavealpha($image_pallet, $use_webp );
+	$image_pallet_bg	=	$use_webp
+		?	imagecolorallocatealpha($image_pallet, 0, 0, 0, 127 )
+		:	imagecolorallocate($image_pallet, 255, 255, 255 );
 	imagefill($image_pallet, 0, 0, $image_pallet_bg );
 	imagecopyresampled($image_pallet, $image, 0, 0, 0, 0, $new_width, $new_height, $image_width, $image_height );
-	if	(!imagewebp($image_pallet, $file_path_webp ) ) {
+	$save_result	=	$use_webp
+		?	imagewebp($image_pallet, $file_path )
+		:	imagejpeg($image_pallet, $file_path, 85 );
+	if	(!$save_result ) {
 		imagedestroy($image_pallet );
 		imagedestroy($image );
 		$create_null_file();
@@ -317,11 +325,11 @@
 	}
 	imagedestroy($image_pallet );
 	imagedestroy($image );
-	if	(!file_exists($file_path_webp ) || filesize($file_path_webp ) < 12 ) {
+	if	(!file_exists($file_path ) || filesize($file_path ) < 12 ) {
 		$create_null_file();
 		return	null;
 	}
 	if	($stamp === true ) {
-		$file_url_webp	.=	'?'.date('yyyymmdd-his', filemtime($file_path_webp ) );
+		$file_url	.=	'?'.date('yyyymmdd-his', filemtime($file_path ) );
 	}
-	return	$file_url_webp;
+	return	$file_url;
