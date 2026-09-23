@@ -138,9 +138,9 @@ msgstr "登録日時"
 msgid "Registered Result Code"
 msgstr "登録時の結果コード"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:211
+#: ../lib/pz-linkcard-cacheman-edit.php:211 ../pz-linkcard.php:3257
 msgid "Reload"
-msgstr ""
+msgstr "更新"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:212
 msgid "Cache Editor"
@@ -3785,3 +3785,31 @@ msgstr "Pz カード"
 
 #~ msgid "After the invalidation of the plug-in , please activate again"
 #~ msgstr "→プラグインの無効化を行った後、再度有効化してください"
+
+#: ../pz-linkcard.php:3249
+msgid "Copy title"
+msgstr "タイトルをコピーする"
+
+#: ../pz-linkcard.php:3250
+msgid "Copy excerpt"
+msgstr "概要文をコピーする"
+
+#: ../pz-linkcard.php:3251
+msgid "Copy link address"
+msgstr "リンクのアドレスをコピーする"
+
+#: ../pz-linkcard.php:3253
+msgid "Refresh post content"
+msgstr "記事内容を再取得"
+
+#: ../pz-linkcard.php:3254
+msgid "Refresh thumbnail image"
+msgstr "サムネイル画像を再取得"
+
+#: ../pz-linkcard.php:3257
+msgid "Retrieving..."
+msgstr "取得中..."
+
+#: ../pz-linkcard.php:3258
+msgid "Failed to retrieve the post content."
+msgstr "記事内容の取得に失敗しました。"

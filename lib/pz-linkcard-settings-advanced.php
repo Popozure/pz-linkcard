@@ -67,6 +67,16 @@
 				</label>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Quick Menu', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-quickmenu]" value="" />
+					<input type="checkbox" name="properties[flg-quickmenu]" value="1" <?php checked($this->options['flg-quickmenu'] ?? 0 ); ?> />
+					<?php esc_html_e('Display a three-dot menu on the right side of LinkCards for administrators.', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
 	</table>
 	<?php submit_button(); ?>
 

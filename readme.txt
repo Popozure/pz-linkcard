@@ -2,9 +2,9 @@
 Contributors: Poporon
 Tags: LinkCard, BlogCard, Internal Link, External Link
 Requires at least: 6.0
-Tested up to: 7.0.2
+Tested up to: 7.1.1
 Requires PHP: 8.0
-Stable tag: trunk
+Stable tag: 2.6.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.amazon.co.jp/gp/registry/wishlist/2KIBQLC1VLA9X
@@ -150,7 +150,11 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 
 == Changelog ==
 
+= 2.6.2 =
+* [Added] 設定画面の「上級者向け」にクイックメニューを追加しました。リンクカードの右側に編集画面に直接入れる三点メニューが表示されます。[Pz3]
+
 = 2.6.1 =
+* [Tested] WordPress 7.1.1 での動作確認を行いました。
 * [Fixed] metaタグのcontentとpropertyの順番によって上手く取得出来ない不具合を修正しました。
 * [Removed] 設定画面の「同ページへのリンク」を削除しました。同ページへのリンクは内部リンクとして表示されます。
 * [Removed] 設定画面の「配置」タブから「BLOCKQUOTEで囲む」を削除しました。「領域を囲うタグ」で同じことが出来るようになりました。[Pz3]

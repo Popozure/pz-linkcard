@@ -40,7 +40,7 @@
 			break;
 
 		case	'flag':
-			$this->options[$key]	=	$temp_value ? '1' : '';
+			$this->options[$key]	=	($temp_value === 1 || $temp_value === '1' ) ? '1' : null;
 			break;
 
 		case	'numeric':

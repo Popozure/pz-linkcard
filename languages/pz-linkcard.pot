@@ -1995,3 +1995,35 @@ msgstr ""
 #: ../lib/pz-linkcard-settings.php:466
 msgid "This is a sample of a same-page link card."
 msgstr ""
+
+#: ../pz-linkcard.php:3249
+msgid "Copy title"
+msgstr ""
+
+#: ../pz-linkcard.php:3250
+msgid "Copy excerpt"
+msgstr ""
+
+#: ../pz-linkcard.php:3251
+msgid "Copy link address"
+msgstr ""
+
+#: ../pz-linkcard.php:3253
+msgid "Refresh post content"
+msgstr ""
+
+#: ../pz-linkcard.php:3254
+msgid "Refresh thumbnail image"
+msgstr ""
+
+#: ../pz-linkcard.php:3257
+msgid "Retrieving..."
+msgstr ""
+
+#: ../pz-linkcard.php:3258
+msgid "Failed to retrieve the post content."
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:211 ../pz-linkcard.php:3257
+msgid "Reload"
+msgstr ""

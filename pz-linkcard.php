@@ -20,17 +20,17 @@ class class_pz_linkcard {
 			'plugin-version'					=>	['type'	=>	'version',		'null'	=>	false,	'default'	=>	null, ],
 			'db-version'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 
-			'error-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'error-hide'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'error-mode-hide'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'error-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'error-hide'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'error-mode-hide'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'error-url'							=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
 			'error-postid'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'error-time'						=>	['type'	=>	'timestamp',	'null'	=>	true,	'default'	=>	null, ],
 
 			'special-format'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 
-			'flg-linkall'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-resize'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-linkall'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-resize'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'margin-top'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
 			'margin-bottom'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
 			'margin-left'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px', ],
@@ -45,22 +45,22 @@ class class_pz_linkcard {
 			'width'								=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	500, ],
 			'width-unit'						=>	['type'	=>	'unit',			'null'	=>	true,	'default'	=>	'px', ],
 			'content-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	104, ],
-			'centering'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'centering'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'enclose-tag'						=>	['type'	=>	'html_tag',		'null'	=>	false,	'default'	=>	'div', ],
-			'flg-use-sitename'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-use-sitename'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'info-position'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 
-			'flg-style-reset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-style-reset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'display-url'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	1, ],
 			'display-date'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	1, ],
-			'separator'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'display-excerpt'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'content-inset'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'separator'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'display-excerpt'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'content-inset'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'sns-position'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
-			'sns-tw'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'sns-tw-x'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'sns-fb'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'sns-hb'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'sns-tw'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'sns-tw-x'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'sns-fb'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'sns-hb'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 
 			'title-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#111111', ],
 			'title-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
@@ -68,20 +68,20 @@ class class_pz_linkcard {
 			'title-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	18, ],
 			'title-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	23, ],
 			'title-maxline'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	2, ],
-			'title-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'title-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'title-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'title-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'title-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'title-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'title-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'title-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 
 			'url-color'							=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#4466ff', ],
 			'url-outline-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'url-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'url-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12, ],
 			'url-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	17, ],
-			'url-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'url-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'url-underline'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'url-hover'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'url-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'url-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'url-underline'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'url-hover'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 
 			'excerpt-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
 			'excerpt-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
@@ -89,336 +89,337 @@ class class_pz_linkcard {
 			'excerpt-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	11, ],
 			'excerpt-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	18, ],
 			'excerpt-maxline'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	3, ],
-			'excerpt-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'excerpt-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'excerpt-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'excerpt-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'excerpt-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'excerpt-italic'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'excerpt-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'excerpt-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'date-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
 			'date-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'date-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'date-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	11, ],
 			'date-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	16, ],
-			'date-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'date-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'date-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'date-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'date-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'date-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'date-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'date-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'info-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#222222', ],
 			'info-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'info-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null],
 			'info-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12],
 			'info-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	16],
-			'info-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'info-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'info-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'info-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'info-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'info-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'info-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'info-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'added-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
 			'added-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'added-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#365cd9', ],
 			'added-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	9, ],
 			'added-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	10, ],
-			'added-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'added-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'added-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'added-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'added-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'added-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'added-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'added-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'heading-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
 			'heading-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 //			'heading-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'heading-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12, ],
 			'heading-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	16, ],
-			'heading-bold'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'heading-italic'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'heading-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'heading-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'heading-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'heading-italic'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'heading-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'heading-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'more-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
 			'more-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 //			'more-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'more-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12, ],
 			'more-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	24, ],
-			'more-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'more-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'more-underline'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'more-hover'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'more-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'more-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'more-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'more-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'cat-color'							=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
 			'cat-outline-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'cat-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffcc88', ],
 			'cat-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12, ],
 			'cat-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	24, ],
-			'cat-bold'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'cat-italic'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'cat-underline'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'cat-hover'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'cat-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'cat-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'cat-underline'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'cat-hover'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'ex-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
-			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'ex-opacity'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff', ],
 			'ex-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#114488', ],
 			'ex-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'ex-border-width'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
 			'ex-border-radius'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'ex-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#00336688', ],
 			'ex-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
-			'ex-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'ex-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'ex-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'ex-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff88', ],
 			'ex-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#114488', ],
 			'ex-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'ex-hover-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
 			'ex-hover-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'ex-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#00336688', ],
 			'ex-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
 			'ex-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
 			'ex-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#003366', ],
-			'ex-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#003366', ],
 			'ex-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'ex-heading-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'ex-heading-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'ex-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#00336688', ],
 			'ex-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#446688', ],
-			'ex-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#446688', ],
 			'ex-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'ex-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'ex-more-border-radius'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'ex-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#44668888', ],
 			'ex-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
 			'ex-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
 			'ex-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-siteicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
 			'ex-siteicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	13, ],
 			'ex-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
 			'ex-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'ex-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
-			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888', ],
 			'ex-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'ex-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'ex-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'ex-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
 			'ex-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'in-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'in-opacity'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf0', ],
 			'in-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888', ],
 			'in-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-border-width'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
 			'in-border-radius'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'in-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#66330088', ],
 			'in-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
-			'in-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'in-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'in-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
 			'in-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf088', ],
 			'in-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888', ],
 			'in-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-hover-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
 			'in-hover-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'in-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#66330088', ],
 			'in-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
 			'in-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-field-title'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-field-excerpt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-get-url'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
 			'in-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888', ],
-			'in-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
 			'in-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-heading-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-heading-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'in-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
 			'in-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#8c8c70', ],
-			'in-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444', ],
 			'in-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-more-border-radius'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'in-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#66330088', ],
 			'in-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
 			'in-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4, ],
 			'in-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-siteicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3, ],
 			'in-siteicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	1, ],
 			'in-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail', ],
 			'in-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'in-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100, ],
-			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff', ],
-			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888', ],
 			'in-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
-			'in-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc', ],
 			'in-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
-			'flg-nofollow'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-noopener'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-referer'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-relative-url'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-unlink'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-sslverify'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-redir'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-agent'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-nofollow'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-noopener'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-referer'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-relative-url'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-unlink'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-sslverify'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-redir'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-agent'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'user-agent'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-alive'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'flg-alive'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 
 			'code1'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	'blogcard', ],
 			'code2'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
 			'code3'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
-			'use-inline'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	null, ],
-			'auto-atag'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'auto-url'							=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'auto-external'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-do-shortcode'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'use-inline'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'auto-atag'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'auto-url'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'auto-external'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-do-shortcode'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'exclude-url'						=>	['type'	=>	'textarea',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-edit-block'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-edit-insert'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-edit-block'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-edit-insert'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'mce-priority'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-edit-qtag'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-clear-excerpt'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-edit-qtag'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-clear-excerpt'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 
-			'multi-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'multi-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'multi-myid'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'multi-count'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 
-			'trail-slash'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'trail-slash'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'class-pc'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'class-mobile'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'date-format-man'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'Y\<\b\r\/\>m/d\<\b\r\/\>H:i', ],
-			'flg-preview'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-preview'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-quickmenu'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'preview-mode'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-left'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-top'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
@@ -426,20 +427,20 @@ class class_pz_linkcard {
 			'preview-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-docked-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-right-docked-width'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-two-cards'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-anti-select'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-compress'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-amp-url'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'flg-inhibit'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'preview-two-cards'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-anti-select'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-compress'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-amp-url'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-inhibit'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'saved-date'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 
-			'develop-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'admin-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'debug-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'debug-nocache'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
-			'survey-mode'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	0, ],
+			'develop-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'admin-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'debug-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'debug-nocache'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'survey-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'css-add-url'						=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
 			'css-add'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -447,9 +448,9 @@ class class_pz_linkcard {
 			'favicon-api'						=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://www.google.com/s2/favicons?domain=%DOMAIN%', ],
 			'thumbnail-api'						=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://s.wordpress.com/mshots/v1/%URL%?w=200', ],
 			'initialize-exception'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
-			'flg-delete-db'						=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-delete-image'					=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
-			'flg-delete-settings'				=>	['type'	=>	'flag',			'null'	=>	false,	'default'	=>	1, ],
+			'flg-delete-db'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-delete-image'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-delete-settings'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 		);
 
 	// 定数・プラグイン情報
@@ -681,6 +682,8 @@ class class_pz_linkcard {
 		add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
 		add_action		('wp_ajax_pz_lkc_preview_render',		[$this, 'action_ajax_pz_lkc_preview_render'] );
 		add_action		('wp_ajax_pz_lkc_preview_state',		[$this, 'action_ajax_pz_lkc_preview_state'] );
+		add_action		('wp_ajax_pz_lkc_refresh_card',			[$this, 'action_ajax_pz_lkc_refresh_card'] );
+		add_action		('wp_ajax_pz_lkc_refresh_thumbnail',	[$this, 'action_ajax_pz_lkc_refresh_thumbnail'] );
 		add_action		('wp_ajax_pz_lkc_click_count', 			[$this, 'action_ajax_pz_lkc_click_count'] );
 		add_action		('wp_ajax_nopriv_pz_lkc_click_count',	[$this, 'action_ajax_pz_lkc_click_count'] );
 	}
@@ -1042,6 +1045,9 @@ class class_pz_linkcard {
 					$result	=	$this->pz_SetCache($data );
 				}
 			}
+		}
+		if	(!$data_id && isset($result ) && is_array($result ) && !empty($result['id'] ) ) {
+			$data_id	=	$result['id'];
 		}
 
 		// 記事内容をセット
@@ -1422,7 +1428,15 @@ class class_pz_linkcard {
 			$enclose_tag	=	'div';
 		}
 		$enclose_tag	=	tag_escape($enclose_tag ) ?: 'div';
-		$html_tag		=	'<'.$enclose_tag.' class="'.esc_attr($class_id ).'"'.($is_preview && !empty($atts['preview-card'] ) ? ' data-pz-preview-card="'.esc_attr($atts['preview-card'] ).'"' : '').'>'.$html_tag.'</'.$enclose_tag.'>';
+		$html_quickmenu_icon	=	'';
+		$html_data_id			=	'';
+		if	(!$is_preview && !empty($data_id ) ) {
+			$html_data_id		=	' data-lkc-id="'.esc_attr($data_id ).'"';
+			if	(!empty($this->options['flg-quickmenu'] ) && is_user_logged_in() && current_user_can('manage_options' ) ) {
+				$html_quickmenu_icon	=	'<span class="pz-lkc-quickmenu-indicator dashicons dashicons-ellipsis" aria-hidden="true"></span>';
+			}
+		}
+		$html_tag		=	'<'.$enclose_tag.' class="'.esc_attr($class_id ).'"'.$html_data_id.($is_preview && !empty($atts['preview-card'] ) ? ' data-pz-preview-card="'.esc_attr($atts['preview-card'] ).'"' : '').'>'.$html_tag.$html_quickmenu_icon.'</'.$enclose_tag.'>';
 
 		return	$html_tag;
 	}
@@ -3209,6 +3223,43 @@ class class_pz_linkcard {
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-css-add',		$this->options['css-add-url'],			array(),	$css_version );
 		}
 		$this->enqueue_excerpt_fit_script();
+		if	(!empty($this->options['flg-quickmenu'] ) && is_user_logged_in() && current_user_can('manage_options' ) ) {
+			$quickmenu_script	=	self::PLUGIN_SLUG.'-quickmenu';
+			$quickmenu_path		=	$this->plugin_dir_path.'js/pz-linkcard-quickmenu.js';
+			wp_enqueue_style	('dashicons' );
+			wp_enqueue_script	(
+				$quickmenu_script,
+				$this->plugin_dir_url.'js/pz-linkcard-quickmenu.js',
+				array(),
+				PZLKC_PLUGIN_VERSION.'.'.(file_exists($quickmenu_path ) ? filemtime($quickmenu_path ) : '0' ),
+				true
+			);
+			wp_localize_script	($quickmenu_script,	'pz_lkc_quickmenu', array(
+				'ajax_url'		=>	admin_url('admin-ajax.php' ),
+				'nonce'			=>	wp_create_nonce('pz_lkc_refresh_card' ),
+				'edit_url'		=>	$this->cacheman_url,
+				'edit_nonce'	=>	wp_create_nonce('pz-cacheman' ),
+				'settings_url'	=>	$this->settings_url,
+				'logo_url'		=>	add_query_arg(
+					'ver',
+					file_exists($this->plugin_dir_path.'img/pz-linkcard_logo.svg' ) ? filemtime($this->plugin_dir_path.'img/pz-linkcard_logo.svg' ) : PZLKC_PLUGIN_VERSION,
+					$this->plugin_dir_url.'img/pz-linkcard_logo.svg'
+				),
+				'labels'		=>	array(
+					'copyTitle'			=>	__('Copy title', 'pz-linkcard' ),
+					'copyExcerpt'		=>	__('Copy excerpt', 'pz-linkcard' ),
+					'copyLink'			=>	__('Copy link address', 'pz-linkcard' ),
+					'edit'				=>	__('Edit', 'pz-linkcard' ),
+					'refreshContent'	=>	__('Refresh post content', 'pz-linkcard' ),
+					'refreshThumbnail'	=>	__('Refresh thumbnail image', 'pz-linkcard' ),
+					'cacheManager'		=>	__('Pz-LinkCard Manager', 'pz-linkcard' ),
+					'cardSettings'		=>	__('Pz-LinkCard Settings', 'pz-linkcard' ),
+					'reload'			=>	__('Reload', 'pz-linkcard' ),
+					'refreshing'		=>	__('Retrieving...', 'pz-linkcard' ),
+					'failed'			=>	__('Failed to retrieve the post content.', 'pz-linkcard' ),
+				),
+			) );
+		}
 		// クリック回数
 		if	($this->options['flg-click-count'] ) {
 			wp_enqueue_script	(
@@ -3499,6 +3550,67 @@ class class_pz_linkcard {
 
 	private	function	pz_GetCachemanPerPageChoices() {
 		return	array(10, 20, 50, 100);
+	}
+
+	public	function	action_ajax_pz_lkc_refresh_card() {
+		if	(!current_user_can('manage_options' ) ) {
+			wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard' ), 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_refresh_card', 'nonce', false ) ) {
+			wp_send_json_error(__('Invalid request.', 'pz-linkcard' ), 403 );
+		}
+
+		$card_id	=	isset($_POST['card_id'] ) ? absint(wp_unslash($_POST['card_id'] ) ) : 0;
+		if	($card_id <= 0 ) {
+			wp_send_json_error(__('Invalid card ID', 'pz-linkcard' ), 400 );
+		}
+
+		$data	=	$this->pz_GetCache(array('id' => $card_id ) );
+		if	(!isset($data ) || !is_array($data ) || empty($data['url'] ) ) {
+			wp_send_json_error(__('Not selected', 'pz-linkcard' ), 404 );
+		}
+
+		$html	=	$this->pz_GetHTML(array('url' => $data['url'], 'force' => true ) );
+		if	(!$html ) {
+			wp_send_json_error(__('Failed to retrieve the post content.', 'pz-linkcard' ), 500 );
+		}
+
+		wp_send_json_success(array(
+			'card_id'	=>	$card_id,
+			'html'		=>	$html,
+		) );
+	}
+
+	public	function	action_ajax_pz_lkc_refresh_thumbnail() {
+		if	(!current_user_can('manage_options' ) ) {
+			wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard' ), 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_refresh_card', 'nonce', false ) ) {
+			wp_send_json_error(__('Invalid request.', 'pz-linkcard' ), 403 );
+		}
+
+		$card_id	=	isset($_POST['card_id'] ) ? absint(wp_unslash($_POST['card_id'] ) ) : 0;
+		if	($card_id <= 0 ) {
+			wp_send_json_error(__('Invalid card ID', 'pz-linkcard' ), 400 );
+		}
+
+		$data	=	$this->pz_GetCache(array('id' => $card_id ) );
+		if	(!isset($data ) || !is_array($data ) || empty($data['url'] ) ) {
+			wp_send_json_error(__('Not selected', 'pz-linkcard' ), 404 );
+		}
+		if	(!empty($data['thumbnail'] ) ) {
+			$this->pz_GetImage($data['thumbnail'], true );
+		}
+
+		$html	=	$this->pz_GetHTML(array('url' => $data['url'] ) );
+		if	(!$html ) {
+			wp_send_json_error(__('Failed to retrieve the post content.', 'pz-linkcard' ), 500 );
+		}
+
+		wp_send_json_success(array(
+			'card_id'	=>	$card_id,
+			'html'		=>	$html,
+		) );
 	}
 
 	// クリックカウント
