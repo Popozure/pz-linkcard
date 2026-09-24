@@ -2,6 +2,11 @@
 
 	const dashboard = document.querySelector(".pz-dashboard");
     if (!dashboard) return;
+    const numericOptions = new Set(
+        Array.isArray(window.pzLinkCardAdmin?.numericOptions)
+            ? window.pzLinkCardAdmin.numericOptions
+            : []
+    );
     let processingOverlayTimer = null;
 	initInfobarPosition();
 
@@ -1241,6 +1246,17 @@
             openTab(tabs[nextIndex], focusTab);
         };
 
+        const getPropertyName = control => {
+            const match = /^properties\[([^\]]+)\]$/.exec(control?.name || "");
+            return match ? match[1] : "";
+        };
+
+        const isNumericWheelInput = control => {
+            if (!control?.matches?.("input")) return false;
+            if (control.type === "number" || control.type === "range") return true;
+            return control.type === "text" && numericOptions.has(getPropertyName(control));
+        };
+
         const changeWheelControl = (control, delta) => {
             if (!control || !dashboard.contains(control) || control.disabled || control.readOnly) return false;
 
@@ -1259,7 +1275,7 @@
 
                 if (nextIndex < 0 || nextIndex >= options.length || nextIndex === currentIndex) return false;
                 control.selectedIndex = nextIndex;
-            } else {
+            } else if (isNumericWheelInput(control)) {
                 const currentValue = Number(control.value);
                 const stepValue = control.step && control.step !== "any" ? Number(control.step) : 1;
                 if (!Number.isFinite(currentValue) || !Number.isFinite(stepValue) || stepValue <= 0) return false;
@@ -1269,6 +1285,8 @@
                 const nextValue = Math.min(max, Math.max(min, currentValue + (delta > 0 ? -stepValue : stepValue)));
                 if (nextValue === currentValue) return false;
                 control.value = String(nextValue);
+            } else {
+                return false;
             }
 
             control.dispatchEvent(new Event("input", { bubbles: true }));
@@ -1679,7 +1697,7 @@
             charset: [".pz-man-head-charset", ".pz-man-body-charset"],
             domain: [".pz-man-head-domain", ".pz-man-body-domain-cell"],
             sns: [".pz-man-head-sns_twitter", ".pz-man-body-sns"],
-            regist_time: [".pz-man-head-regist_time", ".pz-man-body-resist-time"],
+            regist_time: [".pz-man-head-regist_time", ".pz-man-body-regist-time"],
             update_time: [".pz-man-head-update_time", ".pz-man-body-update-time"],
             sns_time: [".pz-man-head-sns_time", ".pz-man-body-sns-time"],
             alive_time: [".pz-man-head-alive_time", ".pz-man-body-alive-time"],

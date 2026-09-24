@@ -26,6 +26,10 @@
 .lkc-unlink {
 	cursor:	not-allowed;
 }
+.lkc-unlink ,
+.lkc-unlink:hover {
+	/*UNLINK-BORDER-COLOR*/
+}
 .lkc-external-wrap {
 	/*EX-BORDER*/
 	/*EX-SHADOW*/
@@ -80,6 +84,7 @@
 	word-break: break-all;
 	white-space: normal;
 	overflow: hidden;
+
 	/*CONTENT-PADDING*/
 	/*CONTENT-INSET*/
 	/*CONTENT-BG-COLOR*/
@@ -184,17 +189,17 @@
 }
 .lkc-external-wrap .lkc-heading {
 	/*EX-HEADING*/
-	/*EX-HEADING-BORDER*/
-	/*EX-HEADING-RADIUS*/
-	/*EX-HEADING-SHADOW*/
-	/*EX-HEADING-BG-COLOR*/
+	/*EX-HEADING-BASE-BORDER*/
+	/*EX-HEADING-BASE-RADIUS*/
+	/*EX-HEADING-BASE-SHADOW*/
+	/*EX-HEADING-BASE-BG-COLOR*/
 }
 .lkc-internal-wrap .lkc-heading {
 	/*IN-HEADING*/
-	/*IN-HEADING-BORDER*/
-	/*IN-HEADING-RADIUS*/
-	/*IN-HEADING-SHADOW*/
-	/*IN-HEADING-BG-COLOR*/
+	/*IN-HEADING-BASE-BORDER*/
+	/*IN-HEADING-BASE-RADIUS*/
+	/*IN-HEADING-BASE-SHADOW*/
+	/*IN-HEADING-BASE-BG-COLOR*/
 }
 .lkc-heading {
 	display: inline /*IMPORTANT*/;
@@ -247,7 +252,7 @@
 	/*MOREBTN-ACTIVE*/
 }
 .lkc-info {
-	display: flex !important;
+	display: flex /*IMPORTANT*/;
 	margin: 0;
 	padding: 0;
 	align-items: center;
@@ -312,7 +317,7 @@
 	/*FAVICON-WIDTH*/
 }
 img.lkc-favicon {
-	margin: -4px 0 0 0 !important;
+	margin: -4px 0 0 0 /*IMPORTANT*/;
 	object-fit: cover;
 	height: 100%;
 	width: 100%;
@@ -460,50 +465,62 @@ blockquote.lkc-quote::after {
 }
 /* Link type specific options */
 .lkc-external-wrap {
-	/*EX-OPACITY*/
+	/*EX-WRAP-OPACITY*/
 	/*EX-WRAP-TRANSFORM*/
 	/*EX-WRAP-TRANSITION*/
 }
 .lkc-external-wrap:hover {
 	/*EX-HOVER-OPACITY*/
-	/*EX-HOVER-OPTION*/
+	/*EX-HOVER-TRANSFORM*/
+	/*EX-HOVER-BG-COLOR*/
+	/*EX-HOVER-BG-IMAGE*/
+	/*EX-HOVER-BORDER*/
+	/*EX-HOVER-SHADOW*/
+	/*EX-HOVER-RADIUS*/
+	/*EX-HOVER-TRANSITION*/
 }
 .lkc-external-wrap .lkc-heading {
-	/*EX-HEADING-TRANSFORM-OPTION*/
-	/*EX-HEADING-BG-COLOR-OPTION*/
-	/*EX-HEADING-BORDER-OPTION*/
-	/*EX-HEADING-SHADOW-OPTION*/
-	/*EX-HEADING-RADIUS-OPTION*/
+	/*EX-HEADING-TRANSFORM*/
+	/*EX-HEADING-BG-COLOR*/
+	/*EX-HEADING-BORDER*/
+	/*EX-HEADING-SHADOW*/
+	/*EX-HEADING-RADIUS*/
 }
 .lkc-external-wrap .lkc-more {
-	/*EX-MORE-TRANSFORM-OPTION*/
-	/*EX-MORE-BG-COLOR-OPTION*/
-	/*EX-MORE-BORDER-OPTION*/
-	/*EX-MORE-SHADOW-OPTION*/
-	/*EX-MORE-RADIUS-OPTION*/
+	/*EX-MORE-TRANSFORM*/
+	/*EX-MORE-BG-COLOR*/
+	/*EX-MORE-BORDER*/
+	/*EX-MORE-SHADOW*/
+	/*EX-MORE-RADIUS*/
 }
 .lkc-internal-wrap {
-	/*IN-OPACITY*/
+	/*IN-WRAP-OPACITY*/
 	/*IN-WRAP-TRANSFORM*/
 	/*IN-WRAP-TRANSITION*/
 }
 .lkc-internal-wrap:hover {
 	/*IN-HOVER-OPACITY*/
-	/*IN-HOVER-OPTION*/
+	/*IN-HOVER-TRANSFORM*/
+	/*IN-HOVER-BG-COLOR*/
+	/*IN-HOVER-BG-IMAGE*/
+	/*IN-HOVER-BORDER*/
+	/*IN-HOVER-SHADOW*/
+	/*IN-HOVER-RADIUS*/
+	/*IN-HOVER-TRANSITION*/
 }
 .lkc-internal-wrap .lkc-heading {
-	/*IN-HEADING-TRANSFORM-OPTION*/
-	/*IN-HEADING-BG-COLOR-OPTION*/
-	/*IN-HEADING-BORDER-OPTION*/
-	/*IN-HEADING-SHADOW-OPTION*/
-	/*IN-HEADING-RADIUS-OPTION*/
+	/*IN-HEADING-TRANSFORM*/
+	/*IN-HEADING-BG-COLOR*/
+	/*IN-HEADING-BORDER*/
+	/*IN-HEADING-SHADOW*/
+	/*IN-HEADING-RADIUS*/
 }
 .lkc-internal-wrap .lkc-more {
-	/*IN-MORE-TRANSFORM-OPTION*/
-	/*IN-MORE-BG-COLOR-OPTION*/
-	/*IN-MORE-BORDER-OPTION*/
-	/*IN-MORE-SHADOW-OPTION*/
-	/*IN-MORE-RADIUS-OPTION*/
+	/*IN-MORE-TRANSFORM*/
+	/*IN-MORE-BG-COLOR*/
+	/*IN-MORE-BORDER*/
+	/*IN-MORE-SHADOW*/
+	/*IN-MORE-RADIUS*/
 }
 /*OPTION*/
 /*CSS-ADD*/

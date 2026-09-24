@@ -1083,6 +1083,14 @@
             if (href) return href;
             return fallbackPrefix === "in" ? "/" : "https://example.com/pz-linkcard-preview";
         };
+        const fallbackPreviewDate = daysAgo => {
+            const date = new Date();
+            date.setDate(date.getDate() - daysAgo);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}/${month}/${day}`;
+        };
         const titleInsertReference = (content, title) => {
             if (!content || !title) return null;
             const titleContainer = title.parentElement && title.parentElement.parentElement === content ? title.parentElement : title;
@@ -1128,6 +1136,145 @@
                 }
             });
         };
+        const applySimpleLinkBox = (node, prefix, hover = false) => {
+            if (!node) return;
+
+            node.style.setProperty("background", "none", "important");
+            node.style.setProperty("border", "none", "important");
+
+            if (hover) {
+                if (checked(`${prefix}-hover-bg-enabled`)) {
+                    const bgColor = value(`${prefix}-hover-bg-color`);
+                    const bgImage = cssBackgroundImage(`${prefix}-hover-bg-image`);
+                    if (bgColor) node.style.setProperty("background-color", bgColor, "important");
+                    if (bgImage) node.style.setProperty("background-image", bgImage, "important");
+                }
+                if (checked(`${prefix}-hover-border-enabled`)) {
+                    const borderColor = value(`${prefix}-hover-border-color`);
+                    const borderStyle = value(`${prefix}-hover-border-style`) || "solid";
+                    const borderWidth = intValue(`${prefix}-hover-border-width`, 1);
+                    node.style.setProperty("border", `${borderColor ? `${borderColor} ` : ""}${borderStyle} ${borderWidth}px`, "important");
+                    const borderRadius = intValue(`${prefix}-hover-border-radius`, 0);
+                    if (borderRadius > 0) node.style.borderRadius = `${borderRadius}px`;
+                }
+                return;
+            }
+
+            const borderRadius = checked(`${prefix}-border-enabled`) ? intValue(`${prefix}-border-radius`, 0) : 0;
+            node.style.borderRadius = borderRadius > 0 ? `${borderRadius}px` : "";
+        };
+        const stitchPresets = {
+            sBR: {
+                ex: { background: "#bcddff", outline: "#aabbee" },
+                in: { background: "#f8d0d0", outline: "#e8a8a8" },
+            },
+            sGY: {
+                ex: { background: "#acefdd", outline: "#8abecb" },
+                in: { background: "#ffde51", outline: "#fbca4d" },
+            },
+        };
+        const ingressPresets = {
+            inI: {
+                color: "#ebbc4a",
+                ex: { background: "rgba(94, 75, 29, 0.90)" },
+                in: { background: "rgba(23, 18, 7, 0.90)" },
+            },
+            inN: {
+                color: "#59fbea",
+                ex: { background: "rgba(35, 100, 93, 0.90)" },
+                in: { background: "rgba(8, 25, 23, 0.90)" },
+            },
+            inE: {
+                color: "#28f428",
+                ex: { background: "rgba(16, 97, 16, 0.90)" },
+                in: { background: "rgba(4, 24, 4, 0.90)" },
+            },
+            inR: {
+                color: "#00c2ff",
+                ex: { background: "rgba(0, 77, 102, 0.90)" },
+                in: { background: "rgba(0, 19, 25, 0.90)" },
+            },
+        };
+        const applyStitchLinkBox = (node, prefix, preset, hover = false) => {
+            if (!node || !preset) return;
+
+            node.style.setProperty("background", preset.background, "important");
+            node.style.setProperty("border", "2px dashed rgba(255,255,255,0.5)", "important");
+
+            if (checked(`${prefix}-shadow-enabled`)) {
+                const shadowColor = value(`${prefix}-shadow-color`) || "rgba(0,0,0,0.3)";
+                const shadowInset = checked(`${prefix}-shadow-inset`) ? "inset " : "";
+                node.style.boxShadow = `${shadowInset}${intValue(`${prefix}-shadow-x`, 8)}px ${intValue(`${prefix}-shadow-y`, 8)}px ${intValue(`${prefix}-shadow-blur`, 8)}px ${intValue(`${prefix}-shadow-spread`, 0)}px ${shadowColor}`;
+            } else {
+                node.style.boxShadow = `0 0 0 5px ${preset.outline}, 3px 3px 6px 4px rgba(0,0,0,0.6)`;
+            }
+
+            if (hover) {
+                if (checked(`${prefix}-hover-bg-enabled`)) {
+                    const bgColor = value(`${prefix}-hover-bg-color`);
+                    const bgImage = cssBackgroundImage(`${prefix}-hover-bg-image`);
+                    if (bgColor) node.style.setProperty("background-color", bgColor, "important");
+                    if (bgImage) node.style.setProperty("background-image", bgImage, "important");
+                }
+                if (checked(`${prefix}-hover-border-enabled`)) {
+                    const borderColor = value(`${prefix}-hover-border-color`);
+                    const borderStyle = value(`${prefix}-hover-border-style`) || "solid";
+                    const borderWidth = intValue(`${prefix}-hover-border-width`, 1);
+                    node.style.setProperty("border", `${borderColor ? `${borderColor} ` : ""}${borderStyle} ${borderWidth}px`, "important");
+                    const borderRadius = intValue(`${prefix}-hover-border-radius`, 0);
+                    if (borderRadius > 0) node.style.borderRadius = `${borderRadius}px`;
+                }
+                if (checked(`${prefix}-hover-shadow-enabled`)) {
+                    const shadowColor = value(`${prefix}-hover-shadow-color`) || "rgba(0,0,0,0.3)";
+                    const shadowInset = checked(`${prefix}-hover-shadow-inset`) ? "inset " : "";
+                    node.style.boxShadow = `${shadowInset}${intValue(`${prefix}-hover-shadow-x`, 8)}px ${intValue(`${prefix}-hover-shadow-y`, 8)}px ${intValue(`${prefix}-hover-shadow-blur`, 8)}px ${intValue(`${prefix}-hover-shadow-spread`, 0)}px ${shadowColor}`;
+                }
+                return;
+            }
+
+            const borderRadius = checked(`${prefix}-border-enabled`) ? intValue(`${prefix}-border-radius`, 0) : 0;
+            node.style.borderRadius = borderRadius > 0 ? `${borderRadius}px` : "";
+        };
+        const applyIngressLinkBox = (node, prefix, preset, hover = false) => {
+            if (!node || !preset) return;
+
+            const bgImage = cssBackgroundImage(`${prefix}-bg-image`);
+            node.style.setProperty("background-color", preset.background, "important");
+            node.style.backgroundImage = checked(`${prefix}-bg-enabled`) && bgImage ? bgImage : "";
+            node.style.setProperty("border", `4px solid ${preset.color}`, "important");
+
+            const borderRadius = checked(`${prefix}-border-enabled`) ? intValue(`${prefix}-border-radius`, 0) : 0;
+            node.style.borderRadius = borderRadius > 0 ? `${borderRadius}px` : "";
+            if (checked(`${prefix}-shadow-enabled`)) {
+                const shadowColor = value(`${prefix}-shadow-color`) || "rgba(0,0,0,0.3)";
+                const shadowInset = checked(`${prefix}-shadow-inset`) ? "inset " : "";
+                node.style.boxShadow = `${shadowInset}${intValue(`${prefix}-shadow-x`, 8)}px ${intValue(`${prefix}-shadow-y`, 8)}px ${intValue(`${prefix}-shadow-blur`, 8)}px ${intValue(`${prefix}-shadow-spread`, 0)}px ${shadowColor}`;
+            } else {
+                node.style.boxShadow = "";
+            }
+
+            if (!hover) return;
+
+            if (checked(`${prefix}-hover-bg-enabled`)) {
+                const hoverBgColor = value(`${prefix}-hover-bg-color`);
+                const hoverBgImage = cssBackgroundImage(`${prefix}-hover-bg-image`);
+                if (hoverBgColor) node.style.setProperty("background-color", hoverBgColor, "important");
+                if (hoverBgImage) node.style.backgroundImage = hoverBgImage;
+            }
+            if (checked(`${prefix}-hover-border-enabled`)) {
+                const hoverBorderColor = value(`${prefix}-hover-border-color`);
+                const hoverBorderStyle = value(`${prefix}-hover-border-style`) || "solid";
+                const hoverBorderWidth = intValue(`${prefix}-hover-border-width`, 1);
+                node.style.setProperty("border", `${hoverBorderColor ? `${hoverBorderColor} ` : ""}${hoverBorderStyle} ${hoverBorderWidth}px`, "important");
+                const hoverBorderRadius = intValue(`${prefix}-hover-border-radius`, 0);
+                if (hoverBorderRadius > 0) node.style.borderRadius = `${hoverBorderRadius}px`;
+            }
+            if (checked(`${prefix}-hover-shadow-enabled`)) {
+                const hoverShadowColor = value(`${prefix}-hover-shadow-color`) || "rgba(0,0,0,0.3)";
+                const hoverShadowInset = checked(`${prefix}-hover-shadow-inset`) ? "inset " : "";
+                node.style.boxShadow = `${hoverShadowInset}${intValue(`${prefix}-hover-shadow-x`, 8)}px ${intValue(`${prefix}-hover-shadow-y`, 8)}px ${intValue(`${prefix}-hover-shadow-blur`, 8)}px ${intValue(`${prefix}-hover-shadow-spread`, 0)}px ${hoverShadowColor}`;
+            }
+        };
         const applyPartBox = (card, selector, prefix) => {
             const node = card.querySelector(selector);
             if (!node) return;
@@ -1141,7 +1288,11 @@
                     node.style.transform = `translate(${transformX}px, ${transformY}px) rotate(${transformRotate}deg) scale(${transformScale / 100})`;
                 }
             }
-            const ignoreLinkBackground = value("special-format") === "JIN" && (prefix === "ex" || prefix === "in");
+            const isLinkBox = prefix === "ex" || prefix === "in";
+            const specialFormat = value("special-format");
+            const isSimpleLinkBox = specialFormat === "smp" && isLinkBox;
+            const stitchPreset = isLinkBox ? stitchPresets[specialFormat]?.[prefix] : null;
+            const ignoreLinkBackground = isLinkBox && (specialFormat === "JIN" || isSimpleLinkBox || stitchPreset);
             if (!ignoreLinkBackground) {
                 const bgColor = value(`${prefix}-bg-color`);
                 const bgImage = cssBackgroundImage(`${prefix}-bg-image`);
@@ -1157,7 +1308,7 @@
                 const borderStyle = value(`${prefix}-border-style`) || "solid";
                 const borderWidth = intValue(`${prefix}-border-width`, 1);
                 const borderRadius = intValue(`${prefix}-border-radius`, 0);
-                if (borderStyle) {
+                if (borderStyle && !isSimpleLinkBox && !stitchPreset) {
                     node.style.setProperty("border", `${borderColor ? `${borderColor} ` : ""}${borderStyle} ${borderWidth}px`, "important");
                 }
                 if (borderRadius > 0) {
@@ -1172,6 +1323,32 @@
                 const shadowSpread = intValue(`${prefix}-shadow-spread`, 0);
                 const shadowInset = checked(`${prefix}-shadow-inset`) ? "inset " : "";
                 node.style.boxShadow = `${shadowInset}${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowSpread}px ${shadowColor}`;
+            }
+            if (isSimpleLinkBox) {
+                applySimpleLinkBox(node, prefix, node.matches(":hover"));
+                if (!node.dataset.pzPreviewSimpleHoverBound) {
+                    node.addEventListener("pointerenter", () => {
+                        if (value("special-format") === "smp") applySimpleLinkBox(node, prefix, true);
+                    });
+                    node.addEventListener("pointerleave", () => {
+                        if (value("special-format") === "smp") applySimpleLinkBox(node, prefix);
+                    });
+                    node.dataset.pzPreviewSimpleHoverBound = "1";
+                }
+            }
+            if (stitchPreset) {
+                applyStitchLinkBox(node, prefix, stitchPreset, node.matches(":hover"));
+                if (!node.dataset.pzPreviewStitchHoverBound) {
+                    node.addEventListener("pointerenter", () => {
+                        const preset = stitchPresets[value("special-format")]?.[prefix];
+                        if (preset) applyStitchLinkBox(node, prefix, preset, true);
+                    });
+                    node.addEventListener("pointerleave", () => {
+                        const preset = stitchPresets[value("special-format")]?.[prefix];
+                        if (preset) applyStitchLinkBox(node, prefix, preset);
+                    });
+                    node.dataset.pzPreviewStitchHoverBound = "1";
+                }
             }
         };
         const applyHeadlinePreset = () => {
@@ -1212,9 +1389,45 @@
                 }
             });
         };
+        const applyIngressPreset = preset => {
+            win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
+                const prefix = card.dataset.pzPreviewCard;
+                const linkPreset = preset?.[prefix];
+                if (!linkPreset) return;
+
+                const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap");
+                applyIngressLinkBox(wrap, prefix, { ...linkPreset, color: preset.color }, wrap?.matches(":hover"));
+                if (wrap && !wrap.dataset.pzPreviewIngressHoverBound) {
+                    wrap.addEventListener("pointerenter", () => {
+                        const currentPreset = ingressPresets[value("special-format")];
+                        const currentLinkPreset = currentPreset?.[prefix];
+                        if (currentLinkPreset) {
+                            applyIngressLinkBox(wrap, prefix, { ...currentLinkPreset, color: currentPreset.color }, true);
+                        }
+                    });
+                    wrap.addEventListener("pointerleave", () => {
+                        const currentPreset = ingressPresets[value("special-format")];
+                        const currentLinkPreset = currentPreset?.[prefix];
+                        if (currentLinkPreset) {
+                            applyIngressLinkBox(wrap, prefix, { ...currentLinkPreset, color: currentPreset.color });
+                        }
+                    });
+                    wrap.dataset.pzPreviewIngressHoverBound = "1";
+                }
+            });
+
+            win.querySelectorAll(".lkc-title, .lkc-url, .lkc-url-info, .lkc-excerpt, .lkc-more, .lkc-info, .lkc-domain, .lkc-added").forEach(node => {
+                node.style.color = preset.color;
+            });
+        };
         const applySpecialFormat = () => {
-            if (value("special-format") === "JIN") {
+            const specialFormat = value("special-format");
+            if (specialFormat === "JIN") {
                 applyHeadlinePreset();
+            }
+            const ingressPreset = ingressPresets[specialFormat];
+            if (ingressPreset) {
+                applyIngressPreset(ingressPreset);
             }
             schedulePreviewCssCallback();
         };
@@ -1275,10 +1488,14 @@
                 }
 
                 if (cardBody) {
-                    cardBody.style.marginTop = cssSize("card-top") || "8px";
-                    cardBody.style.marginBottom = cssSize("card-bottom") || "8px";
-                    cardBody.style.marginLeft = cssSize("card-left") || "8px";
-                    cardBody.style.marginRight = cssSize("card-right") || "8px";
+                    if (specialFormat === "cmp") {
+                        cardBody.style.margin = "0";
+                    } else {
+                        cardBody.style.marginTop = cssSize("card-top") || "8px";
+                        cardBody.style.marginBottom = cssSize("card-bottom") || "8px";
+                        cardBody.style.marginLeft = cssSize("card-left") || "8px";
+                        cardBody.style.marginRight = cssSize("card-right") || "8px";
+                    }
                 }
 
                 if (!usePresetLayout && thumbnail && thumbnailImg) {
@@ -1348,8 +1565,8 @@
                     content.insertBefore(date, excerpt || titleInsertReference(content, title));
                 }
                 if (date && showDate) {
-                    const postDate = labels.previewPostDate || "2026/09/12";
-                    const modifiedDate = labels.previewModifiedDate || postDate;
+                    const postDate = labels.previewPostDate || fallbackPreviewDate(1);
+                    const modifiedDate = labels.previewModifiedDate || fallbackPreviewDate(0);
                     if (displayDate === "2") {
                         date.textContent = `\u{1f552}\ufe0f${modifiedDate}`;
                     } else if (displayDate === "3") {

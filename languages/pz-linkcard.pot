@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pz-LinkCard\n"
 "Report-Msgid-Bugs-To: http://wppolyglots.wordpress.com\n"
-"POT-Creation-Date: 2026-09-05 09:54+0900\n"
+"POT-Creation-Date: 2026-09-23 19:56+0900\n"
 "PO-Revision-Date: 2023-12-24 19:31+0900\n"
 "Last-Translator: \n"
 "Language-Team: poporon\n"
@@ -171,6 +171,10 @@ msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-list.php:92
 msgid "Post ID"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-error.php:21
+msgid "Post Title"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-list.php:93
@@ -802,6 +806,10 @@ msgstr ""
 msgid "Border Color"
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-card.php:38
+msgid "Opacity"
+msgstr ""
+
 #: ../lib/pz-linkcard-settings-card.php:54
 msgid "Background Color"
 msgstr ""
@@ -993,12 +1001,84 @@ msgstr ""
 msgid "Verify the certificate when using SSL/TLS communication."
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-check.php:37
+msgid "When Not Found"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:38
+msgid "Disable Link"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:43
+msgid "Unlink when the access status is \"403\", \"404\", or \"410\"."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:48
+msgid "Border"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:50
+msgid "The settings are located on the “Display” tab."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:108
+msgid "Broken Link"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:109
+msgid "Number"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:119
+msgid "Inspection"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:129
+msgid "Recurrence"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:131
+msgid "The settings are located on the “Advanced” tab."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:47
+msgid "SSL Certificate Verification"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:57
+msgid "Refer to robots.txt"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:62
+msgid "Follow robots.txt when retrieving external link information."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:67
+msgid "Block local IP addresses"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php:72
+msgid "Blocking local IP addresses prevents SSRF."
+msgstr ""
+
+#: ../pz-linkcard.php:2360
+msgid "Blocked by robots.txt."
+msgstr ""
+
 #: ../lib/pz-linkcard-settings-display.php:4
 msgid "Display Settings"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:10
 msgid "When unnecessary frame is displayed on the image, you can improve it by case"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:14
+msgid "Important Style"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:16
+msgid "If the style is not applied due to the theme or plugin, you can apply it forcibly."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:17
@@ -1043,6 +1123,14 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:44
 msgid "Show Excerpt"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:44
+msgid "Border color for broken links"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:47
+msgid "* If you do not wish to change the border color, press the “Clear” button to leave it blank."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-display.php:49
@@ -2024,6 +2112,10 @@ msgstr ""
 msgid "Failed to retrieve the post content."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:211 ../pz-linkcard.php:3257
+#: ../lib/pz-linkcard-cacheman-edit.php:211
 msgid "Reload"
+msgstr ""
+
+#: ../pz-linkcard.php:3482
+msgid "Reload page"
 msgstr ""

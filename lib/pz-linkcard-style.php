@@ -29,9 +29,9 @@
 				break;
 			case 'smp': // プリセット: シンプル
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',			'', $file_text );
-				$file_text	=	str_replace('/*EX-BG-IMAGE*/',				'', $file_text );
+				$file_text	=	str_replace('/*EX-BG-IMAGE*/',			'', $file_text );
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: none;', $file_text );
-				$file_text	=	str_replace('/*IN-BG-IMAGE*/',				'', $file_text );
+				$file_text	=	str_replace('/*IN-BG-IMAGE*/',			'', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: none;', $file_text );
 				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
@@ -83,11 +83,13 @@
 					$file_text		=	str_replace('/*'.$T.'-HEADING*/',		'padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px; '.txt_color('background-color: ', $prop['in-border-color'] ).';', $file_text );
 					$value_border	=	'border: solid '.($prop[$t.'-border-color'] ?? '').' 4px;';
 					$file_text		=	str_replace('/*'.$T.'-BORDER*/',			$value_border, $file_text );
-					$file_text		=	str_replace('/*'.$T.'-HEADING-BORDER*/',	$value_border, $file_text );
+					$file_text		=	str_replace('/*'.$T.'-HEADING-BASE-BORDER*/',	$value_border, $file_text );
 					$value_bg_color	=	'background-color: '.$prop[$t.'-border-color'] ?? '';
-					$file_text		=	str_replace('/*'.$T.'-HEADING-BG-COLOR*/',	$value_bg_color.';', $file_text );
+					$file_text		=	str_replace('/*'.$T.'-HEADING-BASE-BG-COLOR*/',	$value_bg_color.';', $file_text );
 					$file_text		=	str_replace('/*'.$T.'-HOVER-HEADING-BG-COLOR*/',	$value_bg_color.';', $file_text );
-					$file_text		=	str_replace('/*'.$T.'-HOVER-OPTION*/',		'', $file_text );
+					foreach	(array('TRANSFORM', 'BG-COLOR', 'BG-IMAGE', 'BORDER', 'SHADOW', 'RADIUS', 'TRANSITION' ) as $hover_property ) {
+						$file_text	=	str_replace('/*'.$T.'-HOVER-'.$hover_property.'*/', '', $file_text );
+					}
 				}
 				if (isset($prop['flg-resize'] ) && $prop['flg-resize'] == '1' ) {
 					$size_title			=	intval(preg_replace('/[^0-9]/', '', isset($prop['title-size'] ) ? $prop['title-size'] : self::pz_GetDefaultOption('title-size' ) ) );
@@ -128,7 +130,8 @@
 				$file_text	=	str_replace('/*IN-BORDER*/',		'border: none;',	$file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',	'margin: 0 8px;',	$file_text );
 				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 8px 0;',	$file_text );
-				$css	=	'.lkc-external-wrap a , .lkc-internal-wrap a { cursor: default; }';
+				$css	=	'.lkc-external-wrap , .lkc-internal-wrap { display: flow-root; }';
+				$css	.=	'.lkc-external-wrap a , .lkc-internal-wrap a { cursor: default; }';
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 0; border: 3px #1f61e3 solid; border-radius: 5px; background: #eeecdf; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; background: linear-gradient(to bottom, #2790ff, #1f61e3); background: -webkit-linear-gradient(top, #2790ff, #1f61e3); font-weight: bold; font-size: 11px; line-height: 16px; }';
@@ -143,7 +146,8 @@
 				$file_text	=	str_replace('/*EX-BORDER*/',		'border: none;', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',		'border: none;', $file_text );
 				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 4px 0;', $file_text );
-				$css	=	'.lkc-external-wrap a , .lkc-internal-wrap a { cursor: default; }';
+				$css	=	'.lkc-external-wrap , .lkc-internal-wrap { display: flow-root; }';
+				$css	.=	'.lkc-external-wrap a , .lkc-internal-wrap a { cursor: default; }';
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 4px; border: 3px #c0c7c8 solid; background: #e0e0e0; border: 1px #87888f solid; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; border: 1px #87888f solid; background: #0000a8; font-weight: bold; font-size: 11px; line-height: 16px; }';
@@ -273,7 +277,7 @@
 				$file_text	=	str_replace('/*THUMBNAIL-HEIGHT*/',		'',					$file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',	'width: calc(100% - 2px);',				$file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',	'height: 200px; overflow: hidden;',		$file_text );
-				$file_text	=	str_replace('/*OPTION*/',				'.lkc-external-wrap, .lkc-internal-wrap { overflow: visible; } .lkc-card { height: calc(100% - 16px); overflow: hidden; box-sizing: border-box; }', $file_text );
+				$file_text	=	str_replace('/*OPTION*/',				'.lkc-external-wrap, .lkc-internal-wrap { overflow: visible; } .lkc-card { display: flex; flex-direction: column; height: calc(100% - 16px); overflow: hidden; box-sizing: border-box; } .lkc-content { flex: 1 1 auto; min-height: 0; } .lkc-info { flex: 0 0 auto; }', $file_text );
 				break;
 			}
 
@@ -384,6 +388,11 @@
 				$file_text		=	str_replace('/*MARGIN-RIGHT*/',		'padding-right: '.	$prop['margin-right'].	' !important;',		$file_text );
 			}
 
+			// リンク切れの場合の枠線
+			if	(!empty($prop['unlink-border-color'] ) ) {
+				$file_text	=	str_replace('/*UNLINK-BORDER-COLOR*/', 'border-color: '.$prop['unlink-border-color'].' !important;', $file_text );
+			}
+
 			// カード内側の余白
 			$file_text	=	str_replace('/*PADDING*/',				'padding: 0;', $file_text );
 
@@ -401,9 +410,6 @@
 			if (isset($prop['flg-style-reset'] ) ) {
 				$file_text	=	str_replace('/*RESET-IMG*/',	'margin: 0 !important; padding: 0; border: none;', $file_text );
 				$file_text	=	str_replace('/*STATIC*/',		'position: static !important;', $file_text );
-				$file_text	=	str_replace('/*IMPORTANT*/',	'!important', $file_text );
-			} else {
-				$file_text	=	str_replace('/*IMPORTANT*/',	'', $file_text );
 			}
 
 			// 中央寄せ
@@ -535,19 +541,19 @@
 			}
 
 			// リンク種別ごとの設定
-			$replace_part_style	=	function($prefix, $placeholder_prefix, $placeholder_suffix = '' ) use (&$file_text, $prop ) {
+			$replace_part_style	=	function($prefix, $placeholder_prefix ) use (&$file_text, $prop ) {
 				if	(!empty($prop[$prefix.'-transform-enabled'] ) ) {
 					$value_transform_x		= isset($prop[$prefix.'-transform-x'] ) ? intval($prop[$prefix.'-transform-x'] ) : 0;
 					$value_transform_y		= isset($prop[$prefix.'-transform-y'] ) ? intval($prop[$prefix.'-transform-y'] ) : 0;
 					$value_transform_rotate	= isset($prop[$prefix.'-transform-rotate'] ) ? intval($prop[$prefix.'-transform-rotate'] ) : 0;
 					$value_transform_scale	= isset($prop[$prefix.'-transform-scale'] ) ? intval($prop[$prefix.'-transform-scale'] ) : 100;
 					if	($value_transform_x || $value_transform_y || $value_transform_rotate || $value_transform_scale != 100 ) {
-						$file_text	=	str_replace('/*'.$placeholder_prefix.'-TRANSFORM'.$placeholder_suffix.'*/',		'transform: translate('.$value_transform_x.'px, '.$value_transform_y.'px) rotate('.$value_transform_rotate.'deg) scale('.($value_transform_scale / 100).');', $file_text );
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-TRANSFORM*/',		'transform: translate('.$value_transform_x.'px, '.$value_transform_y.'px) rotate('.$value_transform_rotate.'deg) scale('.($value_transform_scale / 100).');', $file_text );
 					}
 				}
 
 				if	(!empty($prop[$prefix.'-bg-enabled'] ) && !empty($prop[$prefix.'-bg-color'] ) ) {
-					$file_text	=	str_replace('/*'.$placeholder_prefix.'-BG-COLOR'.$placeholder_suffix.'*/',		'background-color: '.$prop[$prefix.'-bg-color'].';', $file_text );
+					$file_text	=	str_replace('/*'.$placeholder_prefix.'-BG-COLOR*/',		'background-color: '.$prop[$prefix.'-bg-color'].';', $file_text );
 				}
 
 				if	(!empty($prop[$prefix.'-border-enabled'] ) ) {
@@ -557,10 +563,10 @@
 					$value_color		=	isset($prop[$prefix.'-border-color'] ) ? $prop[$prefix.'-border-color'] : '';
 					$value_radius		=	isset($prop[$prefix.'-border-radius'] ) ? intval($prop[$prefix.'-border-radius'] ) : 0;
 					if	($value_style ) {
-						$file_text	=	str_replace('/*'.$placeholder_prefix.'-BORDER'.$placeholder_suffix.'*/',		'border: '.($value_color ? $value_color : '' ).' '.($value_style ? $value_style : '' ).' '.($value_width_num ? $value_width_num.'px' : '' ).' !important;', $file_text );
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-BORDER*/',		'border: '.($value_color ? $value_color : '' ).' '.($value_style ? $value_style : '' ).' '.($value_width_num ? $value_width_num.'px' : '' ).' !important;', $file_text );
 					}
 					if	($value_radius > 0 ) {
-						$file_text	=	str_replace('/*'.$placeholder_prefix.'-RADIUS'.$placeholder_suffix.'*/',		'border-radius: '.$value_radius.'px; -webkit-border-radius: '.$value_radius.'px; -moz-border-radius: '.$value_radius.'px;', $file_text );
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-RADIUS*/',		'border-radius: '.$value_radius.'px; -webkit-border-radius: '.$value_radius.'px; -moz-border-radius: '.$value_radius.'px;', $file_text );
 					}
 				}
 
@@ -571,7 +577,7 @@
 					$value_shadow_blur		= isset($prop[$prefix.'-shadow-blur'] ) ? intval($prop[$prefix.'-shadow-blur'] ) : 8;
 					$value_shadow_spread	= isset($prop[$prefix.'-shadow-spread'] ) ? intval($prop[$prefix.'-shadow-spread'] ) : 0;
 					$value_shadow_inset		= isset($prop[$prefix.'-shadow-inset'] ) ? $prop[$prefix.'-shadow-inset'] : 0;
-					$file_text	=	str_replace('/*'.$placeholder_prefix.'-SHADOW'.$placeholder_suffix.'*/',			'box-shadow: '.($value_shadow_inset ? 'inset ' : '' ).$value_shadow_x.'px '.$value_shadow_y.'px '.$value_shadow_blur.'px '.$value_shadow_spread.'px '.$value_shadow_color.';', $file_text );
+					$file_text	=	str_replace('/*'.$placeholder_prefix.'-SHADOW*/',			'box-shadow: '.($value_shadow_inset ? 'inset ' : '' ).$value_shadow_x.'px '.$value_shadow_y.'px '.$value_shadow_blur.'px '.$value_shadow_spread.'px '.$value_shadow_color.';', $file_text );
 				}
 			};
 			foreach		(array('ex', 'in' )	as	$t ) {
@@ -589,7 +595,7 @@
 				}
 				$value_opacity	= isset($prop[$t.'-opacity'] ) ? max(0, min(100, intval($prop[$t.'-opacity'] ) ) ) : 100;
 				if	($value_opacity != 100 ) {
-					$file_text	=	str_replace('/*'.$T.'-OPACITY*/',			'opacity: '.($value_opacity / 100).';', $file_text );
+					$file_text	=	str_replace('/*'.$T.'-WRAP-OPACITY*/',		'opacity: '.($value_opacity / 100).';', $file_text );
 				}
 				$value_transition	= isset($prop[$t.'-transition'] ) ? floatval($prop[$t.'-transition'] ) : 0;
 				if	($value_transition > 0 ) {
@@ -640,7 +646,7 @@
 				// 'inset 8px 8px 8px rgba(0,0,0,0.5)'
 				// 'inset 4px 4px 4px rgba(255,255,255,0.5), inset -4px -4px 4px rgba(0,0,0,0.5)'
 				// 'inset 4px 4px 4px rgba(255,255,255,0.5), inset -4px -4px 4px rgba(0,0,0,0.5)'
-				$value_shadow_enabled	=	isset($prop[$t.'-shadow-enabled'] ) ? $prop[$t.'-shadow-enabled'] : $prop['shadow'];
+				$value_shadow_enabled	=	$prop[$t.'-shadow-enabled'] ?? 0;
 				if	($value_shadow_enabled ) {
 					$value_shadow_color		=	!empty($prop[$t.'-shadow-color'] ) ? $prop[$t.'-shadow-color'] : 'rgba(0,0,0,0.3)';
 					$value_shadow_x			=	isset($prop[$t.'-shadow-x'] ) ? intval($prop[$t.'-shadow-x'] ) : 8;
@@ -662,7 +668,6 @@
 					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',			'',		$file_text );
 				}
 
-				$hover_css		=	array();
 				$value_hover_transform_enabled	= isset($prop[$t.'-hover-transform-enabled'] ) ? $prop[$t.'-hover-transform-enabled'] : 1;
 				if	($value_hover_transform_enabled ) {
 					$value_hover_transform_x		= isset($prop[$t.'-hover-transform-x'] ) ? intval($prop[$t.'-hover-transform-x'] ) : 0;
@@ -670,12 +675,12 @@
 					$value_hover_transform_rotate	= isset($prop[$t.'-hover-transform-rotate'] ) ? intval($prop[$t.'-hover-transform-rotate'] ) : 0;
 					$value_hover_transform_scale	= isset($prop[$t.'-hover-transform-scale'] ) ? intval($prop[$t.'-hover-transform-scale'] ) : 100;
 					if	($value_hover_transform_x || $value_hover_transform_y || $value_hover_transform_rotate || $value_hover_transform_scale != 100 ) {
-						$hover_css[]	=	'transform: translate('.$value_hover_transform_x.'px, '.$value_hover_transform_y.'px) rotate('.$value_hover_transform_rotate.'deg) scale('.($value_hover_transform_scale / 100).');';
+						$file_text	=	str_replace('/*'.$T.'-HOVER-TRANSFORM*/', 'transform: translate('.$value_hover_transform_x.'px, '.$value_hover_transform_y.'px) rotate('.$value_hover_transform_rotate.'deg) scale('.($value_hover_transform_scale / 100).');', $file_text );
 					}
 
 					$value_hover_opacity	= isset($prop[$t.'-hover-opacity'] ) ? max(0, min(100, intval($prop[$t.'-hover-opacity'] ) ) ) : 100;
 					if	($value_hover_opacity != 100 ) {
-						$hover_css[]	=	'opacity: '.($value_hover_opacity / 100).';';
+						$file_text	=	str_replace('/*'.$T.'-HOVER-OPACITY*/', 'opacity: '.($value_hover_opacity / 100).';', $file_text );
 					}
 				}
 
@@ -683,14 +688,14 @@
 				if	($value_hover_bg_enabled ) {
 					$value_hover_bg_color	= isset($prop[$t.'-hover-bg-color'] ) ? $prop[$t.'-hover-bg-color'] : '';
 					if	($value_hover_bg_color ) {
-						$hover_css[]	=	'background-color: '.$value_hover_bg_color.';';
+						$file_text	=	str_replace('/*'.$T.'-HOVER-BG-COLOR*/', 'background-color: '.$value_hover_bg_color.';', $file_text );
 					}
 					$value_hover_image	= isset($prop[$t.'-hover-bg-image'] ) ? $prop[$t.'-hover-bg-image'] : '';
 					if	($value_hover_image ) {
 						if	(preg_match('/https?(:\/\/[-_.!~*\'()a-zA-Z0-9;\/?:\@&=+\$,%#]+)$/',	$value_hover_image ) ) {
-							$hover_css[]	=	'background-image: url("'.esc_url($value_hover_image ).'");';
+							$file_text	=	str_replace('/*'.$T.'-HOVER-BG-IMAGE*/', 'background-image: url("'.esc_url($value_hover_image ).'");', $file_text );
 						} else {
-							$hover_css[]	=	'background-image: '.esc_html($value_hover_image ).';';
+							$file_text	=	str_replace('/*'.$T.'-HOVER-BG-IMAGE*/', 'background-image: '.esc_html($value_hover_image ).';', $file_text );
 						}
 					}
 				}
@@ -701,11 +706,11 @@
 					$value_hover_border_width_num	= strval(intval(preg_replace('/[^0-9]/', '', $value_hover_border_width ) ) );
 					$value_hover_border_color	= isset($prop[$t.'-hover-border-color'] ) ? $prop[$t.'-hover-border-color'] : '';
 					if	($value_hover_border_style ) {
-						$hover_css[]	=	'border: '.($value_hover_border_color ? $value_hover_border_color : '' ).' '.($value_hover_border_style ? $value_hover_border_style : '' ).' '.($value_hover_border_width_num ? $value_hover_border_width_num.'px' : '' ).';';
+						$file_text	=	str_replace('/*'.$T.'-HOVER-BORDER*/', 'border: '.($value_hover_border_color ? $value_hover_border_color : '' ).' '.($value_hover_border_style ? $value_hover_border_style : '' ).' '.($value_hover_border_width_num ? $value_hover_border_width_num.'px' : '' ).';', $file_text );
 					}
 					$value_hover_border_radius	= isset($prop[$t.'-hover-border-radius'] ) ? intval($prop[$t.'-hover-border-radius'] ) : 4;
 					if	($value_hover_border_radius > 0 ) {
-						$hover_css[]	=	'border-radius: '.$value_hover_border_radius.'px; -webkit-border-radius: '.$value_hover_border_radius.'px; -moz-border-radius: '.$value_hover_border_radius.'px;';
+						$file_text	=	str_replace('/*'.$T.'-HOVER-RADIUS*/', 'border-radius: '.$value_hover_border_radius.'px; -webkit-border-radius: '.$value_hover_border_radius.'px; -moz-border-radius: '.$value_hover_border_radius.'px;', $file_text );
 					}
 				}
 				$value_hover_shadow_enabled	= isset($prop[$t.'-hover-shadow-enabled'] ) ? $prop[$t.'-hover-shadow-enabled'] : 0;
@@ -716,14 +721,11 @@
 					$value_hover_shadow_blur	= isset($prop[$t.'-hover-shadow-blur'] ) ? intval($prop[$t.'-hover-shadow-blur'] ) : 8;
 					$value_hover_shadow_spread	= isset($prop[$t.'-hover-shadow-spread'] ) ? intval($prop[$t.'-hover-shadow-spread'] ) : 0;
 					$value_hover_shadow_inset	= isset($prop[$t.'-hover-shadow-inset'] ) ? $prop[$t.'-hover-shadow-inset'] : 0;
-					$hover_css[]	=	'box-shadow: '.($value_hover_shadow_inset ? 'inset ' : '' ).$value_hover_shadow_x.'px '.$value_hover_shadow_y.'px '.$value_hover_shadow_blur.'px '.$value_hover_shadow_spread.'px '.$value_hover_shadow_color.';';
+					$file_text	=	str_replace('/*'.$T.'-HOVER-SHADOW*/', 'box-shadow: '.($value_hover_shadow_inset ? 'inset ' : '' ).$value_hover_shadow_x.'px '.$value_hover_shadow_y.'px '.$value_hover_shadow_blur.'px '.$value_hover_shadow_spread.'px '.$value_hover_shadow_color.';', $file_text );
 				}
 				$value_hover_transition	= isset($prop[$t.'-hover-transition'] ) ? floatval($prop[$t.'-hover-transition'] ) : 0;
 				if	($value_hover_transition > 0 ) {
-					$hover_css[]	=	'transition: all '.$value_hover_transition.'s ease;';
-				}
-				if	($hover_css ) {
-					$file_text	=	str_replace('/*'.$T.'-HOVER-OPTION*/',		implode(' ', $hover_css ), $file_text );
+					$file_text	=	str_replace('/*'.$T.'-HOVER-TRANSITION*/', 'transition: all '.$value_hover_transition.'s ease;', $file_text );
 				}
 
 				// ヘッダーの位置
@@ -738,17 +740,17 @@
 											.($prop[$t.'-border-color']  	?	$prop[$t.'-border-color'].' '	:	'' )
 											.($value_style  				?	$value_style.' '					:	'' )
 											.($value_width_num > 0			?	$value_width_num.'px '				:	'' ).' /*IMPORTANT*/;';
-					$file_text			=	str_replace('/*'.$T.'-HEADING-BORDER*/',			$param,		$file_text );
+					$file_text			=	str_replace('/*'.$T.'-HEADING-BASE-BORDER*/',			$param,		$file_text );
 				}
 
 				// ヘッダーの角丸
 				if	($value_radius > 0 ) {
-					$file_text			=	str_replace('/*'.$T.'-HEADING-RADIUS*/',			'border-radius: '.$value_radius.'px;',			$file_text );
+					$file_text			=	str_replace('/*'.$T.'-HEADING-BASE-RADIUS*/',			'border-radius: '.$value_radius.'px;',			$file_text );
 				}
 
 				// ヘッダーの影
 				if	($value_shadow_enabled ) {
-					$file_text			=	str_replace('/*'.$T.'-HEADING-SHADOW*/',			'box-shadow: 8px 8px 8px rgba(0,0,0,0.3);',		$file_text );
+					$file_text			=	str_replace('/*'.$T.'-HEADING-BASE-SHADOW*/',			'box-shadow: 8px 8px 8px rgba(0,0,0,0.3);',		$file_text );
 				}
 
 				// ヘッダーの背景色
@@ -756,7 +758,7 @@
 					$param				=	'background-color: '
 											.((isset($prop['heading-bg-color'] ) && $prop['heading-bg-color'] )		?	$prop['heading-bg-color']	:	
 											 ($prop[$t.'-bg-color']			?	$prop[$t.'-bg-color']			:	'' ) ).';';
-					$file_text			=	str_replace('/*'.$T.'-HEADING-BG-COLOR*/',			$param,		$file_text );
+					$file_text			=	str_replace('/*'.$T.'-HEADING-BASE-BG-COLOR*/',			$param,		$file_text );
 				}
 
 				// 続きを読むボタン
@@ -764,14 +766,14 @@
 				$position08				=	'position: absolute; bottom:  8px; right:  8px; padding: 0 12px; ';
 				$file_text			=	str_replace('/*'.$T.'-MOREBTN*/',		$position08.$border,			$file_text );
 
-				$replace_part_style($t.'-heading',	$T.'-HEADING',		'-OPTION' );
+				$replace_part_style($t.'-heading',	$T.'-HEADING' );
 				if (empty($prop[$t.'-heading-bg-enabled'])) {
-					$file_text = str_replace('/*'.$T.'-HEADING-BG-COLOR-OPTION*/', 'background-color: transparent !important;', $file_text);
+					$file_text = str_replace('/*'.$T.'-HEADING-BG-COLOR*/', 'background-color: transparent !important;', $file_text);
 				}
 				if (empty($prop[$t.'-heading-border-enabled'])) {
-					$file_text = str_replace('/*'.$T.'-HEADING-BORDER-OPTION*/', 'border-color: transparent !important;', $file_text);
+					$file_text = str_replace('/*'.$T.'-HEADING-BORDER*/', 'border-color: transparent !important;', $file_text);
 				}
-				$replace_part_style($t.'-more',		$T.'-MORE',		'-OPTION' );
+				$replace_part_style($t.'-more',		$T.'-MORE' );
 				$replace_part_style($t.'-thumbnail',	$T.'-THUMBNAIL' );
 				if	(!empty($prop[$t.'-thumbnail-transform-enabled'] ) || !empty($prop[$t.'-thumbnail-shadow-enabled'] ) ) {
 					$file_text	=	str_replace('/*'.$T.'-THUMBNAIL-OVERFLOW*/',	'overflow: visible;', $file_text );
@@ -790,6 +792,11 @@
 				$file_text	=	str_replace('/*CREDIT*/',			'display: block;', $file_text );
 			} else {
 				$file_text	=	str_replace('/*CREDIT*/',			'display: none;', $file_text );
+			}
+
+			// img 要素のスタイルをリセット
+			if (isset($prop['flg-style-important'] ) ) {
+				$file_text	=	str_replace('/*IMPORTANT*/',	'!important', $file_text );
 			}
 
 			// 文字セットと生成情報

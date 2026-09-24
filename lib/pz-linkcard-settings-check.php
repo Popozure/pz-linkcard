@@ -4,7 +4,7 @@
 	<h2><?php echo	__('Link Check Settings', 'pz-linkcard' ).$help_open.'link-check'.$help_close; ?></h2>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php esc_html_e('Set No-Follow', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Set No-Follow', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-nofollow]" value="" />
@@ -14,7 +14,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Set No-Opener', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Set No-Opener', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-noopener]" value="" />
@@ -24,7 +24,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Relative URL', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Relative URL', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-relative-url]" value="" />
@@ -34,17 +34,24 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Do Not Link at Error', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="2"><?php esc_html_e('When Not Found', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Disable Link', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-unlink]" value="" />
 					<input type="checkbox" name="properties[flg-unlink]" value="1" <?php checked($this->options['flg-unlink'] ); ?> />
-					<?php esc_html_e('When access status is "403", "404", "410", unlink.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Unlink when the access status is "403", "404", or "410".', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Enable SSL Verification', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Border', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php esc_html_e('The settings are located on the “Display” tab.', 'pz-linkcard' ); ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('SSL Certificate Verification', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-sslverify]" value="" />
@@ -54,7 +61,27 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Follow Location', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Refer to robots.txt', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-robots]" value="" />
+					<input type="checkbox" name="properties[flg-robots]" value="1" <?php checked($this->options['flg-robots'] ); ?> />
+					<?php echo __('Follow robots.txt when retrieving external link information.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('Block local IP addresses', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-local-check]" value="" />
+					<input type="checkbox" name="properties[flg-local-check]" value="1" <?php checked($this->options['flg-local-check'] ); ?> />
+					<?php echo __('Blocking local IP addresses prevents SSRF.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('Follow Location', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-redir]" value="" />
@@ -64,18 +91,17 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Use User-Agent', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Use User-Agent', 'pz-linkcard' ); ?></th>
 			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-agent]" value="" />
-					<input type="checkbox" name="properties[flg-agent]" value="1" <?php checked($this->options['flg-agent'] ); ?> class="pz-sync-check" />
-					<?php esc_html_e('Notify using Pz-LinkCard to the link destination.', 'pz-linkcard' ); ?>
-				</label>
-				<p>&emsp;&ensp;<input name="properties[user-agent]" type="text" size="80" value="<?php echo	esc_attr($this->options['user-agent'] ); ?>" /></p>
+				<select name="properties[user-agent]" class="pz-sync pz-user-agent">
+					<?php foreach (LIST_USER_AGENT as $key => $value ) { ?>
+						<option value="<?php echo esc_attr($key ); ?>" title="<?php echo esc_attr($value ); ?>" <?php selected($key, $this->options['user-agent'] ); ?>><?php echo esc_html($value ); ?></option>
+					<?php } ?>
+				</select>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-click-count]" value="" />
@@ -85,7 +111,18 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Broken Link Checker', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="3"><?php esc_html_e('Broken Link', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Number', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-alive-count]" value="" />
+					<input type="checkbox" name="properties[flg-alive-count]" value="1" <?php checked($this->options['flg-alive-count'] ); ?> />
+					<?php esc_html_e('The number of broken links is displayed next to the submenu.', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Inspection', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-alive]" value="" />
@@ -95,13 +132,9 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Broken Link Count', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
 			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-alive-count]" value="" />
-					<input type="checkbox" name="properties[flg-alive-count]" value="1" <?php checked($this->options['flg-alive-count'] ); ?> />
-					<?php esc_html_e('The number of broken links is displayed next to the submenu.', 'pz-linkcard' ); ?>
-				</label>
+				<?php esc_html_e('The settings are located on the “Advanced” tab.', 'pz-linkcard' ); ?>
 			</td>
 		</tr>
 	</table>

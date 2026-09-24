@@ -32,10 +32,8 @@
 	}
 
 	// ユーザーエージェントの設定
-	$crawler	=	'Pz-LinkCard-Crawler/';
-	if	(!$this->options['user-agent'] || mb_substr($this->options['user-agent'], 0, mb_strlen($crawler ) ) == $crawler ) {
-		$this->options['user-agent']	=	$crawler.PZLKC_PLUGIN_VERSION;
-	}
+	$this->options['user-agent']		=	$this->pz_GetUserAgentSelection($this->options['user-agent'] ?? 'pzlkc' );
+	$this->options['user-agent-text']	=	$this->pz_GetUserAgent($this->options['user-agent'] );
 
 	// 管理者モード解除
 	if ($this->options['admin-mode'] && !$this->options['debug-mode'] ) {

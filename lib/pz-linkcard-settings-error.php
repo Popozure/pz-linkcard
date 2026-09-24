@@ -18,7 +18,7 @@ $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
 			</td>
 		</tr>
 		<tr>
-			<th scope="row">記事タイトル</th>
+			<th scope="row"><?php esc_html_e('Post Title', 'pz-linkcard' ); ?></th>
 			<td>
 				<span><?php echo $error_post_title ? esc_html($error_post_title ) : '-'; ?></span>
 			</td>

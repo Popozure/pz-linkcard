@@ -35,7 +35,7 @@
 			}
 			$item_name			=	$prefix.'-opacity';
 			$item_value			=	isset($prop[$item_name] ) ? max(0, min(100, intval($prop[$item_name] ) ) ) : 100;
-			echo				'<label class="pz-card-prop-number"><span>'.esc_html('不透明度' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="100" step="1" /><span>%</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="100" step="1" data-center="100" /></span></label>';
+			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Opacity', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="100" step="1" /><span>%</span><input type="range" class="pz-card-range" data-target="properties['.$item_name.']" value="'.esc_attr($item_value ).'" min="0" max="100" step="1" data-center="100" /></span></label>';
 			echo				'</span></td></tr>';
 
 			echo				'<tr><th scope="row">'.__('Background Color', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';

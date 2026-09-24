@@ -29,7 +29,7 @@
 		file_put_contents($file_path, '' );
 	};
 
-	if	($this->pz_IsLocalAddress($thumbnail_url ) ) {
+	if	($this->pz_ShouldBlockLocalAddress($thumbnail_url ) ) {
 		$create_null_file();
 		return	null;
 	}
@@ -48,15 +48,13 @@
 	}
 
 	// ここから画像取得処理
-	global	$wp_version;
-
 	$thumbnail_url	=	$this->pz_EncodeURL($thumbnail_url, true );
 	$rget_args							=	array();
 	$rget_args['timeout']				=	10;
 	$redirect_limit						=	$this->options['flg-redir'] ? 8 : 0;
 	$rget_args['redirection']			=	0;
 	$rget_args['limit_response_size']	=	defined('MB_IN_BYTES' ) ? MB_IN_BYTES * 5 : 5242880;
-	$rget_args['user-agent']			=	$this->options['flg-agent'] ? $this->options['user-agent'] : 'WordPress/'.$wp_version.'; '.get_bloginfo('url' );
+	$rget_args['user-agent']			=	$this->pz_GetUserAgent();
 	$rget_args['sslverify']				=	$this->options['flg-sslverify'] ? true : false;
 
 	$get_response_url	=	function($response ) {
@@ -92,7 +90,7 @@
 		$trace_args['redirection']	=	0;
 
 		for	($i = 0; $i < $redirect_limit; $i++ ) {
-			if	($this->pz_IsLocalAddress($current_url ) ) {
+			if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
 				return	$current_url;
 			}
 			$head_args				=	$trace_args;
@@ -108,7 +106,7 @@
 			$response_url	=	$get_response_url($response );
 			if	($response_url && $response_url !== $current_url ) {
 				$current_url	=	$this->pz_EncodeURL($response_url, true );
-				if	($this->pz_IsLocalAddress($current_url ) ) {
+				if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
 					return	$current_url;
 				}
 				continue;
@@ -118,7 +116,7 @@
 			$location_url	=	$get_location_url($response, $current_url );
 			if	($http_code >= 300 && $http_code < 400 && $location_url && $location_url !== $current_url ) {
 				$current_url	=	$location_url;
-				if	($this->pz_IsLocalAddress($current_url ) ) {
+				if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
 					return	$current_url;
 				}
 				continue;
@@ -134,7 +132,7 @@
 			$thumbnail_url	=	$this->pz_EncodeURL($last_url, true );
 		}
 	}
-	if	($this->pz_IsLocalAddress($thumbnail_url ) ) {
+	if	($this->pz_ShouldBlockLocalAddress($thumbnail_url ) ) {
 		$create_null_file();
 		return	null;
 	}

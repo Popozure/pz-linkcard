@@ -121,7 +121,7 @@
 			return	null;
 		}
 
-		// AUTO INCLIMENTのリセット
+		// AUTO INCRIMENTのリセット
 		$result	=	$wpdb->query($wpdb->prepare('ALTER TABLE %i AUTO_INCREMENT = 1', $this->db_name ) );
 		if	($wpdb->last_error ) {
 			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';

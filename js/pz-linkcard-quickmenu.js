@@ -13,7 +13,7 @@
         refreshThumbnail: "Refresh thumbnail image",
         cacheManager: "Pz-LinkCard Manager",
         cardSettings: "Pz-LinkCard Settings",
-        reload: "Reload",
+        reload: "Reload page",
         refreshing: "Retrieving...",
         failed: "Failed to retrieve the post content.",
         ...(config.labels || {}),

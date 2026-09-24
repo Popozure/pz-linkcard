@@ -69,6 +69,12 @@
 		'2'				=>		__('Non-mobile devices',	'pz-linkcard' ),
 	) );
 
+	define('LIST_USER_AGENT', array(
+		'pzlkc'		=>	$this->pz_GetUserAgent('pzlkc' ),
+		'mysite'	=>	$this->pz_GetUserAgent('mysite' ),
+		''			=>	$this->pz_GetUserAgent('' ),
+	) );
+
 	// 引数・変数の設定
 	$page				=	'pz-linkcard-settings';						// 設定画面のページ
 	if	(isset($_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
@@ -330,6 +336,8 @@
 						}
 					}
 				}
+			} elseif (isset($_POST['properties'] ) ) {
+				$html_notice	.=	'<div class="notice notice-info is-dismissible"><p><strong>'.__('The settings have not changed.', 'pz-linkcard' ).'</strong></p></div>';
 			}
 			$flg_style			=	true;				// スタイルシートの再生成
 			break;
@@ -432,7 +440,9 @@
 		}
 		$preview_image	=	esc_url($this->plugin_dir_url.'img/logo_pz-linkcard.png' );
 		$preview_icon	=	esc_url($this->plugin_dir_url.'img/icon-pz-linkcard.png' );
-		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_icon) {
+		$preview_today	=	current_datetime();
+		$preview_yesterday	=	$preview_today->modify('-1 day' );
+		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_icon, $preview_today, $preview_yesterday) {
 			return	$this->pz_GetHTML(array(
 				'url'			=>	$url,
 				'title'			=>	$title,
@@ -448,8 +458,8 @@
 					'sns_twitter'		=>	1234,
 					'sns_facebook'		=>	1234,
 					'sns_hatena'		=>	1234,
-					'post_date'			=>	'2026-09-12 00:00:00',
-					'post_modified'		=>	'2026-09-13 00:00:00',
+					'post_date'			=>	$preview_yesterday->format('Y-m-d H:i:s' ),
+					'post_modified'		=>	$preview_today->format('Y-m-d H:i:s' ),
 					'update_result'		=>	200,
 					'alive_result'		=>	200,
 					'no_failure'		=>	true,

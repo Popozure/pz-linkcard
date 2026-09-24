@@ -10,7 +10,12 @@
 				<?php pz_Checkbox($prop, 'flg-style-reset', __('When unnecessary frame is displayed on the image, you can improve it by case', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
-
+		<tr>
+			<th scope="row"><?php esc_html_e('Important Style', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php pz_Checkbox($prop, 'flg-style-important', __('If the style is not applied due to the theme or plugin, you can apply it forcibly.', 'pz-linkcard' ) ); ?>
+			</td>
+		</tr>
 		<tr>
 			<th scope="row" rowspan="4"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
 			<td>
@@ -37,6 +42,15 @@
 		<tr>
 			<td>
 				<?php pz_Checkbox($prop, 'display-excerpt', __('Show Excerpt', 'pz-linkcard' ) ); ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Border color for broken links', 'pz-linkcard' ); ?></th>
+			<td>
+				<div class="pz-color-note-row">
+					<input name="properties[unlink-border-color]" type="text" value="<?php echo esc_attr($prop['unlink-border-color'] ); ?>" class="pz-sync-text pz-color pz-monospace pz-color-picker" />
+					<span class="pz-note"><?php esc_html_e('* If you do not wish to change the border color, press the “Clear” button to leave it blank.', 'pz-linkcard' ); ?></span>
+				</div>
 			</td>
 		</tr>
 		<tr>

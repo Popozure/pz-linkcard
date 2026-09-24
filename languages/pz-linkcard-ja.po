@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: Pz-LinkCard\n"
 "Report-Msgid-Bugs-To: http://wppolyglots.wordpress.com\n"
 "POT-Creation-Date: 2026-09-21 19:53+0900\n"
-"PO-Revision-Date: 2026-09-21 19:57+0900\n"
+"PO-Revision-Date: 2026-09-23 19:56+0900\n"
 "Last-Translator: Poporon\n"
 "Language-Team: poporon\n"
 "Language: ja_JP\n"
@@ -138,9 +138,13 @@ msgstr "登録日時"
 msgid "Registered Result Code"
 msgstr "登録時の結果コード"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:211 ../pz-linkcard.php:3257
+#: ../lib/pz-linkcard-cacheman-edit.php:211
 msgid "Reload"
 msgstr "更新"
+
+#: ../pz-linkcard.php:3482
+msgid "Reload page"
+msgstr "ページを再読み込み"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:212
 msgid "Cache Editor"
@@ -790,6 +794,10 @@ msgstr "チェックを付けると記述エラーの状態になります。"
 msgid "Post URL"
 msgstr "記事URL"
 
+#: ../lib/pz-linkcard-settings-error.php:21
+msgid "Post Title"
+msgstr "記事タイトル"
+
 #: ../lib/pz-linkcard-settings-admin.php:141
 #: ../lib/pz-linkcard-settings-error.php:33
 msgid "Occurrence Time"
@@ -1209,6 +1217,10 @@ msgstr "回転"
 msgid "Scale"
 msgstr "スケール"
 
+#: ../lib/pz-linkcard-settings-card.php:38
+msgid "Opacity"
+msgstr "不透明度"
+
 #: ../lib/pz-linkcard-settings-card.php:41
 #: ../lib/pz-linkcard-settings-card.php:117
 #: ../lib/pz-linkcard-settings-letter.php:10
@@ -1519,15 +1531,55 @@ msgstr "エラーのときリンクしない"
 msgid "When access status is \"403\", \"404\", \"410\", unlink."
 msgstr "ステータスが「403」「404」「410」のときにリンクを無効にします。"
 
+#: ../lib/pz-linkcard-settings-check.php:37
+msgid "When Not Found"
+msgstr "見つからない場合"
+
+#: ../lib/pz-linkcard-settings-check.php:38
+msgid "Disable Link"
+msgstr "リンクを無効化"
+
+#: ../lib/pz-linkcard-settings-check.php:43
+msgid "Unlink when the access status is \"403\", \"404\", or \"410\"."
+msgstr "アクセス状態が「403」「404」「410」の場合、リンクを無効にします。"
+
+#: ../lib/pz-linkcard-settings-check.php:48
+msgid "Border"
+msgstr "枠線"
+
+#: ../lib/pz-linkcard-settings-check.php:50
+msgid "The settings are located on the “Display” tab."
+msgstr "「表示」タブに設定項目があります。"
+
 #: ../lib/pz-linkcard-settings-check.php:47
-msgid "Enable SSL Verification"
-msgstr "SSL検証を有効"
+msgid "SSL Certificate Verification"
+msgstr "SSL証明書を検証"
 
 #: ../lib/pz-linkcard-settings-check.php:52
 msgid "Verify the certificate when using SSL/TLS communication."
 msgstr "SSL/TLS通信のとき、証明書の検証を行います。"
 
 #: ../lib/pz-linkcard-settings-check.php:57
+msgid "Refer to robots.txt"
+msgstr "robots.txtを参照する"
+
+#: ../lib/pz-linkcard-settings-check.php:62
+msgid "Follow robots.txt when retrieving external link information."
+msgstr "外部リンク情報を取得するときにrobots.txtを参照します。"
+
+#: ../lib/pz-linkcard-settings-check.php:67
+msgid "Block local IP addresses"
+msgstr "ローカルIPアドレスをブロック"
+
+#: ../lib/pz-linkcard-settings-check.php:72
+msgid "Blocking local IP addresses prevents SSRF."
+msgstr "ローカルIPアドレスをブロックしてSSRFを防止します。"
+
+#: ../pz-linkcard.php:2360
+msgid "Blocked by robots.txt."
+msgstr "robots.txtにより取得が禁止されています。"
+
+#: ../lib/pz-linkcard-settings-check.php:77
 msgid "Follow Location"
 msgstr "リダイレクト処理する"
 
@@ -1563,6 +1615,26 @@ msgstr "リンク切れカウント"
 msgid "The number of broken links is displayed next to the submenu."
 msgstr "サブメニューの横にリンク切れの件数を表示します。"
 
+#: ../lib/pz-linkcard-settings-check.php:108
+msgid "Broken Link"
+msgstr "リンク切れ"
+
+#: ../lib/pz-linkcard-settings-check.php:109
+msgid "Number"
+msgstr "数"
+
+#: ../lib/pz-linkcard-settings-check.php:119
+msgid "Inspection"
+msgstr "検査"
+
+#: ../lib/pz-linkcard-settings-check.php:129
+msgid "Recurrence"
+msgstr "定期実行"
+
+#: ../lib/pz-linkcard-settings-check.php:131
+msgid "The settings are located on the “Advanced” tab."
+msgstr "「上級者向け」タブに設定項目があります。"
+
 #: ../lib/pz-linkcard-settings-display.php:4
 msgid "Display Settings"
 msgstr "表示の設定"
@@ -1575,6 +1647,14 @@ msgstr "画像スタイルのリセット"
 msgid ""
 "When unnecessary frame is displayed on the image, you can improve it by case"
 msgstr "画像がずれて表示されるときに改善される可能性が有ります（推奨）"
+
+#: ../lib/pz-linkcard-settings-display.php:14
+msgid "Important Style"
+msgstr "スタイルの重要度"
+
+#: ../lib/pz-linkcard-settings-display.php:16
+msgid "If the style is not applied due to the theme or plugin, you can apply it forcibly."
+msgstr "テーマやプラグインによってスタイルが適用されない場合、強制的に適用します。"
 
 #: ../lib/pz-linkcard-settings-display.php:17
 msgid "Position to display URL"
@@ -1609,6 +1689,14 @@ msgstr "区切り線"
 #: ../lib/pz-linkcard-settings-display.php:39
 msgid "Show Excerpt"
 msgstr "抜粋文を表示"
+
+#: ../lib/pz-linkcard-settings-display.php:44
+msgid "Border color for broken links"
+msgstr "リンク切れの枠線"
+
+#: ../lib/pz-linkcard-settings-display.php:47
+msgid "* If you do not wish to change the border color, press the “Clear” button to leave it blank."
+msgstr "※ 枠色の変更をしたくない場合は「クリア」ボタンを押して空欄にしてください。"
 
 #: ../lib/pz-linkcard-settings-display.php:43
 msgid "Display SNS Count"
@@ -3264,9 +3352,6 @@ msgstr "Pz カード"
 
 #~ msgid "shadow"
 #~ msgstr "影を付ける"
-
-#~ msgid "Border"
-#~ msgstr "枠線の太さ"
 
 #~ msgid "Stylesheet URL"
 #~ msgstr "CSSファイルのURL"
