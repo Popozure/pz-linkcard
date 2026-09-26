@@ -29,7 +29,7 @@
 		'ct1'		=>		__('Cellophane tape "center"',		'pz-linkcard'),
 		'ct2'		=>		__('Cellophane tape "Top corner"',	'pz-linkcard'),
 		'ct3'		=>		__('Cellophane tape "long"',		'pz-linkcard'),
-		'ct4'		=>		__('Cellophane tape "diagonal"',		'pz-linkcard'),
+		'ct4'		=>		__('Cellophane tape "diagonal"',	'pz-linkcard'),
 		'tac'		=>		__('Cellophane tape and curling',	'pz-linkcard'),
 		'ppc'		=>		__('Curling paper',					'pz-linkcard'),
 		'sBR'		=>		__('Stitch blue & red',				'pz-linkcard'),
@@ -37,7 +37,7 @@
 		'sqr'		=>		__('Square',						'pz-linkcard'),
 		'ecl'		=>		__('Enclose',						'pz-linkcard'),
 		'ref'		=>		__('Reflection',					'pz-linkcard'),
-		'inI'		=>		__('Information orange',				'pz-linkcard'),
+		'inI'		=>		__('Information orange',			'pz-linkcard'),
 		'inN'		=>		__('Neutral bluegreen',				'pz-linkcard'),
 		'inE'		=>		__('Enlightened green',				'pz-linkcard'),
 		'inR'		=>		__('Resistance blue',				'pz-linkcard'),
@@ -69,25 +69,53 @@
 
 	<h2><?php echo	__('Related Information', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
+<?php
+	$plugin_support_url	=	'https://wordpress.org/support/plugin/pz-linkcard/';
+	$poporon_x_url		=	'https://x.com/popo68k';
+	$intro_card		=	static function($link, $icon, $name, $description, $class, $dashicon = '' ) {
+		echo	'<div class="pz-introduction-base"><a href="'.esc_url($link ).'" rel="external noopener noreferrer" target="_blank" class="pz-introduction-card '.esc_attr($class ).'"><div class="pz-introduction-thumb">';
+		if	($dashicon ) {
+			echo	'<div class="dashicons '.esc_attr($dashicon ).' pz-introduction-dashicon"></div>';
+		} else {
+			echo	'<img src="'.esc_url($icon ).'" alt="'.esc_attr($name ).'" />';
+		}
+		echo	'</div><div class="pz-introduction-content"><div class="pz-introduction-title">'.esc_html($name ).'</div><div class="pz-introduction-description">'.esc_html($description ).'</div></div></a></div>';
+	};
+?>
 		<tr>
 			<th scope="row"><?php echo	__('How to', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('Japanese Only', 'pz-linkcard' ).__(')', 'pz-linkcard' ); ?></th>
 			<td>
-				<p><?php echo	self::PLUGIN_NAME.' Ver.'.PZLKC_PLUGIN_VERSION; ?></p>
-				<p><a href="<?php echo	esc_attr($plugin_url ); ?>" rel="external noopener" target="_blank"><?php echo	esc_attr($plugin_url ); ?></a></p>
+				<?php $intro_card($plugin_url, $this->plugin_dir_url.'img/logo_pz-linkcard.png', self::PLUGIN_NAME, 'Version '.PZLKC_PLUGIN_VERSION, 'pz-introduction-pzlkc' ); ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row" rowspan="3"><?php esc_html_e('When in Trouble', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php $intro_card($plugin_support_url, '', __('Pz-LinkCard Forum', 'pz-linkcard' ), __('This is a forum for Pz-LinkCard by the official WordPress.org website.', 'pz-linkcard' ), 'pz-introduction-wporg', 'dashicons-wordpress' ); ?>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php $intro_card(self::AUTHOR_TWITTER_URL, $this->plugin_dir_url.'img/icon_x.png', __('Popozure.', 'pz-linkcard' ).' ('.self::AUTHOR_TWITTER.')', __('If you find any problems, please let us know via direct message.', 'pz-linkcard' ), 'pz-introduction-twitter' ); ?>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<?php $intro_card($poporon_x_url, $this->plugin_dir_url.'img/icon_x.png', __('Poporon@Popozure.', 'pz-linkcard' ).' (@popo68k)', __("It's okay here too.", 'pz-linkcard' ), 'pz-introduction-twitter' ); ?>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e("Author's Site", 'pz-linkcard' ); ?></th>
-			<td><?php echo	__('Popozure.', 'pz-linkcard' ).' ('.__("Poporon's PC Daily Diary", 'pz-linkcard' ).')'; ?><BR><a href="<?php echo $pz_url; ?>" rel="external noopener" target="_blank"><?php echo $pz_url; ?></A></td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('When in Trouble', 'pz-linkcard' ); ?></th>
-			<td><?php echo	__('X Account', 'pz-linkcard' ); ?><BR><a href="<?php echo self::AUTHOR_TWITTER_URL; ?>" rel="external noopener" target="_blank"><?php echo self::AUTHOR_TWITTER; ?></A></td>
+			<td>
+				<?php $intro_card($pz_url, $this->plugin_dir_url.'img/popozure_large.png', __('Popozure.', 'pz-linkcard' ), __("Poporon's PC Daily Diary", 'pz-linkcard' ), 'pz-introduction-popozure' ); ?>
+			</td>
 		</tr>
 
-		<tr class="pz-debug-only">
+		<tr>
 			<th scope="row"><?php esc_html_e('Donation', 'pz-linkcard' ); ?></th>
-			<td><a href="<?php echo self::AUTHOR_DONATE_URL; ?>" rel="external noopenner noreferrer" target="_blank" target="_blank"><?php esc_html_e('Wishlist', 'pz-linkcard' ); ?></a></td>
+			<td>
+				<?php $intro_card(self::AUTHOR_DONATE_URL, $this->plugin_dir_url.'img/icon_amazon.png', __('Wishlist', 'pz-linkcard' ), __('You do not have to send me a gift, but if you make your own purchases through this link, I will receive a little extra money. That helps keep me motivated.', 'pz-linkcard' ), 'pz-introduction-amazon' ); ?>
+			</td>
 		</tr>
 
 	</table>

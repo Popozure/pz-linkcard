@@ -525,8 +525,8 @@
 			$file_text	=	str_replace('/*MARGIN-EXCERPT*/',		'margin: 0;', $file_text );
 
 			// サイトアイコン
-			$file_text	=	str_replace('/*FAVICON-HEIGHT*/',		'height: 16px;', $file_text );
-			$file_text	=	str_replace('/*FAVICON-WIDTH*/',		'width: 16px;', $file_text );
+			$file_text	=	str_replace('/*SITEICON-HEIGHT*/',		'height: 16px;', $file_text );
+			$file_text	=	str_replace('/*SITEICON-WIDTH*/',		'width: 16px;', $file_text );
 
 			// サイト情報の区切り線
 			if (isset($prop['separator'] ) && $prop['separator'] == '1' ) {

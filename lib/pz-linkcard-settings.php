@@ -218,7 +218,8 @@
 	$switch_link	=	esc_url($this->cacheman_url );
 	$switch_icon	=	'<span class="dashicons dashicons-archive" style="vertical-align: text-bottom;"></span>';
 	$switch_label	=	__('Manager', 'pz-linkcard' );
-	$html_plugin	=	'<div id="pz-infobar"><div class="pz-infobar-left"><a href="'.esc_url($this->settings_url ).'" class="pz-infobar-plugin-logo"><img src="'.esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg' ).'" width="156px" height="28px" alt="'.esc_attr(self::PLUGIN_NAME ).'"></a><span class="pz-infobar-plugin-ver pz-monospace">ver.'.esc_html(PZLKC_PLUGIN_VERSION ).'</span>'.$html_mode.'</div><div class="pz-infobar-right"><a href="'.$switch_link.'" class="pz-infobar-switch" title="'.esc_attr($switch_label ).'"><span class="pz-infobar-switch-icon">'.$switch_icon.'</span><span class="pz-infobar-switch-label">'.$switch_label.'</span></a></div></div>';
+	$html_search	=	'<div id="pz-infobar-search"><div class="pz-infobar-search-box"><span class="dashicons dashicons-search pz-infobar-search-icon" aria-hidden="true"></span><input type="text" id="pz-search-box" class="pz-infobar-search-text" placeholder="'.esc_attr__('Search settings', 'pz-linkcard' ).'"><span id="pz-search-status"></span></div><button type="button" id="pz-search-btn" class="pz-infobar-search-button">'.esc_html__('Find next', 'pz-linkcard' ).'</button><button type="button" id="pz-search-prev-btn" class="pz-infobar-search-button" disabled>'.esc_html__('Find previous', 'pz-linkcard' ).'</button></div>';
+	$html_plugin	=	'<div id="pz-infobar"><div class="pz-infobar-left"><a href="'.esc_url($this->settings_url ).'" class="pz-infobar-plugin-logo"><img src="'.esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg' ).'" width="156px" height="28px" alt="'.esc_attr(self::PLUGIN_NAME ).'"></a><span class="pz-infobar-plugin-ver pz-monospace">ver.'.esc_html(PZLKC_PLUGIN_VERSION ).'</span>'.$html_mode.'</div><div class="pz-infobar-right">'.$html_search.'<a href="'.$switch_link.'" class="pz-infobar-switch" title="'.esc_attr($switch_label ).'"><span class="pz-infobar-switch-icon">'.$switch_icon.'</span><span class="pz-infobar-switch-label">'.$switch_label.'</span></a></div></div>';
 	$title_icon		=	'<span class="dashicons dashicons-admin-generic" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Settings', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
@@ -432,17 +433,22 @@
 
 	// 修正履歴
 	$html_preview	=	'';
-	if	(true ) {
+	if	(!array_key_exists('flg-preview', $this->options ) || !empty($this->options['flg-preview'] ) ) {
 		$preview_css		=	'';
 		$preview_css_file	=	PZLKC_DIR_STYLE.'preview.css';
 		if	(file_exists($preview_css_file ) ) {
 			$preview_css	=	file_get_contents($preview_css_file );
 		}
 		$preview_image	=	esc_url($this->plugin_dir_url.'img/logo_pz-linkcard.png' );
-		$preview_icon	=	esc_url($this->plugin_dir_url.'img/icon-pz-linkcard.png' );
+		$preview_external_siteicon	=	esc_url($this->plugin_dir_url.'img/icon_popozure.ico' );
+		$preview_internal_siteicon	=	get_site_icon_url(16 );
+		if	(!$preview_internal_siteicon ) {
+			$preview_internal_siteicon	=	$this->plugin_dir_url.'img/siteicon_dummy.png';
+		}
+		$preview_internal_siteicon	=	esc_url($preview_internal_siteicon );
 		$preview_today	=	current_datetime();
 		$preview_yesterday	=	$preview_today->modify('-1 day' );
-		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_icon, $preview_today, $preview_yesterday) {
+		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_external_siteicon, $preview_internal_siteicon, $preview_today, $preview_yesterday) {
 			return	$this->pz_GetHTML(array(
 				'url'			=>	$url,
 				'title'			=>	$title,
@@ -454,7 +460,7 @@
 					'title'				=>	$title,
 					'excerpt'			=>	$excerpt,
 					'thumbnail'			=>	$preview_image,
-					'favicon'			=>	$preview_icon,
+					'favicon'			=>	$prefix === 'ex' ? $preview_external_siteicon : $preview_internal_siteicon,
 					'sns_twitter'		=>	1234,
 					'sns_facebook'		=>	1234,
 					'sns_hatena'		=>	1234,
@@ -499,9 +505,11 @@
 	}
 
 	$changelog		=	'';
-	if	(!function_exists('wp_is_mobile' ) || !wp_is_mobile() ) {
-		$changelog	=	file_get_contents($this->plugin_dir_path.'/readme.txt' );											// readme.txt を読み込み
-		preg_match('/^== Changelog ==\s*(?<entries>(?:^= [^=\r\n]+ =\s*(?:(?!^= [^=\r\n]+ =|^== ).*\R?)*){1,5})/m', $changelog, $m );
+	$changelog_limit	=	(function_exists('wp_is_mobile' ) && wp_is_mobile() ) ? 3 : 10;
+	$changelog		=	file_get_contents($this->plugin_dir_path.'/readme.txt' );											// readme.txt を読み込み
+	if	(false !== $changelog ) {
+		$changelog_pattern	=	'/^== Changelog ==\s*(?<entries>(?:^= [^=\r\n]+ =\s*(?:(?!^= [^=\r\n]+ =|^== ).*\R?)*){1,'.$changelog_limit.'})/m';
+		preg_match($changelog_pattern, $changelog, $m );
 		$changelog	=	$m['entries'] ?? '';
 		$changelog	=	trim($changelog );
 		$changelog	=	esc_html($changelog );

@@ -85,6 +85,7 @@
 
 	// Read stored keys before defaults are merged so existing values survive the rename.
 	foreach (array(
+		'favicon-api' => 'siteicon-api',
 		'ex-favicon' => 'ex-siteicon',
 		'ex-favicon-alt' => 'ex-siteicon-alt',
 		'in-favicon' => 'in-siteicon',

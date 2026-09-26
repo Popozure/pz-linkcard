@@ -308,15 +308,15 @@
 	white-space: nowrap;
 	overflow: hidden;
 }
-.lkc-favicon {
+.lkc-siteicon {
 	display: inline-flex /*IMPORTANT*/;
 	vertical-align: middle /*IMPORTANT*/;
 	border: none;
 
-	/*FAVICON-HEIGHT*/
-	/*FAVICON-WIDTH*/
+	/*SITEICON-HEIGHT*/
+	/*SITEICON-WIDTH*/
 }
-img.lkc-favicon {
+img.lkc-siteicon {
 	margin: -4px 0 0 0 /*IMPORTANT*/;
 	object-fit: cover;
 	height: 100%;

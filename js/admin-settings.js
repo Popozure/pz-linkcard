@@ -989,12 +989,12 @@
         const tabNameEl = document.querySelector(".pz-tab-name");
         const tabNow = document.querySelector('input[name="tab-now"]');
         const dashboard = wrapper.closest(".pz-dashboard");
-        const submitFloat = dashboard?.querySelector(".pz-submit-float");
+        const submitFloats = dashboard?.querySelectorAll(".pz-submit-float") || [];
         const tabbarSpacer = document.createElement("div");
         let lastWheelAt = 0;
         let rightButtonDown = false;
         let rightWheelUsed = false;
-        let submitGap = null;
+        const submitGap = 8;
         let invalidNavigationActive = false;
 
         tabbarSpacer.className = "pz-tabbar-spacer";
@@ -1008,15 +1008,6 @@
             const infobarBottom = infobar ? Math.max(0, infobar.getBoundingClientRect().bottom) : 0;
             const viewportTop = window.visualViewport ? Math.max(0, window.visualViewport.offsetTop) : 0;
             return Math.max(adminBarBottom, infobarBottom, viewportTop);
-        };
-
-        const measureSubmitGap = () => {
-            const tabRect = wrapper.getBoundingClientRect();
-            const submitRect = submitFloat?.getBoundingClientRect();
-            if (submitRect && !wrapper.classList.contains("pz-tabbar-fixed")) {
-                const minGap = window.matchMedia("(max-width: 782px)").matches ? 32 : 12;
-                submitGap = Math.max(minGap, Math.round(submitRect.top - tabRect.bottom));
-            }
         };
 
         const syncFixedTabbar = () => {
@@ -1033,22 +1024,19 @@
                 wrapper.style.setProperty("--pz-tabbar-fixed-top", `${fixedTop}px`);
                 wrapper.style.left = `${fixedLeft}px`;
                 wrapper.style.width = `${fixedWidth}px`;
-                if (submitFloat) {
-                    const minGap = window.matchMedia("(max-width: 782px)").matches ? 32 : 12;
-                    if (submitGap === null) submitGap = minGap;
-                    submitGap = Math.max(minGap, submitGap);
-                    submitFloat.style.setProperty("--pz-submit-sticky-top", `${fixedTop + wrapper.offsetHeight + submitGap}px`);
-                }
             } else {
-                measureSubmitGap();
                 wrapper.classList.remove("pz-tabbar-fixed");
                 wrapper.style.top = "";
                 wrapper.style.removeProperty("--pz-tabbar-fixed-top");
                 wrapper.style.left = "";
                 wrapper.style.width = "";
                 tabbarSpacer.style.height = "0";
-                submitFloat?.style.removeProperty("--pz-submit-sticky-top");
             }
+
+            const fixedTabbarBottom = fixedTop + wrapper.offsetHeight;
+            submitFloats.forEach(submitFloat => {
+                submitFloat.style.setProperty("--pz-submit-sticky-top", `${fixedTabbarBottom + submitGap}px`);
+            });
 
             updateButtons();
         };
@@ -1236,15 +1224,183 @@
             return currentIndex >= 0 ? currentIndex : tabs.findIndex(tab => tab.classList.contains("pz-tab-active"));
         };
 
-        const moveTab = (direction, focusTab = false, currentTab = null) => {
+        const moveTab = (direction, focusTab = false, currentTab = null, options = {}) => {
             const tabs = getTabs();
             if (!tabs.length) return;
 
             const currentIndex = getCurrentIndex(tabs, currentTab);
             const baseIndex = currentIndex >= 0 ? currentIndex : 0;
             const nextIndex = (baseIndex + direction + tabs.length) % tabs.length;
-            openTab(tabs[nextIndex], focusTab);
+            openTab(tabs[nextIndex], focusTab, options);
         };
+
+        let swipeState = null;
+        const swipeMinDistance = 64;
+        const swipeMaxDuration = 800;
+        const swipeDirectionRatio = 1.25;
+        const swipeReverseDistance = 12;
+        const swipeControlSelector = "input, select, textarea, button, a, label, [contenteditable='true'], [role='slider']";
+        const swipeIndicator = document.createElement("div");
+
+        swipeIndicator.className = "pz-swipe-indicator";
+        swipeIndicator.setAttribute("aria-hidden", "true");
+        document.body.appendChild(swipeIndicator);
+
+        const showSwipeIndicator = direction => {
+            swipeIndicator.textContent = direction > 0 ? "＞" : "＜";
+            swipeIndicator.classList.add("pz-swipe-indicator-active");
+        };
+
+        const hideSwipeIndicator = () => {
+            swipeIndicator.classList.remove("pz-swipe-indicator-active");
+        };
+
+        const getSwipeDirection = (touch, state) => {
+            if (!touch || !state || swipeDidScroll(state)) return 0;
+            if (state.qualifiedDirection) return state.qualifiedDirection;
+
+            const deltaX = touch.clientX - state.startX;
+            const deltaY = touch.clientY - state.startY;
+            const duration = Date.now() - state.startedAt;
+            if (duration > swipeMaxDuration || Math.abs(deltaX) < swipeMinDistance) return 0;
+            if (Math.abs(deltaX) < Math.abs(deltaY) * swipeDirectionRatio) return 0;
+            return deltaX < 0 ? 1 : -1;
+        };
+
+        const swipeReversed = (touch, state) => {
+            if (!touch || !state?.qualifiedDirection) return false;
+
+            if (state.qualifiedDirection > 0) {
+                state.qualifiedExtremeX = Math.min(state.qualifiedExtremeX, touch.clientX);
+                return touch.clientX >= state.qualifiedExtremeX + swipeReverseDistance;
+            }
+
+            state.qualifiedExtremeX = Math.max(state.qualifiedExtremeX, touch.clientX);
+            return touch.clientX <= state.qualifiedExtremeX - swipeReverseDistance;
+        };
+
+        const resetSwipeQualification = (touch, state) => {
+            state.startX = touch.clientX;
+            state.startY = touch.clientY;
+            state.startedAt = Date.now();
+            state.qualifiedDirection = 0;
+            state.qualifiedExtremeX = touch.clientX;
+            hideSwipeIndicator();
+        };
+
+        const getTouch = (touches, identifier) => Array.from(touches || []).find(touch => touch.identifier === identifier);
+
+        const getScrollPositions = target => {
+            const positions = [];
+            let element = target instanceof Element ? target : null;
+
+            while (element && dashboard.contains(element)) {
+                positions.push({ element, left: element.scrollLeft, top: element.scrollTop });
+                if (element === dashboard) break;
+                element = element.parentElement;
+            }
+
+            return positions;
+        };
+
+        const swipeDidScroll = state => {
+            if (!state || state.scrolled) return true;
+            if (window.scrollX !== state.windowLeft || window.scrollY !== state.windowTop) return true;
+            return state.scrollPositions.some(position =>
+                position.element.scrollLeft !== position.left || position.element.scrollTop !== position.top
+            );
+        };
+
+        dashboard.addEventListener("touchstart", e => {
+            hideSwipeIndicator();
+            if (e.touches.length !== 1) {
+                swipeState = null;
+                return;
+            }
+
+            const touch = e.touches[0];
+            const page = e.target.closest?.(".pz-page-active");
+            if (!page || e.target.closest?.(swipeControlSelector)) {
+                swipeState = null;
+                return;
+            }
+
+            swipeState = {
+                identifier: touch.identifier,
+                startX: touch.clientX,
+                startY: touch.clientY,
+                startedAt: Date.now(),
+                windowLeft: window.scrollX,
+                windowTop: window.scrollY,
+                scrollPositions: getScrollPositions(e.target),
+                scrolled: false,
+                qualifiedDirection: 0,
+                qualifiedExtremeX: touch.clientX
+            };
+        }, { passive: true });
+
+        dashboard.addEventListener("touchmove", e => {
+            if (!swipeState) return;
+            if (e.touches.length !== 1 || !getTouch(e.touches, swipeState.identifier)) {
+                swipeState = null;
+                hideSwipeIndicator();
+                return;
+            }
+            if (swipeDidScroll(swipeState)) {
+                swipeState.scrolled = true;
+                hideSwipeIndicator();
+                return;
+            }
+
+            const touch = getTouch(e.touches, swipeState.identifier);
+            if (swipeReversed(touch, swipeState)) {
+                resetSwipeQualification(touch, swipeState);
+                return;
+            }
+
+            const direction = getSwipeDirection(touch, swipeState);
+            if (direction) {
+                if (!swipeState.qualifiedDirection) {
+                    swipeState.qualifiedExtremeX = touch.clientX;
+                    navigator.vibrate?.(30);
+                }
+                swipeState.qualifiedDirection = direction;
+                showSwipeIndicator(direction);
+            } else {
+                hideSwipeIndicator();
+            }
+        }, { passive: true });
+
+        dashboard.addEventListener("scroll", () => {
+            if (!swipeState) return;
+            swipeState.scrolled = true;
+            hideSwipeIndicator();
+        }, true);
+        window.addEventListener("scroll", () => {
+            if (!swipeState) return;
+            swipeState.scrolled = true;
+            hideSwipeIndicator();
+        }, { passive: true });
+
+        dashboard.addEventListener("touchend", e => {
+            if (!swipeState) return;
+
+            const state = swipeState;
+            const touch = getTouch(e.changedTouches, state.identifier);
+            swipeState = null;
+            hideSwipeIndicator();
+            if (swipeReversed(touch, state)) return;
+            const direction = getSwipeDirection(touch, state);
+            if (!direction) return;
+
+            if (e.cancelable) e.preventDefault();
+            moveTab(direction, false, null, { restoreFocus: false });
+        }, { passive: false });
+
+        dashboard.addEventListener("touchcancel", () => {
+            swipeState = null;
+            hideSwipeIndicator();
+        }, { passive: true });
 
         const getPropertyName = control => {
             const match = /^properties\[([^\]]+)\]$/.exec(control?.name || "");
@@ -1343,7 +1499,7 @@
             if (e.button !== 0) return;
 
             e.preventDefault();
-            openTab(tab, true);
+            openTab(tab, true, { restoreFocus: false });
         });
 
         tabbar.addEventListener("keydown", e => {
@@ -1354,14 +1510,14 @@
             if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey) {
                 e.preventDefault();
                 e.stopPropagation();
-                moveTab(e.key === "ArrowRight" ? 1 : -1, false, tab);
+                moveTab(e.key === "ArrowRight" ? 1 : -1, true, tab, { restoreFocus: false });
                 return;
             }
             if (e.altKey || e.metaKey || e.shiftKey) return;
 
             e.preventDefault();
             e.stopPropagation();
-            moveTab(e.key === "ArrowRight" ? 1 : -1, true, tab);
+            moveTab(e.key === "ArrowRight" ? 1 : -1, true, tab, { restoreFocus: false });
         });
 
         document.addEventListener("keydown", e => {
@@ -1444,7 +1600,6 @@
         const activeTab = tabbar.querySelector(".pz-tab-active") || getTabs()[0];
         if (tabNameEl && activeTab) tabNameEl.textContent = activeTab.textContent;
         adjustTabVisibility(activeTab);
-        measureSubmitGap();
         syncFixedTabbar();
     }
 

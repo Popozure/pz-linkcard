@@ -9,6 +9,7 @@
         const closeButton = win?.querySelector("[data-pz-preview-close]");
         const backgroundButtons = win?.querySelectorAll("[data-pz-preview-background]");
         const twoCardsCheckbox = win?.querySelector("[data-pz-preview-two-cards]");
+        const twoCardsControl = twoCardsCheckbox?.closest(".pz-settings-preview-two-cards-control");
         if (!win || !handle) return;
         const form = document.querySelector(".pz-settings form");
         const storageKey = "pz-linkcard-preview-state";
@@ -28,6 +29,7 @@
             win.style.display = "";
             window.requestAnimationFrame(() => {
                 win.classList.add("pz-settings-preview-ready");
+                schedulePreviewFit();
             });
         };
         const showRestoreButton = () => {
@@ -120,8 +122,8 @@
         win.addEventListener("click", preventPreviewLink, true);
         win.addEventListener("auxclick", preventPreviewLink, true);
 
-        const minPreviewWidth = 320;
-        const minPreviewHeight = 180;
+        const minPreviewWidth = 240;
+        const minPreviewHeight = 100;
         const dockedMinHeightFallback = 28;
         let previewDocked = false;
         let previewDockSide = null;
@@ -288,6 +290,29 @@
                 // Ignore storage failures such as private browsing quota errors.
             }
         };
+        let previewFitFrame = null;
+        const updatePreviewFit = () => {
+            if (previewClosed || win.style.display === "none") return;
+
+            const rect = win.getBoundingClientRect();
+            const handleHeight = Math.ceil(handle.getBoundingClientRect().height);
+            if (!twoCardsControl) return;
+            twoCardsControl.classList.remove("pz-settings-preview-two-cards-control-hidden");
+            const controlRect = twoCardsControl.getBoundingClientRect();
+            const controlFitsWidth = rect.width >= 32 + Math.ceil(controlRect.width) + 8;
+            const controlFitsHeight = rect.height >= handleHeight + Math.ceil(controlRect.height) + 12;
+            twoCardsControl.classList.toggle(
+                "pz-settings-preview-two-cards-control-hidden",
+                !controlFitsWidth || !controlFitsHeight
+            );
+        };
+        const schedulePreviewFit = () => {
+            if (previewFitFrame !== null) return;
+            previewFitFrame = window.requestAnimationFrame(() => {
+                previewFitFrame = null;
+                updatePreviewFit();
+            });
+        };
         const persistPreviewState = async () => {
             if (typeof pzLinkCardPreview === "undefined" || !pzLinkCardPreview.ajaxUrl) return;
             const state = syncPreviewState();
@@ -395,9 +420,18 @@
             const rect = win.getBoundingClientRect();
             const maxWidth = Math.max(1, bounds.maxRight - bounds.minLeft);
             const maxHeight = Math.max(1, bounds.maxBottom - bounds.minTop);
-            if (rect.width > maxWidth) win.style.width = `${Math.round(maxWidth)}px`;
+            const preferredWidth = Math.min(minPreviewWidth, maxWidth);
+            const preferredHeight = Math.min(minPreviewHeight, maxHeight);
+            if (rect.width > maxWidth) {
+                win.style.width = `${Math.round(maxWidth)}px`;
+            } else if (rect.width < preferredWidth) {
+                win.style.width = `${Math.round(preferredWidth)}px`;
+            }
             if (rect.height > maxHeight) {
                 win.style.height = `${Math.round(maxHeight)}px`;
+                win.style.maxHeight = "none";
+            } else if (rect.height < preferredHeight) {
+                win.style.height = `${Math.round(preferredHeight)}px`;
                 win.style.maxHeight = "none";
             }
             setPosition(rect.left, rect.top);
@@ -418,8 +452,8 @@
             }
 
             const bounds = getViewportBounds();
-            const width = Math.min(Math.max(minPreviewWidth, next.width), Math.max(minPreviewWidth, bounds.maxRight - bounds.minLeft));
-            const height = Math.min(Math.max(minPreviewHeight, next.height), Math.max(minPreviewHeight, bounds.maxBottom - bounds.minTop));
+            const width = Math.min(Math.max(minPreviewWidth, next.width), Math.max(1, bounds.maxRight - bounds.minLeft));
+            const height = Math.min(Math.max(minPreviewHeight, next.height), Math.max(1, bounds.maxBottom - bounds.minTop));
             win.style.width = `${Math.round(width)}px`;
             win.style.height = `${Math.round(height)}px`;
             win.style.maxHeight = "none";
@@ -879,6 +913,9 @@
         });
 
         window.addEventListener("resize", keepInViewport);
+        if (window.ResizeObserver) {
+            new ResizeObserver(schedulePreviewFit).observe(win);
+        }
         applyTwoCards(readStateFlag(readStoredState() || {}, "preview-two-cards"));
         updateModeButton();
         if ((readStoredState() || {})["preview-mode"] === "icon" || readStateInput("preview-mode") === "icon") {
@@ -890,6 +927,7 @@
             saveIconState();
             showIconPreview();
         }
+        schedulePreviewFit();
         initSettingsPreviewLiveStyles(win);
     }
 
@@ -1136,6 +1174,22 @@
                 }
             });
         };
+        const applyConfiguredBoxShadow = (node, prefix, hover = false) => {
+            if (!node) return false;
+
+            const settingPrefix = hover ? `${prefix}-hover` : prefix;
+            if (!checked(`${settingPrefix}-shadow-enabled`)) return false;
+
+            const shadowColor = value(`${settingPrefix}-shadow-color`) || "rgba(0,0,0,0.3)";
+            const shadowInset = checked(`${settingPrefix}-shadow-inset`) ? "inset " : "";
+            const shadow = `${shadowInset}${intValue(`${settingPrefix}-shadow-x`, 8)}px ${intValue(`${settingPrefix}-shadow-y`, 8)}px ${intValue(`${settingPrefix}-shadow-blur`, 8)}px ${intValue(`${settingPrefix}-shadow-spread`, 0)}px ${shadowColor}`;
+            node.style.setProperty("box-shadow", shadow, hover ? "important" : "");
+            return true;
+        };
+        const restoreConfiguredBoxShadow = (node, prefix) => {
+            node.style.removeProperty("box-shadow");
+            applyConfiguredBoxShadow(node, prefix);
+        };
         const applySimpleLinkBox = (node, prefix, hover = false) => {
             if (!node) return;
 
@@ -1292,6 +1346,7 @@
             const specialFormat = value("special-format");
             const isSimpleLinkBox = specialFormat === "smp" && isLinkBox;
             const stitchPreset = isLinkBox ? stitchPresets[specialFormat]?.[prefix] : null;
+            const ingressPreset = isLinkBox ? ingressPresets[specialFormat]?.[prefix] : null;
             const ignoreLinkBackground = isLinkBox && (specialFormat === "JIN" || isSimpleLinkBox || stitchPreset);
             if (!ignoreLinkBackground) {
                 const bgColor = value(`${prefix}-bg-color`);
@@ -1315,14 +1370,18 @@
                     node.style.borderRadius = `${borderRadius}px`;
                 }
             }
-            if (checked(`${prefix}-shadow-enabled`)) {
-                const shadowColor = value(`${prefix}-shadow-color`) || "rgba(0,0,0,0.3)";
-                const shadowX = intValue(`${prefix}-shadow-x`, 8);
-                const shadowY = intValue(`${prefix}-shadow-y`, 8);
-                const shadowBlur = intValue(`${prefix}-shadow-blur`, 8);
-                const shadowSpread = intValue(`${prefix}-shadow-spread`, 0);
-                const shadowInset = checked(`${prefix}-shadow-inset`) ? "inset " : "";
-                node.style.boxShadow = `${shadowInset}${shadowX}px ${shadowY}px ${shadowBlur}px ${shadowSpread}px ${shadowColor}`;
+            applyConfiguredBoxShadow(node, prefix);
+            if (isLinkBox && !stitchPreset && !ingressPreset) {
+                if (node.matches(":hover")) applyConfiguredBoxShadow(node, prefix, true);
+                if (!node.dataset.pzPreviewBoxShadowHoverBound) {
+                    node.addEventListener("pointerenter", () => {
+                        applyConfiguredBoxShadow(node, prefix, true);
+                    });
+                    node.addEventListener("pointerleave", () => {
+                        restoreConfiguredBoxShadow(node, prefix);
+                    });
+                    node.dataset.pzPreviewBoxShadowHoverBound = "1";
+                }
             }
             if (isSimpleLinkBox) {
                 applySimpleLinkBox(node, prefix, node.matches(":hover"));

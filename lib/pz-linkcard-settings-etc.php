@@ -38,7 +38,7 @@
 		<tr>
 			<th scope="row"><?php esc_html_e('Site Icon API', 'pz-linkcard' ); ?></th>
 			<td>
-				<input name="properties[favicon-api]" type="url" size="120" class="pz-click-all-select" value="<?php echo	esc_attr($prop['favicon-api'] ); ?>" />
+				<input name="properties[siteicon-api]" type="url" size="120" class="pz-click-all-select" value="<?php echo	esc_attr($prop['siteicon-api'] ); ?>" />
 				<p><?php echo	__('%DOMAIN% replace to domain name.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_domain.' '.__(')', 'pz-linkcard' ).'<br>'.__('%DOMAIN_URL% replace to domain URL.', 'pz-linkcard').' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_domain_url.' '.__(')', 'pz-linkcard' ).'<br>'.__('%URL% replace to URL.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_url.self::PLUGIN_PATH.' '.__(')', 'pz-linkcard' ); ?>
 				<p><?php esc_html_e('ex1.', 'pz-linkcard' ); ?><input name="" type="text" size="70" class="pz-click-all-select" value="https://www.google.com/s2/favicons?domain=%DOMAIN%" readonly="readonly" /></p>
 				<p><?php esc_html_e('ex2.', 'pz-linkcard' ); ?><input name="" type="text" size="70" class="pz-click-all-select" value="https://favicon.hatena.ne.jp/?url=%URL%" readonly="readonly" /></p>

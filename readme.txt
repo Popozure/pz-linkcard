@@ -151,16 +151,20 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 == Changelog ==
 
 = 2.6.2 =
+* [Tested] WordPress 7.1.2 での動作確認を行いました。
 * [Fixed] 設定画面のテキストボックス上でシフト＋ホイールまたは右クリック＋ホイールで数値が入ってしまうのを修正しました。
 * [Fixed] 設定画面の「かんたん書式設定」を選択したとき、実際の表示とプレビューが違ったのを修正しました。
+* [Added] 設定画面に「設定項目の検索」を追加しました。設定画面の項目名や説明文を検索出来ます。[Pz3]
+* [Added] 設定画面で左右スワイプしたときに前/次のタブに移動する機能を追加しました。[Pz3]
 * [Added] 設定画面の「上級者向け」タブにクイックメニューを追加しました。リンクカードの右側に編集画面に直接入れる三点メニューが表示されます。[Pz3]
 * [Added] 設定画面の「表示」タブにスタイルの重要度を追加しました。リンクカードのCSSを優先させます。
 * [Added] 設定画面の「リンク先の検査」タブに「robots.txtを参照する」を追加。外部リンクを取得するときにrobots.txtに従います。[Pz3]
 * [Added] 設定画面の「リンク先の検査」タブに「ローカルIPアドレスをブロック」を追加。外部リンクを取得するときにローカルIPをブロックします。[Pz3]
 * [Added] リンクカード全体をリンク化している場合でも、SNSやカテゴリのリンクを個別に開けるようになりました。[Pz3]
+* [Modified] 設定画面のレイアウトを一部修正しました。
 * [Modified] 設定画面の「かんたん書式設定」の設定値を調整しました。
 * [Modified] 設定画面の「リンク先の検査」タブの「ユーザーエージェント」を入力式から選択式へ変更しました。[Pz3]
-
+* [Modified] 管理画面のレイアウトを一部修正しました。
 
 
 
@@ -886,7 +890,7 @@ Number of SNS share have been acquired by the JSON request.
 
 * Pocket ... https://widgets.getpocket.com/api/saves?url=[URL]
 
-Displays using the "Google-favicon API" to get the favicon. This can be changed.
+Displays using the "Google Favicon API" to get the site icon. This can be changed.
 
 Displays using the "WordPress.org mshots API" to get the thumbnail. This can be changed.
 

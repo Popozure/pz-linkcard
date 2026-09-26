@@ -241,7 +241,7 @@
 					</div>
 				<?php echo wp_kses($cacheman_postbox_close(), $cacheman_allowed_html ); ?>
 
-				<?php echo wp_kses($cacheman_postbox_open(__('Favicon URL', 'pz-linkcard' ), 'pz-man-cache-image-box' ), $cacheman_allowed_html ); ?>
+				<?php echo wp_kses($cacheman_postbox_open(__('Site Icon URL', 'pz-linkcard' ), 'pz-man-cache-image-box' ), $cacheman_allowed_html ); ?>
 					<?php echo wp_kses($cacheman_image_preview('favicon', 'pz-man-cache-siteicon-preview' ), $cacheman_allowed_html ); ?>
 					<?php echo wp_kses($cacheman_clear_image_button('data[favicon]', __('Clear site icon', 'pz-linkcard' ), $cacheman_get_value('favicon' ) !== '' ), $cacheman_allowed_html ); ?>
 					<div class="pz-man-cache-image-url">

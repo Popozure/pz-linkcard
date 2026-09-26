@@ -106,7 +106,7 @@ msgid "Clear thumbnail image"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:236
-msgid "Favicon URL"
+msgid "Site Icon URL"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:237
@@ -334,6 +334,18 @@ msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-list.php:586
 msgid "File Menu"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:221
+msgid "Search settings"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:221
+msgid "Find next"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:221
+msgid "Find previous"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman.php
@@ -770,6 +782,14 @@ msgstr ""
 msgid "Japanese Only"
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-basic.php:94
+msgid "Pz-LinkCard Forum"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:94
+msgid "This is a forum for Pz-LinkCard by the official WordPress.org website."
+msgstr ""
+
 #: ../lib/pz-linkcard-settings-basic.php:81
 msgid "Popozure."
 msgstr ""
@@ -778,8 +798,27 @@ msgstr ""
 msgid "Poporon's PC Daily Diary"
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-basic.php:99
+msgid "If you find any problems, please let us know via direct message."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:104
+msgid "Poporon@Popozure."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:104
+msgid "It's okay here too."
+msgstr ""
+
 #: ../lib/pz-linkcard-settings-basic.php:85
 msgid "X Account"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:117
+msgid ""
+"You do not have to send me a gift, but if you make your own purchases "
+"through this link, I will receive a little extra money. That helps keep me "
+"motivated."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-card.php:4
