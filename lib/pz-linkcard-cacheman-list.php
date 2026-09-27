@@ -253,8 +253,8 @@
 		<p class="search-box" title="<?php esc_attr_e('Text or field search. Examples: post:1234, id:10, domain:popozure.info', 'pz-linkcard' ); ?>">
 			<label>
 				<span class="dashicons dashicons-search" style="vertical-align: text-bottom;"></span>
-				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" />
-				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action"><?php esc_html_e('Search', 'pz-linkcard' ); ?></button>
+				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" placeholder="<?php esc_attr_e('Search', 'pz-linkcard' ); ?>" />
+				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action"><?php esc_html_e('Search cards', 'pz-linkcard' ); ?></button>
 			</label>
 		</p>
 	</div>

@@ -6,6 +6,7 @@
         const win = document.querySelector(".pz-settings-preview-window");
         const handle = win?.querySelector("[data-pz-preview-handle]");
         const modeButton = win?.querySelector("[data-pz-preview-mode]");
+        const secondaryModeButton = win?.querySelector("[data-pz-preview-mode-secondary]");
         const closeButton = win?.querySelector("[data-pz-preview-close]");
         const backgroundButtons = win?.querySelectorAll("[data-pz-preview-background]");
         const twoCardsCheckbox = win?.querySelector("[data-pz-preview-two-cards]");
@@ -124,12 +125,14 @@
 
         const minPreviewWidth = 240;
         const minPreviewHeight = 100;
+        const rightDockedMinWidth = 24;
         const dockedMinHeightFallback = 28;
         let previewDocked = false;
         let previewDockSide = null;
         let floatingPreviewRect = null;
-        let suppressHandleDblClick = false;
-        let lastHandleClick = { time: 0, x: 0, y: 0 };
+        let lastBottomDockedHeight = null;
+        let lastRightHandleClick = { time: 0, x: 0, y: 0 };
+        let rightHandleDoubleClickHandled = false;
         const stateInput = name => form?.querySelector(`[data-pz-preview-state="${name}"]`) || null;
         const setStateInput = (name, value) => {
             const input = stateInput(name);
@@ -162,10 +165,25 @@
             setStateInput("preview-two-cards", active ? "1" : "0");
         };
         const updateModeButton = () => {
-            if (!modeButton) return;
-            modeButton.textContent = previewDocked ? "□" : "_";
-            modeButton.setAttribute("aria-label", previewDocked ? "Window preview" : "Dock preview bottom");
-            modeButton.title = previewDocked ? "ウィンドウ状態にする" : "下にドッキング";
+            if (!modeButton || !secondaryModeButton) return;
+            if (!previewDocked) {
+                modeButton.textContent = "_";
+                modeButton.setAttribute("aria-label", labels.dockPreviewBottom || "Dock preview bottom");
+                secondaryModeButton.textContent = "∣";
+                secondaryModeButton.setAttribute("aria-label", labels.dockPreviewRight || "Dock preview right");
+            } else if (previewDockSide === "right") {
+                modeButton.textContent = "_";
+                modeButton.setAttribute("aria-label", labels.dockPreviewBottom || "Dock preview bottom");
+                secondaryModeButton.textContent = "□";
+                secondaryModeButton.setAttribute("aria-label", labels.windowPreview || "Window preview");
+            } else {
+                modeButton.textContent = "∣";
+                modeButton.setAttribute("aria-label", labels.dockPreviewRight || "Dock preview right");
+                secondaryModeButton.textContent = "□";
+                secondaryModeButton.setAttribute("aria-label", labels.windowPreview || "Window preview");
+            }
+            modeButton.title = modeButton.getAttribute("aria-label");
+            secondaryModeButton.title = secondaryModeButton.getAttribute("aria-label");
         };
 
         const getAdminBarBottom = () => {
@@ -223,14 +241,22 @@
             const rect = getWindowRect();
             if (rect.width <= 0 || rect.height <= 0) return null;
 
+            const storedState = readStoredState() || {};
+            const savedBottomDockedHeight = previewDockSide === "bottom"
+                ? rect.height
+                : lastBottomDockedHeight
+                    ?? readStateNumber(storedState, "last-bottom-docked-height")
+                    ?? readStateNumber(storedState, "preview-docked-height")
+                    ?? readStateNumber(null, "preview-docked-height");
             const state = {
-                ...(readStoredState() || {}),
+                ...storedState,
                 "preview-mode": previewDockSide === "right" ? "right" : (previewDocked ? "docked" : "window"),
                 "preview-left": Math.round(rect.left),
                 "preview-top": Math.round(rect.top),
                 "preview-width": Math.round(rect.width),
                 "preview-height": Math.round(rect.height),
-                "preview-docked-height": Math.round(previewDockSide === "bottom" ? rect.height : (readStateNumber(null, "preview-docked-height") || rect.height)),
+                ...(savedBottomDockedHeight !== null ? { "preview-docked-height": Math.round(savedBottomDockedHeight) } : {}),
+                ...(savedBottomDockedHeight !== null ? { "last-bottom-docked-height": Math.round(savedBottomDockedHeight) } : {}),
                 "preview-right-docked-width": Math.round(previewDockSide === "right" ? rect.width : (readStateNumber(null, "preview-right-docked-width") || rect.width)),
                 "preview-two-cards": twoCardsCheckbox?.checked ? 1 : 0,
             };
@@ -262,6 +288,12 @@
         const saveIconState = () => {
             const rect = getWindowRect();
             const storedState = readStoredState() || {};
+            const savedBottomDockedHeight = previewDockSide === "bottom"
+                ? rect.height
+                : lastBottomDockedHeight
+                    ?? readStateNumber(storedState, "last-bottom-docked-height")
+                    ?? readStateNumber(storedState, "preview-docked-height")
+                    ?? readStateNumber(null, "preview-docked-height");
             const state = {
                 ...storedState,
                 "preview-mode": "icon",
@@ -270,7 +302,8 @@
                 "preview-top": Math.round(rect.top),
                 "preview-width": Math.round(rect.width),
                 "preview-height": Math.round(rect.height),
-                "preview-docked-height": Math.round(previewDockSide === "bottom" ? rect.height : (readStateNumber(null, "preview-docked-height") || rect.height)),
+                ...(savedBottomDockedHeight !== null ? { "preview-docked-height": Math.round(savedBottomDockedHeight) } : {}),
+                ...(savedBottomDockedHeight !== null ? { "last-bottom-docked-height": Math.round(savedBottomDockedHeight) } : {}),
                 "preview-right-docked-width": Math.round(previewDockSide === "right" ? rect.width : (readStateNumber(null, "preview-right-docked-width") || rect.width)),
                 "preview-two-cards": twoCardsCheckbox?.checked ? 1 : 0,
                 "window-left": readStateNumber(storedState, "window-left"),
@@ -349,15 +382,17 @@
         const getResizeEdges = e => {
             const rect = win.getBoundingClientRect();
             const edgeSize = 8;
+            const cornerSize = 28;
             if (previewDocked) {
                 if (previewDockSide === "right") {
-                    const draggablePalette = e.target?.closest?.(".pz-settings-preview-palette")
-                        && !e.target?.closest?.(".pz-settings-preview-background");
-                    return draggablePalette
+                    return e.target?.closest?.("[data-pz-preview-handle]")
                         ? { top: false, right: false, bottom: false, left: true }
                         : null;
                 }
                 return e.clientY - rect.top <= edgeSize ? { top: true, right: false, bottom: false, left: false } : null;
+            }
+            if (rect.right - e.clientX <= cornerSize && rect.bottom - e.clientY <= cornerSize) {
+                return { top: false, right: true, bottom: true, left: false };
             }
             const edges = {
                 top: e.clientY - rect.top <= edgeSize,
@@ -382,7 +417,7 @@
                 handle.style.cursor = "";
                 return;
             }
-            if (e.target?.closest?.("[data-pz-preview-handle]")) {
+            if (e.target?.closest?.("[data-pz-preview-handle]") && previewDockSide !== "right") {
                 win.style.cursor = "";
                 handle.style.cursor = "";
                 return;
@@ -486,8 +521,8 @@
         };
         const applyRightDockedRect = width => {
             const bounds = getViewportBounds();
-            const maxWidth = Math.max(minPreviewWidth, getViewportClientRight() - bounds.minLeft);
-            const nextWidth = Math.min(maxWidth, Math.max(minPreviewWidth, width || getWindowRect().width));
+            const maxWidth = Math.max(rightDockedMinWidth, getViewportClientRight() - bounds.minLeft);
+            const nextWidth = Math.min(maxWidth, Math.max(rightDockedMinWidth, width || getWindowRect().width));
 
             previewDocked = true;
             previewDockSide = "right";
@@ -510,10 +545,73 @@
                 win.classList.remove("pz-settings-preview-animating");
             }, 150);
         };
+        const normalizeBottomDockedHeight = (height, stored = {}) => {
+            const bounds = getViewportBounds();
+            const minHeight = getDockedMinHeight();
+            const maxHeight = Math.max(minHeight, window.innerHeight - bounds.minTop);
+            let nextHeight = Number.isFinite(height) ? height : minPreviewHeight;
+            if (nextHeight >= maxHeight * 0.8) {
+                const windowHeight = readStateNumber(stored, "window-height")
+                    ?? floatingPreviewRect?.height;
+                nextHeight = windowHeight !== null && windowHeight < maxHeight * 0.8
+                    ? windowHeight
+                    : Math.max(minHeight, Math.round(maxHeight * 0.4));
+            }
+            return nextHeight;
+        };
+        const switchPreviewMode = targetMode => {
+            if (previewDockSide === "bottom") {
+                lastBottomDockedHeight = Math.round(getWindowRect().height);
+            }
+            if (!previewDocked) floatingPreviewRect = getWindowRect();
+            syncPreviewState();
+            const stored = readStoredState() || {};
+
+            if (targetMode === "window") {
+                const windowRect = {
+                    left: readStateNumber(stored, "window-left"),
+                    top: readStateNumber(stored, "window-top"),
+                    width: readStateNumber(stored, "window-width"),
+                    height: readStateNumber(stored, "window-height"),
+                };
+                const hasWindowRect = Object.values(windowRect).every(value => value !== null);
+                applyFloatingRect(hasWindowRect ? windowRect : floatingPreviewRect);
+            } else if (targetMode === "bottom") {
+                let dockedHeight = lastBottomDockedHeight
+                    ?? readStateNumber(null, "preview-docked-height")
+                    ?? readStateNumber(stored, "preview-docked-height")
+                    ?? readStateNumber(stored, "last-bottom-docked-height")
+                    ?? readStateNumber(stored, "docked-height")
+                    ?? floatingPreviewRect?.height
+                    ?? minPreviewHeight;
+                dockedHeight = normalizeBottomDockedHeight(dockedHeight, stored);
+                applyDockedRect(dockedHeight);
+            } else if (targetMode === "right") {
+                const dockedWidth = readStateNumber(stored, "right-docked-width")
+                    ?? readStateNumber(stored, "preview-right-docked-width")
+                    ?? floatingPreviewRect?.width
+                    ?? minPreviewWidth;
+                applyRightDockedRect(dockedWidth);
+            }
+            persistPreviewState();
+        };
         const toggleDockedPreview = () => {
-            animatePreviewWindow();
-            if (previewDocked) {
-                syncPreviewState();
+            switchPreviewMode(previewDocked ? "window" : "bottom");
+        };
+        const cyclePreviewMode = () => {
+            if (!previewDocked) {
+                switchPreviewMode("bottom");
+            } else if (previewDockSide === "bottom") {
+                switchPreviewMode("right");
+            } else {
+                switchPreviewMode("window");
+            }
+        };
+        const cyclePreviewModeWithIcon = () => {
+            if (previewClosed) {
+                hideRestoreButton();
+                previewClosed = false;
+                win.style.display = "";
                 const stored = readStoredState() || {};
                 const windowRect = {
                     left: readStateNumber(stored, "window-left"),
@@ -523,53 +621,27 @@
                 };
                 const hasWindowRect = Object.values(windowRect).every(value => value !== null);
                 applyFloatingRect(hasWindowRect ? windowRect : floatingPreviewRect);
+                showPreviewWindow();
                 persistPreviewState();
                 return;
             }
 
-            floatingPreviewRect = getWindowRect();
-            syncPreviewState();
-            const stored = readStoredState() || {};
-            const dockedHeight = readStateNumber(stored, "docked-height")
-                ?? readStateNumber(stored, "preview-docked-height")
-                ?? floatingPreviewRect.height;
-            applyDockedRect(dockedHeight);
-            persistPreviewState();
-        };
-        const cyclePreviewMode = () => {
-            animatePreviewWindow();
-            syncPreviewState();
-            const stored = readStoredState() || {};
+            if (previewDockSide === "right") {
+                syncPreviewState();
+                persistPreviewState();
+                saveIconState();
+                showIconPreview();
+                return;
+            }
 
             if (!previewDocked) {
-                floatingPreviewRect = getWindowRect();
-                const dockedHeight = readStateNumber(stored, "docked-height")
-                    ?? readStateNumber(stored, "preview-docked-height")
-                    ?? floatingPreviewRect.height;
-                applyDockedRect(dockedHeight);
-            } else if (previewDockSide === "bottom") {
-                const dockedWidth = readStateNumber(stored, "right-docked-width")
-                    ?? readStateNumber(stored, "preview-right-docked-width")
-                    ?? floatingPreviewRect?.width
-                    ?? getWindowRect().width;
-                applyRightDockedRect(dockedWidth);
+                switchPreviewMode("bottom");
             } else {
-                const bounds = getViewportBounds();
-                const windowRect = {
-                    left: readStateNumber(stored, "window-left"),
-                    top: readStateNumber(stored, "window-top"),
-                    width: Math.max(minPreviewWidth, (bounds.maxRight - bounds.minLeft) * 0.7),
-                    height: Math.max(minPreviewHeight, (bounds.maxBottom - bounds.minTop) * 0.7),
-                };
-                const hasWindowPosition = windowRect.left !== null && windowRect.top !== null;
-                applyFloatingRect(hasWindowPosition ? windowRect : {
-                    left: floatingPreviewRect?.left ?? bounds.minLeft + (bounds.maxRight - bounds.minLeft) * 0.15,
-                    top: floatingPreviewRect?.top ?? bounds.minTop + (bounds.maxBottom - bounds.minTop) * 0.15,
-                    width: windowRect.width,
-                    height: windowRect.height,
-                });
+                switchPreviewMode("right");
             }
-            persistPreviewState();
+        };
+        const dockPreviewRight = () => {
+            switchPreviewMode("right");
         };
         const restorePreviewState = () => {
             const stored = readStoredState() || {};
@@ -596,9 +668,11 @@
             }
 
             if (mode === "docked") {
-                const dockedHeight = readStateNumber(stored, "docked-height")
+                let dockedHeight = readStateNumber(stored, "last-bottom-docked-height")
                     ?? readStateNumber(stored, "preview-docked-height")
+                    ?? readStateNumber(stored, "docked-height")
                     ?? readStateNumber(stored, "preview-height");
+                dockedHeight = normalizeBottomDockedHeight(dockedHeight, stored);
                 applyDockedRect(dockedHeight);
                 return;
             }
@@ -660,7 +734,23 @@
         win.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
             if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
-            if (e.target?.closest?.("[data-pz-preview-handle]")) return;
+            if (previewDockSide === "right" && e.target?.closest?.("[data-pz-preview-handle]")) {
+                const now = Date.now();
+                const distance = Math.hypot(e.clientX - lastRightHandleClick.x, e.clientY - lastRightHandleClick.y);
+                const isDoubleClick = now - lastRightHandleClick.time < 400 && distance < 8;
+                lastRightHandleClick = { time: now, x: e.clientX, y: e.clientY };
+                if (e.detail >= 2 || isDoubleClick) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    rightHandleDoubleClickHandled = true;
+                    cyclePreviewMode();
+                    window.setTimeout(() => {
+                        rightHandleDoubleClickHandled = false;
+                    }, 1000);
+                    return;
+                }
+            }
+            if (e.target?.closest?.("[data-pz-preview-handle]") && previewDockSide !== "right") return;
             const edges = getResizeEdges(e);
             if (!edges) return;
 
@@ -677,7 +767,6 @@
             let undockedFromRight = false;
             let dragOffsetX = 0;
             let dragOffsetY = 0;
-
             win.setPointerCapture?.(e.pointerId);
             win.classList.add("pz-settings-preview-resizing");
             win.style.cursor = getResizeCursor(edges);
@@ -686,17 +775,26 @@
             e.stopPropagation();
 
             const move = moveEvent => {
-                if (startedRightDocked && !undockedFromRight && Math.abs(moveEvent.clientY - e.clientY) >= 64) {
-                    applyFloatingRect(floatingPreviewRect);
+                if (startedRightDocked && !undockedFromRight
+                    && Math.abs(moveEvent.clientX - e.clientX) <= 64
+                    && Math.abs(moveEvent.clientY - e.clientY) >= 64) {
+                    const stored = readStoredState() || {};
+                    const windowRect = {
+                        left: readStateNumber(stored, "window-left"),
+                        top: readStateNumber(stored, "window-top"),
+                        width: readStateNumber(stored, "window-width"),
+                        height: readStateNumber(stored, "window-height"),
+                    };
+                    const hasWindowRect = Object.values(windowRect).every(value => value !== null);
+                    applyFloatingRect(hasWindowRect ? windowRect : floatingPreviewRect);
                     const floatingRect = getWindowRect();
-                    dragOffsetX = floatingRect.width / 2;
+                    dragOffsetX = Math.min(floatingRect.width, floatingRect.width / 2);
                     dragOffsetY = Math.min(floatingRect.height, handle.getBoundingClientRect().height / 2);
                     undockedFromRight = true;
                     win.classList.remove("pz-settings-preview-resizing");
                     win.classList.add("pz-settings-preview-dragging");
                     win.style.cursor = "move";
                     handle.style.cursor = "move";
-                    animatePreviewWindow();
                     setPosition(moveEvent.clientX - dragOffsetX, moveEvent.clientY - dragOffsetY);
                     return;
                 }
@@ -750,13 +848,9 @@
                 win.classList.remove("pz-settings-preview-resizing", "pz-settings-preview-dragging");
                 win.releasePointerCapture?.(upEvent.pointerId);
                 clearResizeCursor();
-                const snappedToEdge = undockedFromRight
-                    && dockFloatingDragAtEdge(upEvent, dragOffsetX, dragOffsetY);
-                if (!snappedToEdge) {
-                    if (!previewDocked) floatingPreviewRect = getWindowRect();
-                    syncPreviewState();
-                    persistPreviewState();
-                }
+                if (!previewDocked) floatingPreviewRect = getWindowRect();
+                syncPreviewState();
+                persistPreviewState();
                 window.removeEventListener("pointermove", move);
                 window.removeEventListener("pointerup", up);
                 window.removeEventListener("pointercancel", up);
@@ -771,18 +865,6 @@
             if (e.button !== undefined && e.button !== 0) return;
             if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
 
-            const now = Date.now();
-            const distance = Math.hypot(e.clientX - lastHandleClick.x, e.clientY - lastHandleClick.y);
-            const isDoubleClick = now - lastHandleClick.time < 400 && distance < 8;
-            lastHandleClick = { time: now, x: e.clientX, y: e.clientY };
-
-            if (e.detail >= 2 || isDoubleClick) {
-                e.preventDefault();
-                suppressHandleDblClick = true;
-                cyclePreviewMode();
-                return;
-            }
-
             const rect = win.getBoundingClientRect();
             let offsetX = e.clientX - rect.left;
             let offsetY = e.clientY - rect.top;
@@ -796,7 +878,9 @@
             e.preventDefault();
 
             const move = moveEvent => {
-                if (startedBottomDocked && !undockedFromBottom && Math.abs(moveEvent.clientX - e.clientX) >= 64) {
+                if (startedBottomDocked && !undockedFromBottom
+                    && Math.abs(moveEvent.clientY - e.clientY) <= 64
+                    && Math.abs(moveEvent.clientX - e.clientX) >= 64) {
                     applyFloatingRect(floatingPreviewRect);
                     const floatingRect = getWindowRect();
                     offsetX = floatingRect.width / 2;
@@ -875,8 +959,8 @@
         handle.addEventListener("dblclick", e => {
             if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
             e.preventDefault();
-            if (suppressHandleDblClick) {
-                suppressHandleDblClick = false;
+            if (rightHandleDoubleClickHandled) {
+                rightHandleDoubleClickHandled = false;
                 return;
             }
             cyclePreviewMode();
@@ -884,8 +968,25 @@
         modeButton?.addEventListener("click", e => {
             e.preventDefault();
             e.stopPropagation();
-            toggleDockedPreview();
+            if (previewDockSide === "bottom") {
+                dockPreviewRight();
+            } else if (previewDockSide === "right") {
+                switchPreviewMode("window");
+                switchPreviewMode("bottom");
+            } else {
+                toggleDockedPreview();
+            }
             modeButton.blur();
+        });
+        secondaryModeButton?.addEventListener("click", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (previewDocked) {
+                toggleDockedPreview();
+            } else {
+                dockPreviewRight();
+            }
+            secondaryModeButton.blur();
         });
         closeButton?.addEventListener("click", e => {
             e.preventDefault();
@@ -910,6 +1011,13 @@
             restorePreviewState();
             showPreviewWindow();
             win.focus?.();
+        });
+
+        document.addEventListener("keydown", e => {
+            if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.isComposing || e.key.toLowerCase() !== "p") return;
+
+            e.preventDefault();
+            cyclePreviewModeWithIcon();
         });
 
         window.addEventListener("resize", keepInViewport);

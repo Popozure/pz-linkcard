@@ -1986,6 +1986,36 @@
             submitSearch();
         });
 
+        document.addEventListener("keydown", e => {
+            if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.isComposing || e.key.toLowerCase() !== "q") return;
+
+            e.preventDefault();
+            input.focus();
+            input.select();
+        });
+
+        document.addEventListener("keydown", e => {
+            if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.isComposing || e.key.toLowerCase() !== "a") return;
+            if (e.target?.closest?.("input, textarea, select, [contenteditable='true']")) return;
+
+            const checkboxes = Array.from(document.querySelectorAll('.pz-man-cache-list input[name="select_id[]"]'))
+                .filter(checkbox => !checkbox.disabled);
+            if (!checkboxes.length) return;
+
+            e.preventDefault();
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) return;
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event("input", { bubbles: true }));
+                checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+            });
+            const selectAll = document.querySelector("#cb-select-all-1");
+            if (selectAll) {
+                selectAll.checked = true;
+                selectAll.indeterminate = false;
+            }
+        });
+
         searchSubmit.addEventListener("click", () => {
             resetToFirstPage();
         });

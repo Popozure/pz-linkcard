@@ -336,6 +336,10 @@ msgstr ""
 msgid "File Menu"
 msgstr ""
 
+#: ../lib/pz-linkcard-cacheman-list.php:257
+msgid "Search cards"
+msgstr ""
+
 #: ../lib/pz-linkcard-settings.php:221
 msgid "Search settings"
 msgstr ""
@@ -2093,6 +2097,15 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings.php:459
 msgid "Dock preview"
+msgstr ""
+
+msgid "Dock preview bottom"
+msgstr ""
+
+msgid "Dock preview right"
+msgstr ""
+
+msgid "Window preview"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php:460

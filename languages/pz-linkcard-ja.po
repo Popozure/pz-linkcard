@@ -341,6 +341,10 @@ msgstr "検索キーワード（例．post:1234、id:10、domain:popozure.info�
 msgid "Search"
 msgstr "検索"
 
+#: ../lib/pz-linkcard-cacheman-list.php:257
+msgid "Search cards"
+msgstr "カードを検索"
+
 #: ../lib/pz-linkcard-settings.php:221
 msgid "Search settings"
 msgstr "設定項目の検索"
@@ -2798,6 +2802,15 @@ msgstr "「Amazon」ロゴマーク"
 #: ../lib/pz-linkcard-settings.php:479
 msgid "Dock preview"
 msgstr "プレビューをドッキング"
+
+msgid "Dock preview bottom"
+msgstr "プレビューを下端にドッキング"
+
+msgid "Dock preview right"
+msgstr "プレビューを右端にドッキング"
+
+msgid "Window preview"
+msgstr "プレビューをウィンドウ状態にする"
 
 #: ../lib/pz-linkcard-settings.php:480
 msgid "Close preview"

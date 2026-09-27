@@ -3252,6 +3252,9 @@ class class_pz_linkcard {
 					'labels'		=>	array(
 						'restorePreview'		=>	__('Preview', 'pz-linkcard' ),
 						'restorePreviewAria'	=>	__('Preview', 'pz-linkcard' ),
+						'dockPreviewBottom'	=>	__('Dock preview bottom', 'pz-linkcard' ),
+						'dockPreviewRight'	=>	__('Dock preview right', 'pz-linkcard' ),
+						'windowPreview'		=>	__('Window preview', 'pz-linkcard' ),
 						'referenced'			=>	__('Referenced', 'pz-linkcard' ),
 						'youMayAlsoLike'		=>	__('You may also like', 'pz-linkcard' ),
 						'previewPostDate'		=>	wp_date(PZLKC_DATE_FORMAT, $preview_yesterday->getTimestamp(), wp_timezone() ),

@@ -205,8 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     const deleteSelectedHistory = () => {
-        const visibleItems = getVisibleHistory();
-        const keyword = visibleItems[historyState.selectedIndex];
+        const keyword = getVisibleHistory()[historyState.selectedIndex];
         if (!keyword) return false;
         historyState.items = historyState.items.filter(item => item !== keyword);
         writeHistory();
@@ -226,10 +225,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return true;
     };
 
-    const searchFromStart = (keyword, remember = true) => {
+    const searchFromStart = keyword => {
         const value = keyword.trim();
         if (!value) return;
-        if (remember) addHistory(value);
+        addHistory(value);
         state.matches = searchSettings(value);
         state.lastKeyword = value.toLowerCase();
         state.currentIndex = state.matches.length ? 0 : -1;
