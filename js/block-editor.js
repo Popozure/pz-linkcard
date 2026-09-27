@@ -198,6 +198,7 @@
 		useEffect(() => {
 			setTempUrl(url || "");
 		}, [url]);
+		const showUrlEditor = isSelected || !url;
 
 		const blockProps = useEditorBlockProps({
 			className: "pz-linkcard-block-editor",
@@ -219,50 +220,54 @@
 				}
 			},
 			style: {
-				backgroundColor: "rgba(240, 250, 255, 0.2)",
-				border: "1px solid #2277bb",
-				borderRadius: "4px",
+				backgroundColor: showUrlEditor ? "rgba(240, 250, 255, 0.2)" : "transparent",
+				border: showUrlEditor ? "1px solid #2277bb" : "0",
+				borderRadius: showUrlEditor ? "4px" : "0",
 				boxSizing: "border-box",
-				padding: "12px",
+				padding: showUrlEditor ? "12px" : "0",
 			},
 		});
 
 		return el(
 			"div",
 			blockProps,
-			el(
-				"div",
-				{
-					style: {
-						color: "#111827",
-						fontSize: "13px",
-						fontWeight: "700",
-						lineHeight: "1.4",
-						marginBottom: "6px",
+			showUrlEditor
+				? el(
+						"div",
+						{
+							style: {
+								color: "#111827",
+								fontSize: "13px",
+								fontWeight: "700",
+								lineHeight: "1.4",
+								marginBottom: "6px",
+							},
 					},
-				},
-				blockTitle
-			),
-			el("input", {
-				type: "url",
-				value: tempUrl,
-				placeholder: urlPlaceholder,
-				onChange: (event) => setTempUrl(event.target.value),
-				onKeyDown: (event) => {
-					if (event.key === "Enter") {
-						event.preventDefault();
-						commitUrl(tempUrl);
-					}
-				},
-				onBlur: () => commitUrl(tempUrl),
-				style: {
-					width: "100%",
-					padding: "6px",
-					fontSize: "14px",
-					boxSizing: "border-box",
-					marginBottom: "10px",
-				},
-			}),
+						blockTitle
+				  )
+				: null,
+			showUrlEditor
+				? el("input", {
+						type: "url",
+						value: tempUrl,
+						placeholder: urlPlaceholder,
+						onChange: (event) => setTempUrl(event.target.value),
+						onKeyDown: (event) => {
+							if (event.key === "Enter") {
+								event.preventDefault();
+								commitUrl(tempUrl);
+							}
+						},
+						onBlur: () => commitUrl(tempUrl),
+						style: {
+							width: "100%",
+							padding: "6px",
+							fontSize: "14px",
+							boxSizing: "border-box",
+							marginBottom: "10px",
+						},
+				  })
+				: null,
 			url && ServerSideRender
 				? el(ServerSideRender, {
 						block: blockName,
