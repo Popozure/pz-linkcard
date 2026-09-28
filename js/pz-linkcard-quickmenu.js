@@ -340,6 +340,7 @@
         submitToManager({
             "single-edit": cardId,
             scroll_now: scrollNow,
+            return_url: window.location.href,
         });
     }
 

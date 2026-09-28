@@ -31,6 +31,8 @@
 	$orderby		=	isset($_POST['orderby'] )		?	esc_attr(strtolower($_POST['orderby'] ) )	:	'id';
 	$order			=	isset($_POST['order'] )			?	esc_attr(strtolower($_POST['order'] ) )		:	'desc';
 	$scroll_now		=	isset($_POST['scroll_now'] )	?	intval($_POST['scroll_now'] )				:	0;
+	$return_url		=	isset($_POST['return_url'] )	?	esc_url_raw(wp_unslash($_POST['return_url'] ) )	:	'';
+	$return_url		=	$return_url ? wp_validate_redirect($return_url, '' ) : '';
 	$page_now		=	(isset($_POST['page_button'] )	?	intval($_POST['page_button'] )				:	
 						(isset($_POST['page_trans'] )	?	intval($_POST['page_trans'] )				:	
 						(isset($_POST['page_now'] )		?	intval($_POST['page_now'] )					:	0 ) ) );
@@ -134,9 +136,10 @@
 			'admin-mode'		=>		$admin_mode,
 			'develop-mode'		=>		$develop_mode,
 			'flg-inhibit'		=>		$inhibit,
+			'return_url'		=>		$return_url,
 		);
 	foreach		($temp_param		as	$temp_name => $temp_value ) {
-		$html_input	.=	'<input type="hidden" name="'.$temp_name.'" value="'.$temp_value.'" title="'.$temp_name.'" size="4" />';
+		$html_input	.=	'<input type="hidden" name="'.esc_attr($temp_name ).'" value="'.esc_attr($temp_value ).'" title="'.esc_attr($temp_name ).'" size="4" />';
 	}
 
 	// モードによって表示させる
@@ -187,6 +190,10 @@
 			break;
 		
 		case	'cancel':					// 編集画面キャンセル
+			if	($return_url ) {
+				echo	'<script>window.location.replace('.wp_json_encode($return_url ).');</script>';
+				$show_list			=	false;
+			}
 			break;
 
 		case	'edit':						// 編集画面
@@ -214,6 +221,10 @@
 				$success_count++;
 			}
 			$html_notice			.=	'<div class="notice '.($success_count ? 'notice-success' : 'notice-error' ).' is-dismissible"><p><strong>'.__('Update Cache', 'pz-linkcard' ).__('...', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
+			if	($return_url ) {
+				echo	'<script>window.location.replace('.wp_json_encode($return_url ).');</script>';
+				$show_list			=	false;
+			}
 			break;
 
 		case	'renew':					// 記事内容の再取得

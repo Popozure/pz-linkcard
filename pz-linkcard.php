@@ -625,70 +625,74 @@ class class_pz_linkcard {
 		// 言語の国際化（日本語化）
 		load_plugin_textdomain('pz-linkcard', false, $this->slug.'/languages' );
 
+		// 有効化・無効化フック
+		register_activation_hook(__FILE__, [$this, 'hook_activate' ] );
+		register_deactivation_hook(__FILE__, [$this, 'hook_deactivate' ] );
+
+		// 共通アクション（実行順）
+		add_action('init', [$this, 'action_register_block' ] );
+		add_action(self::CRON_ALIVE, [$this, 'schedule_hook_alive' ] );
+		add_action(self::CRON_CHECK, [$this, 'schedule_hook_check' ] );
+
+		// WP-CRONスケジュール登録
+		if	($this->options['flg-alive'] && !wp_next_scheduled(self::CRON_ALIVE ) ) {
+			wp_schedule_event(time() + 1800, 'daily', self::CRON_ALIVE );
+		}
+		if	($this->options['sns-position'] && !wp_next_scheduled(self::CRON_CHECK ) ) {
+			wp_schedule_event(time() + 10, 'hourly', self::CRON_CHECK );
+		}
+
 		// 管理画面のとき
 		if	(is_admin() ) {
-			switch	(true) {				// 現在のページ
-			case	(strpos($_SERVER['REQUEST_URI'], self::SETTINGS_URL ) <> '' ):
+			// 現在の管理ページ
+			$request_uri		=	isset($_SERVER['REQUEST_URI'] ) ? wp_unslash($_SERVER['REQUEST_URI'] ) : '';
+			$this->now_page	=	'';
+			if	(strpos($request_uri, self::SETTINGS_URL ) !== false ) {
 				$this->now_page	=	1;		// Pz カード設定
-			case	(strpos($_SERVER['REQUEST_URI'], self::CACHEMAN_URL ) <> '' ):
+			} elseif	(strpos($request_uri, self::CACHEMAN_URL ) !== false ) {
 				$this->now_page	=	2;		// Pz カード管理
-			default:
-				$this->now_page	=	'';
 			}
-			register_activation_hook	(__FILE__,						[$this, 'hook_activate' ],						10, 1 );	// プラグインを有効化するときの処理
-			register_deactivation_hook	(__FILE__,						[$this, 'hook_deactivate' ],					10, 1 );	// プラグインを無効化するときの処理
+
+			// 管理画面用アクション
 			add_action		('init',									[$this, 'action_init' ],						10, 1 );	// プラグイン初期化
-			add_action		('plugins_loaded',							[$this, 'action_plugins_loaded' ],				10, 1 );	// WordPressロード後
 			add_action		('upgrader_process_complete',				[$this, 'action_upgrader_process_complete' ],	10, 2 );	// アップデートしたときの処理
 			add_action		('admin_post_pz_export_file',				[$this, 'action_export_file' ],					10, 1 );	// エクスポート処理
 			add_action		('enqueue_block_editor_assets',				[$this, 'action_enqueue_block_editor_assets' ],	10, 1 );	// ブロックエディタ用スクリプト
 			add_action		('enqueue_block_assets',					[$this, 'action_enqueue_block_assets' ],		10, 1 );	// ブロックエディタ本文
 
-			if ($this->options['flg-alive'] ) {
-				add_action(self::CRON_ALIVE,	[$this, 'schedule_hook_alive' ] );
-				if	(!wp_next_scheduled(self::CRON_ALIVE ) ) {
-					wp_schedule_event(time() + 1800	, 'daily',	self::CRON_ALIVE );
-				}
-			}
+			// カード設定画面用Ajaxアクション
+			add_action		('wp_ajax_pz_lkc_clear_error_mode',			[$this, 'action_ajax_pz_lkc_error_mode_clear'] );
+			add_action		('wp_ajax_pz_lkc_preview_render',			[$this, 'action_ajax_pz_lkc_preview_render'] );
+			add_action		('wp_ajax_pz_lkc_preview_state',			[$this, 'action_ajax_pz_lkc_preview_state'] );
 
-			// WP-CRONスケジュール登録（SNSカウント取得）
-			if ($this->options['sns-position'] ) {
-				add_action(self::CRON_CHECK,	[$this, 'schedule_hook_check' ] );
-				if	(!wp_next_scheduled(self::CRON_CHECK ) ) {
-					wp_schedule_event(time() + 10	, 'hourly',	self::CRON_CHECK );
-				}
-			}
-
+			// カード管理画面用Ajaxアクション
+			add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
 		} else {
-			add_action		('wp_enqueue_scripts',						[$this, 'action_wp_enqueue_scripts'] );		// スタイルシート呼び出し
-
-			add_action		('plugins_loaded',							[$this, 'action_plugins_loaded' ], 10 );
+			// 通常表示用フィルター
 			if	($this->options['auto-atag'] || $this->options['auto-url'] ) {										// 自動置き換え
-				add_filter		('the_content',					array($this, 'auto_replace' ) );
-				add_shortcode	(self::PLUGIN_SLUG.'-auto-replace',		[$this, 'shortcode' ], 10 );
+				add_filter('the_content', [$this, 'auto_replace' ] );
 			}
-			$code	=	preg_replace("/[^a-zA-Z0-9]/", "", $this->options['code1'] );								// ショートコード1
-			if	($code ) {						
-				add_shortcode($code, array($this, 'shortcode' ), 10 );
+
+			// ショートコード
+			if	($this->options['auto-atag'] || $this->options['auto-url'] ) {
+				add_shortcode(self::PLUGIN_SLUG.'-auto-replace', [$this, 'shortcode' ] );
 			}
-			$code	=	preg_replace("/[^a-zA-Z0-9]/", "", $this->options['code2'] );								// ショートコード2
-			if	($code ) {
-				add_shortcode($code, array($this, 'shortcode' ), 10 );
+			foreach	(array('code1', 'code2', 'code3' ) as $key ) {
+				$code	=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options[$key] );
+				if	($code ) {
+					add_shortcode($code, [$this, 'shortcode' ] );
+				}
 			}
-			$code	=	preg_replace("/[^a-zA-Z0-9]/", "", $this->options['code3'] );								// ショートコード3
-			if	($code ) {
-				add_shortcode($code, array($this, 'shortcode' ), 10 );
-			}
+
+			// 通常表示用アクション
+			add_action('wp_enqueue_scripts', [$this, 'action_wp_enqueue_scripts' ] );
 		}
-		add_action		('init',									[$this, 'action_register_block' ],	10, 1 );	// ブロック登録
-		add_action		('wp_ajax_pz_lkc_clear_error_mode',			[$this, 'action_ajax_pz_lkc_error_mode_clear'] );
-		add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
-		add_action		('wp_ajax_pz_lkc_preview_render',			[$this, 'action_ajax_pz_lkc_preview_render'] );
-		add_action		('wp_ajax_pz_lkc_preview_state',			[$this, 'action_ajax_pz_lkc_preview_state'] );
+
+		// 投稿表示側でも使用するAjaxアクション
 		add_action		('wp_ajax_pz_lkc_refresh_card',				[$this, 'action_ajax_pz_lkc_refresh_card'] );
 		add_action		('wp_ajax_pz_lkc_refresh_thumbnail',		[$this, 'action_ajax_pz_lkc_refresh_thumbnail'] );
-		add_action		('wp_ajax_pz_lkc_click_count', 				[$this, 'action_ajax_pz_lkc_click_count'] );
-		add_action		('wp_ajax_nopriv_pz_lkc_click_count',		[$this, 'action_ajax_pz_lkc_click_count'] );
+		add_action		('wp_ajax_pz_lkc_click_count', 				[$this, 'action_ajax_pz_lkc_click_count'] );	// ログインユーザー用Ajaxアクション
+		add_action		('wp_ajax_nopriv_pz_lkc_click_count',		[$this, 'action_ajax_pz_lkc_click_count'] );	// 未ログインユーザー用Ajaxアクション
 	}
 
 	// テキストリンクの行とURLのみの行をリンクカードへ置き換える処理（直接HTMLタグにするのでは無くショートコードに変換する。）
@@ -3112,16 +3116,19 @@ class class_pz_linkcard {
 	public	function	action_init() {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 
-		add_action		('admin_menu',									array($this, 'action_admin_menu' ),					10, 1 );		// 設定メニュー
-		add_action		('admin_enqueue_scripts',						array($this, 'action_admin_enqueue_scripts' ),		10, 1 );		// 設定メニュー用スクリプト
-		add_action		('admin_print_styles',							array($this, 'action_admin_print_styles' ),			10, 1 );		// スタイルシートの追加
-		add_action		('admin_print_scripts',							array($this, 'action_admin_print_scripts' ),		10, 1 );		// スクリプトの追加
-		add_action		('wp_before_admin_bar_render',					array($this, 'action_wp_before_admin_bar_render' ),	11,	1 );		// 管理バー
-		add_action		('admin_notices',								array($this, 'action_admin_notices' ),				10, 1 );		// 注意書き
-		add_action		('admin_print_footer_scripts',					array($this, 'action_admin_print_footer_scripts' ),	10, 1 );		// テキストエディタ用クイックタグ
+		// 管理画面用フィルター
 		add_filter		('plugin_action_links_'.$this->plugin_basename,	array($this, 'filter_plugin_action_links' ),		10, 1 );		// プラグイン画面
 		add_filter		('mce_external_plugins',						array($this, 'filter_mce_external_plugins' ),		$this->options['mce-priority'], 1 );	// ビジュアルエディタ用ボタン
 		add_filter		('mce_buttons',									array($this, 'filter_mce_buttons' ),				$this->options['mce-priority'], 1 );	// ビジュアルエディタ用ボタン
+
+		// 管理画面用アクション（実行順）
+		add_action		('admin_menu',									array($this, 'action_admin_menu' ) );						// 設定メニュー
+		add_action		('admin_enqueue_scripts',						array($this, 'action_admin_enqueue_scripts' ) );			// 設定メニュー用スクリプト
+		add_action		('admin_print_styles',							array($this, 'action_admin_print_styles' ) );				// スタイルシートの追加
+		add_action		('admin_print_scripts',							array($this, 'action_admin_print_scripts' ) );				// スクリプトの追加
+		add_action		('admin_notices',								array($this, 'action_admin_notices' ) );					// 注意書き
+		add_action		('admin_print_footer_scripts',					array($this, 'action_admin_print_footer_scripts' ) );		// テキストエディタ用クイックタグ
+		add_action		('wp_before_admin_bar_render',					array($this, 'action_wp_before_admin_bar_render' ), 11 );	// 管理バー
 	}
 
 	// 管理画面のサブメニュー追加
@@ -3559,16 +3566,7 @@ class class_pz_linkcard {
 
 	// プラグインロード後（プラガブル関数用）
 	public	function	action_plugins_loaded() {
-	if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
-
-		if		(is_user_logged_in() ) {
-			$user_data	=	wp_get_current_user();
-			if		(property_exists($user_data, 'caps' ) && array_key_exists('administrator', $user_data->caps ) ) {
-				if	($user_data->caps['administrator'] ) {
-					// 管理者
-				}
-			}
-		}
+		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 	}
 
 	// 更新完了
