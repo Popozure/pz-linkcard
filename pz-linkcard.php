@@ -667,6 +667,9 @@ class class_pz_linkcard {
 
 			// カード管理画面用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
+
+			// ビジュアルエディター用Ajaxアクション
+			add_action		('wp_ajax_pz_lkc_mce_post_search',			[$this, 'action_ajax_pz_lkc_mce_post_search'] );
 		} else {
 			// 通常表示用フィルター
 			if	($this->options['auto-atag'] || $this->options['auto-url'] ) {										// 自動置き換え
@@ -3341,11 +3344,15 @@ class class_pz_linkcard {
 		wp_localize_script($editor_script, 'pz_lkc_block_icon', array(
 			'blockName'		=>	'pz-linkcard/linkcard',
 			'iconUrl'		=>	$this->plugin_dir_url.'img/icon_lkc_block.svg',
+			'previewUrl'	=>	$this->plugin_dir_url.'img/pz-lkc_block_preview.png',
 			'shortcode'		=>	$shortcodes[0],
 			'shortcodes'	=>	$shortcodes,
 			'title'			=>	'Pz-LinkCard',
-			'placeholder'	=>	__('Enter the URL and press Enter', 'pz-linkcard' ),
+			'placeholder'	=>	__('Enter a URL or search keyword', 'pz-linkcard' ),
 			'description'	=>	__('Create a Pz-LinkCard shortcode.', 'pz-linkcard' ),
+			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
+			'searchNonce'	=>	wp_create_nonce('pz_lkc_mce_post_search' ),
+			'searchResults'	=>	__('Search results', 'pz-linkcard' ),
 		) );
 
 		$block_args	=	array(
@@ -3842,6 +3849,43 @@ class class_pz_linkcard {
 		) );
 	}
 
+	// ビジュアルエディターのリンクカード挿入ダイアログから記事タイトルを検索
+	public	function	action_ajax_pz_lkc_mce_post_search() {
+		if	(!current_user_can('edit_posts' ) ) {
+			wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard' ), 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_mce_post_search', 'nonce', false ) ) {
+			wp_send_json_error(__('Invalid request.', 'pz-linkcard' ), 403 );
+		}
+
+		$keyword	=	isset($_POST['keyword'] ) ? sanitize_text_field(wp_unslash($_POST['keyword'] ) ) : '';
+		if	($keyword === '' ) {
+			wp_send_json_success(array() );
+		}
+
+		$post_types	=	array_values(get_post_types(array('public' => true ), 'names' ) );
+		$post_types	=	array_values(array_diff($post_types, array('attachment' ) ) );
+		if	(!$post_types ) {
+			wp_send_json_success(array() );
+		}
+
+		global	$wpdb;
+		$type_placeholders	=	implode(', ', array_fill(0, count($post_types ), '%s' ) );
+		$sql	=	"SELECT ID FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type IN ({$type_placeholders}) AND post_title LIKE %s ORDER BY post_date DESC LIMIT 50";
+		$query_args	=	array_merge($post_types, array('%'.$wpdb->esc_like($keyword ).'%' ) );
+		$post_ids	=	$wpdb->get_col($wpdb->prepare($sql, $query_args ) );
+		$results	=	array();
+		foreach	($post_ids as $post_id ) {
+			$results[]	=	array(
+				'title'	=>	get_the_title($post_id ),
+				'date'	=>	get_the_date(get_option('date_format' ), $post_id ),
+				'url'	=>	get_permalink($post_id ),
+			);
+		}
+
+		wp_send_json_success($results );
+	}
+
 	// クリックカウント
 	public	function	action_ajax_pz_lkc_click_count() {
 		if	(array_key_exists('debug-mode', $this->options ) && $this->options['debug-mode'] && array_key_exists('survey-mode', $this->options ) && $this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
@@ -3884,7 +3928,8 @@ class class_pz_linkcard {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__, '$plugins='.print_r($plugins, true ) ); }
 
 		if	($this->options['flg-edit-insert'] ) {
-			$plugins[ "pz_linkcard_tinymce" ]	=	$this->plugin_dir_url.'js/mce-button.js';
+			$mce_script	=	$this->plugin_dir_path.'js/mce-button.js';
+			$plugins[ "pz_linkcard_tinymce" ]	=	add_query_arg('ver', file_exists($mce_script ) ? filemtime($mce_script ) : PZLKC_PLUGIN_VERSION, $this->plugin_dir_url.'js/mce-button.js' );
 		}
 		return	$plugins;
 	}

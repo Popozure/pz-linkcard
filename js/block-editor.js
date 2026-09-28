@@ -5,7 +5,7 @@
 	if (!wp?.blocks || !wp?.element || !wp?.data || !wp?.blockEditor || !wp?.hooks || !wp?.compose) return;
 
 	const { createBlock, registerBlockType, registerBlockVariation } = wp.blocks;
-	const { createElement: el, useEffect, useState } = wp.element;
+	const { createElement: el, useEffect, useRef, useState } = wp.element;
 	const { useDispatch, useSelect } = wp.data;
 	const { store: blockEditorStore } = wp.blockEditor;
 	const useEditorBlockProps = wp.blockEditor.useBlockProps || ((props) => props);
@@ -17,6 +17,7 @@
 	const blockTitle = blockIcon?.title || "Pz-LinkCard";
 	const urlPlaceholder = blockIcon?.placeholder || "Enter the URL and press Enter";
 	const blockDescription = blockIcon?.description || "Create a Pz-LinkCard shortcode.";
+	const searchResultsLabel = blockIcon?.searchResults || "Search results";
 	const shortcodes = Array.from(
 		new Set(
 			(blockIcon?.shortcodes || [defaultShortcode])
@@ -186,20 +187,77 @@
 		}, []) || [];
 	};
 	const isPzShortcodeBlock = (attributes) => parseShortcodes(attributes?.text).length > 0;
+	const isLikelyUrl = (value) => {
+		const text = String(value || "").trim();
+		if (!/^(https?|file|ftp|data|ogg):\/\//i.test(text)) return false;
+		try {
+			return ["http:", "https:", "file:", "ftp:", "data:", "ogg:"].includes(new URL(text).protocol);
+		} catch (error) {
+			return false;
+		}
+	};
 
 	const PzLinkCardEditor = ({ url, shortcodeName, commitUrl, clientId }) => {
 		const { removeBlock } = useDispatch(blockEditorStore);
 		const [tempUrl, setTempUrl] = useState(url || "");
-		const isSelected = useSelect(
-			(select) => select(blockEditorStore).getSelectedBlockClientId() === clientId,
+		const [searchResults, setSearchResults] = useState([]);
+		const inputRef = useRef(null);
+		const { isSelected, isPreviewMode } = useSelect(
+			(select) => ({
+				isSelected: select(blockEditorStore).getSelectedBlockClientId() === clientId,
+				isPreviewMode: Boolean(select(blockEditorStore).getSettings()?.isPreviewMode),
+			}),
 			[clientId]
 		);
 
 		useEffect(() => {
 			setTempUrl(url || "");
 		}, [url]);
-		const showUrlEditor = isSelected || !url;
+		useEffect(() => {
+			const keyword = String(tempUrl || "").trim();
+			if (!keyword || isLikelyUrl(keyword) || !blockIcon?.ajaxUrl || !blockIcon?.searchNonce) {
+				setSearchResults([]);
+				return undefined;
+			}
 
+			const controller = new AbortController();
+			const timer = window.setTimeout(() => {
+				const body = new URLSearchParams({
+					action: "pz_lkc_mce_post_search",
+					nonce: blockIcon.searchNonce,
+					keyword,
+				});
+				fetch(blockIcon.ajaxUrl, {
+					method: "POST",
+					headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+					credentials: "same-origin",
+					body: body.toString(),
+					signal: controller.signal,
+				})
+					.then((response) => response.json())
+					.then((result) => {
+						setSearchResults(result?.success && Array.isArray(result.data) ? result.data : []);
+					})
+					.catch((error) => {
+						if (error.name !== "AbortError") setSearchResults([]);
+					});
+			}, 250);
+
+			return () => {
+				window.clearTimeout(timer);
+				controller.abort();
+			};
+		}, [tempUrl]);
+		const showUrlEditor = isSelected || !url;
+		const selectSearchResult = (item) => {
+			setTempUrl(item.url);
+			setSearchResults([]);
+			commitUrl(item.url);
+			window.setTimeout(() => {
+				inputRef.current?.focus();
+				inputRef.current?.select();
+			}, 0);
+		};
 		const blockProps = useEditorBlockProps({
 			className: "pz-linkcard-block-editor",
 			tabIndex: 0,
@@ -227,6 +285,23 @@
 				padding: showUrlEditor ? "12px" : "0",
 			},
 		});
+		if (isPreviewMode && blockIcon?.previewUrl) {
+			return el("img", {
+				...blockProps,
+				className: `${blockProps.className || ""} pz-linkcard-block-inserter-preview`.trim(),
+				src: blockIcon.previewUrl,
+				alt: blockTitle,
+				style: {
+					display: "block",
+					width: "100%",
+					height: "auto",
+					margin: 0,
+					padding: 0,
+					border: 0,
+					background: "transparent",
+				},
+			});
+		}
 
 		return el(
 			"div",
@@ -247,26 +322,74 @@
 				  )
 				: null,
 			showUrlEditor
-				? el("input", {
-						type: "url",
-						value: tempUrl,
-						placeholder: urlPlaceholder,
-						onChange: (event) => setTempUrl(event.target.value),
-						onKeyDown: (event) => {
-							if (event.key === "Enter") {
-								event.preventDefault();
-								commitUrl(tempUrl);
-							}
-						},
-						onBlur: () => commitUrl(tempUrl),
-						style: {
-							width: "100%",
-							padding: "6px",
-							fontSize: "14px",
-							boxSizing: "border-box",
-							marginBottom: "10px",
-						},
-				  })
+				? el(
+						"div",
+						{ className: "pz-block-post-search-combobox" },
+						el("input", {
+							ref: inputRef,
+							type: "text",
+							inputMode: "url",
+							value: tempUrl,
+							placeholder: urlPlaceholder,
+							role: "combobox",
+							"aria-autocomplete": "list",
+							"aria-expanded": searchResults.length > 0,
+							"aria-controls": `pz-block-post-search-results-${clientId}`,
+							onChange: (event) => setTempUrl(event.target.value),
+							onKeyDown: (event) => {
+								if (event.key === "Enter") {
+									event.preventDefault();
+									if (isLikelyUrl(tempUrl)) commitUrl(tempUrl.trim());
+								} else if (event.key === "ArrowDown" && searchResults.length) {
+									event.preventDefault();
+									event.currentTarget.nextElementSibling?.querySelector("button")?.focus();
+								}
+							},
+							onBlur: () => {
+								if (isLikelyUrl(tempUrl)) commitUrl(tempUrl.trim());
+							},
+						}),
+						searchResults.length
+							? el(
+									"div",
+									{
+										id: `pz-block-post-search-results-${clientId}`,
+										className: "pz-block-post-search-results",
+										role: "listbox",
+										"aria-label": searchResultsLabel,
+									},
+									searchResults.map((item, index) =>
+										el(
+											"button",
+											{
+												type: "button",
+												className: "pz-block-post-search-result",
+												key: `${item.url}-${index}`,
+												title: item.title + (item.date ? ` (${item.date})` : ""),
+												onMouseDown: (event) => event.preventDefault(),
+												onClick: () => selectSearchResult(item),
+												onKeyDown: (event) => {
+													const buttons = Array.from(event.currentTarget.parentElement.querySelectorAll("button"));
+													if (event.key === "ArrowDown") {
+														event.preventDefault();
+														(buttons[index + 1] || buttons[index]).focus();
+													} else if (event.key === "ArrowUp") {
+														event.preventDefault();
+														if (index === 0) inputRef.current?.focus();
+														else buttons[index - 1].focus();
+													} else if (event.key === "Enter") {
+														event.preventDefault();
+														selectSearchResult(item);
+													}
+												},
+											},
+											el("span", null, item.title),
+											item.date ? el("span", { className: "pz-block-post-search-result-date" }, ` (${item.date})`) : null
+										)
+									)
+							  )
+							: null
+				  )
 				: null,
 			url && ServerSideRender
 				? el(ServerSideRender, {
@@ -282,6 +405,9 @@
 		title: blockTitle,
 		description: blockDescription,
 		icon,
+		example: {
+			viewportWidth: 480,
+		},
 		attributes: {
 			text: buildShortcodeText("", defaultShortcode),
 		},

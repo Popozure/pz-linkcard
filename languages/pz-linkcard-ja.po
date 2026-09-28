@@ -703,6 +703,14 @@ msgstr "リンクカードを作成するURLを入力してください"
 msgid "Insert Linkcard"
 msgstr "リンクカードのショートコードを挿入する"
 
+#: ../lib/pz-linkcard-modal.php:12
+msgid "Search results"
+msgstr "記事タイトルの検索結果"
+
+#: ../lib/pz-linkcard-modal.php:11
+msgid "Enter a URL or search keyword"
+msgstr "URLまたは検索キーワードを入力"
+
 #: ../lib/pz-linkcard-settings-admin.php:38
 msgid "Sec."
 msgstr "秒"
@@ -3071,7 +3079,7 @@ msgstr "URLを入力したら［Enter］キーを押してください"
 
 #: ../pz-linkcard.php:3341 ../pz-linkcard.php:3346
 msgid "Create a Pz-LinkCard shortcode."
-msgstr "リンクカードを挿入する。"
+msgstr "リンク先をカード形式で表示します。"
 
 #: ../pz-linkcard.php:3372
 msgid "No URL was specified."

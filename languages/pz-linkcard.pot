@@ -2171,3 +2171,11 @@ msgstr ""
 #: ../pz-linkcard.php:3482
 msgid "Reload page"
 msgstr ""
+
+#: ../lib/pz-linkcard-modal.php:12
+msgid "Search results"
+msgstr ""
+
+#: ../lib/pz-linkcard-modal.php:11
+msgid "Enter a URL or search keyword"
+msgstr ""
