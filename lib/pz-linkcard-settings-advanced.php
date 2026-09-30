@@ -77,11 +77,7 @@
 				</label>
 			</td>
 		</tr>
-	</table>
-	<?php submit_button(); ?>
 
-	<h2><?php echo	__('Not Recommended Settings', 'pz-linkcard' ).$help_open.'deprecation'.$help_close; ?></h2>
-	<table class="form-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Google AMP determination', 'pz-linkcard' ); ?></th>
 			<td>
@@ -103,6 +99,46 @@
 					<?php echo __('Do not display an error on the admin page.', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?>
 				</label>
 			</td>
+		</tr>
+	</table>
+	<?php submit_button(); ?>
+
+	<h2><?php echo	__('Tailored Response', 'pz-linkcard' ).$help_open.'deprecation'.$help_close; ?></h2>
+	<table class="form-table">
+		<tr>
+			<th scope="row"><?php esc_html_e('Amazon', 'pz-linkcard' ); ?></th>
+			<td>
+				<p>
+					<label>
+						<input type="hidden"   name="properties[flg-special-amazon]" value="" />
+						<input type="checkbox" name="properties[flg-special-amazon]" value="1" <?php checked($this->options['flg-special-amazon'] ); ?> />
+						<?php echo __('Retrieve Product Images', 'pz-linkcard' ); ?>
+					</label>
+				</p>
+			</td>
+		</tr>
+	</table>
+	<?php submit_button(); ?>
+
+	<h2><?php echo	__('Schedule', 'pz-linkcard' ).$help_open.'schedule'.$help_close; ?></h2>
+	<table class="form-table">
+		<tr>
+			<th rowspan="2"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
+			<td><?php pz_echo_schedule_select('sns-period', $prop['sns-period'], LIST_PERIOD ); ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Items per Run', 'pz-linkcard' ); ?></th>
+			<td><?php pz_echo_schedule_select('sns-period-num', $prop['sns-period-num'], LIST_PERIOD_NUMBER ); ?></td>
+		</tr>
+		<tr>
+			<th rowspan="2"><?php esc_html_e('Link Availability Check', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
+			<td><?php pz_echo_schedule_select('alive-period', $prop['alive-period'], LIST_PERIOD ); ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Items per Run', 'pz-linkcard' ); ?></th>
+			<td><?php pz_echo_schedule_select('alive-period-num', $prop['alive-period-num'], LIST_PERIOD_NUMBER ); ?></td>
 		</tr>
 	</table>
 	<?php submit_button(); ?>

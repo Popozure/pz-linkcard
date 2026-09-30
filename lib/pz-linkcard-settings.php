@@ -75,6 +75,26 @@
 		''			=>	$this->pz_GetUserAgent('' ),
 	) );
 
+	// 定期実行の間隔
+	$period_list	= array();
+	foreach (wp_get_schedules() as $period_key => $period_value ) {
+		$period_list[intval($period_value['interval'] )] = array(
+			'key'		=> $period_key,
+			'display'	=> $period_value['display'],
+		);
+	}
+	ksort($period_list );
+	define('LIST_PERIOD', array_column($period_list, 'display', 'key' ) );
+
+	// 1回の定期実行で処理する件数
+	define('LIST_PERIOD_NUMBER', array(
+		'1'		=> __('1 case', 'pz-linkcard' ),
+		'5'		=> __('5 cases', 'pz-linkcard' ),
+		'10'	=> __('10 cases', 'pz-linkcard' ),
+		'20'	=> __('20 cases', 'pz-linkcard' ),
+		'50'	=> __('50 cases', 'pz-linkcard' ),
+	) );
+
 	// 引数・変数の設定
 	$page				=	'pz-linkcard-settings';						// 設定画面のページ
 	if	(isset($_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
@@ -773,6 +793,15 @@ function		echo_list($item_name, $item_value, $item_list, $item_title, $item_noti
 	}
 	$html_result		.=	'</td></tr>';
 	echo					$html_result;
+}
+
+// スケジュール用リスト項目
+function pz_echo_schedule_select($item_name, $item_value, $item_list ) {
+	echo '<select name="properties['.esc_attr($item_name ).']">';
+	foreach ($item_list as $key => $value ) {
+		echo '<option value="'.esc_attr($key ).'" '.selected((string) $key, (string) $item_value, false ).'>'.esc_html($value ).'</option>';
+	}
+	echo '</select>';
 }
 
 // コンボボックス項目

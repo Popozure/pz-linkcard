@@ -11,6 +11,10 @@
 					<input type="checkbox" name="properties[auto-atag]" value="1" <?php checked($prop['auto-atag'] ); ?> class="pz-sync-check" />
 					<?php esc_html_e('Convert lines with text link only to Linkcard.', 'pz-linkcard' ); ?>
 				</label>
+				<div class="pz-autoconv-example-wrap">
+					<?php esc_html_e('ex.', 'pz-linkcard' ); ?>
+					<div class="pz-autoconv-example"><p><?php esc_html_e('Lines like the following are converted.', 'pz-linkcard' ); ?></p><p><a href="#" title="<?php echo esc_attr($plugin_url ); ?>">Pz-LinkCard</a></p><p><?php esc_html_e('Lines like the previous one are converted.', 'pz-linkcard' ); ?></p></div>
+				</div>
 			</td>
 		</tr>
 		<tr>
@@ -21,6 +25,10 @@
 					<input type="checkbox" name="properties[auto-url]" value="1" <?php checked($prop['auto-url'] ); ?> class="pz-sync-check" />
 					<?php esc_html_e('Convert lines with URL only to Linkcard.', 'pz-linkcard' ); ?>
 				</label>
+				<div class="pz-autoconv-example-wrap">
+					<?php esc_html_e('ex.', 'pz-linkcard' ); ?>
+					<div class="pz-autoconv-example"><p><?php esc_html_e('Lines like the following are converted.', 'pz-linkcard' ); ?></p><p><?php echo esc_url($plugin_url ); ?></p><p><?php esc_html_e('Lines like the previous one are converted.', 'pz-linkcard' ); ?></p></div>
+				</div>
 			</td>
 		</tr>
 		<tr>

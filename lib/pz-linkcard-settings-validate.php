@@ -21,6 +21,11 @@
 			$this->options[$key]	=	strval($temp_value );
 			break;
 
+		case	'schedule':
+			$temp_value				=	sanitize_key($temp_value );
+			$this->options[$key]	=	array_key_exists($temp_value, wp_get_schedules() ) ? $temp_value : $definition['default'];
+			break;
+
 		case	'textarea':
 			$temp_value				=	strval($temp_value );
 			$temp_value				=	preg_replace('/^\s*$/m', '', $temp_value );		// Remove blank lines.

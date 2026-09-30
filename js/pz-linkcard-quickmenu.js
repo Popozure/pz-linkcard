@@ -62,7 +62,7 @@
                 line-height: 20px;
                 text-align: center;
                 opacity: 0;
-                cursor: pointer;
+                cursor: context-menu;
                 pointer-events: auto;
                 transition: opacity 0.15s ease;
             }

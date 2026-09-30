@@ -389,11 +389,15 @@ class class_pz_linkcard {
 			'flg-robots'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-local-check'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-redir'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'user-agent'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'pzlkc', ],
-			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'', ],
+			'user-agent'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-alive'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
+			'alive-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
+			'sns-period'							=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
+			'sns-period-num'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
 
 			'auto-atag'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'auto-url'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
@@ -431,6 +435,9 @@ class class_pz_linkcard {
 			'flg-quickmenu'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-amp-url'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'error-mode-hide'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+
+			'flg-special-amazon'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+
 			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'debug-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
@@ -636,11 +643,15 @@ class class_pz_linkcard {
 		add_action(self::CRON_CHECK, [$this, 'schedule_hook_check' ] );
 
 		// WP-CRONスケジュール登録
-		if	($this->options['flg-alive'] && !wp_next_scheduled(self::CRON_ALIVE ) ) {
-			wp_schedule_event(time() + 1800, 'daily', self::CRON_ALIVE );
+		$alive_period	= $this->options['alive-period'];
+		if	($this->options['flg-alive'] && wp_get_schedule(self::CRON_ALIVE ) !== $alive_period ) {
+			wp_clear_scheduled_hook(self::CRON_ALIVE );
+			wp_schedule_event(time() + 1800, $alive_period, self::CRON_ALIVE );
 		}
-		if	($this->options['sns-position'] && !wp_next_scheduled(self::CRON_CHECK ) ) {
-			wp_schedule_event(time() + 10, 'hourly', self::CRON_CHECK );
+		$sns_period	= $this->options['sns-period'];
+		if	($this->options['sns-position'] && wp_get_schedule(self::CRON_CHECK ) !== $sns_period ) {
+			wp_clear_scheduled_hook(self::CRON_CHECK );
+			wp_schedule_event(time() + 10, $sns_period, self::CRON_CHECK );
 		}
 
 		// 管理画面のとき
@@ -2398,6 +2409,26 @@ class class_pz_linkcard {
 				$tags		=	$this->pz_GetMeta($http_body );
 			}
 
+			// Amazon専用処理
+			if	($this->options['flg-special-amazon'] ) {
+				// Amazonの商品画像
+				$amazon_image	=	'';
+				$access_host	=	strtolower((string) wp_parse_url($url_access, PHP_URL_HOST ) );
+				if	(preg_match('/(^|\.)amazon\.co\.jp$/i', $access_host ) && class_exists('DOMDocument' ) ) {
+					$previous_libxml_errors	=	libxml_use_internal_errors(true );
+					$document	=	new DOMDocument();
+					if	($document->loadHTML($http_body, LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_NONET ) ) {
+						$xpath	=	new DOMXPath($document );
+						$images	=	$xpath->query('(//*[@id="imageBlock"]//img[@src])[1]' );
+						if	($images && $images->length > 0 ) {
+							$amazon_image	=	html_entity_decode(trim($images->item(0 )->getAttribute('src' ) ), ENT_QUOTES | ENT_HTML5, $this->charset );
+						}
+					}
+					libxml_clear_errors();
+					libxml_use_internal_errors($previous_libxml_errors );
+				}
+			}
+
 			// Open Graph Protcol
 			$og_url			=	$tags['og:url']					??	'';
 			$og_type		=	$tags['og:type']				??	'';
@@ -2433,7 +2464,9 @@ class class_pz_linkcard {
 			
 			// サムネイル画像
 			if				(!$thumbnail_url ) {
-				if			($og_image ) {
+				if			($amazon_image ) {
+					$thumbnail_url =	$amazon_image;
+				} elseif	($og_image ) {
 					$thumbnail_url =	$og_image;
 				} elseif	($tw_image ) {
 					$thumbnail_url =	$tw_image;
@@ -3127,6 +3160,7 @@ class class_pz_linkcard {
 
 		// 管理画面用アクション（実行順）
 		add_action		('admin_menu',									array($this, 'action_admin_menu' ) );						// 設定メニュー
+		add_action		('admin_menu',									array($this, 'action_sort_pz_submenus' ), PHP_INT_MAX );	// [Pz] サブメニューの並べ替え
 		add_action		('admin_enqueue_scripts',						array($this, 'action_admin_enqueue_scripts' ) );			// 設定メニュー用スクリプト
 		add_action		('admin_print_styles',							array($this, 'action_admin_print_styles' ) );				// スタイルシートの追加
 		add_action		('admin_print_scripts',							array($this, 'action_admin_print_scripts' ) );				// スクリプトの追加
@@ -3157,6 +3191,50 @@ class class_pz_linkcard {
 		}
 		add_management_page	('pz-linkcard-manager',		$menu_manager,		'manage_options', 	self::CACHEMAN_PAGE,	array($this, 'page_cacheman' ) );
 		add_options_page	('pz-linkcard-settings',	$menu_settings,		'manage_options', 	self::SETTINGS_PAGE,	array($this, 'page_settings' ) );
+	}
+
+	// 設定・ツール内の [Pz] サブメニューを名前順に並べ替え
+	public	function	action_sort_pz_submenus() {
+		global	$submenu;
+
+		foreach	(array('options-general.php', 'tools.php' ) as $parent_slug ) {
+			if	(empty($submenu[$parent_slug] ) || !is_array($submenu[$parent_slug] ) ) {
+				continue;
+			}
+
+			$pz_items		=	array();
+			$other_items	=	array();
+			$insert_at		=	null;
+			foreach	($submenu[$parent_slug] as $item ) {
+				$menu_name	=	isset($item[0] ) ? trim(wp_strip_all_tags(html_entity_decode((string) $item[0], ENT_QUOTES | ENT_HTML5, get_bloginfo('charset' ) ) ) ) : '';
+				if	(strpos($menu_name, '[Pz]' ) !== 0 ) {
+					$other_items[]	=	$item;
+					continue;
+				}
+				if	($insert_at === null ) {
+					$insert_at	=	count($other_items );
+				}
+				$pz_items[]	=	array(
+					'name'	=>	$menu_name,
+					'item'	=>	$item,
+					'order'	=>	count($pz_items ),
+				);
+			}
+
+			if	(count($pz_items ) < 2 ) {
+				continue;
+			}
+
+			usort($pz_items, function($a, $b ) {
+				$result	=	strnatcasecmp($a['name'], $b['name'] );
+				return	$result !== 0 ? $result : $a['order'] <=> $b['order'];
+			} );
+			$sorted_pz_items	=	array_map(function($pz_item ) {
+				return	$pz_item['item'];
+			}, $pz_items );
+			array_splice($other_items, $insert_at, 0, $sorted_pz_items );
+			$submenu[$parent_slug]	=	$other_items;
+		}
 	}
 	
 	// 管理画面＞Pz カード管理

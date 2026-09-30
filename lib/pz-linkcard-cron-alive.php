@@ -22,14 +22,14 @@
 
 	// 生存確認
 	$proc_count	=	0;
+	$max_count		=	max(1, intval($this->options['alive-period-num'] ) );
 	if (isset($proc_datas ) && is_array($proc_datas ) && count($proc_datas) > 0) {
 		foreach($proc_datas as $data ) {
 			$proc_count++;
 
-			// 5件を超えたら、1時間後に続きを処理する
-			if ($proc_count > 5) {
+			// 設定された件数を超えたら終わる
+			if ($proc_count > $max_count) {
 				$log	.=	'Break.'.PHP_EOL;
-				wp_schedule_single_event(time() + 3600, self::CRON_ALIVE );
 				break;
 			}
 

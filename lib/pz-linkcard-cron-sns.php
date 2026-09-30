@@ -22,14 +22,14 @@
 
 	// SNSカウント取得
 	$proc_count	=	0;
+	$max_count		=	max(1, intval($this->options['sns-period-num'] ) );
 	if (isset($proc_datas ) && is_array($proc_datas ) && count($proc_datas ) > 0) {
 		foreach($proc_datas as $data ) {
 			$proc_count++;
 
-			// 10件を超えたら、5分後に続きを処理する
-			if ($proc_count > 10) {
+			// 設定された件数を超えたら終わる
+			if ($proc_count > $max_count) {
 				$log	.=	'Break.'.PHP_EOL;
-				wp_schedule_single_event(time() + 300, self::CRON_CHECK );
 				break;
 			}
 

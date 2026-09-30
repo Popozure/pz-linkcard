@@ -57,53 +57,62 @@
 	<div class="pz-admin-notice"><?php esc_html_e('Do not use normally as it can be set to incapacitate.', 'pz-linkcard' ); ?></div>
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 
-	<h2><?php esc_html_e('Information', 'pz-linkcard' ); ?></h2>
+	<h2><?php esc_html_e('Plugin Information', 'pz-linkcard' ); ?></h2>
+	<table class="form-table pz-admin-info-table">
+		<tr>
+			<th scope="row" rowspan="2"><?php esc_html_e('Plugin', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Name', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html(self::PLUGIN_NAME ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Version', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html(PZLKC_PLUGIN_VERSION ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('Option Name', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html(self::OPTION_NAME ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row" rowspan="2"><?php esc_html_e('Link-Card', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Version', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html($prop['db-version'] ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('Size of the options', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php $option_size = strlen(serialize($this->options ) ); ?>
+				<span class="pz-monospace"><?php printf(esc_html(_n('%s Byte', '%s Bytes', $option_size, 'pz-linkcard' ) ), esc_html(number_format_i18n($option_size ) ) ); ?></span>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('Last Saved Settings', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo is_numeric($this->options['saved-date'] ) ? esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $this->options['saved-date'] ) ) : esc_html($this->options['saved-date'] ); ?></span></td>
+		</tr>
+	</table>
+	<?php submit_button(); ?>
+
+	<h2><?php esc_html_e('Environmental Information', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('WordPress Version', 'pz-linkcard' ); ?></th>
-			<td><input type="text" size="20" value="<?php echo esc_attr(get_bloginfo('version' ) ); ?>" readonly="readonly" ?></td>
+			<td><span class="pz-monospace"><?php echo esc_html(get_bloginfo('version' ) ); ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('PHP Version', 'pz-linkcard' ); ?></th>
-			<td><input type="text" size="20" value="<?php echo esc_attr(phpversion() ); ?>" readonly="readonly" ?></td>
+			<td><span class="pz-monospace"><?php echo esc_html(phpversion() ); ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('DBMS Version', 'pz-linkcard' ); ?></th>
-			<td><input type="text" size="20" value="<?php global $wpdb; echo esc_attr($wpdb->db_version() ); ?>" readonly="readonly" ?></td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><input type="text" size="40" value="<?php echo esc_attr($this->db_card ); ?>" readonly="readonly" /></td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Plugin Version', 'pz-linkcard' ); ?></th>
-			<td>
-				<input type="text" name="properties[plugin-version]" value="<?php echo esc_attr(PZLKC_PLUGIN_VERSION ); ?>" size="10" readonly="readonly" <?php if ($prop['admin-mode'] ) { echo	'ondblclick="this.readOnly=false;" '; }?>/>
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Plugin DB Version', 'pz-linkcard' ); ?></th>
-			<td>
-				<input type="text" name="properties[db-version]"     value="<?php echo esc_attr($prop['db-version'] ); ?>"     size="40" readonly="readonly" <?php if ($prop['admin-mode'] ) { echo	'ondblclick="this.readOnly=false;" '; }?>/>
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Size of the options', 'pz-linkcard' ); ?></th>
-			<td>
-				<input type="text" size="10" value="<?php echo strlen(serialize($this->options) ); ?>"     size="40" readonly="readonly" <?php if ($prop['admin-mode'] ) { echo	'ondblclick="this.readOnly=false;" '; }?>/>
-			</td>
+			<td><span class="pz-monospace"><?php global $wpdb; echo esc_html($wpdb->db_version() ); ?></span></td>
 		</tr>
 	</table>
 
 	<h2><?php esc_html_e('for Debug', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
-		<tr>
-			<th scope="row"><?php esc_html_e('Reboot This Plugin', 'pz-linkcard' ); ?></th>
-			<td>
-				<button type="submit" name="action" value="init-plugin" class="pz-button-sure" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Run', 'pz-linkcard' ); ?></button>
-				&ensp;<span><?php echo	__('Perform initial setup.', 'pz-linkcard' ).'&nbsp;'.__('"Settings" will not be initialized.', 'pz-linkcard' ); ?></span>
-			</td>
-		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('DB Update Mode', 'pz-linkcard' ); ?></span></th>
 			<td>

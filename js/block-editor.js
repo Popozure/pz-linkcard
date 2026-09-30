@@ -198,7 +198,7 @@
 	};
 
 	const PzLinkCardEditor = ({ url, shortcodeName, commitUrl, clientId }) => {
-		const { removeBlock } = useDispatch(blockEditorStore);
+		const { removeBlock, selectBlock } = useDispatch(blockEditorStore);
 		const [tempUrl, setTempUrl] = useState(url || "");
 		const [searchResults, setSearchResults] = useState([]);
 		const inputRef = useRef(null);
@@ -249,6 +249,12 @@
 			};
 		}, [tempUrl]);
 		const showUrlEditor = isSelected || !url;
+		const focusAndSelectUrl = () => {
+			window.setTimeout(() => {
+				inputRef.current?.focus();
+				inputRef.current?.select();
+			}, 0);
+		};
 		const selectSearchResult = (item) => {
 			setTempUrl(item.url);
 			setSearchResults([]);
@@ -261,6 +267,10 @@
 		const blockProps = useEditorBlockProps({
 			className: "pz-linkcard-block-editor",
 			tabIndex: 0,
+			onFocus: (event) => {
+				if (event.target instanceof Element && event.target.closest(".pz-block-post-search-combobox")) return;
+				focusAndSelectUrl();
+			},
 			onClick: (event) => {
 				if (event.target.closest("a")) {
 					event.preventDefault();
@@ -340,9 +350,17 @@
 								if (event.key === "Enter") {
 									event.preventDefault();
 									if (isLikelyUrl(tempUrl)) commitUrl(tempUrl.trim());
-								} else if (event.key === "ArrowDown" && searchResults.length) {
-									event.preventDefault();
-									event.currentTarget.nextElementSibling?.querySelector("button")?.focus();
+								} else if (event.key === "ArrowDown") {
+									if (searchResults.length) {
+										event.preventDefault();
+										event.currentTarget.nextElementSibling?.querySelector("button")?.focus();
+									} else {
+										const nextClientId = wp.data.select(blockEditorStore).getNextBlockClientId?.(clientId);
+										if (nextClientId) {
+											event.preventDefault();
+											selectBlock(nextClientId, 0);
+										}
+									}
 								}
 							},
 							onBlur: () => {

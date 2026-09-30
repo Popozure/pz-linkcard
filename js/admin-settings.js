@@ -1863,8 +1863,25 @@
 
         const state = {};
 
+        let panelOpen = !panel.hidden;
+        let panelHideTimer = null;
+
         const setPanelOpen = open => {
-            panel.hidden = !open;
+            window.clearTimeout(panelHideTimer);
+            panelOpen = open;
+
+            if (open) {
+                panel.hidden = false;
+                window.requestAnimationFrame(() => {
+                    if (panelOpen) panel.classList.add("is-open");
+                });
+            } else {
+                panel.classList.remove("is-open");
+                panelHideTimer = window.setTimeout(() => {
+                    if (!panelOpen) panel.hidden = true;
+                }, 160);
+            }
+
             toggle.setAttribute("aria-expanded", open ? "true" : "false");
             const icon = toggle.querySelector(".dashicons");
             if (icon) {
@@ -1933,16 +1950,16 @@
 
         toggle.addEventListener("click", e => {
             e.preventDefault();
-            setPanelOpen(panel.hidden);
+            setPanelOpen(!panelOpen);
         });
 
         document.addEventListener("click", e => {
-            if (panel.hidden || root.contains(e.target)) return;
+            if (!panelOpen || root.contains(e.target)) return;
             setPanelOpen(false);
         });
 
         document.addEventListener("keydown", e => {
-            if (e.key !== "Escape" || panel.hidden) return;
+            if (e.key !== "Escape" || !panelOpen) return;
             setPanelOpen(false);
             toggle.focus();
         });

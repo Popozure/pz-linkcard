@@ -20,6 +20,13 @@
 				</label>
 			</td>
 		</tr>
+		<tr class="pz-admin-only">
+			<th scope="row"><?php esc_html_e('Reboot This Plugin', 'pz-linkcard' ); ?></th>
+			<td>
+				<button type="submit" name="action" value="init-plugin" class="pz-button-sure" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Run', 'pz-linkcard' ); ?></button>
+				&ensp;<span><?php echo __('Perform initial setup.', 'pz-linkcard' ).'&nbsp;'.__('"Settings" will not be initialized.', 'pz-linkcard' ); ?></span>
+			</td>
+		</tr>
 	</table>
 	<div class="pz-admin-only">
 		<?php submit_button(); ?>
