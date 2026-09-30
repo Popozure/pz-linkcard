@@ -19,10 +19,9 @@
 			return;
 		}
 
-		excerpt.style.maxHeight = '';
-
 		const contentStyle = window.getComputedStyle(content);
 		if (contentStyle.overflowY === 'visible' && contentStyle.overflow === 'visible') {
+			excerpt.style.maxHeight = '';
 			return;
 		}
 
@@ -39,12 +38,17 @@
 		const lines = Math.floor(available / lineHeight);
 
 		if (lines <= 0) {
-			excerpt.style.maxHeight = '0px';
+			if (excerpt.style.maxHeight !== '0px') {
+				excerpt.style.maxHeight = '0px';
+			}
 			return;
 		}
 
 		const maxHeight = lines * lineHeight + (excerptStyle.boxSizing === 'border-box' ? reservedHeight : 0);
-		excerpt.style.maxHeight = maxHeight + 'px';
+		const nextMaxHeight = maxHeight + 'px';
+		if (excerpt.style.maxHeight !== nextMaxHeight) {
+			excerpt.style.maxHeight = nextMaxHeight;
+		}
 	}
 
 	function fitAll() {
@@ -65,4 +69,19 @@
 
 	window.addEventListener('load', fitAll);
 	window.addEventListener('resize', requestFit);
+
+	if (document.fonts && document.fonts.ready) {
+		document.fonts.ready.then(requestFit);
+	}
+
+	if ('MutationObserver' in window) {
+		const observer = new MutationObserver((mutations) => {
+			if (mutations.some((mutation) => Array.from(mutation.addedNodes).some((node) =>
+				node.nodeType === 1 && (node.matches?.(selector) || node.querySelector?.(selector))
+			))) {
+				requestFit();
+			}
+		});
+		observer.observe(document.documentElement, { childList: true, subtree: true });
+	}
 })();

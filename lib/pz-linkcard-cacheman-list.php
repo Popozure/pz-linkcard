@@ -10,7 +10,7 @@
 	}
 
 	// ドメイン一覧作成
-	$domain_list		=	$wpdb->get_results("SELECT domain, count(*) AS count FROM $this->db_name GROUP BY domain ORDER BY domain ASC", ARRAY_A );
+	$domain_list		=	$wpdb->get_results("SELECT domain, count(*) AS count FROM $this->db_card GROUP BY domain ORDER BY domain ASC", ARRAY_A );
 
 	// ドメイン存在チェック
 	$refine		=	null;
@@ -24,7 +24,7 @@
 	}
 
 	// ソート項目パラメータ
-	$column_rec			=	$wpdb->get_results("SELECT * FROM $this->db_name LIMIT 1", ARRAY_A );	// 項目名を取得
+	$column_rec			=	$wpdb->get_results("SELECT * FROM $this->db_card LIMIT 1", ARRAY_A );	// 項目名を取得
 	if	(isset($column_rec[0] ) && array_key_exists($orderby, $column_rec[0] ) ) {					// 項目名に存在するかチェック
 		$orderby		=	$orderby;																// 存在したら項目名にセットする
 	} else {
@@ -127,7 +127,7 @@
 	}
 
 	// 検索SQL作成
-	$sql				=	"SELECT COUNT(*) FROM $this->db_name";
+	$sql				=	"SELECT COUNT(*) FROM $this->db_card";
 	if	($where ) {
 		$sql			.=	" WHERE $where";
 	}
@@ -149,7 +149,7 @@
 	$page_top		=	$page_now		<	1			?	0				:	($page_now - 1 ) * $page_limit;	// 表示中のページの最初に表示するのが何件目か
 
 	// データ抽出
-	$sql				=	"SELECT * FROM $this->db_name";
+	$sql				=	"SELECT * FROM $this->db_card";
 	if	($where ) {
 		$sql			.=	" WHERE $where";
 	}
@@ -166,7 +166,7 @@
 	$sql			.=	"COUNT( CASE WHEN domain <> '".$this->domain."' THEN 1 END ) AS count_external, ";
 	$sql			.=	"COUNT( CASE WHEN alive_result <> update_result THEN 1 END ) AS count_modify, ";
 	$sql			.=	"COUNT( CASE WHEN ( alive_result < 100 OR alive_result >= 400 ) THEN 1 END ) AS count_unlink ";
-	$sql			.=	"FROM $this->db_name";
+	$sql			.=	"FROM $this->db_card";
 	$result			=	$wpdb->get_row($sql );
 	$count_list['all'	  ]	=	$result->count_all		??	0;
 	$count_list['internal']	=	$result->count_internal ??	0;

@@ -73,7 +73,7 @@
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><input type="text" size="40" value="<?php echo esc_attr($this->db_name ); ?>" readonly="readonly" /></td>
+			<td><input type="text" size="40" value="<?php echo esc_attr($this->db_card ); ?>" readonly="readonly" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Plugin Version', 'pz-linkcard' ); ?></th>

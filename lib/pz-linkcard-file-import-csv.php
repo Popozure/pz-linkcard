@@ -6,7 +6,7 @@
 	global	$wpdb;
 
 	// DBの列名取得
-	$col_name	=	$wpdb->get_col($wpdb->prepare('DESC %i', $this->db_name ), 0 );
+	$col_name	=	$wpdb->get_col($wpdb->prepare('DESC %i', $this->db_card ), 0 );
 	if	(!$col_name || $wpdb->last_error ) {
 		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
@@ -115,14 +115,14 @@
 	// DBの削除
 	if	($clear ) {
 		// DBクリア
-		$result	=	$wpdb->query($wpdb->prepare('DELETE FROM %i', $this->db_name ) );
+		$result	=	$wpdb->query($wpdb->prepare('DELETE FROM %i', $this->db_card ) );
 		if	($wpdb->last_error ) {
 			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;
 		}
 
 		// AUTO INCRIMENTのリセット
-		$result	=	$wpdb->query($wpdb->prepare('ALTER TABLE %i AUTO_INCREMENT = 1', $this->db_name ) );
+		$result	=	$wpdb->query($wpdb->prepare('ALTER TABLE %i AUTO_INCREMENT = 1', $this->db_card ) );
 		if	($wpdb->last_error ) {
 			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;

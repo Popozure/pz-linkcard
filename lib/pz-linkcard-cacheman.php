@@ -4,8 +4,8 @@
 	global		$wpdb;
 
 	// DBテーブル存在チェック
-	$exists_table = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->db_name ) );
-	if ($exists_table <> $this->db_name ) {
+	$exists_table = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->db_card ) );
+	if ($exists_table <> $this->db_card ) {
 		$this->hook_activate();
 	}
 

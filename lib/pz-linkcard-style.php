@@ -583,7 +583,7 @@
 			foreach		(array('ex', 'in' )	as	$t ) {
 				$T		=	strtoupper($t );
 
-				$value_transform_enabled	= isset($prop[$t.'-transform-enabled'] ) ? $prop[$t.'-transform-enabled'] : 1;
+				$value_transform_enabled	= !empty($prop[$t.'-transform-enabled'] );
 				if	($value_transform_enabled ) {
 					$value_transform_x		= isset($prop[$t.'-transform-x'] ) ? intval($prop[$t.'-transform-x'] ) : 0;
 					$value_transform_y		= isset($prop[$t.'-transform-y'] ) ? intval($prop[$t.'-transform-y'] ) : 0;
@@ -594,7 +594,7 @@
 					}
 				}
 				$value_opacity	= isset($prop[$t.'-opacity'] ) ? max(0, min(100, intval($prop[$t.'-opacity'] ) ) ) : 100;
-				if	($value_opacity != 100 ) {
+				if	($value_transform_enabled && $value_opacity != 100 ) {
 					$file_text	=	str_replace('/*'.$T.'-WRAP-OPACITY*/',		'opacity: '.($value_opacity / 100).';', $file_text );
 				}
 				$value_transition	= isset($prop[$t.'-transition'] ) ? floatval($prop[$t.'-transition'] ) : 0;
@@ -668,7 +668,7 @@
 					$file_text	=	str_replace('/*'.$T.'-RADIUS*/',			'',		$file_text );
 				}
 
-				$value_hover_transform_enabled	= isset($prop[$t.'-hover-transform-enabled'] ) ? $prop[$t.'-hover-transform-enabled'] : 1;
+				$value_hover_transform_enabled	= !empty($prop[$t.'-hover-transform-enabled'] );
 				if	($value_hover_transform_enabled ) {
 					$value_hover_transform_x		= isset($prop[$t.'-hover-transform-x'] ) ? intval($prop[$t.'-hover-transform-x'] ) : 0;
 					$value_hover_transform_y		= isset($prop[$t.'-hover-transform-y'] ) ? intval($prop[$t.'-hover-transform-y'] ) : 0;

@@ -11,7 +11,7 @@
 	global	$wpdb;
 
 	// SNS次回取得日時を越えているものを抽出
-	$proc_datas	=	$wpdb->get_results($wpdb->prepare("SELECT url,sns_nexttime FROM $this->db_name WHERE sns_nexttime < %d ORDER BY sns_nexttime ASC", $this->now ) );
+	$proc_datas	=	$wpdb->get_results($wpdb->prepare("SELECT url,sns_nexttime FROM $this->db_card WHERE sns_nexttime < %d ORDER BY sns_nexttime ASC", $this->now ) );
 
 	// 実行ログ
 	$message	=	sprintf('There were %d links that passed the next "Check SNS Count" confirmation date and time.', count($proc_datas ) );

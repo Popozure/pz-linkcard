@@ -11,7 +11,7 @@
 	global	$wpdb;
 
 	// 次回生存確認日時を越えているものを抽出
-	$proc_datas	=	$wpdb->get_results($wpdb->prepare("SELECT url,alive_time FROM $this->db_name WHERE alive_nexttime < %d ORDER BY alive_time ASC, id ASC", $this->now ) );
+	$proc_datas	=	$wpdb->get_results($wpdb->prepare("SELECT url,alive_time FROM $this->db_card WHERE alive_nexttime < %d ORDER BY alive_time ASC, id ASC", $this->now ) );
 
 	// 実行ログ
 	$message	=	sprintf('There were %d links that passed the next "Link Alive Check" confirmation date and time.', count($proc_datas ) );

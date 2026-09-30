@@ -154,7 +154,7 @@ class class_pz_linkcard {
 			'cat-hover'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'ex-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2, ],
-			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'ex-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
@@ -175,8 +175,8 @@ class class_pz_linkcard {
 			'ex-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'ex-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
-			'ex-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'ex-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.5, ],
+			'ex-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'ex-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'ex-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'ex-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
@@ -197,7 +197,7 @@ class class_pz_linkcard {
 			'ex-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'ex-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'ex-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'ex-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.1, ],
+			'ex-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
 			'ex-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2, ],
 			'ex-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'ex-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
@@ -266,7 +266,7 @@ class class_pz_linkcard {
 			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'in-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'in-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
@@ -287,8 +287,8 @@ class class_pz_linkcard {
 			'in-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'in-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
-			'in-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'in-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.5, ],
+			'in-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'in-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4, ],
 			'in-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
@@ -309,7 +309,7 @@ class class_pz_linkcard {
 			'in-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8, ],
 			'in-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
 			'in-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'in-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.1, ],
+			'in-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2, ],
 			'in-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-field-title'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'in-field-excerpt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
@@ -323,7 +323,7 @@ class class_pz_linkcard {
 			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'in-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888', ],
 			'in-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
+			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888', ],
 			'in-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid', ],
 			'in-heading-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1, ],
 			'in-heading-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4, ],
@@ -495,7 +495,8 @@ class class_pz_linkcard {
 	private		$plugin_dir_path;		// プラグイン ディレクトリのパス
 	private		$plugin_dir_url;		// プラグイン ディレクトリのURL
 	private		$plugin_link;			// プラグインページのURL
-	private		$db_name;				// DBのテーブル名
+	private		$db_card;				// DBのテーブル名
+	private		$db_count;				// DBのテーブル名
 	private		$activate_now;			// 二重実行防止
 	private		$suppression;			// 出力抑制
 	private		$now_page;				// 表示中のページ（1:Pzカード設定 2:Pzカード管理）
@@ -581,7 +582,7 @@ class class_pz_linkcard {
 		$this->amp					=	0;													// 今がAMP表示かどうか判定
 
 		$this->now					=	current_time('timestamp', false );					// 現在日時（ローカル時間）
-		$this->db_name				=	$wpdb->prefix.'pz_linkcard';						// DBのテーブル名
+		$this->db_card				=	$wpdb->prefix.'pz_linkcard';						// DBのテーブル名
 		$this->plugin_basename		=	plugin_basename(__FILE__ );							// プラグイン ディレクトリの名前
 		$this->plugin_dir_path		=	plugin_dir_path(__FILE__ );							// プラグイン ディレクトリのパス
 		$this->plugin_dir_url		=	plugin_dir_url (__FILE__ );							// プラグイン ディレクトリのURL
@@ -1777,7 +1778,7 @@ class class_pz_linkcard {
 		global	$wpdb;
 
 		// DB更新
-		$result	=	$wpdb->update($this->db_name, $data, array('id' => $data['id'] ) );
+		$result	=	$wpdb->update($this->db_card, $data, array('id' => $data['id'] ) );
 
 		return	$data;
 	}
@@ -1793,10 +1794,10 @@ class class_pz_linkcard {
 		global	$wpdb;
 		if	(!empty($data['url'] ) ) {
 			$url		=	$this->pz_EncodeURL($data['url'], true );
-			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_name WHERE url=%s", $url ) );
+			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_card WHERE url=%s", $url ) );
 		} elseif	(isset($data['id'] ) && !is_null($data['id'] ) ) {
 			$data_id	=	intval($data['id'] );
-			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_name WHERE id=%d", $data_id ) );
+			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_card WHERE id=%d", $data_id ) );
 		} else {
 			return	null;
 		}
@@ -1916,7 +1917,7 @@ class class_pz_linkcard {
 
 		// 桁数チェック
 		global	$wpdb;
-		$columns	=	$wpdb->get_results("DESCRIBE $this->db_name", ARRAY_A );
+		$columns	=	$wpdb->get_results("DESCRIBE $this->db_card", ARRAY_A );
 		if	(isset($columns ) && is_array($columns ) ) {
 			foreach	($columns as $column ) {
 				$field	=	$column['Field'] ?? null;
@@ -1939,9 +1940,9 @@ class class_pz_linkcard {
 		// DB更新
 		$result		=	null;
 		if	(isset($data['id'] ) && $data['id'] ) {
-			$result	=	$wpdb->update($this->db_name, $data, array('id' => $data['id'] ) );
+			$result	=	$wpdb->update($this->db_card, $data, array('id' => $data['id'] ) );
 		} else {
-			$result	=	$wpdb->insert($this->db_name, $data );
+			$result	=	$wpdb->insert($this->db_card, $data );
 		}
 
 		// DB更新失敗の場合、挿入
@@ -1949,15 +1950,15 @@ class class_pz_linkcard {
 			unset($data['id'] );
 			// DB挿入失敗の場合、日本語項目（サイト名）をクリアして挿入
 			unset($data['site_name'] );
-			$result =	$wpdb->insert($this->db_name, $data );
+			$result =	$wpdb->insert($this->db_card, $data );
 			// DB挿入失敗の場合、日本語項目（概要文）をクリアして挿入
 			if	($result === false ) {
 				unset($data['excerpt'] );
-				$result =	$wpdb->insert($this->db_name, $data );
+				$result =	$wpdb->insert($this->db_card, $data );
 				// DB挿入失敗の場合、日本語項目（タイトル）をクリアして挿入
 				if	($result === false ) {
 					unset($data['title'] );
-					$result =	$wpdb->insert($this->db_name, $data );
+					$result =	$wpdb->insert($this->db_card, $data );
 					// DB挿入失敗の場合、諦める
 					if	($result === false ) {
 						return	null;
@@ -1977,14 +1978,14 @@ class class_pz_linkcard {
 			return	null;
 		}
 		if	(isset($data['id'] ) ) {
-			$result		=	$wpdb->delete($this->db_name, array('id' => $data['id'] ), array('%d' ) );
+			$result		=	$wpdb->delete($this->db_card, array('id' => $data['id'] ), array('%d' ) );
 			if	($result ) {
 				return	true;
 			}
 		}
 		if	(isset($data['url'] ) ) {
 			$url		=	$this->pz_EncodeURL($data['url'], true );
-			$result		=	$wpdb->delete($this->db_name, array('url' => $url ), array('%s' ) );
+			$result		=	$wpdb->delete($this->db_card, array('url' => $url ), array('%s' ) );
 			if	($result ) {
 				return	true;
 			}
@@ -3149,7 +3150,7 @@ class class_pz_linkcard {
 		$flg_alive_count	=	$this->pz_GetRequestOption('flg-alive-count', $this->options['flg-alive-count'] );
 		if	($flg_alive && $flg_alive_count ) {
 			global	$wpdb;
-			$result		=	$wpdb->get_row("SELECT COUNT(*) AS count FROM $this->db_name WHERE alive_result < 100 OR alive_result >= 400");
+			$result		=	$wpdb->get_row("SELECT COUNT(*) AS count FROM $this->db_card WHERE alive_result < 100 OR alive_result >= 400");
 			if	(isset($result ) && isset($result->count ) ) {
 				$menu_manager	.=	'&nbsp;<span class="update-plugins"><span class="update-count lkc-menu-count">'.$result->count.'</span></span>';
 			}
@@ -3361,14 +3362,14 @@ class class_pz_linkcard {
 			'category'			=>	'widgets',
 			'icon'				=>	'admin-links',
 			'supports'			=>	array(
-				'inserter'	=>	false,
+				'inserter'		=>	false,
 			),
 			'attributes'		=>	array(
-				'url'		=>	array(
+				'url'			=>	array(
 					'type'		=>	'string',
 					'default'	=>	'',
 				),
-				'shortcode'	=>	array(
+				'shortcode'		=>	array(
 					'type'		=>	'string',
 					'default'	=>	'',
 				),
@@ -3904,7 +3905,7 @@ class class_pz_linkcard {
 
 		// カウントをインクリメント
 		global $wpdb;
-		$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_name SET click_count = click_count + 1 WHERE id = %s;", $lkc_id ) );
+		$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %s;", $lkc_id ) );
 
 		// 更新結果
 		if	($updated ) {

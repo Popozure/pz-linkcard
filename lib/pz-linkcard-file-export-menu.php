@@ -1,7 +1,7 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	global	$wpdb;
-	$export_count	=	intval($wpdb->get_var("SELECT COUNT(*) FROM $this->db_name" ) );
+	$export_count	=	intval($wpdb->get_var("SELECT COUNT(*) FROM $this->db_card" ) );
 	$export_count_label	=	sprintf(
 		$export_count === 1 ? __('%s item', 'pz-linkcard' ) : __('%s items', 'pz-linkcard' ),
 		number_format_i18n($export_count )

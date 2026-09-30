@@ -8,8 +8,8 @@
 	$multi_subsite_attr		=	$is_multisite ? ' aria-readonly="true" data-pz-locked-checkbox="1"' : $multi_disabled_attr;
 	$multi_site_list_attr	=	$is_multisite ? ' aria-readonly="true" data-pz-locked-checkbox="1"' : ' disabled="disabled"';
 	$db_table_exists	=	false;
-	if	(isset($wpdb ) && $this->db_name ) {
-		$db_table_exists	=	($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_name ) ) === $this->db_name );
+	if	(isset($wpdb ) && $this->db_card ) {
+		$db_table_exists	=	($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_card ) ) === $this->db_card );
 	}
 ?>
 <div class="pz-page<?php echo $pz_page_active('pz-multisite' ); ?>" id="pz-multisite">
@@ -60,7 +60,7 @@
 		<tr>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
 			<td>
-				<input type="text" size="40" value="<?php echo esc_attr($this->db_name ); ?>" class="pz-multi-normal-control" readonly="readonly" />
+				<input type="text" size="40" value="<?php echo esc_attr($this->db_card ); ?>" class="pz-multi-normal-control" readonly="readonly" />
 				<span class="pz-table-exists-badge <?php echo $db_table_exists ? 'pz-table-exists' : 'pz-table-missing'; ?>">
 					<?php echo $db_table_exists ? wp_kses_post(__('&#x2705;&#xFE0F;', 'pz-linkcard' ) ).esc_html__('Exists', 'pz-linkcard' ) : wp_kses_post(__('&#x1F6AB;&#xFE0F;', 'pz-linkcard' ) ).esc_html__('Not Found.', 'pz-linkcard' ); ?>
 				</span>
