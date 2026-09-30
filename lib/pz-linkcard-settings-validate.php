@@ -23,7 +23,7 @@
 
 		case	'schedule':
 			$temp_value				=	sanitize_key($temp_value );
-			$this->options[$key]	=	array_key_exists($temp_value, wp_get_schedules() ) ? $temp_value : $definition['default'];
+			$this->options[$key]	=	$temp_value === '' || array_key_exists($temp_value, wp_get_schedules() ) ? $temp_value : $definition['default'];
 			break;
 
 		case	'textarea':

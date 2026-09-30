@@ -1789,6 +1789,34 @@ body.folded #pz-infobar {
 	max-width: 240px !important;
 }
 
+#pz-advanced .pz-schedule-table > tbody > tr > th {
+	width: 120px;
+	min-width: 120px;
+	max-width: 120px;
+}
+
+#pz-etc .form-table > tbody > tr > th[scope="row"] {
+	box-sizing: border-box;
+	width: 240px;
+	min-width: 240px;
+	max-width: 240px;
+}
+
+#pz-etc .form-table {
+	width: 100%;
+	max-width: 100%;
+	table-layout: fixed;
+}
+
+#pz-etc input[type="text"],
+#pz-etc input[type="url"],
+#pz-etc textarea {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 0;
+	max-width: 100%;
+}
+
 
 .pz-page-active {
 	display: block;
@@ -3896,6 +3924,18 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 		width: 100% !important;
 		min-width: 0 !important;
 		max-width: 100% !important;
+	}
+
+	#pz-advanced .pz-schedule-table > tbody > tr > th {
+		width: auto;
+		min-width: 0;
+		max-width: none;
+	}
+
+	#pz-etc .form-table > tbody > tr > th[scope="row"] {
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
 	}
 
 	#pz-admin input[type="text"]:not(.pz-letter-table input),

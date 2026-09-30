@@ -103,10 +103,10 @@
 	</table>
 	<?php submit_button(); ?>
 
-	<h2><?php echo	__('Tailored Response', 'pz-linkcard' ).$help_open.'deprecation'.$help_close; ?></h2>
+	<h2><?php echo	__('Individual Processing', 'pz-linkcard' ).$help_open.'deprecation'.$help_close; ?></h2>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php esc_html_e('Amazon', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Amazon.co.jp', 'pz-linkcard' ); ?></th>
 			<td>
 				<p>
 					<label>
@@ -117,11 +117,23 @@
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('X.com', 'pz-linkcard' ); ?></th>
+			<td>
+				<p>
+					<label>
+						<input type="hidden"   name="properties[flg-special-twitter]" value="" />
+						<input type="checkbox" name="properties[flg-special-twitter]" value="1" <?php checked($this->options['flg-special-twitter'] ); ?> />
+						<?php echo __('Retrieve Profile Images', 'pz-linkcard' ); ?>
+					</label>
+				</p>
+			</td>
+		</tr>
 	</table>
 	<?php submit_button(); ?>
 
 	<h2><?php echo	__('Schedule', 'pz-linkcard' ).$help_open.'schedule'.$help_close; ?></h2>
-	<table class="form-table">
+	<table class="form-table pz-schedule-table">
 		<tr>
 			<th rowspan="2"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>

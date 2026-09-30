@@ -84,7 +84,7 @@
 		);
 	}
 	ksort($period_list );
-	define('LIST_PERIOD', array_column($period_list, 'display', 'key' ) );
+	define('LIST_PERIOD', array('' => __('Do not run', 'pz-linkcard' ) ) + array_column($period_list, 'display', 'key' ) );
 
 	// 1回の定期実行で処理する件数
 	define('LIST_PERIOD_NUMBER', array(
@@ -377,6 +377,50 @@
 				$html_notice	.=	'<div class="notice notice-success is-dismissible"><p><strong>'.__('Successfully initialized the settings.', 'pz-linkcard' ).'</strong></p></div>';
 			} else {
 				$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to initialize the settings.', 'pz-linkcard' ).'</strong></p></div>';
+			}
+			break;
+
+		case	'clear-log':
+			$log_directory	= defined('PZLKC_DIR_DEBUG' ) ? trim((string) PZLKC_DIR_DEBUG ) : '';
+			$real_log_directory = $log_directory !== '' ? realpath($log_directory ) : false;
+			$real_upload_directory = defined('PZLKC_DIR_UPLOAD' ) ? realpath(PZLKC_DIR_UPLOAD ) : false;
+			$log_directory_valid = $real_log_directory !== false && $real_upload_directory !== false && is_dir($real_log_directory ) && strtolower(wp_normalize_path($real_log_directory ) ) !== strtolower(wp_normalize_path($real_upload_directory ) ) && strpos(strtolower(trailingslashit(wp_normalize_path($real_log_directory ) ) ), strtolower(trailingslashit(wp_normalize_path($real_upload_directory ) ) ) ) === 0;
+			$deleted_count	= 0;
+			$failed_count	= 0;
+
+			if	($log_directory_valid ) {
+				$log_root	= trailingslashit(wp_normalize_path($real_log_directory ) );
+				try {
+					$iterator = new RecursiveIteratorIterator(
+						new RecursiveDirectoryIterator($real_log_directory, FilesystemIterator::SKIP_DOTS )
+					);
+					foreach ($iterator as $log_file ) {
+						if	(!$log_file->isFile() || $log_file->isLink() || strtolower($log_file->getExtension() ) !== 'log' ) {
+							continue;
+						}
+						$real_log_file = realpath($log_file->getPathname() );
+						if	($real_log_file === false || strpos(strtolower(wp_normalize_path($real_log_file ) ), strtolower($log_root ) ) !== 0 ) {
+							$failed_count++;
+							continue;
+						}
+						wp_delete_file($real_log_file );
+						if	(!file_exists($real_log_file ) ) {
+							$deleted_count++;
+						} else {
+							$failed_count++;
+						}
+					}
+				} catch (Throwable $exception ) {
+					$failed_count++;
+				}
+			}
+
+			if	(!$log_directory_valid ) {
+				$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('The log directory is not configured or does not exist.', 'pz-linkcard' ).'</strong></p></div>';
+			} elseif ($failed_count > 0 ) {
+				$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %1$s log files. Failed to delete %2$s log files.', 'pz-linkcard' ), esc_html(number_format_i18n($deleted_count ) ), esc_html(number_format_i18n($failed_count ) ) ).'</strong></p></div>';
+			} else {
+				$html_notice .= '<div class="notice notice-success is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %s log files.', 'pz-linkcard' ), esc_html(number_format_i18n($deleted_count ) ) ).'</strong></p></div>';
 			}
 			break;
 
@@ -705,6 +749,28 @@ function	pz_GetDirSize($dir ) {
 		}
 	}
 	return	$size;
+}
+
+// ディレクトリ配下のファイル数
+function pz_GetDirFileCount($dir ) {
+	$count		= 0;
+	$handle		= is_dir($dir ) ? opendir($dir ) : false;
+	if	(!$handle ) {
+		return	0;
+	}
+	while (($file = readdir($handle ) ) !== false ) {
+		if	($file === '.' || $file === '..' ) {
+			continue;
+		}
+		$fullpath = $dir.'/'.$file;
+		if	(is_dir($fullpath ) && !is_link($fullpath ) ) {
+			$count	+= pz_GetDirFileCount($fullpath );
+		} elseif (is_file($fullpath ) ) {
+			$count++;
+		}
+	}
+	closedir($handle );
+	return	$count;
 }
 
 // 数値をKB、MB、TBの単位に変換

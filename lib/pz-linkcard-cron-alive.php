@@ -1,10 +1,10 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	// WP-CRONスケジュール（存在チェック）
-	if (!$this->options['flg-alive'] ) {
+	if (!$this->options['flg-alive'] || !$this->options['alive-period'] ) {
 		$log	.=	'Clear schedule "Site Alive Check".'.PHP_EOL;
 		wp_clear_scheduled_hook(self::CRON_ALIVE );
-		//return	null;
+		return	null;
 	}
 
 	// DBの宣言

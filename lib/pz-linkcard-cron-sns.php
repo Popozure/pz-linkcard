@@ -1,10 +1,10 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	// WP-CRONスケジュール（SNSカウント取得）
-	if (!$this->options['sns-position'] ) {
+	if (!$this->options['sns-position'] || !$this->options['sns-period'] ) {
 		$log	.=	'Clear schedule "SNS Count Check".'.PHP_EOL;
 		wp_clear_scheduled_hook(self::CRON_CHECK );
-		//return	null;
+		return	null;
 	}
 
 	// DBの宣言
