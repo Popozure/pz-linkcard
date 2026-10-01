@@ -1067,14 +1067,15 @@ body.folded #pz-infobar {
 	outline: 2px solid transparent;
 }
 
-.pz-man-cache-reload-button .dashicons {
+.pz-man-cache-reload-icon {
+	display: inline-block;
 	width: 20px;
 	height: 20px;
 	font-size: 20px;
 	line-height: 20px;
 }
 
-.pz-man-cache-reload-button.is-spinning .dashicons {
+.pz-man-cache-reload-button.is-spinning .pz-man-cache-reload-icon {
 	animation: pz-man-cache-reload-spin 0.8s linear infinite;
 }
 
@@ -1234,6 +1235,12 @@ body.folded #pz-infobar {
 	width: 16px;
 	height: 16px;
 	font-size: 16px;
+	transform: rotate(0deg);
+	transition: transform 0.2s ease;
+}
+
+.pz-man-screen-options-toggle[aria-expanded="true"] .dashicons {
+	transform: rotate(180deg);
 }
 
 .pz-man-screen-options-panel {
@@ -3572,29 +3579,6 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 		min-width: 100%;
 		max-width: 100%;
 		box-sizing: border-box;
-	}
-
-	.pz-cacheman .pz-header {
-		display: flex;
-		width: 100%;
-		max-width: 100%;
-		align-items: flex-start;
-		gap: 12px;
-		padding-right: 20px;
-		box-sizing: border-box;
-	}
-
-	.pz-cacheman .pz-header h1 {
-		min-width: 0;
-		flex: 1 1 auto;
-		order: 1;
-	}
-
-	.pz-cacheman .pz-header-switch {
-		flex: 0 0 auto;
-		margin-left: auto;
-		float: none;
-		order: 2;
 	}
 
 	.pz-cacheman .pz-man-count-list {

@@ -293,7 +293,7 @@
         $og_title		=	$tags['og:title']				??	'';
         $og_excerpt		=	$tags['og:description']			??	'';
         $og_image		=	$tags['og:image']				??	'';
-        $og_siteicon		=	null;
+        $og_siteicon	=	null;
 
         // Twitter card
         $tw_url			=	null;
@@ -303,11 +303,11 @@
         $tw_title		=	$tags['twitter:title']			??	'';
         $tw_excerpt		=	$tags['twitter:description']	??	'';
         $tw_image		=	$tags['twitter:image']			??	'';
-        $tw_siteicon		=	null;
+        $tw_siteicon	=	null;
 
         // タイトル＆概要文
-        $title			=	$tags['title']				??	'';
-        $excerpt		=	$tags['description']		??	'';
+        $title			=	$tags['title']			    	??	'';
+        $excerpt		=	$tags['description']		    ??	'';
         if				(!$title ) {
             if			($og_title ) {
                 $title			=	$og_title;

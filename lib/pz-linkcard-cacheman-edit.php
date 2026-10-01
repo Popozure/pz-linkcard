@@ -208,7 +208,7 @@
 
 			<div id="postbox-container-1" class="postbox-container pz-man-cache-side">
 				<?php
-					$cacheman_reload_button	=	'<button type="submit" name="single-edit" value="'.esc_attr($cacheman_get_value('id' ) ).'" class="pz-man-cache-reload-button" title="'.esc_attr__('Reload', 'pz-linkcard' ).'" aria-label="'.esc_attr__('Reload', 'pz-linkcard' ).'" formnovalidate><span class="dashicons dashicons-update"></span></button>';
+					$cacheman_reload_button	=	'<button type="submit" name="single-edit" value="'.esc_attr($cacheman_get_value('id' ) ).'" class="pz-man-cache-reload-button" title="'.esc_attr__('Reload', 'pz-linkcard' ).'" aria-label="'.esc_attr__('Reload', 'pz-linkcard' ).'" formnovalidate><span class="pz-man-cache-reload-icon" aria-hidden="true">↻</span></button>';
 					echo wp_kses($cacheman_postbox_open(__('Cache Editor', 'pz-linkcard' ), 'pz-man-cache-submitbox', $cacheman_reload_button ), $cacheman_allowed_html );
 				?>
 					<div class="pz-man-cache-submit-meta">

@@ -99,6 +99,7 @@
 	$html_title		=	'';
 	$html_input		=	'';
 	$html_notice	=	'';
+	$content_file	=	null;
 
 	// リスト表示の有無
 	$show_list		=	true;
@@ -371,12 +372,12 @@
 			break;
 
 		case	'show-import':			// ファイルのインポートボタンを表示
-			require ('pz-linkcard-file-import-menu.php');
+			$content_file		=	'pz-linkcard-file-import-menu.php';
 			$show_list				=	false;
 			break;
 
 		case	'show-export':			// ファイルのエクスポートボタンを表示
-			require ('pz-linkcard-file-export-menu.php');
+			$content_file		=	'pz-linkcard-file-export-menu.php';
 			$show_list				=	false;
 			break;
 
@@ -388,6 +389,9 @@
 	// 画面描画
 	echo	$html_notice;
 	echo	$html_input;
+	if	($content_file ) {
+		require ($content_file );
+	}
 
 	// キャッシュ一覧
 	if	($show_list ) {

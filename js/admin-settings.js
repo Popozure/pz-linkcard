@@ -1883,11 +1883,6 @@
             }
 
             toggle.setAttribute("aria-expanded", open ? "true" : "false");
-            const icon = toggle.querySelector(".dashicons");
-            if (icon) {
-                icon.classList.toggle("dashicons-arrow-down-alt2", !open);
-                icon.classList.toggle("dashicons-arrow-up-alt2", open);
-            }
         };
 
         const applyColumn = (column, visible) => {
