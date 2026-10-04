@@ -243,7 +243,7 @@
 	$title_icon		=	'<span class="dashicons dashicons-admin-generic" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Settings', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
-	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
+	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><a class="pz-header-title-link" href="'.esc_url($this->settings_url ).'"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span></a><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
 
 	// POSTする値 INPUT要素
 	$temp_param		=
@@ -367,6 +367,17 @@
 			$this->activate_now	=	false;
 			$this->hook_activate();
 			$flg_style			=	true;				// スタイルシートの再生成
+			break;
+
+		case	'init-format':
+			$result		=	$this->pz_InitializeFormatOptions();
+			if	($result ) {
+				$flg_style		=	true;
+				$prop		=	$this->options;
+				$html_notice	.=	'<div class="notice notice-success is-dismissible"><p><strong>'.__('Successfully initialized the formatting settings.', 'pz-linkcard' ).'</strong></p></div>';
+			} else {
+				$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to initialize the formatting settings.', 'pz-linkcard' ).'</strong></p></div>';
+			}
 			break;
 
 		case	'init-settings':						// 設定の初期化
@@ -640,18 +651,48 @@
 
 
 // 画面描画
-echo	$html_style;
+echo	wp_kses($html_style, array('style' => array() ) );
 ?>
-<div class="pz-dashboard<?php echo $page_class; ?> wrap">
+<div class="pz-dashboard<?php echo esc_attr($page_class ); ?> wrap">
 	<header class="pz-header">
 		<?php
-			echo	$html_plugin;
-			echo	$html_title;
-			echo	$html_standard_notice;
+			$infobar_allowed_html			=	wp_kses_allowed_html('post' );
+			$infobar_allowed_html['input']	=	array(
+				'type'			=> true,
+				'id'			=> true,
+				'class'			=> true,
+				'placeholder'	=> true,
+				'autocomplete'	=> true,
+			);
+			$infobar_allowed_html['button']	=	array(
+				'type'		=> true,
+				'id'		=> true,
+				'class'		=> true,
+				'disabled'	=> true,
+			);
+			echo	wp_kses($html_plugin, $infobar_allowed_html );
+			echo	wp_kses_post($html_title );
+			echo	wp_kses_post($html_standard_notice );
 			if	($html_notice ) {
-				echo	'<div class="pz-toast-container" role="status" aria-live="polite" style="display:none;">'.$html_notice.'</div>';
+				echo	'<div class="pz-toast-container" role="status" aria-live="polite" style="display:none;">'.wp_kses_post($html_notice ).'</div>';
 			}
 		?>
+		<div class="pz-page-help">
+			<button type="button" class="pz-page-help-toggle" aria-expanded="false" aria-controls="pz-settings-help-panel" data-no-overlay="1">
+				<?php esc_html_e('Help', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+			</button>
+			<div id="pz-settings-help-panel" class="pz-page-help-panel" hidden>
+				<h3><?php esc_html_e('Keyboard Shortcuts'); ?></h3>
+				<dl class="pz-man-shortcut-list">
+					<div><dt><kbd>F2</kbd></dt><dd><?php esc_html_e('Focus current tab', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Ctrl+F</kbd> / <kbd>Alt+Q</kbd></dt><dd><?php esc_html_e('Search settings', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>F3</kbd> / <kbd>Shift+F3</kbd></dt><dd><?php echo esc_html(__('Find next', 'pz-linkcard' ).' / '.__('Find previous', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><kbd>Alt+S</kbd></dt><dd><?php esc_html_e('Save Changes'); ?></dd></div>
+					<div><dt><kbd>Ctrl+← / Ctrl+→</kbd></dt><dd><?php esc_html_e('Switch tabs', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Shift+<?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd> / <kbd><?php esc_html_e('Right click', 'pz-linkcard' ); ?>+<?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd></dt><dd><?php esc_html_e('Increase or decrease values, or select the previous or next option', 'pz-linkcard' ); ?></dd></div>
+				</dl>
+			</div>
+		</div>
 		<div id="pz-tabbar-wrapper" class="pz-tabbar-wrapper">
 			<button type="button" class="pz-tab-scroll pz-tab-left" aria-label="<?php esc_attr_e('Scroll tabs left', 'pz-linkcard' ); ?>"><span class="dashicons dashicons-arrow-left-alt2"></span></button>
 			<div id="pz-tabbar" class="pz-tabs">
@@ -676,7 +717,21 @@ echo	$html_style;
 	<article>
 		<form action="" method="post">
 			<?php wp_nonce_field('pz-settings' ); ?>
-			<?php echo $html_input; ?>
+			<?php
+				echo wp_kses(
+					$html_input,
+					array(
+						'input' => array(
+							'type'					=> true,
+							'name'					=> true,
+							'value'					=> true,
+							'title'					=> true,
+							'size'					=> true,
+							'data-pz-preview-state'	=> true,
+						),
+					)
+				);
+			?>
 			<div class="pz-submit-hide"><?php submit_button(); ?></div>
 			<?php
 				require_once('pz-linkcard-settings-error.php' );			// 「エラー」タブ

@@ -201,6 +201,7 @@
 		const { removeBlock, selectBlock } = useDispatch(blockEditorStore);
 		const [tempUrl, setTempUrl] = useState(url || "");
 		const [searchResults, setSearchResults] = useState([]);
+		const [selectedResultIndex, setSelectedResultIndex] = useState(null);
 		const inputRef = useRef(null);
 		const { isSelected, isPreviewMode } = useSelect(
 			(select) => ({
@@ -250,11 +251,16 @@
 		}, [tempUrl]);
 		const showUrlEditor = isSelected || !url;
 		const focusAndSelectUrl = () => {
-			window.setTimeout(() => {
-				inputRef.current?.focus();
-				inputRef.current?.select();
-			}, 0);
+			inputRef.current?.focus();
+			inputRef.current?.select();
 		};
+		const wasSelectedRef = useRef(false);
+		useEffect(() => {
+			if (isSelected && !wasSelectedRef.current) {
+				window.setTimeout(focusAndSelectUrl, 0);
+			}
+			wasSelectedRef.current = isSelected;
+		}, [isSelected]);
 		const selectSearchResult = (item) => {
 			setTempUrl(item.url);
 			setSearchResults([]);
@@ -266,10 +272,9 @@
 		};
 		const blockProps = useEditorBlockProps({
 			className: "pz-linkcard-block-editor",
-			tabIndex: 0,
+			tabIndex: -1,
 			onFocus: (event) => {
-				if (event.target instanceof Element && event.target.closest(".pz-block-post-search-combobox")) return;
-				focusAndSelectUrl();
+				if (event.target === event.currentTarget) focusAndSelectUrl();
 			},
 			onClick: (event) => {
 				if (event.target.closest("a")) {
@@ -345,11 +350,15 @@
 							"aria-autocomplete": "list",
 							"aria-expanded": searchResults.length > 0,
 							"aria-controls": `pz-block-post-search-results-${clientId}`,
-							onChange: (event) => setTempUrl(event.target.value),
+							onChange: (event) => {
+								setTempUrl(event.target.value);
+								setSelectedResultIndex(null);
+							},
 							onKeyDown: (event) => {
 								if (event.key === "Enter") {
 									event.preventDefault();
-									if (isLikelyUrl(tempUrl)) commitUrl(tempUrl.trim());
+									if (searchResults.length) selectSearchResult(searchResults[0]);
+									else if (isLikelyUrl(tempUrl)) commitUrl(tempUrl.trim());
 								} else if (event.key === "ArrowDown") {
 									if (searchResults.length) {
 										event.preventDefault();
@@ -381,13 +390,42 @@
 											"button",
 											{
 												type: "button",
-												className: "pz-block-post-search-result",
+												className: `pz-block-post-search-result${selectedResultIndex === index ? " is-selected" : ""}`,
 												key: `${item.url}-${index}`,
 												title: item.title + (item.date ? ` (${item.date})` : ""),
 												onMouseDown: (event) => event.preventDefault(),
+												onMouseEnter: (event) => event.currentTarget.focus(),
+												onMouseMove: (event) => {
+													if (document.activeElement !== event.currentTarget) event.currentTarget.focus();
+												},
+												onFocus: () => setSelectedResultIndex(index),
+												onBlur: (event) => {
+													if (!event.currentTarget.parentElement?.contains(event.relatedTarget)) {
+														setSelectedResultIndex(null);
+													}
+												},
 												onClick: () => selectSearchResult(item),
 												onKeyDown: (event) => {
-													const buttons = Array.from(event.currentTarget.parentElement.querySelectorAll("button"));
+													const results = event.currentTarget.parentElement;
+													const buttons = Array.from(results.querySelectorAll("button"));
+													const pageFocus = (direction) => {
+														const viewportTop = results.scrollTop;
+														const viewportBottom = viewportTop + results.clientHeight;
+														const visibleCount = Math.max(1, buttons.filter((button) =>
+															button.offsetTop >= viewportTop && button.offsetTop + button.offsetHeight <= viewportBottom
+														).length);
+														const targetIndex = Math.max(0, Math.min(buttons.length - 1, index + direction * visibleCount));
+														const target = buttons[targetIndex];
+														if (!target) return;
+														target.focus({ preventScroll: true });
+														const targetTop = target.offsetTop;
+														const targetBottom = targetTop + target.offsetHeight;
+														if (targetTop < results.scrollTop) {
+															results.scrollTop = targetTop;
+														} else if (targetBottom > results.scrollTop + results.clientHeight) {
+															results.scrollTop = targetBottom - results.clientHeight;
+														}
+													};
 													if (event.key === "ArrowDown") {
 														event.preventDefault();
 														(buttons[index + 1] || buttons[index]).focus();
@@ -395,14 +433,45 @@
 														event.preventDefault();
 														if (index === 0) inputRef.current?.focus();
 														else buttons[index - 1].focus();
+													} else if (event.key === "Home") {
+														event.preventDefault();
+														buttons[0]?.focus();
+													} else if (event.key === "End") {
+														event.preventDefault();
+														buttons[buttons.length - 1]?.focus();
+													} else if (event.key === "PageDown") {
+														event.preventDefault();
+														pageFocus(1);
+													} else if (event.key === "PageUp") {
+														event.preventDefault();
+														pageFocus(-1);
+													} else if (event.key === "Escape") {
+														event.preventDefault();
+														event.stopPropagation();
+														inputRef.current?.focus();
 													} else if (event.key === "Enter") {
 														event.preventDefault();
 														selectSearchResult(item);
 													}
 												},
 											},
-											el("span", null, item.title),
-											item.date ? el("span", { className: "pz-block-post-search-result-date" }, ` (${item.date})`) : null
+											el(
+												"span",
+												{ className: "pz-block-post-search-result-body" },
+												el("span", { className: "pz-block-post-search-result-title" }, item.title),
+												item.date ? el("span", { className: "pz-block-post-search-result-date" }, item.date) : null,
+												item.excerpt
+													? el("span", { className: "pz-block-post-search-result-excerpt" }, item.excerpt)
+													: null
+											),
+											item.thumbnail
+												? el("img", {
+													className: "pz-block-post-search-result-thumbnail",
+													src: item.thumbnail,
+													alt: "",
+													loading: "lazy",
+												})
+												: null
 										)
 									)
 							  )

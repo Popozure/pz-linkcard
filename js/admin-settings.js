@@ -78,6 +78,7 @@
         initCachemanPaginationKeys();
         initImageBox();
         initScreenOptions();
+        initPageHelp();
         initFileImport();
         initSettingsSectionJump();
         // readonly checkbox guard
@@ -105,6 +106,9 @@
         );
         document.querySelectorAll(".pz-copy-card-to-hover").forEach(el =>
             el.addEventListener("click", copyCardSettingsToHover)
+        );
+        document.querySelectorAll(".pz-copy-link-settings").forEach(el =>
+            el.addEventListener("click", copyLinkSettings)
         );
         initCardEnabledSwitches();
         updateCardRangeFills();
@@ -331,13 +335,31 @@
             clearTimeout(processingOverlayTimer);
             processingOverlayTimer = null;
         }
-        processingOverlayTimer = setTimeout(() => {
+        const show = () => {
             processingOverlayTimer = null;
             overlay.classList.remove("hidden");
             overlay.classList.remove("pz-overlay-proc-active");
             overlay.style.display = "flex";
             overlay.classList.add("pz-overlay-proc-active");
-        }, delay);
+        };
+        if (delay <= 0) {
+            show();
+        } else {
+            processingOverlayTimer = setTimeout(show, delay);
+        }
+    }
+
+    function hideProcessingOverlay() {
+        const overlay = document.querySelector("#pz-overlay-proc");
+        if (processingOverlayTimer) {
+            clearTimeout(processingOverlayTimer);
+            processingOverlayTimer = null;
+        }
+        if (!overlay) return;
+
+        overlay.classList.remove("pz-overlay-proc-active");
+        overlay.classList.add("hidden");
+        overlay.style.display = "none";
     }
 
     function changeWidthUnitKey(e) {
@@ -407,6 +429,7 @@
         e.preventDefault();
         range.value = resetValue;
         range.dispatchEvent(new Event("input", { bubbles: true }));
+        range.dispatchEvent(new Event("change", { bubbles: true }));
     }
 
     function initCardRangeDragCancel() {
@@ -613,6 +636,56 @@
                 updateCardRangeFill(range);
             }
         });
+    }
+
+    async function copyLinkSettings(e) {
+        const fromPrefix = e.currentTarget?.dataset?.pzCopyFrom;
+        const toPrefix = e.currentTarget?.dataset?.pzCopyTo;
+        if (!fromPrefix || !toPrefix) return;
+        const confirmMessage = e.currentTarget?.dataset?.pzConfirm;
+        if (confirmMessage && !window.confirm(confirmMessage)) return;
+
+        showProcessingOverlay(0);
+        await new Promise(resolve => {
+            window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
+        });
+
+        try {
+            const controls = Array.from(dashboard.querySelectorAll("[name]"));
+            const findNamedControl = name => {
+                const matches = controls.filter(control => control.name === name);
+                return matches.find(control => control.type !== "hidden") || matches[0] || null;
+            };
+            const sourcePattern = new RegExp(`^properties\\[${fromPrefix}-(.+)\\]$`);
+
+            controls.forEach(from => {
+                if (from.type === "hidden") return;
+                const match = from.name.match(sourcePattern);
+                if (!match) return;
+
+                const toName = `properties[${toPrefix}-${match[1]}]`;
+                const to = findNamedControl(toName);
+                if (!to || to.type === "file") return;
+
+                if (to.type === "checkbox" || to.type === "radio") {
+                    to.checked = from.checked;
+                } else {
+                    to.value = from.value;
+                }
+                to.dispatchEvent(new Event("input", { bubbles: true }));
+                to.dispatchEvent(new Event("change", { bubbles: true }));
+
+                const range = dashboard.querySelector(`.pz-card-range[data-target="${toName}"]`);
+                if (range) {
+                    range.value = to.value;
+                    updateCardRangeFill(range);
+                }
+            });
+
+            updateCardRangeFills();
+        } finally {
+            hideProcessingOverlay();
+        }
     }
 
     // Admin setting helper
@@ -926,6 +999,14 @@
         const form = editor?.closest("form");
         if (!editor || !form) return;
 
+        const titleInput = editor.querySelector("#pz-man-cache-title");
+        if (titleInput) {
+            window.requestAnimationFrame(() => {
+                titleInput.focus();
+                titleInput.select();
+            });
+        }
+
         const clickActionButton = action => {
             const button = form.querySelector(`button[name="action"][value="${action}"]`);
             if (button && !button.disabled) button.click();
@@ -934,13 +1015,22 @@
         document.addEventListener("keydown", e => {
             if (e.isComposing || e.repeat) return;
 
+            if (!e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key === "F2") {
+                e.preventDefault();
+                titleInput?.focus();
+                titleInput?.select();
+                return;
+            }
+
             if (e.key === "Escape" || e.key === "Esc") {
                 e.preventDefault();
                 clickActionButton("cancel");
                 return;
             }
 
-            if (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key.toLowerCase() === "s") {
+            const isAltSave = e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key.toLowerCase() === "s";
+            const isCtrlSave = e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key.toLowerCase() === "s";
+            if (isAltSave || isCtrlSave) {
                 e.preventDefault();
                 clickActionButton("update");
             }
@@ -1486,7 +1576,7 @@
                 return;
             }
 
-            const control = getWheelControl(e.target);
+            const control = getWheelControl(e.target, true);
             if (!changeWheelControl(control, delta)) return;
 
             e.preventDefault();
@@ -1521,6 +1611,15 @@
         });
 
         document.addEventListener("keydown", e => {
+            if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && !e.isComposing && e.key === "F2") {
+                const activeTab = tabbar.querySelector(".pz-tab-active");
+                if (!activeTab) return;
+
+                e.preventDefault();
+                activeTab.focus();
+                return;
+            }
+
             if (!e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || e.isComposing) return;
             if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
             if (tabbar.contains(e.target)) return;
@@ -1844,7 +1943,10 @@
         const root = document.querySelector(".pz-man-screen-options");
         const toggle = document.querySelector("#pz-man-screen-options-toggle");
         const panel = document.querySelector("#pz-man-screen-options-panel");
-        if (!root || !toggle || !panel) return;
+        const helpRoot = document.querySelector(".pz-man-help");
+        const helpToggle = document.querySelector("#pz-man-help-toggle");
+        const helpPanel = document.querySelector("#pz-man-help-panel");
+        if (!root || !toggle || !panel || !helpRoot || !helpToggle || !helpPanel) return;
 
         const columns = {
             id: [".pz-man-head-id", ".pz-man-body-id"],
@@ -1865,6 +1967,8 @@
 
         let panelOpen = !panel.hidden;
         let panelHideTimer = null;
+        let helpOpen = !helpPanel.hidden;
+        let helpHideTimer = null;
 
         const setPanelOpen = open => {
             window.clearTimeout(panelHideTimer);
@@ -1883,6 +1987,25 @@
             }
 
             toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        };
+
+        const setHelpOpen = open => {
+            window.clearTimeout(helpHideTimer);
+            helpOpen = open;
+
+            if (open) {
+                helpPanel.hidden = false;
+                window.requestAnimationFrame(() => {
+                    if (helpOpen) helpPanel.classList.add("is-open");
+                });
+            } else {
+                helpPanel.classList.remove("is-open");
+                helpHideTimer = window.setTimeout(() => {
+                    if (!helpOpen) helpPanel.hidden = true;
+                }, 160);
+            }
+
+            helpToggle.setAttribute("aria-expanded", open ? "true" : "false");
         };
 
         const applyColumn = (column, visible) => {
@@ -1945,18 +2068,74 @@
 
         toggle.addEventListener("click", e => {
             e.preventDefault();
+            if (!panelOpen) setHelpOpen(false);
             setPanelOpen(!panelOpen);
         });
 
+        helpToggle.addEventListener("click", e => {
+            e.preventDefault();
+            if (!helpOpen) setPanelOpen(false);
+            setHelpOpen(!helpOpen);
+        });
+
         document.addEventListener("click", e => {
-            if (!panelOpen || root.contains(e.target)) return;
-            setPanelOpen(false);
+            if (panelOpen && !root.contains(e.target)) setPanelOpen(false);
+            if (helpOpen && !helpRoot.contains(e.target)) setHelpOpen(false);
         });
 
         document.addEventListener("keydown", e => {
-            if (e.key !== "Escape" || !panelOpen) return;
-            setPanelOpen(false);
-            toggle.focus();
+            if (e.key !== "Escape") return;
+            if (panelOpen) {
+                setPanelOpen(false);
+                toggle.focus();
+            } else if (helpOpen) {
+                setHelpOpen(false);
+                helpToggle.focus();
+            }
+        });
+    }
+
+    function initPageHelp() {
+        document.querySelectorAll(".pz-page-help").forEach(root => {
+            const toggle = root.querySelector(".pz-page-help-toggle");
+            const panel = root.querySelector(".pz-page-help-panel");
+            if (!toggle || !panel) return;
+
+            let open = !panel.hidden;
+            let hideTimer = null;
+            const setOpen = nextOpen => {
+                window.clearTimeout(hideTimer);
+                open = nextOpen;
+
+                if (open) {
+                    panel.hidden = false;
+                    window.requestAnimationFrame(() => {
+                        if (open) panel.classList.add("is-open");
+                    });
+                } else {
+                    panel.classList.remove("is-open");
+                    hideTimer = window.setTimeout(() => {
+                        if (!open) panel.hidden = true;
+                    }, 160);
+                }
+
+                toggle.setAttribute("aria-expanded", open ? "true" : "false");
+            };
+
+            toggle.addEventListener("click", e => {
+                e.preventDefault();
+                setOpen(!open);
+            });
+
+            document.addEventListener("click", e => {
+                if (open && !root.contains(e.target)) setOpen(false);
+            });
+
+            document.addEventListener("keydown", e => {
+                if (e.key !== "Escape" || !open) return;
+                setOpen(false);
+                toggle.focus();
+            });
         });
     }
 
@@ -1981,10 +2160,10 @@
             }
         };
 
-        const runIdSearch = id => {
-            if (!id) return;
+        const runFieldSearch = (field, value) => {
+            if (!field || !value) return;
 
-            input.value = `ID:${id}`;
+            input.value = `${field}:${value}`;
             input.dispatchEvent(new Event("input", { bubbles: true }));
             input.dispatchEvent(new Event("change", { bubbles: true }));
 
@@ -1992,10 +2171,39 @@
         };
 
         input.addEventListener("keydown", e => {
+            if (e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && !e.isComposing && e.key === ";") {
+                const today = input.dataset.pzToday;
+                if (!today) return;
+
+                e.preventDefault();
+                const start = input.selectionStart ?? input.value.length;
+                const end = input.selectionEnd ?? start;
+                input.setRangeText(today, start, end, "end");
+                input.dispatchEvent(new Event("input", { bubbles: true }));
+                input.dispatchEvent(new Event("change", { bubbles: true }));
+                return;
+            }
+
             if (e.key !== "Enter" || e.isComposing) return;
 
             e.preventDefault();
             submitSearch();
+        });
+
+        document.addEventListener("keydown", e => {
+            if (e.isComposing) return;
+
+            const isCtrlF = e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key.toLowerCase() === "f";
+            const isF3 = !e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key === "F3";
+            if (!isCtrlF && !isF3) return;
+
+            e.preventDefault();
+            if (isF3 && input.value.trim()) {
+                submitSearch();
+                return;
+            }
+            input.focus();
+            input.select();
         });
 
         document.addEventListener("keydown", e => {
@@ -2037,7 +2245,15 @@
             if (!button) return;
 
             e.preventDefault();
-            runIdSearch(button.dataset.pzManSearchId);
+            runFieldSearch("ID", button.dataset.pzManSearchId);
+        });
+
+        document.addEventListener("click", e => {
+            const button = e.target?.closest?.(".pz-man-post-search");
+            if (!button) return;
+
+            e.preventDefault();
+            runFieldSearch("post", button.dataset.pzManSearchPost);
         });
 
         document.addEventListener("click", e => {

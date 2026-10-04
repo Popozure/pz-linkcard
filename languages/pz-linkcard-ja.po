@@ -2119,6 +2119,14 @@ msgid "Initialize"
 msgstr "初期化"
 
 #: ../lib/pz-linkcard-settings-initialize.php:7
+msgid "Initialize Formatting"
+msgstr "書式の初期化"
+
+#: ../lib/pz-linkcard-settings-initialize.php:10
+msgid "Reset only the Basic, Position, Display, Letter, External Link, and Internal Link items to their initial values."
+msgstr "基本、配置、表示、文字、外部リンク、内部リンクの項目のみを初期状態に戻します。"
+
+#: ../lib/pz-linkcard-settings-initialize.php:15
 msgid "Initialize Settings"
 msgstr "設定の初期化"
 
@@ -2846,6 +2854,14 @@ msgstr "設定を初期化しました。"
 #: ../lib/pz-linkcard-settings.php:379
 msgid "Failed to initialize the settings."
 msgstr "設定の初期化に失敗しました。"
+
+#: ../lib/pz-linkcard-settings.php:378
+msgid "Successfully initialized the formatting settings."
+msgstr "書式を初期化しました。"
+
+#: ../lib/pz-linkcard-settings.php:380
+msgid "Failed to initialize the formatting settings."
+msgstr "書式の初期化に失敗しました。"
 
 #: ../lib/pz-linkcard-settings.php:419
 msgid "The log directory is not configured or does not exist."
@@ -4101,3 +4117,42 @@ msgstr "無効なカードID"
 
 #~ msgid "After the invalidation of the plug-in , please activate again"
 #~ msgstr "→プラグインの無効化を行った後、再度有効化してください"
+#: ../lib/pz-linkcard-cacheman-edit.php:157
+msgid "Edit title"
+msgstr "タイトルを編集"
+
+#: ../lib/pz-linkcard-settings.php:664
+msgid "Switch tabs"
+msgstr "タブを切り替え"
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Wheel"
+msgstr "ホイール"
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Right click"
+msgstr "右クリック"
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Increase or decrease values, or select the previous or next option"
+msgstr "値の増減、前後を選択"
+
+#: ../lib/pz-linkcard-settings.php:662
+msgid "Focus current tab"
+msgstr "現在のタブにフォーカス"
+
+#: ../lib/pz-linkcard-settings-card.php:169
+msgid "Copy Settings from Internal Link"
+msgstr "内部リンクの設定からコピー"
+
+#: ../lib/pz-linkcard-settings-card.php:170
+msgid "Copy Settings from External Link"
+msgstr "外部リンクの設定からコピー"
+
+#: ../lib/pz-linkcard-settings-card.php:173
+msgid "Are you sure you want to overwrite the external link settings?"
+msgstr "外部リンクの設定を上書きしてよろしいですか？"
+
+#: ../lib/pz-linkcard-settings-card.php:174
+msgid "Are you sure you want to overwrite the internal link settings?"
+msgstr "内部リンクの設定を上書きしてよろしいですか？"

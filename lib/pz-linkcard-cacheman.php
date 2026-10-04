@@ -121,7 +121,7 @@
 	$title_icon		=	'<span class="dashicons dashicons-archive" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Manager', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
-	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
+	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><a class="pz-header-title-link" href="'.esc_url($this->cacheman_url ).'"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span></a><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
 
 	// POSTする値 INPUT要素
 	$temp_param		=
@@ -200,7 +200,7 @@
 		case	'edit':						// 編集画面
 			$data					=	$this->pz_GetCache(array('id' => $select_id[0] ) );
 			if	(isset($data ) && is_array($data ) ) {
-				require_once ('pz-linkcard-cacheman-edit.php');
+				$content_file		=	'pz-linkcard-cacheman-edit.php';
 			}
 			$show_list				=	false;		// リストを表示しない
 			break;

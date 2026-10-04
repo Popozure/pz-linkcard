@@ -197,6 +197,16 @@
 		sprintf($temp_button,	($page_now + 1 ),	(($page_now < $page_max ) ? '' : 'disabled="disabled"' ),	__('&rsaquo;', 'pz-linkcard' ) ).		// 次のページ
 		sprintf($temp_button,	($page_max ),		(($page_now < $page_max ) ? '' : 'disabled="disabled"' ),	__('&raquo;', 'pz-linkcard' ) ).		// 最後のページ
 		'</span></div>';
+	$paging_allowed_html		=	wp_kses_allowed_html('post' );
+	$paging_allowed_html['input']	=	array(
+		'type'				=> true,
+		'name'				=> true,
+		'value'				=> true,
+		'id'				=> true,
+		'class'				=> true,
+		'size'				=> true,
+		'aria-describedby'	=> true,
+	);
 ?>
 	<div class="pz-man-filter-row">
 	<div class="pz-man-count-list">
@@ -211,41 +221,79 @@
 				);
 			$sep		=	'';
 			foreach	($items as $i_code => $i_name ) {
-				echo	$sep;
+				echo	esc_html($sep );
 				echo	'<button type="submit" name="filter" value="'.$i_code.'" class="pz-filter-item"><span class="pz-filter-label'.($filter === $i_code ? ' pz-current' : '').'">'.$i_name.'</span><span class="pz-filter-count">'.esc_attr('('.number_format($count_list[$i_code] ).')' ).'</span></button>';
 				$sep	=	' | ';
 			}
 		?>
 	</div>
 
-	<div class="pz-man-screen-options">
-		<button type="button" id="pz-man-screen-options-toggle" class="pz-man-screen-options-toggle" aria-expanded="false" aria-controls="pz-man-screen-options-panel" data-no-overlay="1">
-			<?php echo esc_html(__('Screen Options', 'pz-linkcard' ) ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
-		</button>
-		<div id="pz-man-screen-options-panel" class="pz-man-screen-options-panel" hidden>
-			<fieldset>
-				<legend><?php echo esc_html(__('Columns', 'pz-linkcard' ) ); ?></legend>
-				<?php
-					foreach	($screen_option_columns as $column_key => $column ) {
-						$checked		=	$screen_option_is_visible($column_key) ? ' checked="checked"' : '';
-						$default_class	=	!empty($screen_option_defaults[$column_key] ) ? ' class="pz-man-screen-option-default"' : '';
-						echo	'<label'.wp_kses_post($default_class ).'><input type="checkbox" class="pz-man-screen-column-toggle" data-pz-man-column="'.esc_attr($column_key ).'"'.$checked.'>'.esc_html($column['label'] ).'</label>';
-					}
-				?>
-			</fieldset>
-			<fieldset class="pz-man-screen-options-pagination">
-				<legend><?php echo esc_html(__('Pagination', 'pz-linkcard' ) ); ?></legend>
-				<label class="pz-man-screen-option-per-page">
-					<?php echo esc_html(__('Number of items per page:', 'pz-linkcard' ) ); ?>
-					<select id="pz-man-screen-option-per-page">
-						<?php
-							foreach	($screen_option_per_page_choices as $choice ) {
-								echo	'<option value="'.intval($choice ).'"'.selected($screen_option_per_page, $choice, false ).'>'.intval($choice ).'</option>';
-							}
-						?>
-					</select>
-				</label>
-			</fieldset>
+	<?php
+		$search_label		=	__('Search', 'pz-linkcard' );
+		$help_label			=	__('Help', 'pz-linkcard' );
+		$search_help_label	=	($search_label === 'Search' && $help_label === 'Help' ) ? 'Search Help' : $search_label.$help_label;
+		$search_help_date	=	current_time('Y-m-d' );
+	?>
+	<div class="pz-man-screen-tabs">
+		<div class="pz-man-screen-options">
+			<button type="button" id="pz-man-screen-options-toggle" class="pz-man-screen-options-toggle" aria-expanded="false" aria-controls="pz-man-screen-options-panel" data-no-overlay="1">
+				<?php echo esc_html(__('Screen Options', 'pz-linkcard' ) ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+			</button>
+			<div id="pz-man-screen-options-panel" class="pz-man-screen-options-panel" hidden>
+				<fieldset>
+					<legend><?php echo esc_html(__('Columns', 'pz-linkcard' ) ); ?></legend>
+					<?php
+						foreach	($screen_option_columns as $column_key => $column ) {
+							$checked		=	$screen_option_is_visible($column_key) ? ' checked="checked"' : '';
+							$default_class	=	!empty($screen_option_defaults[$column_key] ) ? ' class="pz-man-screen-option-default"' : '';
+							echo	'<label'.wp_kses_post($default_class ).'><input type="checkbox" class="pz-man-screen-column-toggle" data-pz-man-column="'.esc_attr($column_key ).'"'.$checked.'>'.esc_html($column['label'] ).'</label>';
+						}
+					?>
+				</fieldset>
+				<fieldset class="pz-man-screen-options-pagination">
+					<legend><?php echo esc_html(__('Pagination', 'pz-linkcard' ) ); ?></legend>
+					<label class="pz-man-screen-option-per-page">
+						<?php echo esc_html(__('Number of items per page:', 'pz-linkcard' ) ); ?>
+						<select id="pz-man-screen-option-per-page">
+							<?php
+								foreach	($screen_option_per_page_choices as $choice ) {
+									echo	'<option value="'.intval($choice ).'"'.selected($screen_option_per_page, $choice, false ).'>'.intval($choice ).'</option>';
+								}
+							?>
+						</select>
+					</label>
+				</fieldset>
+			</div>
+		</div>
+		<div class="pz-man-help">
+			<button type="button" id="pz-man-help-toggle" class="pz-man-help-toggle" aria-expanded="false" aria-controls="pz-man-help-panel" data-no-overlay="1">
+				<?php echo esc_html($help_label ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+			</button>
+			<div id="pz-man-help-panel" class="pz-man-help-panel" hidden>
+				<h3><?php echo esc_html($search_help_label ); ?></h3>
+				<dl class="pz-man-search-command-list">
+					<div><dt><code>id:123</code></dt><dd><?php echo esc_html(__('Pz Card', 'pz-linkcard' ).' '.__('ID', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>post:123</code></dt><dd><?php echo esc_html(__('Post ID', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>title:keyword</code></dt><dd><?php echo esc_html(__('Title', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>excerpt:keyword</code></dt><dd><?php echo esc_html(__('Excerpt', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>url:example.com</code></dt><dd><?php echo esc_html(__('URL', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>domain:example.com</code></dt><dd><?php echo esc_html(__('Domain', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>sitename:keyword</code></dt><dd><?php echo esc_html(__('Site Name', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>charset:utf-8</code></dt><dd><?php echo esc_html(__('Character Set', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>click:&gt;=10</code></dt><dd><?php echo esc_html(__('Click Count', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>regist:<?php echo esc_html($search_help_date ); ?></code></dt><dd><?php echo esc_html(__('Registered Date', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>update:<?php echo esc_html($search_help_date ); ?></code></dt><dd><?php echo esc_html(__('Update Date', 'pz-linkcard' ) ); ?></dd></div>
+				<div><dt><code>result:200</code></dt><dd><?php echo esc_html(__('Result Code', 'pz-linkcard' ) ); ?></dd></div>
+			</dl>
+			<h3 class="pz-man-shortcut-title"><?php echo esc_html(__('Keyboard Shortcuts' ) ); ?></h3>
+			<dl class="pz-man-shortcut-list">
+				<div><dt><kbd>Ctrl+F</kbd> / <kbd>Alt+Q</kbd></dt><dd><?php echo esc_html(__('Search', 'pz-linkcard' ) ); ?></dd></div>
+				<div><dt><kbd>F3</kbd></dt><dd><?php echo esc_html(__('Search cards', 'pz-linkcard' ) ); ?></dd></div>
+				<div><dt><kbd>Ctrl+A</kbd></dt><dd><?php echo esc_html(__('Select All' ) ); ?></dd></div>
+				<div><dt><kbd>Ctrl+;</kbd></dt><dd><?php echo esc_html(__('Today' ).' (yyyy-mm-dd)' ); ?></dd></div>
+				<div><dt><kbd>Ctrl+←</kbd> / <kbd>Ctrl+→</kbd></dt><dd><?php echo esc_html(__('Previous page' ).' / '.__('Next page' ) ); ?></dd></div>
+			</dl>
+		</div>
 		</div>
 	</div>
 	
@@ -253,7 +301,7 @@
 		<p class="search-box" title="<?php esc_attr_e('Text or field search. Examples: post:1234, id:10, domain:popozure.info', 'pz-linkcard' ); ?>">
 			<label>
 				<span class="dashicons dashicons-search" style="vertical-align: text-bottom;"></span>
-				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" placeholder="<?php esc_attr_e('Search', 'pz-linkcard' ); ?>" />
+				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" placeholder="<?php esc_attr_e('Search', 'pz-linkcard' ); ?>" data-pz-today="<?php echo esc_attr($search_help_date ); ?>" />
 				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action"><?php esc_html_e('Search cards', 'pz-linkcard' ); ?></button>
 			</label>
 		</p>
@@ -290,7 +338,7 @@
 				</select>
 			<button type="submit" name="action" value="select-domain" class="button action"><?php esc_html_e('Refine Search', 'pz-linkcard' ); ?></button>
 		</div>
-		<?php /* ページネーション */ echo $paging; ?>
+		<?php /* ページネーション */ echo wp_kses($paging, $paging_allowed_html ); ?>
 		<br class="clear">
 	</div>
 
@@ -422,6 +470,7 @@
 		</thead>
 		<tbody>
 			<?php
+				$date_allowed_html	= array('br' => array() );
 				foreach	($data_now as $data ) {
 
 					// データID
@@ -522,7 +571,9 @@
 						$use_post_id	=	'use_post_id'.$j;
 						$post_id		=	$data->$use_post_id;
 						if	($post_id > 0 ) {
-							$html_post_id	.=	'<a href="'.esc_url(get_permalink($post_id ) ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" title="'.esc_attr(get_the_title($post_id ) ).'">'.intval($post_id ).'</a><br>';
+							$post_title	=	get_the_title($post_id );
+							$post_url	=	get_permalink($post_id ).'#pz-lkc-'.intval($data_id );
+							$html_post_id	.=	'<span class="pz-man-post-id-line"><button type="button" class="pz-man-inline-menu pz-man-post-search" data-pz-man-search-post="'.intval($post_id ).'" title="post:'.intval($post_id ).'">'.intval($post_id ).'</button><a href="'.esc_url($post_url ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" class="pz-man-post-open" title="'.esc_attr($post_title ).'" aria-label="'.esc_attr($post_title ).'"><span class="dashicons dashicons-external" aria-hidden="true"></span></a></span><br>';
 						}
 					}
 
@@ -542,17 +593,17 @@
 			?>
 			<tr>
 				<th scope="row" class="pz-man-body-check check-column"><input id="cb-select-<?php echo intval($data_id ); ?>" type="checkbox" name="select_id[]" value="<?php echo intval($data_id ); ?>" /><div class="locked-indicator"></div></th>
-				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search"><?php echo intval($data_id ); ?></button><?php echo $html_thumbnail; ?></td>
+				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search"><?php echo intval($data_id ); ?></button><?php echo wp_kses_post($html_thumbnail ); ?></td>
 				<td colspan="2" class="pz-man-body-url-title-cell">
-					<div class="pz-man-body-url"><?php echo $html_url; ?></div>
-					<div class="pz-man-body-title"><span title="<?php echo esc_attr($title ); ?>"><?php echo $html_title; ?></span></div>
+					<div class="pz-man-body-url"><?php echo wp_kses_post($html_url ); ?></div>
+					<div class="pz-man-body-title"><span title="<?php echo esc_attr($title ); ?>"><?php echo wp_kses_post($html_title ); ?></span></div>
 					<div id="inline_<?php echo intval($data_id ); ?>" class="pz-man-body-menu row-actions">
 						<button type="submit" name="single-edit"   value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu"><?php esc_html_e('Edit','pz-linkcard' ); ?></button> | 
 						<button type="submit" name="single-renew"  value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>' );"><?php esc_html_e('Renew','pz-linkcard' ); ?></button> | 
 						<button type="submit" name="single-delete" value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>' );"><?php esc_html_e('Delete','pz-linkcard' ); ?></button>
 					</div>
 				</td>
-				<td class="pz-man-body-excerpt-cell<?php echo esc_attr($screen_option_hidden_class('excerpt') ); ?>"><div class="pz-man-body-excerpt" title="<?php echo esc_attr($excerpt); ?>"><?php echo $html_excerpt; ?></div></td>
+				<td class="pz-man-body-excerpt-cell<?php echo esc_attr($screen_option_hidden_class('excerpt') ); ?>"><div class="pz-man-body-excerpt" title="<?php echo esc_attr($excerpt); ?>"><?php echo wp_kses_post($html_excerpt ); ?></div></td>
 				<td class="pz-man-body-charset<?php echo esc_attr($screen_option_hidden_class('charset') ); ?>"><?php echo esc_html($data->charset ); ?></td>
 				<td class="pz-man-body-domain-cell<?php echo esc_attr($screen_option_hidden_class('domain') ); ?>">
 					<div class="pz-man-body-domain">
@@ -562,23 +613,23 @@
 							$siteicon_url	=	isset($data->favicon ) && $data->favicon ? $this->pz_GetImage($data->favicon ) : null;
 							$html_siteicon	=	$siteicon_url ? '<img src="'.esc_url($siteicon_url ).'" alt="" width="14" height="14" class="pz-man-body-siteicon" />' : '';
 						?>
-						<span class="pz-man-body-domain-line" title="<?php echo esc_attr($disp_domain ); ?>"><?php echo $html_siteicon; ?><?php echo esc_html($disp_domain ); ?></span><br>
+						<span class="pz-man-body-domain-line" title="<?php echo esc_attr($disp_domain ); ?>"><?php echo wp_kses_post($html_siteicon ); ?><?php echo esc_html($disp_domain ); ?></span><br>
 						<span class="pz-man-body-sitename" title="<?php echo esc_attr($disp_sitename ); ?>"><?php echo esc_html($disp_sitename ); ?></span>
 					</div>
 				</td>
-				<td class="pz-man-body-sns<?php echo esc_attr($screen_option_hidden_class('sns') ); ?>"><?php echo $html_sns; ?></td>
-				<td class="pz-man-body-regist-time<?php echo esc_attr($screen_option_hidden_class('regist_time') ); ?>"><?php $dt=$data->regist_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo $this->pz_Date($this->options['date-format-man'], $dt ); ?></span></td>
-				<td class="pz-man-body-update-time<?php echo esc_attr($screen_option_hidden_class('update_time') ); ?>"><?php $dt=$data->update_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo $this->pz_Date($this->options['date-format-man'], $dt ); ?></span></td>
-				<td class="pz-man-body-sns-time<?php echo esc_attr($screen_option_hidden_class('sns_time') ); ?>"><?php $dt=$data->sns_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo $this->pz_Date($this->options['date-format-man'], $dt ); ?></span></td>
-				<td class="pz-man-body-alive-time<?php echo esc_attr($screen_option_hidden_class('alive_time') ); ?>"><?php $dt=$data->alive_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo $this->pz_Date($this->options['date-format-man'], $dt ); ?></span></td>
-				<td class="pz-man-body-post-id<?php echo esc_attr($screen_option_hidden_class('post_id') ); ?>"><?php echo $html_post_id; ?></td>
-				<td class="pz-man-body-click-count<?php echo esc_attr($screen_option_hidden_class('click_count') ); ?>"><?php echo $html_click; ?></td>
-				<td class="pz-man-body-result<?php echo esc_attr($screen_option_hidden_class('result') ); ?>"><?php echo $html_result; ?></td>
+				<td class="pz-man-body-sns<?php echo esc_attr($screen_option_hidden_class('sns') ); ?>"><?php echo wp_kses_post($html_sns ); ?></td>
+				<td class="pz-man-body-regist-time<?php echo esc_attr($screen_option_hidden_class('regist_time') ); ?>"><?php $dt=$data->regist_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
+				<td class="pz-man-body-update-time<?php echo esc_attr($screen_option_hidden_class('update_time') ); ?>"><?php $dt=$data->update_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
+				<td class="pz-man-body-sns-time<?php echo esc_attr($screen_option_hidden_class('sns_time') ); ?>"><?php $dt=$data->sns_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
+				<td class="pz-man-body-alive-time<?php echo esc_attr($screen_option_hidden_class('alive_time') ); ?>"><?php $dt=$data->alive_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
+				<td class="pz-man-body-post-id<?php echo esc_attr($screen_option_hidden_class('post_id') ); ?>"><?php echo wp_kses_post($html_post_id ); ?></td>
+				<td class="pz-man-body-click-count<?php echo esc_attr($screen_option_hidden_class('click_count') ); ?>"><?php echo esc_html($html_click ); ?></td>
+				<td class="pz-man-body-result<?php echo esc_attr($screen_option_hidden_class('result') ); ?>"><?php echo wp_kses_post($html_result ); ?></td>
 			</tr>
 			<?php } ?>
 		</tbody>
 	</table>
-	<?php /* ページネーション */ echo $paging_bottom; ?></div>
+	<?php /* ページネーション */ echo wp_kses($paging_bottom, $paging_allowed_html ); ?></div>
 <?php
 // 関数
 

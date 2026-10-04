@@ -164,9 +164,30 @@
 				button.appendChild(date);
 			}
 			button.title = item.title + (item.date ? ` (${item.date})` : "");
+			button.addEventListener("mouseenter", function() {
+				this.focus();
+			});
 			button.addEventListener("click", () => selectPostSearchResult(item));
 			button.addEventListener("keydown", function(event) {
 				const buttons = Array.from(postSearchResults.querySelectorAll(".pz-post-search-result"));
+				const pageFocus = (direction) => {
+					const viewportTop = postSearchResults.scrollTop;
+					const viewportBottom = viewportTop + postSearchResults.clientHeight;
+					const visibleCount = Math.max(1, buttons.filter((candidate) =>
+						candidate.offsetTop >= viewportTop && candidate.offsetTop + candidate.offsetHeight <= viewportBottom
+					).length);
+					const targetIndex = Math.max(0, Math.min(buttons.length - 1, index + direction * visibleCount));
+					const target = buttons[targetIndex];
+					if (!target) return;
+					target.focus({ preventScroll: true });
+					const targetTop = target.offsetTop;
+					const targetBottom = targetTop + target.offsetHeight;
+					if (targetTop < postSearchResults.scrollTop) {
+						postSearchResults.scrollTop = targetTop;
+					} else if (targetBottom > postSearchResults.scrollTop + postSearchResults.clientHeight) {
+						postSearchResults.scrollTop = targetBottom - postSearchResults.clientHeight;
+					}
+				};
 				if (event.key === "ArrowDown") {
 					event.preventDefault();
 					(buttons[index + 1] || buttons[index]).focus();
@@ -177,6 +198,22 @@
 					} else {
 						buttons[index - 1].focus();
 					}
+				} else if (event.key === "Home") {
+					event.preventDefault();
+					buttons[0]?.focus();
+				} else if (event.key === "End") {
+					event.preventDefault();
+					buttons[buttons.length - 1]?.focus();
+				} else if (event.key === "PageDown") {
+					event.preventDefault();
+					pageFocus(1);
+				} else if (event.key === "PageUp") {
+					event.preventDefault();
+					pageFocus(-1);
+				} else if (event.key === "Escape") {
+					event.preventDefault();
+					event.stopPropagation();
+					document.getElementById("pz-url").focus();
 				} else if (event.key === "Enter") {
 					event.preventDefault();
 					selectPostSearchResult(item);

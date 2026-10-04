@@ -1979,6 +1979,14 @@ msgid "Initialize"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-initialize.php:7
+msgid "Initialize Formatting"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-initialize.php:10
+msgid "Reset only the Basic, Position, Display, Letter, External Link, and Internal Link items to their initial values."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-initialize.php:15
 msgid "Initialize Settings"
 msgstr ""
 
@@ -2670,6 +2678,14 @@ msgstr ""
 msgid "Failed to initialize the settings."
 msgstr ""
 
+#: ../lib/pz-linkcard-settings.php:378
+msgid "Successfully initialized the formatting settings."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:380
+msgid "Failed to initialize the formatting settings."
+msgstr ""
+
 #: ../lib/pz-linkcard-settings.php:391
 msgid "Updated the appearance of the LinkCard."
 msgstr ""
@@ -3052,4 +3068,43 @@ msgstr ""
 
 #: ../pz-linkcard.php:3824 ../pz-linkcard.php:3853
 msgid "Invalid card ID"
+msgstr ""
+#: ../lib/pz-linkcard-cacheman-edit.php:157
+msgid "Edit title"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:664
+msgid "Switch tabs"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Wheel"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Right click"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Increase or decrease values, or select the previous or next option"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:662
+msgid "Focus current tab"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php:169
+msgid "Copy Settings from Internal Link"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php:170
+msgid "Copy Settings from External Link"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php:173
+msgid "Are you sure you want to overwrite the external link settings?"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php:174
+msgid "Are you sure you want to overwrite the internal link settings?"
 msgstr ""

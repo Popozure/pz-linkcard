@@ -4,6 +4,13 @@
 	<h2><?php echo	__('Initialize', 'pz-linkcard' ).$help_open.'initialize'.$help_close; ?></h2>
 	<table class="form-table">
 		<tr>
+			<th scope="row"><?php esc_html_e('Initialize Formatting', 'pz-linkcard' ); ?></th>
+			<td>
+				<button type="submit" name="action" value="init-format" class="pz-button-sure" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Run', 'pz-linkcard' ); ?></button>
+				&ensp;<span><?php esc_html_e('Reset only the Basic, Position, Display, Letter, External Link, and Internal Link items to their initial values.', 'pz-linkcard' ); ?></span>
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><?php esc_html_e('Initialize Settings', 'pz-linkcard' ); ?></th>
 			<td>
 				<button type="submit" name="action" value="init-settings" class="pz-button-sure" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Run', 'pz-linkcard' ); ?></button>

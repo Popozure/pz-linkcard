@@ -147,6 +147,20 @@
 		}
 	}
 ?>
+	<div class="pz-page-help">
+		<button type="button" class="pz-page-help-toggle" aria-expanded="false" aria-controls="pz-cache-edit-help-panel" data-no-overlay="1">
+			<?php esc_html_e('Help', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+		</button>
+		<div id="pz-cache-edit-help-panel" class="pz-page-help-panel" hidden>
+			<h3><?php esc_html_e('Keyboard Shortcuts'); ?></h3>
+			<dl class="pz-man-shortcut-list">
+				<div><dt><kbd>F2</kbd></dt><dd><?php esc_html_e('Edit title', 'pz-linkcard' ); ?></dd></div>
+				<div><dt><kbd>Alt+S</kbd> / <kbd>Ctrl+S</kbd></dt><dd><?php esc_html_e('Update', 'pz-linkcard' ); ?></dd></div>
+				<div><dt><kbd>Esc</kbd></dt><dd><?php esc_html_e('Cancel', 'pz-linkcard' ); ?></dd></div>
+			</dl>
+		</div>
+	</div>
+
 	<button type="submit" name="action" value="update" class="pz-man-cache-default-submit" aria-hidden="true" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;padding:0;border:0;"></button>
 
 	<div id="poststuff" class="pz-man-cache-dirty-check pz-man-cache-poststuff">
@@ -332,5 +346,5 @@
 				<?php echo wp_kses($cacheman_postbox_close(), $cacheman_allowed_html ); ?>
 			</div>
 		</div>
-		<br class="clear" />
+		<br class="clear">
 	</div>
