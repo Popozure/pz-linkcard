@@ -3648,6 +3648,8 @@ class class_pz_linkcard {
 			$results[]	=	array(
 				'title'	=>	get_the_title($post_id ),
 				'date'	=>	get_the_date(get_option('date_format' ), $post_id ),
+				'published_date'	=>	get_the_date(get_option('date_format' ), $post_id ),
+				'modified_date'	=>	get_the_modified_date(get_option('date_format' ), $post_id ),
 				'excerpt'	=>	preg_replace('/\s+/u', ' ', wp_strip_all_tags(get_the_excerpt($post_id ) ) ),
 				'thumbnail'	=>	get_the_post_thumbnail_url($post_id, 'thumbnail' ) ?: '',
 				'url'	=>	get_permalink($post_id ),

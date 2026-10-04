@@ -392,7 +392,7 @@
 												type: "button",
 												className: `pz-block-post-search-result${selectedResultIndex === index ? " is-selected" : ""}`,
 												key: `${item.url}-${index}`,
-												title: item.title + (item.date ? ` (${item.date})` : ""),
+												title: item.title,
 												onMouseDown: (event) => event.preventDefault(),
 												onMouseEnter: (event) => event.currentTarget.focus(),
 												onMouseMove: (event) => {
@@ -459,7 +459,25 @@
 												"span",
 												{ className: "pz-block-post-search-result-body" },
 												el("span", { className: "pz-block-post-search-result-title" }, item.title),
-												item.date ? el("span", { className: "pz-block-post-search-result-date" }, item.date) : null,
+												item.published_date || item.modified_date
+													? el(
+															"span",
+															{ className: "pz-block-post-search-result-date" },
+															item.published_date
+																	? el("span", { className: "pz-post-search-date-label" }, "投稿日")
+																: null,
+																	item.published_date ? `：${item.published_date}` : null,
+															item.modified_date && item.modified_date !== item.published_date
+																? el(
+																		"span",
+																		null,
+																		item.published_date ? "　" : null,
+																		el("span", { className: "pz-post-search-date-label" }, "更新日"),
+																		`：${item.modified_date}`
+																  )
+																: null
+													  )
+													: null,
 												item.excerpt
 													? el("span", { className: "pz-block-post-search-result-excerpt" }, item.excerpt)
 													: null

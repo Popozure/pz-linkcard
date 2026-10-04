@@ -153,17 +153,45 @@
 			button.type = "button";
 			button.className = "pz-post-search-result";
 			button.setAttribute("role", "option");
+			const body = document.createElement("span");
+			body.className = "pz-post-search-result-body";
 			const title = document.createElement("span");
 			title.className = "pz-post-search-result-title";
 			title.textContent = item.title;
-			button.appendChild(title);
-			if (item.date) {
+			body.appendChild(title);
+			if (item.published_date || item.modified_date) {
 				const date = document.createElement("span");
 				date.className = "pz-post-search-result-date";
-				date.textContent = ` (${item.date})`;
-				button.appendChild(date);
+				if (item.published_date) {
+					const publishedLabel = document.createElement("span");
+					publishedLabel.className = "pz-post-search-date-label";
+					publishedLabel.textContent = "投稿日";
+					date.append(publishedLabel, item.published_date);
+				}
+				if (item.modified_date && item.modified_date !== item.published_date) {
+					const modifiedLabel = document.createElement("span");
+					modifiedLabel.className = "pz-post-search-date-label";
+					modifiedLabel.textContent = "更新日";
+					date.append(item.published_date ? "　" : "", modifiedLabel, item.modified_date);
+				}
+				body.appendChild(date);
 			}
-			button.title = item.title + (item.date ? ` (${item.date})` : "");
+			if (item.excerpt) {
+				const excerpt = document.createElement("span");
+				excerpt.className = "pz-post-search-result-excerpt";
+				excerpt.textContent = item.excerpt;
+				body.appendChild(excerpt);
+			}
+			button.appendChild(body);
+			if (item.thumbnail) {
+				const thumbnail = document.createElement("img");
+				thumbnail.className = "pz-post-search-result-thumbnail";
+				thumbnail.src = item.thumbnail;
+				thumbnail.alt = "";
+				thumbnail.loading = "lazy";
+				button.appendChild(thumbnail);
+			}
+			button.title = item.title;
 			button.addEventListener("mouseenter", function() {
 				this.focus();
 			});
@@ -289,8 +317,48 @@
 		tinymce.activeEditor.focus();
 	});
 
+	// ダイアログの白い余白をドラッグして移動
+	const draggableModal = document.getElementById("pz-modal");
+	const modalContent = document.getElementById("pz-content");
+	let modalDrag = null;
+	if (draggableModal) {
+		draggableModal.addEventListener("pointerdown", function(event) {
+			if (event.button !== 0 || (event.target !== draggableModal && event.target !== modalContent)) return;
+			const rect = draggableModal.getBoundingClientRect();
+			modalDrag = {
+				pointerId: event.pointerId,
+				offsetX: event.clientX - rect.left,
+				offsetY: event.clientY - rect.top
+			};
+			draggableModal.setPointerCapture(event.pointerId);
+			draggableModal.classList.add("is-dragging");
+			event.preventDefault();
+		});
+
+		draggableModal.addEventListener("pointermove", function(event) {
+			if (!modalDrag || event.pointerId !== modalDrag.pointerId) return;
+			const maxLeft = Math.max(0, window.innerWidth - draggableModal.offsetWidth);
+			const maxTop = Math.max(0, window.innerHeight - draggableModal.offsetHeight);
+			const left = Math.max(0, Math.min(maxLeft, event.clientX - modalDrag.offsetX));
+			const top = Math.max(0, Math.min(maxTop, event.clientY - modalDrag.offsetY));
+			draggableModal.style.left = left + "px";
+			draggableModal.style.top = top + "px";
+		});
+
+		const stopModalDrag = function(event) {
+			if (!modalDrag || event.pointerId !== modalDrag.pointerId) return;
+			if (draggableModal.hasPointerCapture(event.pointerId)) {
+				draggableModal.releasePointerCapture(event.pointerId);
+			}
+			modalDrag = null;
+			draggableModal.classList.remove("is-dragging");
+		};
+		draggableModal.addEventListener("pointerup", stopModalDrag);
+		draggableModal.addEventListener("pointercancel", stopModalDrag);
+	}
+
 	// ウィンドウのリサイズ
-	window.addEventListener("resize", modalMoveCenter);
+	window.addEventListener("resize", modal_move_center);
 	function modal_move_center() {
 		const w = window.innerWidth;
 		const h = window.innerHeight;
