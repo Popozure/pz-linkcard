@@ -1,3 +1,424 @@
+= 2.5.2 =
+* 欠番。
+
+= 2.5.1 =
+* デバグ用の機能（強制リンク先取得）を追加。
+  Added: Added function for debugging.
+* 文字コードの判定に失敗すると異常終了になってしまう不具合を修正。（Thanks 足じゃんけん @ASHIJANKEN on x.com）
+  Fixed: Fixed a bug that caused abnormal termination when character code determination failed.
+
+= 2.5.0.1 =
+* カード管理画面にて外部サイトへのリンクを外しました。
+  Fixed: Fixed to remove the link from the URL as a response to the vulnerability.
+* サイトアイコンが取得出来ない不具合を修正。(Thanks 澤田 芳弘 @SWD on x.com)
+  Fixed: Fixed a bug that site icons could not be retrieved.
+
+= 2.5.0 =
+* WordPress 6.4.2 での動作確認。
+  Tested: Compatible with WordPress 6.4.2.
+* Pzカード管理の画面のセキュリティを強化。(Thanks 山下午壱 @fiveoneinc_jp on x.com)(Thanks 山田彩乃 @happyjotoku on x.com)
+  Fixed: Enhanced security of the Pz Card Management screen.
+* URLにシングルクォートが含まれる場合、リンクされなかった不具合を再度修正。（Thanks てんちゃん #comment-6603 on popozure.info）
+  Fixed: Fixed again the bug that the link did not work if the URL contained single quotes.
+* 文字コードの判定に失敗すると異常終了になってしまう不具合を修正。（Thanks 足じゃんけん @ASHIJANKEN on x.com）
+  Fixed: Fixed a bug that caused abnormal termination when character code determination failed.
+* 設定画面の「外部リンク」タブ及び「内部リンク」タブの「代替テキスト」にパラメータを追加。(Thanks 澤田 芳弘 @SWD on x.com)
+  Added: Added a parameter to "Alternative Text" in the "External Links" and "Internal Links" tabs of the Settings screen.
+
+= 2.4.8.1 =
+* WordPress 6.4.1 での動作確認。
+  Tested: Compatible with WordPress 6.4.1.
+* URLにシングルクォートが含まれる場合、リンクされなかった不具合を修正。（Thanks てんちゃん #comment-6603 on popozure.info）
+  Fixed: Fixed no link when single quotes are included in the URL.
+
+= 2.4.8 =
+* WordPress 6.3.1 での動作確認。
+  Tested: Compatible with WordPress 6.3.1.
+* カード管理画面にてSQLの構文エラーがあったのを修正。(Thanks @in_seki on x.com)
+  Fixed: Fixed SQL syntax error in card management screen.
+* 設定画面の「外部リンク」タブに「サムネイル」と「サイトアイコン」の「代替テキスト」の設定を追加。(Thanks @SWD on x.com)
+  Added: Added "ALT Text" settings for "Thumbnail" and "Site Icon" to the "External Links" tab of the Settings page.
+* 設定画面の「内部リンク」タブに「サムネイル」と「サイトアイコン」の「代替テキスト」の設定を追加。(Thanks @SWD on x.com)
+  Added: Added "ALT Text" settings for "Thumbnail" and "Site Icon" to the "Internal Links" tab of the Settings page.
+* 設定画面の「Twitter」のシェア数の単位を「Posts」と「Tweets」から選べる設定を追加。
+  Added: Added a setting that allows users to choose between "Posts" and "Tweets" as the unit for the number of shares for "Twitter" on the settings screen.
+* X (Twitter)のシェア数が取得出来ないため、WebAPIの利用を停止。
+  Modified: Stopped using WebAPI because the number of X (Twitter) shares cannot be obtained.
+
+= 2.4.7 =
+* WordPress 6.0.2 での動作確認。
+  Tested: Compatible with WordPress 6.0.2.
+* ビジュアル エディタの「リンクカード挿入」ボタンが表示されない不具合を修正。(Thanks @hutagoparadise on Twitter)
+  Fixed: Fixed a bug that prevented the "Insert Link Card" button in the Visual Editor from appearing.
+
+= 2.4.6.1 =
+* WordPress 6.0.1 での動作確認。
+  Tested: Compatible with WordPress 6.0.1.
+* 国際化ドメイン（日本語ドメイン）の記事が取得出来ない不具合を修正。(Thanks @kozy_1919 on Twitter)
+  Fixed: Fixed a bug that prevented the acquisition of articles with an IDNA-ASCII-Domain.
+
+= 2.4.6 =
+* WordPress 6.0 での動作確認。
+  Tested: Compatible with WordPress 6.0.
+* 画像のリダイレクトに対応。（CDN対応）(Thanks @in_seki on Twitter)
+  Modified: Support for image URL redirects in CDNs, etc.
+* 特定のテーマでAMPと誤判定してしまう不具合を修正。(Thanks @360bpk on Twitter)
+  Fixed: Fixed a bug that caused misidentification as AMP when combined with certain themes.
+
+= 2.4.5.4 =
+* WordPress 5.9.5 での動作確認。
+  Tested: Compatible with WordPress 5.9.5.
+* プラグインのアンインストールが失敗する不具合を修正。
+  Fixed: Fixed a bug that caused uninstallation to fail.
+* 管理画面に記事情報が登録されない不具合を修正。(Thanks @OrganicRelife on Twitter)
+  Fixed: Fixed a bug that article information could not be cached.
+* 管理画面で入力したページ数に移動しなかったのを修正。
+  Fixed: Fixed a bug that prevented moving by specifying the number of pages.
+
+= 2.4.5.3 =
+* 相対指定のURLを使用した場合に致命的エラーが出る不具合を修正。(Thanks @wiashia on Twitter)
+  Fixed: Fixed a bug that caused a fatal error when using a relative URL.
+
+= 2.4.5.2 =
+* カード管理画面のエスケープ処理を追加。（XSS脆弱性の対応）(Thanks tkusagaya on WordPress.org)
+  Fixed: Added escaping of display items to address XSS vulnerability.
+
+= 2.4.5.1 =
+* 内部リンクの投稿日・更新日が表示されるように修正。(Thanks A-Jin)
+  Fixed: Fixed internal links not displaying posted and updated dates.
+
+= 2.4.5 =
+* 最低動作環境を WordPress 5.7 に変更。
+  Changed the minimum system requirements to WordPress 5.7.
+* WordPress 5.8.2 での動作確認。
+  Tested: Compatible with WordPress 5.8.2.
+* PHP 7.3 での動作確認。
+  Tested: Compatible with PHP 7.3.
+* PHP 7.4 での動作確認。
+  Tested: Compatible with PHP 7.4.
+* PHP 8.0 に対応。PHPの仕様変更により出るようになったエラーを修正。
+  Tested: Compatible with PHP 8.0.
+* PHP 8.1 での動作確認。（WordPress本体や他のプラグインでエラーが出る状態です）
+  Tested: Compatible with PHP 8.1.
+* リンクカードのタイトルと抜粋文のエスケープ処理を追加。（XSS脆弱性の対応）
+  Fixed: Added escaping of display items to address XSS vulnerability.
+* リンクカードのHTMLの"noopener"の表記ミスを修正。(Thanks @jh4vaj on Twitter)
+  Fixed: Corrected a spelling error in "noopener".
+* カード情報のエクスポート時、改行が入らないように修正。
+  Fixed: Fixed that line feeds are not inserted when exporting card information.
+
+= 2.4.4.4 =
+* WordPress 5.8.1 での動作確認。
+  Tested: Compatible with WordPress 5.8.1.
+* カード管理画面の一覧画面に表示される文字列にエスケープ処理を追加。（XSS脆弱性の対応）
+  Fixed: Added escaping of display items to address XSS vulnerability.
+* カード管理画面の編集画面に表示される文字列にエスケープ処理を追加。（XSS脆弱性の対応）
+  Fixed: Added escaping of display items to address XSS vulnerability.
+* リンクカードを表示する際の文字列にエスケープ処理を追加。（XSS脆弱性の対応）
+  Fixed: Added escaping of display items to address XSS vulnerability.
+
+= 2.4.4.3 =
+* 設定画面の「エディタ」タブの「テキストリンク行を変換」を有効にした場合、行の始めから終わりまでAタグで囲われている場合、画像等があっても変換してしまう不具合を修正。(Thanks @magemagemaaage)
+  Fixed: Fixed a bug that "Convert text link line" on the "Editor" tab of the setting screen converts even if there is something other than text.
+* 設定画面とカード管理画面のアイコンをemojiスタイルに変更。（U+FE0F VARIATION SELECTOR-16 (EPVS) を付与。）
+  Modified: Change the icons on the setting screen and card management screen to emoji style.
+
+= 2.4.4.2 =
+* URLに%20（半角スペース）が含まれていた場合、除去しないように修正。
+  Modified: Corresponds to the case where the URL contains a half-width space.
+* ショートコードの閉じに全角ダブルクォートを指定してもリンクが機能するように修正。（「“」と「”」は対応していましたが「″」の対応が抜けていました）
+  Modified: Corresponds to the case of using double-byte quotes for shortcodes.
+
+= 2.4.4.1 =
+* WordPress 5.7 での動作確認。
+  Tested: Compatible with WordPress 5.7.
+* 設定画面の「内部リンク」タブの「記事取得方法」で「抜粋文を優先」を選んでも抜粋文が取得できていない不具合を修正。(Thanks @OrganicRelife)
+  Fixed: Fixed a bug that excerpts could not be obtained even if "Prioritize excerpts" was selected in "Article acquisition method" on the "Internal link" tab of the setting screen.
+
+= 2.4.4 =
+* URLパラメーターにクォート文字が残ってしまう不具合を修正。(Thanks @OrganicRelife)
+  Fixed: Fixed a bug that quotes remained in URL parameters.
+* URLパラメーターで許容するスキーム（プロトコル）を追加。（http: / https: / file: / ftp: / data: / ogg: を許容します。）
+  Modified: Added protocols allowed by URL parameters.
+* URLパラメーターが不正な場合、カード管理画面に登録されないように修正。
+  Fixed: Corrected so that it will not be registered if the URL parameter is incorrect.
+* ソーシャルカウント数が表示されていなかった不具合を修正。（Ver.2.4.2.1から発生）(Thanks @san5w)
+  Fixed: Fixed a bug where the social count was not displayed.
+* ソーシャルカウントの取得が出来ない不具合を修正。(Thanks @san5w)
+  Fixed: Fixed a bug that social count could not be obtained.
+* 旧バージョンからのオプション引継ぎの処理を一部変更。
+  Modified: Changed the method of inheriting options from the previous version.
+* 設定画面のレイアウトを一部見直し。
+  Modified: Review the layout of the setting screen.
+* 設定画面の見出しに「ギア」のアイコンを追加。
+  Added: Added an icon to the heading of the settings screen.
+* 設定画面の各設定の見出しの書式を変更。
+  Modified: Add format to each setting heading on the settings screen.
+* 設定画面のスタイルシートを直書きしていたものをCSSファイルへ移動。
+  Modified: Move stylesheets from HTML to CSS.
+* 設定画面の右上に「カード管理画面」へのリンクを追加。
+  Added: Added a link to the management screen at the top right of the setting screen.
+* 設定画面の「エラー」タブのエラー解除方法をチェックを外す方法からボタンを押す方法へ変更。
+  Modified: Modified the error cancellation method on the setting screen.
+* 設定画面の「外部リンク」タブの「記事取得方法」が正しく表示されない不具合を修正。
+  Fixed: Fixed a bug that could not be selected in "Get Contents" on the "External link" tab of the setting screen.
+* 設定画面の「内部リンク」タブの「記事取得方法」を選んでも反映されない不具合を修正。(Thanks @OrganicRelife)
+  Fixed: Fixed a bug that could not be selected in "Get Contents" on the "Internal link" tab of the setting screen.
+* 設定画面の「リンク先の検査」タブの「ユーザーエージェント」を書き換え可能項目に変更。
+  Modified: Modified "User Agent" on the "Link Check" tab of the setting screen to be changeable.
+* 設定画面の「エディタ」タブの「テキストリンク行を変換」を有効にした場合、URLが認識されず変換されないパターンがあったため修正。（マルチバイト文字が入っている場合、?や&といったパラメーターがある場合等）
+  Fixed: Fixed a bug that URL is not converted in "Convert text link line" on the "Editor" tab of the setting screen.
+* 設定画面の「エディタ」タブの「URL行を変換」を有効にした場合、URLが認識されず変換されないパターンがあったため修正。（マルチバイト文字が入っている場合、?や&といったパラメーターがある場合等）
+  Fixed: Fixed a bug that URL is not converted in "Convert URL line" on the "Editor" tab of the setting screen.
+* 設定画面の「エディタ」タブの「パラメータ（表記例）」を修正。
+  Modified: Added a description example of "Parameter" on the "Editor" tab of the setting screen.
+* 設定画面に「管理者」タブを追加。※一般に解放していません。
+  Added: Added "Admin" tab to the setting screen. (Available only in admin mode)
+* 設定画面に「管理者」タブに「WP-Cronの設定」を追加。※一般に解放していません。
+  Added: Added "WP-Cron Settings" setting to "Admin" tab of the setting screen. (Available only in admin mode)
+* 設定画面の「上級者向け」タブ内に「上級者向けの設定」を追加。
+  Added: Added "Senior Settings" setting to "Advanced" tab of the setting screen.
+* 設定画面の「上級者向け」タブ内に「拡張機能の設定」を追加。
+  Added: Added "Extension Settings" setting to "Advanced" tab of the setting screen.
+* 設定画面の「上級者向け」タブ内の「上級者向けの設定」から一部項目を「上級者向けの設定」へ移動。
+  Modified: Moved any setting item on the setting screen from the "Advanced Settings" to the "Senior Settings".
+* 設定画面の「上級者向け」タブ内の「上級者向けの設定」から一部項目を「拡張機能の設定」へ移動。
+  Modified: Moved any setting item on the setting screen from the "Advanced Settings" to the "Extension Settings".
+* 設定画面の「マルチサイト」タブに設定が変更出来ない旨のメッセージを追加。
+  Added: Added a message to the "Multi-site" tab of the setting screen that it cannot be changed.
+* 設定画面の「マルチサイト」タブに「テーブル名称」を追加。
+  Added: Added "Multi-site" tab "Table name" on the setting screen.
+* 設定画面の「マルチサイト」タブに「サブサイトへのリンク」の設定を追加。
+  Added: Added the setting of "Multi-site" tab "Link to sub-site" on the setting screen.
+* 設定画面の「初期化タブ」「調査モード」「管理者モード」「開発者モード」を変更した際、「変更を保存」を押さなくても即時反映されるように修正。
+  Modified: Changed some check items on the setting screen to reflect immediately.
+* 設定画面の「設定を保存した日時」の表示項目を「上級者向け」タブから「基本」タブへ移動。
+  Modified: Moved the display item of "Saved Time" on the setting screen from the "Advanced" tab to the "Basic" tab.
+* カード管理画面のレイアウトを一部見直し。
+  Modified: Review the layout of the manager screen.
+* カード管理画面の見出しに「カードボックス」のアイコンを追加。
+  Added: Added an icon to the heading of the mamager screen.
+* カード管理画面の検索窓の左側に「虫眼鏡」のアイコンを追加。
+  Added: Added an icon to the search-box of the mamager screen.
+* カード管理画面のスタイルシートを直書きしていたものをCSSファイルへ移動。
+  Modified: Move stylesheets from HTML to CSS.
+* カード管理画面の右上に「設定画面」へのリンクを追加。
+  Added: Added a link to the settings screen at the top right of the management screen.
+* カード管理画面のエディタ画面のレイアウトを一部見直し。
+  Modified: Review the layout of the editor screen of the card management screen.
+* カード管理画面のエディタ画面に見出しを追加。
+  Modified: Added heading to the editor screen of the card management screen.
+* カード管理画面のエディタ画面の上側にも保存とキャンセルのボタンを追加。
+  Modified: Added save and cancel buttons at the top of the editor screen of the card management screen.
+* カード管理画面の一覧のサムネイル画像をクリックすると新しいタブで画像を表示するように変更。
+  Modified: Click the thumbnail image in the list on the management screen to display the image in a new tab.
+* カード管理画面の一覧のURLの先頭に、アクセス不能な場合「⛔（通行禁止）」のアイコンを表示するように変更。
+  Modified: Added an icon at the beginning of the URL of the management screen list when inaccessible.
+* カード管理画面の一覧のURLの先頭に、アクセス不能だがエラー無視の設定をしている場合「⚠（警告）」のアイコンを表示するように変更。
+  Modified: Added an icon at the beginning of the URL in the list of management screens when "Inaccessible but ignored"
+* カード管理画面の一覧のURLの先頭のアイコンの大きさを9pxから16pxへ変更。
+  Modified: Change the size of the icon at the beginning of the URL in the management screen list.
+* カード管理画面の一覧の結果コードの数字にポインタを合わせると結果メッセージがツールチップで表示されるように変更。
+  Modified: Added tooltip to the result code in the list of management screens.
+* カード管理画面の一覧のクイックメニューを選択中の行のみに表示されるように変更。
+  Modified: Changed the display method of the quick menu of the list on the management screen.
+* カード管理画面の一覧の下側にもページナビを追加。
+  Modified: Page navigation has also been added to the bottom of the list on the card management screen.
+* カード管理画面のエディタの結果コードの横に結果メッセージを表示するように変更。
+  Modified: Add a message next to the result code in the editor on the admin screen.
+* カード管理画面のエディタに結果コードがエラーでもリンク切れ状態にしない「エラーを無視」の項目を追加。(Thanks @wordmovies2018)
+  Added: Added "Ignore error" setting to the editor of the management screen.
+* カード管理画面の「ファイルメニュー」の見出しに「書類」のアイコンを追加。
+  Modified: Added an icon to the file menu of the management screen.
+* カード管理画面の「エクスポート」の出力項目を現在の記録項目に合わせて修正。
+  Modified: Change the output items of the export of the management screen.
+* require_once を include に変更。
+  Modified: Replace require_once with include.
+
+= 2.4.3.3 =
+* 設定画面の「上級者向け」タブにある「URLの補正」を削除。（不具合が解消されなかったため。）(Thanks @tannpura00)
+  Removed: Deleted "URL correction" setting from "Advanced" tab of the setting screen. (It wasn't the cause of the problem.)
+* URL内の % が %25 とエンコードされていた際に正しいページにリンクがされなかった不具合を修正。(Thanks @tannpura00)
+  Fixed: Fixed a bug that the correct page was not linked when "%" in the URL was encoded as "%25".
+
+= 2.4.3.2 =
+* 設定画面の「上級者向け」タブに「URLの補正」の設定を追加。パスに日本語を使用している場合等にリンクが大量にリンク切れになる不具合に対応。(Thanks @tannpura00)
+  Added: Added "URL correction" setting to "Advanced" tab of the setting screen.
+
+= 2.4.3.1 =
+* 設定画面で「変更を保存」を実行した際、一部の設定値が正常に保存されていなかった不具合を修正。
+  Fixed: Fixed a bug that some setting values ​​were not saved normally when "Save changes" was executed on the setting screen.
+* 設定画面の「マルチサイト」タブの、表示が一部乱れていた不具合を修正。
+  Fixed a bug that the display on the "Multi-site" tab of the setting screen was partially disturbed.
+* 設定画面の「エディター」タブの、「外部リンクのみ」にチェックを付けた場合にPHPエラーが出てしまう不具合を修正。(Thanks @daigamax)
+  Fixed a bug that PHP error appears when "External Link Only" is checked on the "Editor" tab of the setting screen.
+
+= 2.4.3 =
+* WordPress 5.6.2 での動作確認。
+  Tested: Compatible with WordPress 5.6.2.
+* ドキュメント（readme.txt）修正。
+  Modified: Modify "readme.txt".
+* ショートコードのURLパラメータの解釈方法を修正。(Thanks @longer_n)
+  Fixed: Fixed interpretation of shortcode URL parameters.
+* 外部リンクで指定された画像URLが存在しない場合、警告エラーが発生する不具合を修正。(Thanks @miya_gal_ossan)
+  Fixed: Fixed a bug that the image URL specified on the external link does not exist.
+* 内部リンクで存在しないカテゴリページを指定した場合、警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug that a warning error occurs when a category page that does not exist is specified in the internal link.
+* 内部リンクで存在しないタグページを指定した場合、警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug that a warning error occurs when a tag page that does not exist is specified in the internal link.
+* 内部リンクでサムネイルが無い場合、デフォルト画像が出てしまう不具合を修正。
+  Fixed: Fixed a bug when there is no thumbnail in the internal link.
+* 内部リンクで指定された記事が存在しない場合、警告エラーが発生する不具合を修正。
+  Fixed: Fixed a bug when the article specified by the internal link does not exist.
+* 相対URLが指定されている場合、分析に失敗して警告エラーが発生する不具合を修正。（Ver.2.1.9から発生）
+  Fixed: Fixed a bug that an error occurs when converting relative URLs.
+* リンク先のサーバーが見つからない場合にリンクを設定しないように修正。
+  Fixed: Fixed not to set the link when the linked server cannot be found.
+* <HEAD>や<BODY>といったHTMLタグが無いサイトでもTITLEタグやMETAタグを取得するように修正。
+  Fixed: Fixed to get TITLE tag and META tag even on sites without HTML tags such as <HEAD> and <BODY>.
+* 外部リンクのサムネイルのキャッシュ画像のURLからスキーム（http:やhttps:）を省略するように変更。(Thanks @miya_gal_ossan)
+  Modified: Modified to omit the scheme (http: and https:) from the URL of the cache image of the thumbnail of the external link.
+* 設定画面から国際化ドメイン（IDNA ASCIIドメイン）に対応する設定を削除。
+  Removed: Removed the setting corresponding to the internationalized domain (IDNA ASCII domain) from the setting screen.
+* 設定に関わらず国際化ドメインに対応。
+  Modified: Supports internationalized domains regardless of settings.
+* 設定画面で使うカラーピッカーをWordPressの物からHTML5の物に変更。
+  Modified: Modified the color-picker used on the setting screen from WordPress to HTML5.
+* 設定画面の「相対指定URL」の設定項目を「上級者向け」タブから「リンク先の検査」タブへ移動。
+  Modified: Moved the setting item of "Relative URL" on the setting screen from the "Advanced" tab to the "Link Check" tab.
+* 設定画面の「基本」タブに、「更新履歴」の表示を追加。
+  Added: Added the display of "Changelog" to the "Basic" tab of the setting screen.
+* 設定画面の「リンク先の検査」タブに「相対指定URL」の設定を追加。
+  Added: Added "Relative URL" setting to "Link Check" tab of the setting screen.
+* 設定画面の「Web API」タブ、「画像」タブ、「CSS」タブを削除。
+  Removed: Removed "Web API" tab, "Image" tab, and "CSS" tab on the setting screen.
+* 設定画面に「その他」タブを追加。（「Web API」「画像」「CSS」の内容を統合）
+  Added: Added "etc." tab to the setting screen. (Integrates the contents of "Web API", "Image" and "CSS")
+* 設定画面の「外部リンク」タブに「サムネイルサイズ」の設定を追加。
+  Added: Added "Thumbnail Size" setting to "External Link" tab of the setting screen.
+* 設定画面の「内部リンク」タブに「サムネイルサイズ」の設定を追加。(Thanks @in_seki on Twitter)
+  Added: Added "Thumbnail Size" setting to "Internal Link" tab of the setting screen.
+* 設定画面の「リンクチェック」タブの「相対指定URL」の初期選択をチェック有りに変更。
+  Modified: Modified the initial selection of "Relative URL" on the "Link Check" tab of the setting screen to Checked.
+* 設定画面に「マルチサイト」タブを追加。（マルチサイト設定時のみ表示されます）(Thanks @i_three_miz on Twitter)
+  Added: Added "Multi Site" tab to the setting screen. (Displayed only when multi-site is set)
+* 設定画面の「上級者向け」タブに「圧縮」の設定を追加。
+  Added: Added settings of "Compress" to the "Advanced" tab of the setting screen.
+* 設定画面の「上級者向け」タブに「ファイルメニュー」の設定を追加。
+  Added: Added settings of "File Menu" to the "Advanced" tab of the setting screen.
+* 設定画面の「上級者向け」タブに「初期化タブ」を表示する設定を追加。
+  Added: Added a setting to display the "Initialization Tab" in the "Advanced" tab of the setting screen.
+* 設定画面の「上級者向け」タブから「実行時間の表示」の設定を削除。
+  Removed: Removed "Display Execution Time" setting from "Advanced" tab of the setting screen.
+* 設定画面の「上級者向け」タブに「調査モード」の設定を追加。（通常は使用しないでください）
+  Added a setting to display the "Survey Mode" in the "Advanced" tab of the setting screen. (Do not use normally)
+* 設定画面の「上級者向け」タブに「管理者モード」の設定を追加。※一般に解放していません。
+  Added a setting to display the "Administrator Mode" in the "Advanced" tab of the setting screen. (Do not use normally as it can be set to incapacitate.)
+* 設定画面の「上級者向け」タブに「開発者モード」の設定を追加。※一般に解放していません。
+  Added a setting to display the "Developer Mode" in the "Advanced" tab of the setting screen. (Do not use normally as it can be set to incapacitate.)
+* 設定画面の「上級者向け」タブの「URLによるAMP判断」を非推奨に変更。
+  Modified: Modified "AMP judgment by URL" on the "Advanced" tab of the setting screen to Deprecated.
+* 設定画面で「変更を保存」を押した際、開いているタブをそのままにするように変更。
+  Modified: Modified to leave open tabs when pressing "Save Changes" on the settings screen.
+* 設定画面の「初期化」タブを非表示に変更。（「上級者向け」タブから表示させることができます。）
+  Modified: Modified "Initialize" tab of the setting screen to hide. (It can be displayed from the "Advanced" tab.)
+* 設定画面の「初期化」タブに「プラグインの再起動」を追加。※一般に解放していません。
+  Added a setting to button "Restart Plugin" in the "Initialize" tab of the setting screen. (Available only in admin mode)
+* 設定画面の「初期化」タブに「初期化時の例外」の設定を追加。※一般に解放していません。
+  Added a setting to "Initialization Exception" in the "Initialize" tab of the setting screen. (Available only in admin mode)
+* カード管理画面の一覧に全件表示されていたものを、1ページに10個表示されるように修正。
+  Fixed: Fixed all the items displayed in the list on the card management screen so that 10 items are displayed on one page.
+* カード管理画面の外部リンクのURLにリンクを追加。
+  Added: Added a link to the URL of the external link on the card management screen.
+* カード管理画面にインポート・エクスポートの機能を追加。（設定画面で「ファイルメニュー」を有効にする必要があります。）
+  Added: Added import / export function to the card management screen. (You need to enable "File Menu" on the settings screen.)
+* カード管理画面のドメイン名の表示を国際化ドメインに対応。
+  Modified: The domain name display on the card management screen is compatible with internationalized domains.
+* URL表示に<CITE>タグを使用しないように変更。（URLがイタリック表示では無くなります。）
+  Modified: Modified not to use <CITE> tag in URL. (The URL is no longer displayed in italics.)
+
+= 2.4.2.2 =
+* 追加するCSSファイルが呼び出せていなかった不具合を修正。(Thanks @miya_gal_ossan on Twitter)
+  Fixed: Fixed a bug that the additional CSS function does not work properly.
+* CSSのURLが正しくなくてスタイルシートが適用されない不具合を修正。(Thanks @longer_n on Twitter)
+  Fixed a bug that CSS could not be read correctly.
+
+= 2.4.2.1 =
+* 外部リンクのサムネイルの取得に失敗して警告エラーが発生する不具合を修正。（Ver.2.4.1から発生）(Thanks ‎@kotobatoad)
+  Fixed: Fixed a bug that an error occurs when thumbnail images on external links fail.
+* カード管理画面で外部リンクのサムネイルが表示されない不具合を修正。（Ver.2.4.2から発生）
+  Fixed: Fixed a bug that thumbnail images of external links are not displayed on the card management screen.
+
+= 2.4.2 =
+* 設定画面の「画像」タブにて、指定した画像サイズによっては警告エラーが発生する不具合を修正。(Thanks @miya_gal_ossan on Twitter)
+  Fixed: Fixed image size error on settings screen.
+* 外部リンクで指定された画像URLが応答しない場合、タイムアウトまで約60秒待ってしまう不具合を修正。(Thanks @miya_gal_ossan on Twitter)
+  Fixed: Fixed a bug that the image URL specified on the external link does not respond.
+* 設定画面で使用するjQueryを修正。
+  Fixed: Review and fix jQuery on the settings screen.
+* ビジュアル エディタ（クラシック エディタ）で使用するjQueryを修正。
+  Fixed: Review and fix jQuery in classic editor.
+* アンインストール時にファイルが残ったままだったのを削除するように修正。
+  Fixed: Fixed to delete the directory that remained at the time of uninstallation.
+* ドキュメント（readme.txt）修正。
+  Modified: Modify "readme.txt".
+* 設定画面の項目名を一部修正。
+  Modified: Corrected the item name on the setting screen.
+* 設定画面の「配置」タブの「BLOCKQUOTEの設定」を非推奨に変更。
+  Modified: Modified blockquote setting on the setting screen to deprecated.
+* 設定画面の「外部リンク」タブの「rel="nofollow" の設定」を非推奨に変更。
+  Modified: Mofified nofollow setting on the setting screen to deprecated.
+* 設定画面の「エディタ」タブにて、ショートコード1を設定しなくても設定エラーとしないように変更。
+  Modified: Modified shortcode to optional on the setting screen.
+* 設定画面の設定保存等のメッセージを閉じられるように変更。
+  Modified: Modified to close the message on the setting screen.
+* 設定画面で内容が変更されていない場合、設定の保存は行わずスタイルシートの再生成のみ行うように変更。
+  Modified: Modified not to save if there is no change on the setting screen.
+* 設定画面でのカラーピッカーを表示したときに、レイアウトが崩れるのを修正。
+  Modified: Modified the behavior of color-picker on the setting screen.
+* カード管理画面の編集画面に表示される日時のフォーマットをWordPressの一般設定に合わせるように変更。
+  Modified: Modified date format on card management screen.
+* 設定を更新した時、ブラウザのキャッシュに関係無くCSSファイルを読み直すように修正。
+  Modified: Modified to read the CSS file again when updating the settings.
+* facebookのシェア数が取得出来ないため、WebAPIの利用を停止。
+  Modified: Suspended because the number of shares on facebook cannot be obtained.
+* 設定画面の「エディタ」タブの「ショートコード実行」の初期選択をチェック有りに変更。
+  Modified: Modified the initial settings.
+* 当バージョンへバージョンアップした際、「ショートコード実行」をチェック有りに強制変更。
+  Modified: Forcibly set "Do shortcode" to on.
+* 「ショートコード実行」がオンになっている場合の動作を「URL行の変換」もしくは「リンク行の変換」がオンになっている場合のみに変更。
+  Modified: Modified the condition of "Do shortcode".
+* 設定画面に「CSS」タブを追加。
+  Added: Added "CSS" tab to the setting screen.
+  設定画面の「エラー」タブにて、URL指定エラーのある記事の行へのリンクを追加。
+  Added: Added a link to an article with an error on the settings screen.
+* 設定画面の「外部リンク」タブに、「rel="noopener"」の設定を追加。
+  Added: Added settings of "rel="noopener" to the "External Link" tab of the setting screen.
+* 設定画面に「画像」タブを追加。
+  Added: Added "Image" tab to the setting screen.
+* 設定画面の「画像」タブに、キャッシュ画像のディレクトリ名と使用量の表示を追加。
+  Added: Added display of cache image directory name and usage to the "Image" tab of the setting screen.
+* 設定画面の「画像」タブに、キャッシュ画像のディレクトリURLの表示を追加。
+  Added: Added display of cache image directory URL to the "Image" tab of the setting screen.
+* 設定画面の「上級者向け」タブに、「URLエラーを非表示」の設定を追加。（URLエラー時にWordPress管理画面にエラー表示をしなくなります。）
+  Added: Added settings of "Hide URL Error" to the "Advanced" tab of the setting screen.(The error will not be displayed on the WordPress administration screen when a URL error occurs.)
+* 設定画面の「上級者向け」タブに、設定を保存した日時の表示を追加。
+  Added: Added display of "Saved Time" to the "Advanced" tab of the setting screen.
+
+= 2.4.1 =
+* WordPress 5.6 での動作確認。
+  Tested: Compatible with WordPress 5.6.
+* 外部リンクの画像をキャッシュするときのサイズを選択出来る機能を追加。(Thanks @peacediner on Twitter)
+  Added: Added settings to allow you to choose the size when caching images from external link.
+
+= 2.4.0 =
+* WordPress 5.5.3 での動作確認。
+  Tested: Compatible with WordPress 5.5.3.
+* 記事では無いページでURL指定エラーが発生する不具合を修正。（ポストIDが取得出来ないURLを除外）(Thanks @rindark on Twitter)(Thanks @Rina_sendai on Twitter)
+  Fixed: Suppressed incorrect error display.
+* サブディレクトリ型マルチサイトの判定において警告エラーが発生する不具合を修正。
+  Fixed: Suppressed incorrect error display.
+
 = 2.3.1 =
 * WordPress 5.3 での動作確認。
   Compatible with WordPress 5.3.

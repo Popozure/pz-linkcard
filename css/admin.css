@@ -1948,6 +1948,13 @@ body.folded #pz-infobar {
 	max-width: 240px;
 }
 
+#pz-editor .pz-editor-visual-table .pz-editor-visual-heading,
+#pz-editor .pz-editor-visual-table .pz-editor-visual-subheading {
+	width: 120px;
+	min-width: 120px;
+	max-width: 120px;
+}
+
 #pz-admin .pz-admin-info-table > tbody > tr > th[scope="row"] {
 	width: 120px !important;
 	min-width: 120px !important;
@@ -3064,7 +3071,7 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 	display: inline-block;
 	padding: 1px 4px;
 	border-radius: 4px;
-	background: #848990;
+	background: #a4a9b0;
 	color: #fff;
 }
 

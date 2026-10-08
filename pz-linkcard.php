@@ -4,7 +4,7 @@
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
 Description:	Displays links in card format.
-Version:		2.6.1
+Version:		2.6.2
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -406,6 +406,7 @@ class class_pz_linkcard {
 			'exclude-url'						=>	['type'	=>	'textarea',		'null'	=>	true,	'default'	=>	null, ],
 			'flg-edit-block'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-edit-insert'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-edit-preview'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-edit-qtag'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-clear-excerpt'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'code1'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	'blogcard', ],
@@ -693,6 +694,7 @@ class class_pz_linkcard {
 
 			// ビジュアルエディター用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_mce_post_search',			[$this, 'action_ajax_pz_lkc_mce_post_search'] );
+			add_action		('wp_ajax_pz_lkc_mce_render_card',			[$this, 'action_ajax_pz_lkc_mce_render_card'] );
 		} else {
 			// 通常表示用フィルター
 			if	($this->options['auto-atag'] || $this->options['auto-url'] ) {										// 自動置き換え
@@ -3052,7 +3054,7 @@ class class_pz_linkcard {
 
 	// Pz-LinkCard挿入ダイアログを表示する投稿編集画面か
 	private	function	is_editor_modal_screen($hook = null ) {
-		if	(empty($this->options['flg-edit-insert'] ) ) {
+		if	(empty($this->options['flg-edit-insert'] ) && empty($this->options['flg-edit-preview'] ) ) {
 			return	false;
 		}
 		if	($hook && !in_array($hook, array('post.php', 'post-new.php' ), true ) ) {
@@ -3121,6 +3123,8 @@ class class_pz_linkcard {
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 			'searchNonce'	=>	wp_create_nonce('pz_lkc_mce_post_search' ),
 			'searchResults'	=>	__('Search results', 'pz-linkcard' ),
+			'postDate'		=>	__('Post Date', 'pz-linkcard' ),
+			'modifiedDate'	=>	__('Modified Date', 'pz-linkcard' ),
 		) );
 
 		$block_args	=	array(
@@ -3659,6 +3663,31 @@ class class_pz_linkcard {
 		wp_send_json_success($results );
 	}
 
+	// ビジュアルエディター内のリンクカードプレビュー
+	public	function	action_ajax_pz_lkc_mce_render_card() {
+		if	(!current_user_can('edit_posts' ) ) {
+			wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard' ), 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_mce_render_card', 'nonce', false ) ) {
+			wp_send_json_error(__('Invalid request.', 'pz-linkcard' ), 403 );
+		}
+		$shortcode	= isset($_POST['shortcode'] ) ? trim(wp_unslash($_POST['shortcode'] ) ) : '';
+		$codes		= array_values(array_filter(array_unique(array_map('strval', array(
+			$this->options['code1'] ?? '', $this->options['code2'] ?? '', $this->options['code3'] ?? '',
+		) ) ) ) );
+		$quoted		= array_map(function($code ) { return preg_quote($code, '/' ); }, $codes );
+		$pattern	= $quoted ? '/^\[('.implode('|', $quoted ).')\b([^\]]*)\]$/i' : '';
+		if	(!$pattern || !preg_match($pattern, $shortcode, $matches ) ) {
+			wp_send_json_error(__('Invalid request.', 'pz-linkcard' ), 400 );
+		}
+		$atts	= shortcode_parse_atts($matches[2] );
+		$html	= $this->shortcode(is_array($atts ) ? $atts : array(), null, $matches[1] );
+		if	(!$html ) {
+			wp_send_json_error(__('Failed to retrieve the post content.', 'pz-linkcard' ), 500 );
+		}
+		wp_send_json_success(array('html' => $html ) );
+	}
+
 	// クリックカウント
 	public	function	action_ajax_pz_lkc_click_count() {
 		if	(array_key_exists('debug-mode', $this->options ) && $this->options['debug-mode'] && array_key_exists('survey-mode', $this->options ) && $this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
@@ -3700,7 +3729,7 @@ class class_pz_linkcard {
 	public	function	filter_mce_external_plugins($plugins ) {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__, '$plugins='.print_r($plugins, true ) ); }
 
-		if	($this->options['flg-edit-insert'] ) {
+		if	($this->options['flg-edit-insert'] || $this->options['flg-edit-preview'] ) {
 			$mce_script	=	$this->plugin_dir_path.'js/mce-button.js';
 			$plugins[ "pz_linkcard_tinymce" ]	=	add_query_arg('ver', file_exists($mce_script ) ? filemtime($mce_script ) : PZLKC_PLUGIN_VERSION, $this->plugin_dir_url.'js/mce-button.js' );
 		}

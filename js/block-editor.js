@@ -464,16 +464,17 @@
 															"span",
 															{ className: "pz-block-post-search-result-date" },
 															item.published_date
-																	? el("span", { className: "pz-post-search-date-label" }, "投稿日")
+																	? el("span", { className: "pz-post-search-date-label" }, blockIcon?.postDate || "Post Date")
 																: null,
-																	item.published_date ? `：${item.published_date}` : null,
-															item.modified_date && item.modified_date !== item.published_date
+													item.published_date || null,
+													item.modified_date &&
+													String(item.modified_date).trim() !== String(item.published_date || "").trim()
 																? el(
 																		"span",
 																		null,
 																		item.published_date ? "　" : null,
-																		el("span", { className: "pz-post-search-date-label" }, "更新日"),
-																		`：${item.modified_date}`
+																		el("span", { className: "pz-post-search-date-label" }, blockIcon?.modifiedDate || "Modified Date"),
+																		item.modified_date
 																  )
 																: null
 													  )

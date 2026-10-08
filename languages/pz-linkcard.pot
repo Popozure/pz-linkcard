@@ -1737,6 +1737,30 @@ msgstr ""
 msgid "Editor Settings"
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-editor.php:76
+msgid "Visual Editor"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-editor.php:77
+msgid "Insert Button"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-editor.php:92
+msgid "Display LinkCard previews in the visual editor."
+msgstr ""
+
+#: ../lib/pz-linkcard-modal.php:13
+msgid "Loading Pz-LinkCard..."
+msgstr ""
+
+#: ../lib/pz-linkcard-modal.php:14
+msgid "The preview could not be displayed. Click to check the URL."
+msgstr ""
+
+#: ../lib/pz-linkcard-modal.php:17
+msgid "Enter a URL or search keyword."
+msgstr ""
+
 #: ../lib/pz-linkcard-settings-editor.php:58
 msgid "Add Block"
 msgstr ""

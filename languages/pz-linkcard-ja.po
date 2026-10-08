@@ -1861,6 +1861,30 @@ msgstr "除外URL"
 msgid "Editor Settings"
 msgstr "エディターの設定"
 
+#: ../lib/pz-linkcard-settings-editor.php:76
+msgid "Visual Editor"
+msgstr "ビジュアルエディタ"
+
+#: ../lib/pz-linkcard-settings-editor.php:77
+msgid "Insert Button"
+msgstr "挿入ボタン"
+
+#: ../lib/pz-linkcard-settings-editor.php:92
+msgid "Display LinkCard previews in the visual editor."
+msgstr "ビジュアルエディタでリンクカードのプレビューを表示します。"
+
+#: ../lib/pz-linkcard-modal.php:13
+msgid "Loading Pz-LinkCard..."
+msgstr "Pz-LinkCardを読み込んでいます…"
+
+#: ../lib/pz-linkcard-modal.php:14
+msgid "The preview could not be displayed. Click to check the URL."
+msgstr "プレビューを表示できませんでした。クリックしてURLを確認できます。"
+
+#: ../lib/pz-linkcard-modal.php:17
+msgid "Enter a URL or search keyword."
+msgstr "URLまたは検索キーワードを入力してください。"
+
 #: ../lib/pz-linkcard-settings-editor.php:66
 msgid "Add Block"
 msgstr "ブロックを追加"
