@@ -103,16 +103,6 @@
 				</label>
 			</td>
 		</tr>
-		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Clear Excerpt', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-clear-excerpt]" value="" />
-					<input type="checkbox" name="properties[flg-clear-excerpt]" value="1" <?php checked($prop['flg-clear-excerpt'] ); ?> />
-					<?php esc_html_e('If TITLE parameter is specified, EXCERPT is also cleared.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
 		</table>
 	<?php submit_button(); ?>
 
@@ -133,6 +123,16 @@
 				</select>
 				[/<span class="pz-shortcode-copy"><?php echo	esc_attr($prop['code1'] ); ?></span>]
 				<p><?php esc_html_e('This setting applies only to the Shortcode1', 'pz-linkcard' ); ?></p></td>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Clear Excerpt', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-clear-excerpt]" value="" />
+					<input type="checkbox" name="properties[flg-clear-excerpt]" value="1" <?php checked($prop['flg-clear-excerpt'] ); ?> />
+					<?php esc_html_e('If TITLE parameter is specified, EXCERPT is also cleared.', 'pz-linkcard' ); ?>
+				</label>
 			</td>
 		</tr>
 		<tr>

@@ -8,6 +8,7 @@
 	$sql = "CREATE TABLE $this->db_card (
 				id				BIGINT			UNSIGNED	NOT NULL	AUTO_INCREMENT,
 				url				VARCHAR(3000)							DEFAULT NULL,
+				url_key			CHAR(32)							DEFAULT NULL,
 				url_redir		VARCHAR(3000)							DEFAULT NULL,
 				scheme			VARCHAR(20)								DEFAULT NULL,
 				domain			VARCHAR(200)							DEFAULT NULL,
@@ -44,7 +45,10 @@
 				mod_excerpt		INT				UNSIGNED	NOT NULL	DEFAULT 0,
 				update_result	INT										DEFAULT 0,
 				update_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				PRIMARY KEY		(id)
+				PRIMARY KEY		(id),
+				KEY url_key (url_key),
+				KEY alive_nexttime (alive_nexttime),
+				KEY sns_nexttime (sns_nexttime)
 			) ".$wpdb->get_charset_collate()." ;";
 
 	// SQL更新チェック（クエリーから求まったMD5の値を比較）
@@ -54,6 +58,16 @@
 	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->db_card ) ) === $this->db_card ) {
 		if	($this->options['db-version']	==	$db_version	) {		// 前回使用したSQLと変更が無ければ抜ける
 			return;
+		}
+
+		// 旧仕様のバイナリハッシュは派生データなので、文字列型へ安全に作り直す
+		$column_url_key	=	$wpdb->get_row("SHOW COLUMNS FROM $this->db_card LIKE 'url_key'", ARRAY_A );
+		if	(isset($column_url_key['Type'] ) && preg_match('/^(?:var)?binary\b/i', $column_url_key['Type'] ) ) {
+			$index_url_key	=	$wpdb->get_var("SHOW INDEX FROM $this->db_card WHERE Key_name = 'url_key'" );
+			if	($index_url_key ) {
+				$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key" );
+			}
+			$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN url_key" );
 		}
 	}
 
@@ -84,15 +98,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-	// 旧バージョンのURLハッシュキーを削除
-	$column_url_key	=	$wpdb->get_var("SHOW COLUMNS FROM $this->db_card LIKE 'url_key'" );
-	if	($column_url_key ) {
-		$index_url_key	=	$wpdb->get_var("SHOW INDEX FROM $this->db_card WHERE Key_name = 'url_key'" );
-		if	($index_url_key ) {
-			$result		=	$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key" );
-		}
-		$result			=	$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN url_key" );
-	}
+	// URL検索用のハッシュキーを32文字のテキスト形式で揃える
+	$wpdb->query("UPDATE $this->db_card SET url_key = MD5(url) WHERE url IS NOT NULL AND (url_key IS NULL OR url_key <> MD5(url))" );
 
 ////////////////////////////////////////////////////////////////////////////////
 

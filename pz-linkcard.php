@@ -4,7 +4,7 @@
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
 Description:	Displays links in card format.
-Version:		2.6.2
+Version:		2.6.3.TEST
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -406,7 +406,7 @@ class class_pz_linkcard {
 			'exclude-url'						=>	['type'	=>	'textarea',		'null'	=>	true,	'default'	=>	null, ],
 			'flg-edit-block'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-edit-insert'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-edit-preview'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-edit-preview'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-edit-qtag'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-clear-excerpt'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'code1'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	'blogcard', ],
@@ -505,7 +505,7 @@ class class_pz_linkcard {
 	private		$plugin_dir_url;		// プラグイン ディレクトリのURL
 	private		$plugin_link;			// プラグインページのURL
 	private		$db_card;				// DBのテーブル名
-	private		$db_count;				// DBのテーブル名
+	private		$db_click;				// DBのテーブル名
 	private		$activate_now;			// 二重実行防止
 	private		$suppression;			// 出力抑制
 	private		$now_page;				// 表示中のページ（1:Pzカード設定 2:Pzカード管理）
@@ -516,6 +516,8 @@ class class_pz_linkcard {
 	private		$cacheman_url;			// 管理画面のURL
 
 	private		$test_count;			// テスト用
+
+	private		$request_cache	=	array();
 
 	private	static	function	pz_GetOptionDefinitions() {
 		return	self::DEFAULTS;
@@ -592,6 +594,7 @@ class class_pz_linkcard {
 
 		$this->now					=	current_time('timestamp', false );					// 現在日時（ローカル時間）
 		$this->db_card				=	$wpdb->prefix.'pz_linkcard';						// DBのテーブル名
+		$this->db_click				=	$wpdb->prefix.'pz_linkcard_click';					// DBのテーブル名
 		$this->plugin_basename		=	plugin_basename(__FILE__ );							// プラグイン ディレクトリの名前
 		$this->plugin_dir_path		=	plugin_dir_path(__FILE__ );							// プラグイン ディレクトリのパス
 		$this->plugin_dir_url		=	plugin_dir_url (__FILE__ );							// プラグイン ディレクトリのURL
@@ -1808,6 +1811,7 @@ class class_pz_linkcard {
 
 		// DB更新
 		$result	=	$wpdb->update($this->db_card, $data, array('id' => $data['id'] ) );
+		$this->request_cache	=	array();
 
 		return	$data;
 	}
@@ -1823,9 +1827,17 @@ class class_pz_linkcard {
 		global	$wpdb;
 		if	(!empty($data['url'] ) ) {
 			$url		=	$this->pz_EncodeURL($data['url'], true );
-			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_card WHERE url=%s", $url ) );
+			$cache_key	=	'url:'.md5($url );
+			if	(array_key_exists($cache_key, $this->request_cache ) ) {
+				return	$this->request_cache[$cache_key];
+			}
+			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_card WHERE url_key=%s AND url=%s", md5($url ), $url ) );
 		} elseif	(isset($data['id'] ) && !is_null($data['id'] ) ) {
 			$data_id	=	intval($data['id'] );
+			$cache_key	=	'id:'.$data_id;
+			if	(array_key_exists($cache_key, $this->request_cache ) ) {
+				return	$this->request_cache[$cache_key];
+			}
 			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_card WHERE id=%d", $data_id ) );
 		} else {
 			return	null;
@@ -1835,6 +1847,11 @@ class class_pz_linkcard {
 		}
 		if	(is_wp_error($data ) ) {
 			return	null;
+		}
+		$data	=	(array) $data;
+		$this->request_cache[$cache_key]	=	$data;
+		if	(!empty($data['id'] ) ) {
+			$this->request_cache['id:'.intval($data['id'] )]	=	$data;
 		}
 		return (array) $data;				// Arrayに直して返す
 	}
@@ -1859,6 +1876,7 @@ class class_pz_linkcard {
 
 		// URL戻す
 		$data['url']			=	$url;
+		$data['url_key']		=	md5($url );
 
 		// ID
 		if	(isset($data['id'] ) && !$data['id'] ) {
@@ -1946,7 +1964,11 @@ class class_pz_linkcard {
 
 		// 桁数チェック
 		global	$wpdb;
-		$columns	=	$wpdb->get_results("DESCRIBE $this->db_card", ARRAY_A );
+		static	$columns_by_table	=	array();
+		if	(!array_key_exists($this->db_card, $columns_by_table ) ) {
+			$columns_by_table[$this->db_card]	=	$wpdb->get_results("DESCRIBE $this->db_card", ARRAY_A );
+		}
+		$columns	=	$columns_by_table[$this->db_card];
 		if	(isset($columns ) && is_array($columns ) ) {
 			foreach	($columns as $column ) {
 				$field	=	$column['Field'] ?? null;
@@ -1995,6 +2017,7 @@ class class_pz_linkcard {
 				}
 			}
 		}
+		$this->request_cache	=	array();
 		return	$this->pz_GetCache($data );
 	}
 
@@ -2003,6 +2026,7 @@ class class_pz_linkcard {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__, '$data='.print_r($data, true ) ); }
 
 		global	$wpdb;
+		$this->request_cache	=	array();
 		if	(!isset($data ) || !is_array($data ) ) {
 			return	null;
 		}
@@ -3664,6 +3688,7 @@ class class_pz_linkcard {
 	}
 
 	// ビジュアルエディター内のリンクカードプレビュー
+	// クリックカウント
 	public	function	action_ajax_pz_lkc_mce_render_card() {
 		if	(!current_user_can('edit_posts' ) ) {
 			wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard' ), 403 );
@@ -3688,7 +3713,6 @@ class class_pz_linkcard {
 		wp_send_json_success(array('html' => $html ) );
 	}
 
-	// クリックカウント
 	public	function	action_ajax_pz_lkc_click_count() {
 		if	(array_key_exists('debug-mode', $this->options ) && $this->options['debug-mode'] && array_key_exists('survey-mode', $this->options ) && $this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 

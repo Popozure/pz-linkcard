@@ -13,52 +13,55 @@
 		return Number.isFinite(fontSize) && fontSize > 0 ? fontSize * 1.2 : 16;
 	}
 
-	function fitExcerpt(excerpt) {
-		const content = excerpt.closest('.lkc-content');
-		if (!content) {
-			return;
-		}
+	function fitExcerpts(excerpts) {
+		const candidates = Array.from(excerpts)
+			.filter((excerpt) => excerpt.isConnected)
+			.map((excerpt) => ({ excerpt, content: excerpt.closest('.lkc-content') }))
+			.filter(({ content }) => content);
 
-		const contentStyle = window.getComputedStyle(content);
-		if (contentStyle.overflowY === 'visible' && contentStyle.overflow === 'visible') {
+		candidates.forEach(({ excerpt }) => {
 			excerpt.style.maxHeight = '';
-			return;
-		}
+		});
 
-		const excerptStyle = window.getComputedStyle(excerpt);
-		const lineHeight = getLineHeight(excerptStyle);
-		const contentRect = content.getBoundingClientRect();
-		const excerptRect = excerpt.getBoundingClientRect();
-		const paddingTop = parseFloat(excerptStyle.paddingTop) || 0;
-		const paddingBottom = parseFloat(excerptStyle.paddingBottom) || 0;
-		const borderTop = parseFloat(excerptStyle.borderTopWidth) || 0;
-		const borderBottom = parseFloat(excerptStyle.borderBottomWidth) || 0;
-		const reservedHeight = paddingTop + paddingBottom + borderTop + borderBottom;
-		const available = contentRect.bottom - excerptRect.top - reservedHeight;
-		const lines = Math.floor(available / lineHeight);
-
-		if (lines <= 0) {
-			if (excerpt.style.maxHeight !== '0px') {
-				excerpt.style.maxHeight = '0px';
+		const measurements = candidates.map(({ excerpt, content }) => {
+			const contentStyle = window.getComputedStyle(content);
+			if (contentStyle.overflowY === 'visible' && contentStyle.overflow === 'visible') {
+				return { excerpt, maxHeight: '' };
 			}
-			return;
-		}
 
-		const maxHeight = lines * lineHeight + (excerptStyle.boxSizing === 'border-box' ? reservedHeight : 0);
-		const nextMaxHeight = maxHeight + 'px';
-		if (excerpt.style.maxHeight !== nextMaxHeight) {
-			excerpt.style.maxHeight = nextMaxHeight;
-		}
+			const excerptStyle = window.getComputedStyle(excerpt);
+			const lineHeight = getLineHeight(excerptStyle);
+			const paddingTop = parseFloat(excerptStyle.paddingTop) || 0;
+			const paddingBottom = parseFloat(excerptStyle.paddingBottom) || 0;
+			const borderTop = parseFloat(excerptStyle.borderTopWidth) || 0;
+			const borderBottom = parseFloat(excerptStyle.borderBottomWidth) || 0;
+			const reservedHeight = paddingTop + paddingBottom + borderTop + borderBottom;
+			const available = content.getBoundingClientRect().bottom - excerpt.getBoundingClientRect().top - reservedHeight;
+			const lines = Math.max(0, Math.floor(available / lineHeight));
+			const maxHeight = lines * lineHeight + (excerptStyle.boxSizing === 'border-box' ? reservedHeight : 0);
+			return { excerpt, maxHeight: maxHeight + 'px' };
+		});
+
+		measurements.forEach(({ excerpt, maxHeight }) => {
+			if (excerpt.style.maxHeight !== maxHeight) excerpt.style.maxHeight = maxHeight;
+		});
 	}
 
 	function fitAll() {
-		document.querySelectorAll(selector).forEach(fitExcerpt);
+		fitExcerpts(document.querySelectorAll(selector));
 	}
 
-	let resizeTimer = 0;
-	function requestFit() {
-		window.clearTimeout(resizeTimer);
-		resizeTimer = window.setTimeout(fitAll, 50);
+	const pendingExcerpts = new Set();
+	let fitFrame = 0;
+	function requestFit(excerpts = document.querySelectorAll(selector)) {
+		excerpts.forEach((excerpt) => pendingExcerpts.add(excerpt));
+		if (fitFrame) return;
+		fitFrame = window.requestAnimationFrame(() => {
+			fitFrame = 0;
+			const excerptsToFit = Array.from(pendingExcerpts);
+			pendingExcerpts.clear();
+			fitExcerpts(excerptsToFit);
+		});
 	}
 
 	if (document.readyState === 'loading') {
@@ -76,11 +79,13 @@
 
 	if ('MutationObserver' in window) {
 		const observer = new MutationObserver((mutations) => {
-			if (mutations.some((mutation) => Array.from(mutation.addedNodes).some((node) =>
-				node.nodeType === 1 && (node.matches?.(selector) || node.querySelector?.(selector))
-			))) {
-				requestFit();
-			}
+			const addedExcerpts = new Set();
+			mutations.forEach((mutation) => mutation.addedNodes.forEach((node) => {
+				if (node.nodeType !== 1) return;
+				if (node.matches?.('.lkc-excerpt')) addedExcerpts.add(node);
+				node.querySelectorAll?.('.lkc-excerpt').forEach((excerpt) => addedExcerpts.add(excerpt));
+			}));
+			if (addedExcerpts.size) requestFit(addedExcerpts);
 		});
 		observer.observe(document.documentElement, { childList: true, subtree: true });
 	}
