@@ -100,8 +100,8 @@
 				</select>
 			</td>
 		</tr>
-		<tr>
-			<th scope="row" rowspan="2"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></th>
+		<tr id="pz-click-count-settings">
+			<th scope="row" rowspan="3"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Count', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
@@ -119,6 +119,23 @@
 					<input type="checkbox" name="properties[flg-click-log]" value="1" <?php checked($this->options['flg-click-log'] ); ?> />
 					<?php esc_html_e('Record click details.', 'pz-linkcard' ); ?>
 				</label>
+			</td>
+		</tr>
+		<tr id="pz-click-log-retention-settings">
+			<th scope="row"><?php esc_html_e('Retention Period', 'pz-linkcard' ); ?></th>
+			<td>
+				<select name="properties[click-log-retention]">
+					<option value="7" <?php selected(7, intval($this->options['click-log-retention'] ) ); ?>><?php esc_html_e('1 week', 'pz-linkcard' ); ?></option>
+					<option value="30" <?php selected(30, intval($this->options['click-log-retention'] ) ); ?>><?php esc_html_e('30 days', 'pz-linkcard' ); ?></option>
+					<option value="90" <?php selected(90, intval($this->options['click-log-retention'] ) ); ?>><?php esc_html_e('90 days', 'pz-linkcard' ); ?></option>
+					<option value="365" <?php selected(365, intval($this->options['click-log-retention'] ) ); ?>><?php esc_html_e('365 days', 'pz-linkcard' ); ?></option>
+					<option value="0" <?php selected(0, intval($this->options['click-log-retention'] ) ); ?>><?php esc_html_e('Permanent (not recommended)', 'pz-linkcard' ); ?></option>
+				</select>
+				<p class="description"><?php esc_html_e('Detailed click logs older than the retention period are deleted daily after 4:00 AM. The cumulative click count is retained.', 'pz-linkcard' ); ?></p>
+				<p>
+					<button type="submit" name="action" value="delete-expired-click-logs" class="button"><?php esc_html_e('Delete expired logs now', 'pz-linkcard' ); ?></button>
+					<button type="submit" name="action" value="delete-all-click-logs" class="button" onclick="return confirm('<?php echo esc_js(__('Delete all detailed click logs? The cumulative click count will not be reset.', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Delete all logs', 'pz-linkcard' ); ?></button>
+				</p>
 			</td>
 		</tr>
 		<tr>

@@ -11,6 +11,11 @@
 		$cron_log		=	'* execute: '.self::CRON_ALIVE.PHP_EOL.PHP_EOL;
 		$cron_log		.=	$this->schedule_hook_alive();
 		break;
+	case	'run-'.self::CRON_CLICK_CLEANUP:
+		wp_clear_scheduled_hook(self::CRON_CLICK_CLEANUP );
+		$cron_log		=	'* execute: '.self::CRON_CLICK_CLEANUP.PHP_EOL.PHP_EOL;
+		$cron_log		.=	$this->schedule_hook_click_cleanup();
+		break;
 	}
 
 	// WP-Cron の実行結果
@@ -25,7 +30,7 @@
 	foreach			($cron_schedule	as $timestamp	=> $cronhooks ) {
 		foreach		($cronhooks		as $hook		=> $dings ) {
 			foreach	($dings			as $signature	=> $data ) {
-				if	(($hook == self::CRON_ALIVE ) || ($hook == self::CRON_CHECK ) ) {
+				if	(($hook == self::CRON_ALIVE ) || ($hook == self::CRON_CHECK ) || ($hook == self::CRON_CLICK_CLEANUP ) ) {
 					$myjob		=	true;
 					$button		=	'class="pz-button-sure" value="run-'.$hook.'"';
 					$display	=	'class="pz-cron-list-lkc"';

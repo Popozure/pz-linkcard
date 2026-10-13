@@ -73,7 +73,7 @@
 	$plugin_support_url	=	'https://wordpress.org/support/plugin/pz-linkcard/';
 	$poporon_x_url		=	'https://x.com/popo68k';
 	$intro_card		=	static function($link, $icon, $name, $description, $class, $dashicon = '' ) {
-		echo	'<div class="pz-introduction-base"><a href="'.esc_url($link ).'" rel="external noopener noreferrer" target="_blank" class="pz-introduction-card '.esc_attr($class ).'"><div class="pz-introduction-thumb">';
+		echo	'<div class="pz-introduction-base"><a href="'.esc_url($link ).'" rel="external noopener noreferrer" referrerpolicy="no-referrer" target="_blank" class="pz-introduction-card '.esc_attr($class ).'"><div class="pz-introduction-thumb">';
 		if	($dashicon ) {
 			echo	'<div class="dashicons '.esc_attr($dashicon ).' pz-introduction-dashicon"></div>';
 		} else {

@@ -74,7 +74,7 @@
 		$class_attr	=	$class ? ' '.esc_attr($class ) : '';
 		$html		=	'<input name="'.esc_attr($name ).'" type="hidden" value="'.esc_attr($value ).'">';
 		if	(!empty($args['href'] ) && '' !== $display ) {
-			$rel				=	$args['rel'] ?? 'noopener';
+			$rel				=	$args['rel'] ?? 'external noopener noreferrer';
 			$referrerpolicy		=	$args['referrerpolicy'] ?? 'no-referrer';
 			return $html.'<a href="'.esc_url($args['href'] ).'" target="_blank" rel="'.esc_attr($rel ).'" referrerpolicy="'.esc_attr($referrerpolicy ).'" class="pz-man-cache-static-value pz-man-cache-static-link'.$class_attr.'" title="'.esc_attr($title ).'">'.esc_html($display ).'</a>';
 		}
@@ -104,7 +104,7 @@
 		if	(!$image_preview_url ) {
 			return '<div class="pz-man-cache-image-preview pz-man-cache-image-empty">-</div>';
 		}
-		return '<div class="pz-man-cache-image-preview'.($class ? ' '.esc_attr($class ) : '' ).'"><a href="'.esc_url($image_preview_url ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" class="pz-man-image-box-trigger"><div><img src="'.esc_url($image_preview_url ).'" alt="" loading="lazy" /></div></a></div>';
+		return '<div class="pz-man-cache-image-preview'.($class ? ' '.esc_attr($class ) : '' ).'"><a href="'.esc_url($image_preview_url ).'" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer" class="pz-man-image-box-trigger"><div><img src="'.esc_url($image_preview_url ).'" alt="" loading="lazy" /></div></a></div>';
 	};
 	$cacheman_media_button = function($target_name) {
 		return '<button type="button" class="button pz-debug-only pz-media-select-image pz-man-cache-media-button" data-target="'.esc_attr($target_name ).'"><span class="dashicons dashicons-admin-media"></span>'.esc_html(__('Media', 'pz-linkcard' ) ).'</button>';

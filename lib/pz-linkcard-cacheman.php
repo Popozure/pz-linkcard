@@ -20,7 +20,8 @@
 	if	(isset($_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 		check_admin_referer('pz-cacheman' );
 	}
-	$action			=	isset($_POST['action'] )		?	esc_attr($_POST['action'] )					:	null;
+	$action			=	isset($_POST['action'] )		?	sanitize_key(wp_unslash($_POST['action'] ) )	:
+						(isset($_GET['action'] )		?	sanitize_key(wp_unslash($_GET['action'] ) )	:	null );
 	$select_id		=	isset($_POST['select_id'] )		?	$_POST['select_id']							:	null;
 	$bulk_action	=	isset($_POST['bulk_action'] )	?	esc_attr($_POST['bulk_action'] )			:	null;
 	$data			=	(isset($_POST['data'] ) && is_array($_POST['data'] ) )		?	$_POST['data']	:	null;
@@ -31,13 +32,15 @@
 	$orderby		=	isset($_POST['orderby'] )		?	esc_attr(strtolower($_POST['orderby'] ) )	:	'id';
 	$order			=	isset($_POST['order'] )			?	esc_attr(strtolower($_POST['order'] ) )		:	'desc';
 	$scroll_now		=	isset($_POST['scroll_now'] )	?	intval($_POST['scroll_now'] )				:	0;
-	$return_url		=	isset($_POST['return_url'] )	?	esc_url_raw(wp_unslash($_POST['return_url'] ) )	:	'';
+	$return_url		=	isset($_POST['return_url'] )	?	esc_url_raw(wp_unslash($_POST['return_url'] ) )	:
+						(isset($_GET['return_url'] )	?	esc_url_raw(wp_unslash($_GET['return_url'] ) )	:	'' );
 	$return_url		=	$return_url ? wp_validate_redirect($return_url, '' ) : '';
 	$page_now		=	(isset($_POST['page_button'] )	?	intval($_POST['page_button'] )				:	
 						(isset($_POST['page_trans'] )	?	intval($_POST['page_trans'] )				:	
 						(isset($_POST['page_now'] )		?	intval($_POST['page_now'] )					:	0 ) ) );
 	$param_url		=	isset($_POST['url'] )			?	esc_attr($_POST['url'] )					:	null;
-	$cache_id		=	isset($_POST['cache_id'] )		?	esc_attr($_POST['cache_id'] )				:	null;
+	$cache_id		=	isset($_POST['cache_id'] )		?	absint($_POST['cache_id'] )					:
+						(isset($_GET['cache_id'] )		?	absint($_GET['cache_id'] )					:	null );
 	$confirm		=	isset($_POST['confirm'] )		?	esc_attr($_POST['confirm'] )				:	null;
 	$update_result	=	isset($_POST['update_result'] )	?	esc_attr($_POST['update_result'] )			:	null;
 	$alive_result	=	isset($_POST['alive_result'] )	?	esc_attr($_POST['alive_result'] )			:	null;
@@ -48,7 +51,8 @@
 	$single_delete	=	isset($_POST['single-delete'] )	?	esc_attr($_POST['single-delete'] )			:	null;
 	if			($single_edit ) {
 		$action		=	'edit';
-		$select_id	=	array(intval($single_edit ) );
+		$cache_id	=	intval($single_edit );
+		$select_id	=	array($cache_id );
 	} elseif	($single_renew ) {
 		$action		=	'renew';
 		$select_id	=	array(intval($single_renew ) );
@@ -70,7 +74,8 @@
 	// インラインメニュー（編集・再取得・削除）
 	if		 (isset($_POST['single-edit'] ) ) {
 		$action		=	'edit';
-		$select_id	=	array( intval($_POST['single-edit'] ) );
+		$cache_id	=	intval($_POST['single-edit'] );
+		$select_id	=	array($cache_id );
 	} elseif (isset($_POST['single-renew'] ) ) {
 		$action		=	'renew';
 		$select_id	=	array(intval($_POST['single-renew'] ) );
@@ -121,7 +126,7 @@
 	$title_icon		=	'<span class="dashicons dashicons-archive" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Manager', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
-	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><a class="pz-header-title-link" href="'.esc_url($this->cacheman_url ).'"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span></a><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
+	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><a class="pz-header-title-link" href="'.esc_url($this->cacheman_url ).'"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span></a><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener noreferrer help" referrerpolicy="no-referrer" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
 
 	// POSTする値 INPUT要素
 	$temp_param		=
@@ -160,11 +165,12 @@
 	echo	'<div class="pz-dashboard'.$page_class.' wrap">';
 	echo	$html_style;
 	$infobar_allowed_html	=	wp_kses_allowed_html('post' );
+	$infobar_allowed_html['a']['referrerpolicy']	=	true;
 	$infobar_allowed_html['form']	=	array('method' => true, 'class' => true );
 	$infobar_allowed_html['input']	=	array('type' => true, 'name' => true, 'value' => true );
 	$infobar_allowed_html['button']	=	array('type' => true, 'name' => true, 'value' => true, 'class' => true, 'data-no-overlay' => true );
 	echo	wp_kses($html_plugin, $infobar_allowed_html );
-	echo	wp_kses_post($html_title );
+	echo	wp_kses($html_title, $infobar_allowed_html );
 
 	echo	'<form action="" method="post" enctype="multipart/form-data">';
 	wp_nonce_field('pz-cacheman' );			// nonce
@@ -173,7 +179,7 @@
 	if	($this->options['error-mode'] ) {
 		if	(!$this->options['error-mode-hide'] ) {
 			$error_url		=	$this->options['error-url'];
-			$html_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank">'.esc_html($error_url ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
+			$html_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer">'.esc_html($error_url ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
 		}
 	}
 
@@ -198,11 +204,22 @@
 			break;
 
 		case	'edit':						// 編集画面
-			$data					=	$this->pz_GetCache(array('id' => $select_id[0] ) );
+			$edit_id				=	$cache_id ?: intval($select_id[0] ?? 0 );
+			$data					=	$this->pz_GetCache(array('id' => $edit_id ) );
 			if	(isset($data ) && is_array($data ) ) {
 				$content_file		=	'pz-linkcard-cacheman-edit.php';
 			}
 			$show_list				=	false;		// リストを表示しない
+			break;
+
+		case	'click-log':				// クリックログ一覧
+			$data					=	$this->pz_GetCache(array('id' => $cache_id ) );
+			if	(!empty($data['id'] ) ) {
+				$content_file		=	'pz-linkcard-cacheman-click.php';
+			} else {
+				$html_notice		.=	'<div class="notice notice-error"><p><strong>'.esc_html__('The specified link card was not found.', 'pz-linkcard' ).'</strong></p></div>';
+			}
+			$show_list				=	false;
 			break;
 
 		case	'update':

@@ -336,12 +336,11 @@
         closeMenu();
         if (!cardId) return;
 
-        const scrollNow = Math.max(0, Math.round(window.scrollY || document.documentElement.scrollTop || 0));
-        submitToManager({
-            "single-edit": cardId,
-            scroll_now: scrollNow,
-            return_url: window.location.href,
-        });
+		const editUrl = new URL(config.edit_url, window.location.href);
+		editUrl.searchParams.set("action", "edit");
+		editUrl.searchParams.set("cache_id", cardId);
+		editUrl.searchParams.set("return_url", window.location.href);
+		window.location.assign(editUrl.toString());
     }
 
     function openCacheManager() {

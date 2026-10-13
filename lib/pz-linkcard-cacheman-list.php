@@ -1,6 +1,8 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	require_once __DIR__.'/pz-linkcard-search-query-parser.php';
+	$cacheman_list_allowed_html	=	wp_kses_allowed_html('post' );
+	$cacheman_list_allowed_html['a']['referrerpolicy']	=	true;
 
 	// ドメイン一覧
 	$mydomain			=	null;
@@ -509,7 +511,7 @@
 						$temp_target	=	'_self';
 					} else {
 						$temp_href		=	esc_url($url );
-						$temp_rel		=	'external noopener';
+						$temp_rel		=	'external noopener noreferrer';
 						$temp_target	=	'_blank';
 					}
 					$html_url			=	$html_url_error.'<a href="'.$temp_href.'" title="'.$temp_href.'" rel="'.$temp_rel.'" target="'.$temp_target.'" referrerpolicy="no-referrer">'.esc_url($this->pz_DecodeURL($url ) ).'</a>';
@@ -562,7 +564,7 @@
 						}
 					}
 					if	($thumbnail_url ) {
-						$html_thumbnail			=	'<a href="'.esc_url($thumbnail_url ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" class="pz-man-thumbnail"><div><img src="'.esc_url($thumbnail_url ).'" alt="" class="pz-man-thumbnail-img"></div></a>';
+						$html_thumbnail			=	'<a href="'.esc_url($thumbnail_url ).'" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer" class="pz-man-thumbnail"><div><img src="'.esc_url($thumbnail_url ).'" alt="" class="pz-man-thumbnail-img"></div></a>';
 					}
 
 					// 記事ID
@@ -573,12 +575,14 @@
 						if	($post_id > 0 ) {
 							$post_title	=	get_the_title($post_id );
 							$post_url	=	get_permalink($post_id ).'#pz-lkc-'.intval($data_id );
-							$html_post_id	.=	'<span class="pz-man-post-id-line"><button type="button" class="pz-man-inline-menu pz-man-post-search" data-pz-man-search-post="'.intval($post_id ).'" title="post:'.intval($post_id ).'">'.intval($post_id ).'</button><a href="'.esc_url($post_url ).'" target="_blank" rel="noopener" referrerpolicy="no-referrer" class="pz-man-post-open" title="'.esc_attr($post_title ).'" aria-label="'.esc_attr($post_title ).'"><span class="dashicons dashicons-external" aria-hidden="true"></span></a></span><br>';
+							$html_post_id	.=	'<span class="pz-man-post-id-line"><button type="button" class="pz-man-inline-menu pz-man-post-search" data-pz-man-search-post="'.intval($post_id ).'" title="post:'.intval($post_id ).'">'.intval($post_id ).'</button><a href="'.esc_url($post_url ).'" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" class="pz-man-post-open" title="'.esc_attr($post_title ).'" aria-label="'.esc_attr($post_title ).'"><span class="dashicons dashicons-external" aria-hidden="true"></span></a></span><br>';
 						}
 					}
 
 					// クリック数
-					$html_click			=	number_format(intval($data->click_count ), 0  );
+					$click_log_url		=	add_query_arg(array('action' => 'click-log', 'cache_id' => intval($data_id ) ), $this->cacheman_url );
+					$cache_edit_url		=	add_query_arg(array('action' => 'edit', 'cache_id' => intval($data_id ), 'return_url' => $this->cacheman_url ), $this->cacheman_url );
+					$html_click			=	'<a href="'.esc_url($click_log_url ).'">'.esc_html(number_format_i18n(intval($data->click_count ) ) ).'</a>';
 
 					// HTTPレスポンス
 					$html_result		=	'<span class="pz-man-body-result-update">'.strHTTPCode($data->update_result, $this->pz_HTTPMessage($data->update_result ) ).'</span>';
@@ -593,12 +597,12 @@
 			?>
 			<tr>
 				<th scope="row" class="pz-man-body-check check-column"><input id="cb-select-<?php echo intval($data_id ); ?>" type="checkbox" name="select_id[]" value="<?php echo intval($data_id ); ?>" /><div class="locked-indicator"></div></th>
-				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search"><?php echo intval($data_id ); ?></button><?php echo wp_kses_post($html_thumbnail ); ?></td>
+				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search"><?php echo intval($data_id ); ?></button><?php echo wp_kses($html_thumbnail, $cacheman_list_allowed_html ); ?></td>
 				<td colspan="2" class="pz-man-body-url-title-cell">
-					<div class="pz-man-body-url"><?php echo wp_kses_post($html_url ); ?></div>
+					<div class="pz-man-body-url"><?php echo wp_kses($html_url, $cacheman_list_allowed_html ); ?></div>
 					<div class="pz-man-body-title"><span title="<?php echo esc_attr($title ); ?>"><?php echo wp_kses_post($html_title ); ?></span></div>
 					<div id="inline_<?php echo intval($data_id ); ?>" class="pz-man-body-menu row-actions">
-						<button type="submit" name="single-edit"   value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu"><?php esc_html_e('Edit','pz-linkcard' ); ?></button> | 
+						<a href="<?php echo esc_url($cache_edit_url ); ?>" class="pz-man-inline-menu"><?php esc_html_e('Edit','pz-linkcard' ); ?></a> |
 						<button type="submit" name="single-renew"  value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>' );"><?php esc_html_e('Renew','pz-linkcard' ); ?></button> | 
 						<button type="submit" name="single-delete" value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>' );"><?php esc_html_e('Delete','pz-linkcard' ); ?></button>
 					</div>
@@ -622,8 +626,8 @@
 				<td class="pz-man-body-update-time<?php echo esc_attr($screen_option_hidden_class('update_time') ); ?>"><?php $dt=$data->update_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
 				<td class="pz-man-body-sns-time<?php echo esc_attr($screen_option_hidden_class('sns_time') ); ?>"><?php $dt=$data->sns_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
 				<td class="pz-man-body-alive-time<?php echo esc_attr($screen_option_hidden_class('alive_time') ); ?>"><?php $dt=$data->alive_time; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
-				<td class="pz-man-body-post-id<?php echo esc_attr($screen_option_hidden_class('post_id') ); ?>"><?php echo wp_kses_post($html_post_id ); ?></td>
-				<td class="pz-man-body-click-count<?php echo esc_attr($screen_option_hidden_class('click_count') ); ?>"><?php echo esc_html($html_click ); ?></td>
+				<td class="pz-man-body-post-id<?php echo esc_attr($screen_option_hidden_class('post_id') ); ?>"><?php echo wp_kses($html_post_id, $cacheman_list_allowed_html ); ?></td>
+				<td class="pz-man-body-click-count<?php echo esc_attr($screen_option_hidden_class('click_count') ); ?>"><?php echo wp_kses_post($html_click ); ?></td>
 				<td class="pz-man-body-result<?php echo esc_attr($screen_option_hidden_class('result') ); ?>"><?php echo wp_kses_post($html_result ); ?></td>
 			</tr>
 			<?php } ?>

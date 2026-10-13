@@ -102,7 +102,8 @@
 	}
 	$action				=	isset($_POST['action'] )					?	esc_attr($_POST['action'] )					:	null ;
 	$submit				=	isset($_POST['submit'] )					?	esc_attr($_POST['submit'] )					:	null ;
-	$tab_now			=	isset($_POST['tab-now'] )					?	esc_attr($_POST['tab-now'] )				:	'pz-error' ;
+	$tab_now			=	isset($_POST['tab-now'] )					?	sanitize_key(wp_unslash($_POST['tab-now'] ) )	:
+						(isset($_GET['tab'] )						?	sanitize_key(wp_unslash($_GET['tab'] ) )		:	'pz-error' );
 	$scroll_now			=	isset($_POST['scroll-now'] )				?	esc_attr($_POST['scroll-now'] )				:	null ;
 
 	// 変更の保存ボタンを押したとき
@@ -243,7 +244,7 @@
 	$title_icon		=	'<span class="dashicons dashicons-admin-generic" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Settings', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
-	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><a class="pz-header-title-link" href="'.esc_url($this->settings_url ).'"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span></a><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
+	$html_title		=	'<div class="pz-header"><h1><span class="pz-header-title"><a class="pz-header-title-link" href="'.esc_url($this->settings_url ).'"><span class="pz-header-title-icon">'.$title_icon.'</span><span class="pz-header-title-text">'.$title_label.'</span></a><a class="pz-help-icon" href="'.$help_page.'" rel="external noopener noreferrer help" referrerpolicy="no-referrer" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" width="16" height="16" title="'.__('Help', 'pz-linkcard' ).'" alt="help" /></a></span></h1></div>';
 
 	// POSTする値 INPUT要素
 	$temp_param		=
@@ -276,7 +277,7 @@
 	if	($this->options['error-mode'] ) {
 		if	(!$this->options['error-mode-hide'] ) {
 			$error_url		=	$this->options['error-url'];
-			$html_standard_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank">'.esc_url($error_url ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
+			$html_standard_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer">'.esc_url($error_url ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
 		}
 	}
 
@@ -299,7 +300,7 @@
 		$checked_prop		=	self::pz_RemoveThisLinkFallback($prop );
 		foreach	($default_definitions as $key => $value ) {
 			if	(!array_key_exists($key, $checked_prop ) ) {
-				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%s" in Properties.<br>It may be a glitch. Please inform the developer. (%s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank">@'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
+				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%s" in Properties.<br>It may be a glitch. Please inform the developer. (%s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer">@'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
 			}
 		}
 		// foreach	($checked_prop as $key => $value ) {
@@ -391,6 +392,23 @@
 			}
 			break;
 
+		case	'delete-expired-click-logs':
+			$deleted	= $this->pz_DeleteExpiredClickLogs();
+			$deleted_count	= intval($deleted['expired'] ) + intval($deleted['orphaned'] );
+			$html_notice	.= '<div class="notice notice-success is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %s detailed click logs.', 'pz-linkcard' ), esc_html(number_format_i18n($deleted_count ) ) ).'</strong></p></div>';
+			$flg_style	= false;
+			break;
+
+		case	'delete-all-click-logs':
+			$deleted_count	= $this->pz_DeleteAllClickLogs();
+			if	($deleted_count === false ) {
+				$html_notice	.= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Failed to delete detailed click logs.', 'pz-linkcard' ).'</strong></p></div>';
+			} else {
+				$html_notice	.= '<div class="notice notice-success is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %s detailed click logs.', 'pz-linkcard' ), esc_html(number_format_i18n($deleted_count ) ) ).'</strong></p></div>';
+			}
+			$flg_style	= false;
+			break;
+
 		case	'clear-log':
 			$log_directory	= defined('PZLKC_DIR_DEBUG' ) ? trim((string) PZLKC_DIR_DEBUG ) : '';
 			$real_log_directory = $log_directory !== '' ? realpath($log_directory ) : false;
@@ -450,6 +468,10 @@
 			$flg_style			=	false;
 			break;
 
+		case	'run-pz_linkcard_click_cleanup':
+			$flg_style			=	false;
+			break;
+
 		default:
 
 		}
@@ -495,7 +517,7 @@
 
 	// HELPアイコン
 	$help_open			=	'&nbsp;<a href="'.$pz_url.'/pz-linkcard/pz-linkcard-settings-';
-	$help_close			=	'" rel="external noopener help" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" class="pz-help-icon" title="'.__('Help', 'pz-linkcard' ).'" alt="help"></a>';
+	$help_close			=	'" rel="external noopener noreferrer help" referrerpolicy="no-referrer" target="_blank"><img src="'.$this->plugin_dir_url.'img/help.png" class="pz-help-icon" title="'.__('Help', 'pz-linkcard' ).'" alt="help"></a>';
 
 	// 各種ロゴ
 	$logo_pz		=	'<img src="'.$this->plugin_dir_url.'img/icon_popozure.ico"    width="16" height="16" alt="'.__('Popozure Logo',		'pz-linkcard' ).'">';
@@ -607,10 +629,10 @@
 		$changelog	=	preg_replace('/&ensp;&ensp;tested:\s*/i',	'&ensp;&ensp;<span class="pz-log-tested">Tested</span>&ensp;',			$changelog);	// テスト
 		$changelog	=	preg_replace('/&ensp;&ensp;pending:\s*/i',	'&ensp;&ensp;<span class="pz-log-pending">Pending</span>&ensp;',		$changelog);	// テスト
 		$changelog	=	preg_replace('/\[Pz3\]*/i',					$logo_pz3,																$changelog);	// テスト
-		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on x\.com）/iu',				'<a href="https://x.com/$2" class="pz-thx" rel="external noopener noreferrer" target="_blank">'.						'Thanks<span class="pz-thx-name">$1</span>'.$logo_x. '<span class="pz-thx-account">@$2</span></a>', $changelog);	
-		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on twitter\.com）/iu',			'<a href="https://twitter.com/$2" class="pz-thx" rel="external noopener noreferrer" target="_blank">'.					'Thanks<span class="pz-thx-name">$1</span>'.$logo_tw.'<span class="pz-thx-account">@$2</span></a>', $changelog);	
-		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on wordpress\.org）/iu',		'<a href="https://wordpress.org/support/users/$2" class="pz-thx" rel="external noopener noreferrer" target="_blank">'.	'Thanks<span class="pz-thx-name">$1</span>'.$logo_wp.'<span class="pz-thx-account">@$2</span></a>', $changelog);	
-		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?(#[^\s）]+)\s+on popozure\.info）/iu',		'<a href="'.$pz_url.'" class="pz-thx" rel="external noopener noreferrer" target="_blank">'.								'Thanks<span class="pz-thx-name">$1</span>'.$logo_pz.'<span class="pz-thx-account">$2</span></a>', $changelog);	
+		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on x\.com）/iu',				'<a href="https://x.com/$2" class="pz-thx" rel="external noopener noreferrer" referrerpolicy="no-referrer" target="_blank">'.						'Thanks<span class="pz-thx-name">$1</span>'.$logo_x. '<span class="pz-thx-account">@$2</span></a>', $changelog);
+		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on twitter\.com）/iu',			'<a href="https://twitter.com/$2" class="pz-thx" rel="external noopener noreferrer" referrerpolicy="no-referrer" target="_blank">'.					'Thanks<span class="pz-thx-name">$1</span>'.$logo_tw.'<span class="pz-thx-account">@$2</span></a>', $changelog);
+		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?@([^\s）]+)\s+on wordpress\.org）/iu',		'<a href="https://wordpress.org/support/users/$2" class="pz-thx" rel="external noopener noreferrer" referrerpolicy="no-referrer" target="_blank">'.	'Thanks<span class="pz-thx-name">$1</span>'.$logo_wp.'<span class="pz-thx-account">@$2</span></a>', $changelog);
+		$changelog	=	preg_replace('/（Thanks\s+(?:(.*?)\s+)?(#[^\s）]+)\s+on popozure\.info）/iu',		'<a href="'.$pz_url.'" class="pz-thx" rel="external noopener noreferrer" referrerpolicy="no-referrer" target="_blank">'.								'Thanks<span class="pz-thx-name">$1</span>'.$logo_pz.'<span class="pz-thx-account">$2</span></a>', $changelog);
 		$changelog	=	str_replace("\r\n",		'<br>',	$changelog );															// 改行をBRタグに変換
 		$changelog	=	str_replace("\r",		'<br>',	$changelog );															// 改行をBRタグに変換
 		$changelog	=	str_replace("\n",		'<br>',	$changelog );															// 改行をBRタグに変換
@@ -652,6 +674,8 @@
 
 // 画面描画
 echo	wp_kses($html_style, array('style' => array() ) );
+$settings_allowed_html	=	wp_kses_allowed_html('post' );
+$settings_allowed_html['a']['referrerpolicy']	=	true;
 ?>
 <div class="pz-dashboard<?php echo esc_attr($page_class ); ?> wrap">
 	<header class="pz-header">
@@ -671,10 +695,10 @@ echo	wp_kses($html_style, array('style' => array() ) );
 				'disabled'	=> true,
 			);
 			echo	wp_kses($html_plugin, $infobar_allowed_html );
-			echo	wp_kses_post($html_title );
-			echo	wp_kses_post($html_standard_notice );
+			echo	wp_kses($html_title, $settings_allowed_html );
+			echo	wp_kses($html_standard_notice, $settings_allowed_html );
 			if	($html_notice ) {
-				echo	'<div class="pz-toast-container" role="status" aria-live="polite" style="display:none;">'.wp_kses_post($html_notice ).'</div>';
+				echo	'<div class="pz-toast-container" role="status" aria-live="polite" style="display:none;">'.wp_kses($html_notice, $settings_allowed_html ).'</div>';
 			}
 		?>
 		<div class="pz-page-help">

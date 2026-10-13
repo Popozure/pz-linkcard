@@ -148,6 +148,35 @@ msgstr ""
 msgid "Click Count"
 msgstr ""
 
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "Click Log"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "Click Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "IP Hash"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "User-Agent"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "No click logs found."
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-click.php
+#, php-format
+msgid "To collect click logs, enable click count recording <a href=\"%s\">here</a>."
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "The specified link card was not found."
+msgstr ""
+
 #: ../lib/pz-linkcard-cacheman-edit.php:222 ../lib/pz-linkcard-cacheman-edit.php:262
 #: ../lib/pz-linkcard-cacheman-list.php:89 ../lib/pz-linkcard-settings-display.php:33
 msgid "Update Date"
@@ -3143,4 +3172,46 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-card.php:174
 msgid "Are you sure you want to overwrite the internal link settings?"
+msgstr ""
+
+msgid "Retention Period"
+msgstr ""
+
+msgid "1 week"
+msgstr ""
+
+msgid "30 days"
+msgstr ""
+
+msgid "90 days"
+msgstr ""
+
+msgid "365 days"
+msgstr ""
+
+msgid "Permanent (not recommended)"
+msgstr ""
+
+msgid "Detailed click logs older than the retention period are deleted daily after 4:00 AM. The cumulative click count is retained."
+msgstr ""
+
+msgid "Delete expired logs now"
+msgstr ""
+
+msgid "Delete all logs"
+msgstr ""
+
+msgid "Delete all detailed click logs? The cumulative click count will not be reset."
+msgstr ""
+
+msgid "Deleted %s detailed click logs."
+msgstr ""
+
+msgid "Failed to delete detailed click logs."
+msgstr ""
+
+msgid "The click count is cumulative. Detailed logs are retained permanently."
+msgstr ""
+
+msgid "The click count is cumulative. Detailed logs are retained for <a href=\"%1$s\">%2$s days</a>."
 msgstr ""

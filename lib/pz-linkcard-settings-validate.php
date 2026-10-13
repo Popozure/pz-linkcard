@@ -54,6 +54,9 @@
 				break;
 			}
 			$temp_value				=	intval($temp_value );
+			if	($key === 'click-log-retention' && !in_array($temp_value, array(0, 7, 30, 90, 365 ), true ) ) {
+				$temp_value			=	$definition['default'];
+			}
 			if	(preg_match('/-(blur|spread)$/', $key ) ) {
 				$temp_value			=	max(0, $temp_value );
 			}

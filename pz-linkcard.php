@@ -393,6 +393,7 @@ class class_pz_linkcard {
 			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-click-log'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'click-log-retention'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	90, ],
 			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-alive'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
@@ -480,6 +481,7 @@ class class_pz_linkcard {
 	private		const	AUTHOR_DONATE_URL	=	'https://www.amazon.jp/hz/wishlist/ls/12LL2TX9147CY?ref_=wl_share&tag=popozure-22';
 	private		const	CRON_ALIVE			=	'pz_linkcard_alive';
 	private		const	CRON_CHECK			=	'pz_linkcard_check';
+	private		const	CRON_CLICK_CLEANUP	=	'pz_linkcard_click_cleanup';
 	private		const	CACHEMAN_PAGE		=	'pz-linkcard-cacheman';								// Pzカード管理のページ名
 	private		const	CACHEMAN_URL		=	'/tools.php?page=pz-linkcard-cacheman';				// Pzカード管理のURL
 	private		const	SETTINGS_PAGE		=	'pz-linkcard-settings';								// Pzカード設定のページ名
@@ -647,6 +649,7 @@ class class_pz_linkcard {
 		add_action('init', [$this, 'action_register_block' ] );
 		add_action(self::CRON_ALIVE, [$this, 'schedule_hook_alive' ] );
 		add_action(self::CRON_CHECK, [$this, 'schedule_hook_check' ] );
+		add_action(self::CRON_CLICK_CLEANUP, [$this, 'schedule_hook_click_cleanup' ] );
 
 		// WP-CRONスケジュール登録
 		$cron_schedules		= wp_get_schedules();
@@ -669,6 +672,7 @@ class class_pz_linkcard {
 			wp_clear_scheduled_hook(self::CRON_ALIVE );
 			wp_schedule_event(time() + $alive_first_delay, $alive_period, self::CRON_ALIVE );
 		}
+		$this->pz_ScheduleClickLogCleanup();
 
 		// 管理画面のとき
 		if	(is_admin() ) {
@@ -2043,15 +2047,21 @@ class class_pz_linkcard {
 			return	null;
 		}
 		if	(isset($data['id'] ) ) {
-			$result		=	$wpdb->delete($this->db_card, array('id' => $data['id'] ), array('%d' ) );
+			$card_id	=	intval($data['id'] );
+			$result		=	$wpdb->delete($this->db_card, array('id' => $card_id ), array('%d' ) );
 			if	($result ) {
+				$wpdb->delete($this->db_click, array('card_id' => $card_id ), array('%d' ) );
 				return	true;
 			}
 		}
 		if	(isset($data['url'] ) ) {
 			$url		=	$this->pz_EncodeURL($data['url'], true );
+			$card_id	=	intval($wpdb->get_var($wpdb->prepare("SELECT id FROM $this->db_card WHERE url = %s LIMIT 1", $url ) ) );
 			$result		=	$wpdb->delete($this->db_card, array('url' => $url ), array('%s' ) );
 			if	($result ) {
+				if	($card_id ) {
+					$wpdb->delete($this->db_click, array('card_id' => $card_id ), array('%d' ) );
+				}
 				return	true;
 			}
 		}
@@ -2874,6 +2884,7 @@ class class_pz_linkcard {
 
 		wp_clear_scheduled_hook(self::CRON_ALIVE );		// WP-CRONスケジュール停止（リンク先存在チェック）
 		wp_clear_scheduled_hook(self::CRON_CHECK );		// WP-CRONスケジュール停止（SNSカウント取得）
+		wp_clear_scheduled_hook(self::CRON_CLICK_CLEANUP );	// WP-CRONスケジュール停止（クリックログ整理）
 	}
 
 	// プラグインの初期化
@@ -3745,19 +3756,21 @@ class class_pz_linkcard {
 		global $wpdb;
 		$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %d;", $lkc_id ) );
 		if	($updated && !empty($this->options['flg-click-count'] ) && !empty($this->options['flg-click-log'] ) ) {
+			$click_time	=	current_time('timestamp', false );
 			$user_ip	=	isset($_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ) ) : '';
 			if	(!filter_var($user_ip, FILTER_VALIDATE_IP ) ) {
 				$user_ip	=	'';
 			}
+			$ip_hash	=	$user_ip ? hash_hmac('sha256', 'pz-linkcard-click|'.date_i18n('Y-m-d', $click_time ).'|'.$user_ip, wp_salt('auth') ) : '';
 			$user_agent	=	isset($_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ) ) : '';
 			$user_agent	=	function_exists('mb_substr' ) ? mb_substr($user_agent, 0, 1024 ) : substr($user_agent, 0, 1024 );
 			$logged		=	$wpdb->insert(
 				$this->db_click,
 				array(
-					'click_time'	=>	current_time('timestamp', false ),
+					'click_time'	=>	$click_time,
 					'card_id'		=>	$lkc_id,
 					'post_id'		=>	$post_id ?: null,
-					'user_ip'		=>	$user_ip ?: null,
+					'ip_hash'		=>	$ip_hash ?: null,
 					'user_agent'	=>	$user_agent ?: null,
 				),
 				array('%d', '%d', '%d', '%s', '%s' )
@@ -3806,6 +3819,52 @@ class class_pz_linkcard {
 		return	$buttons;
 	}
 
+	// クリックログ整理の次回実行を、サイトのタイムゾーンの午前4時に予約
+	private	function	pz_ScheduleClickLogCleanup() {
+		if	(wp_next_scheduled(self::CRON_CLICK_CLEANUP ) ) {
+			return;
+		}
+		$now	= new DateTimeImmutable('now', wp_timezone() );
+		$next	= $now->setTime(4, 0, 0 );
+		if	($next <= $now ) {
+			$next	= $next->modify('+1 day' );
+		}
+		wp_schedule_single_event($next->getTimestamp(), self::CRON_CLICK_CLEANUP );
+	}
+
+	// 期限切れ・孤立クリックログを一度に最大5,000件ずつ削除
+	private	function	pz_DeleteExpiredClickLogs() {
+		global $wpdb;
+		$result	= array('expired' => 0, 'orphaned' => 0 );
+		if	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_click ) ) !== $this->db_click ) {
+			return	$result;
+		}
+
+		$retention	= intval($this->options['click-log-retention'] ?? 90 );
+		if	(!in_array($retention, array(0, 7, 30, 90, 365 ), true ) ) {
+			$retention	= 90;
+		}
+		if	($retention > 0 ) {
+			$cutoff	= current_time('timestamp', false ) - ($retention * DAY_IN_SECONDS );
+			$deleted	= $wpdb->query($wpdb->prepare("DELETE FROM $this->db_click WHERE click_time < %d ORDER BY click_time ASC LIMIT 5000", $cutoff ) );
+			$result['expired']	= $deleted === false ? 0 : intval($deleted );
+		}
+
+		$deleted	= $wpdb->query("DELETE FROM $this->db_click WHERE NOT EXISTS (SELECT 1 FROM $this->db_card WHERE $this->db_card.id = $this->db_click.card_id) LIMIT 5000" );
+		$result['orphaned']	= $deleted === false ? 0 : intval($deleted );
+		return	$result;
+	}
+
+	// クリックログをすべて削除（累計クリック数は維持）
+	private	function	pz_DeleteAllClickLogs() {
+		global $wpdb;
+		if	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_click ) ) !== $this->db_click ) {
+			return	0;
+		}
+		$deleted	= $wpdb->query("DELETE FROM $this->db_click" );
+		return	$deleted === false ? false : intval($deleted );
+	}
+
 	// WP-CRONスケジュール（SNSカウント取得）
 	public	function	schedule_hook_check() {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
@@ -3822,6 +3881,13 @@ class class_pz_linkcard {
 		$log	=	null;
 		require_once('lib/pz-linkcard-cron-alive.php' );
 		return		$log;
+	}
+
+	// WP-CRONスケジュール（クリックログ整理）
+	public	function	schedule_hook_click_cleanup() {
+		$result	= $this->pz_DeleteExpiredClickLogs();
+		$this->pz_ScheduleClickLogCleanup();
+		return	'Expired click logs: '.$result['expired'].PHP_EOL.'Orphaned click logs: '.$result['orphaned'].PHP_EOL;
 	}
 
 	// デバグ用の文字列表示
