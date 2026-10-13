@@ -101,13 +101,24 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="2"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Count', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-click-count]" value="" />
-					<input type="checkbox" name="properties[flg-click-count]" value="1" <?php checked($this->options['flg-click-count'] ); ?> />
+					<input type="checkbox" name="properties[flg-click-count]" value="1" class="pz-sync-check" <?php checked($this->options['flg-click-count'] ); ?> />
+					<?php esc_html_e('Record the number of times clicked.', 'pz-linkcard' ); ?>
 				</label>
-				<?php esc_html_e('The card management screen displays the total number of clicks to date.', 'pz-linkcard' ); ?>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Record', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-click-log]" value="" />
+					<input type="checkbox" name="properties[flg-click-log]" value="1" <?php checked($this->options['flg-click-log'] ); ?> />
+					<?php esc_html_e('Record click details.', 'pz-linkcard' ); ?>
+				</label>
 			</td>
 		</tr>
 		<tr>

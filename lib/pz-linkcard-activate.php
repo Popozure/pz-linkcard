@@ -431,6 +431,7 @@
 
 	// DBテーブル作成・更新＆メンテナンス
 	require_once ('pz-linkcard-activate-db.php');
+	require_once ('pz-linkcard-activate-db-count.php');
 
 	// テンプレート側でMCEプラグイン一覧を上書きする場合があるため、実行優先度を下げる
 	if	(empty($this->options['mce-priority'] ) && (get_template() == 'jin' ) ) {

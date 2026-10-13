@@ -1682,6 +1682,18 @@ msgstr "ユーザーエージェントの通知"
 msgid "The card management screen displays the total number of clicks to date."
 msgstr "カード管理画面に、これまでの総クリック数が表示されます。"
 
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Record the number of times clicked."
+msgstr "クリックされた回数を記録します。"
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Record"
+msgstr "記録"
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Record click details."
+msgstr "クリックの詳細を記録します。"
+
 #: ../lib/pz-linkcard-settings-check.php:114
 msgid "Broken Link"
 msgstr "リンク切れ"

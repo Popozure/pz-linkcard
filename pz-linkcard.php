@@ -386,12 +386,13 @@ class class_pz_linkcard {
 			'flg-relative-url'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-unlink'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-sslverify'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-robots'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-robots'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-local-check'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-redir'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'user-agent'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'pzlkc', ],
 			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-click-log'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-alive'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
@@ -1295,7 +1296,7 @@ class class_pz_linkcard {
 			$html_st_cl		=	'</strike>';
 		} elseif	($this->options['flg-linkall'] ) {
 			// カード全体をリンク（どこをクリックしても良いのが分かり易い）
-			$html_a_op_all	=	'<a class="lkc-link no_icon" href="'.esc_url($url ).'" data-lkc-id="'.esc_attr($data_id ).'"'.$target.$rel.'>';
+			$html_a_op_all	=	'<a class="lkc-link no_icon" href="'.esc_url($url ).'" data-lkc-id="'.esc_attr($data_id ).'" data-post-id="'.esc_attr(get_the_ID() ).'"'.$target.$rel.'>';
 			$html_a_cl_all	=	'</a>';
 			$html_a_op		=	null;
 			$html_a_cl		=	null;
@@ -1305,7 +1306,7 @@ class class_pz_linkcard {
 			// タイトルとかURLとかを個別でリンク（タイトルや抜粋文などの文字を範囲指定をしてコピー等がし易い）
 			$html_a_op_all	=	null;
 			$html_a_cl_all	=	null;
-			$html_a_op		=	'<a class="lkc-link no_icon" href="'.esc_url($url ).'" data-lkc-id="'.esc_attr($data_id ).'"'.$target.$rel.'>';
+			$html_a_op		=	'<a class="lkc-link no_icon" href="'.esc_url($url ).'" data-lkc-id="'.esc_attr($data_id ).'" data-post-id="'.esc_attr(get_the_ID() ).'"'.$target.$rel.'>';
 			$html_a_cl		=	'</a>';
 			$html_st_op		=	null;
 			$html_st_cl		=	null;
@@ -1990,14 +1991,25 @@ class class_pz_linkcard {
 
 		// DB更新
 		$result		=	null;
+		$insert_attempted	=	false;
 		if	(isset($data['id'] ) && $data['id'] ) {
 			$result	=	$wpdb->update($this->db_card, $data, array('id' => $data['id'] ) );
 		} else {
+			$insert_attempted	=	true;
 			$result	=	$wpdb->insert($this->db_card, $data );
 		}
 
 		// DB更新失敗の場合、挿入
 		if	($result === false ) {
+			// 同時処理ですでに同じURLが追加されていた場合は、そのレコードを使用する
+			if	($insert_attempted ) {
+				$this->request_cache	=	array();
+				$existing	=	$this->pz_GetCache(array('url' => $data['url'] ) );
+				if	(!empty($existing['id'] ) ) {
+					return	$existing;
+				}
+			}
+
 			unset($data['id'] );
 			// DB挿入失敗の場合、日本語項目（サイト名）をクリアして挿入
 			unset($data['site_name'] );
@@ -3723,6 +3735,7 @@ class class_pz_linkcard {
 
 		// 入力チェック
 		$lkc_id	=	isset($_POST['lkc_id'])	?	intval($_POST['lkc_id'] )		:	'';
+		$post_id	=	isset($_POST['post_id'])	?	absint($_POST['post_id'] )		:	0;
 		if	(empty($lkc_id)) {
 			wp_send_json_error('unknown Data ID.');
 			return;
@@ -3730,7 +3743,30 @@ class class_pz_linkcard {
 
 		// カウントをインクリメント
 		global $wpdb;
-		$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %s;", $lkc_id ) );
+		$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %d;", $lkc_id ) );
+		if	($updated && !empty($this->options['flg-click-count'] ) && !empty($this->options['flg-click-log'] ) ) {
+			$user_ip	=	isset($_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ) ) : '';
+			if	(!filter_var($user_ip, FILTER_VALIDATE_IP ) ) {
+				$user_ip	=	'';
+			}
+			$user_agent	=	isset($_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ) ) : '';
+			$user_agent	=	function_exists('mb_substr' ) ? mb_substr($user_agent, 0, 1024 ) : substr($user_agent, 0, 1024 );
+			$logged		=	$wpdb->insert(
+				$this->db_click,
+				array(
+					'click_time'	=>	current_time('timestamp', false ),
+					'card_id'		=>	$lkc_id,
+					'post_id'		=>	$post_id ?: null,
+					'user_ip'		=>	$user_ip ?: null,
+					'user_agent'	=>	$user_agent ?: null,
+				),
+				array('%d', '%d', '%d', '%s', '%s' )
+			);
+			if	($logged === false ) {
+				wp_send_json_error('Click log failed');
+				return;
+			}
+		}
 
 		// 更新結果
 		if	($updated ) {

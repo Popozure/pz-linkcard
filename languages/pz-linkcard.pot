@@ -1566,6 +1566,18 @@ msgstr ""
 msgid "The card management screen displays the total number of clicks to date."
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Record the number of times clicked."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Record"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Record click details."
+msgstr ""
+
 #: ../lib/pz-linkcard-settings-check.php:114
 msgid "Broken Link"
 msgstr ""

@@ -282,6 +282,11 @@
 		const flgAgent = flgAgentEl ? flgAgentEl.checked : false;
 		setDisabled("input[name='properties[user-agent]']", !flgAgent, !flgAgent );
 
+		// クリック件数を記録しない場合、詳細ログも記録しない
+		const clickCountEl = document.querySelector("input[name='properties[flg-click-count]'][type=checkbox]");
+		const clickLogDisabled = clickCountEl ? !clickCountEl.checked : false;
+		setDisabled("input[name='properties[flg-click-log]'][type=checkbox]", clickLogDisabled, false, clickLogDisabled ? "#ddd" : "#444");
+
 		// 自動変換関連
 		const autoAtagEl = document.querySelector("input[name='properties[auto-atag]'][type=checkbox]");
 		const autoUrlEl  = document.querySelector("input[name='properties[auto-url]'][type=checkbox]");

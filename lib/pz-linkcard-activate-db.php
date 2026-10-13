@@ -46,7 +46,7 @@
 				update_result	INT										DEFAULT 0,
 				update_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
 				PRIMARY KEY		(id),
-				KEY url_key (url_key),
+				UNIQUE KEY url_key (url_key),
 				KEY alive_nexttime (alive_nexttime),
 				KEY sns_nexttime (sns_nexttime)
 			) ".$wpdb->get_charset_collate()." ;";
@@ -55,9 +55,10 @@
 	$db_version		=	md5($sql, false );
 
 	// DBテーブルの存在確認
-	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $this->db_card ) ) === $this->db_card ) {
+	$db_card_exists	=	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_card ) ) === $this->db_card );
+	if	($db_card_exists ) {
 		if	($this->options['db-version']	==	$db_version	) {		// 前回使用したSQLと変更が無ければ抜ける
-			return;
+//			return;
 		}
 
 		// 旧仕様のバイナリハッシュは派生データなので、文字列型へ安全に作り直す
@@ -68,6 +69,28 @@
 				$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key" );
 			}
 			$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN url_key" );
+		}
+
+		// 同じURLは最も古いIDへ統合し、クリック数とクリックログを引き継ぐ
+		$result_datas	=	(array) $wpdb->get_results("SELECT id,url,click_count FROM $this->db_card WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC" );
+		$kept_ids		=	array();
+		$db_click_exists	=	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_click ) ) === $this->db_click );
+		foreach	($result_datas as $data ) {
+			$url	=	(string) $data->url;
+			if	(!array_key_exists($url, $kept_ids ) ) {
+				$kept_ids[$url]	=	intval($data->id );
+				continue;
+			}
+
+			$keep_id	=	$kept_ids[$url];
+			$delete_id	=	intval($data->id );
+			if	($db_click_exists ) {
+				$wpdb->update($this->db_click, array('card_id' => $keep_id ), array('card_id' => $delete_id ), array('%d' ), array('%d' ) );
+			}
+			if	(intval($data->click_count ) !== 0 ) {
+				$wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + %d WHERE id = %d", intval($data->click_count ), $keep_id ) );
+			}
+			$wpdb->delete($this->db_card, array('id' => $delete_id ), array('%d' ) );
 		}
 	}
 
@@ -100,22 +123,12 @@
 
 	// URL検索用のハッシュキーを32文字のテキスト形式で揃える
 	$wpdb->query("UPDATE $this->db_card SET url_key = MD5(url) WHERE url IS NOT NULL AND (url_key IS NULL OR url_key <> MD5(url))" );
+	$url_key_index	=	$wpdb->get_row("SHOW INDEX FROM $this->db_card WHERE Key_name = 'url_key'" );
+	if	(isset($url_key_index->Non_unique ) && intval($url_key_index->Non_unique ) !== 0 ) {
+		$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key, ADD UNIQUE KEY url_key (url_key)" );
+	}
 
 ////////////////////////////////////////////////////////////////////////////////
-
-	// バグデータのメンテナンス（重複URLの削除）
-	$result_datas	=	(array) $wpdb->get_results("SELECT url,id FROM $this->db_card ORDER BY url,id" );
-	$last_url		=	null;
-	$last_id		=	null;
-	if	(isset($result_datas ) && is_array($result_datas ) && count($result_datas ) > 0 ) {
-		foreach($result_datas as $data ) {
-			if ($data->url == $last_url && $data->id <> $last_id ) {
-				$result		=	$wpdb->delete($this->db_card, array('id' => $data->id ), array('%d' ) );
-			}
-			$last_url		=	$data->url;
-			$last_id		=	$data->id;
-		}
-	}
 
 	// バグデータのメンテナンス（ドメイン名が空欄のもの）
 	$result_datas	=	(array) $wpdb->get_results("SELECT id,url,domain FROM $this->db_card WHERE domain = '' ORDER BY id" );
