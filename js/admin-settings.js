@@ -8,16 +8,19 @@
             : []
     );
     let processingOverlayTimer = null;
+	const processingOverlayDelay = 800;
 	initInfobarPosition();
 
-	// 処理中オーバーレイを非表示
-    document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
-    document.querySelector("#pz-overlay-proc")?.style.setProperty("display", "none");
+	// カード管理画面はナビゲーション開始から一定時間を超えた場合だけ表示する
+    if (dashboard.classList.contains("pz-cacheman")) {
+        showProcessingOverlay(Math.max(0, processingOverlayDelay - performance.now()));
+    } else {
+        hideProcessingOverlay();
+    }
     initSettingsToasts();
 
     window.addEventListener("load", () => {
-        document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
-        document.querySelector("#pz-overlay-proc")?.classList.add("hidden");
+        hideProcessingOverlay();
 
         switchEnabled();
 
@@ -56,8 +59,19 @@
                 }
 
                 if (submitter?.dataset?.noOverlay === "1") return;
-                showProcessingOverlay();
+                showProcessingOverlay(processingOverlayDelay);
             });
+        });
+
+        const cacheman = document.querySelector(".pz-cacheman");
+        cacheman?.addEventListener("click", e => {
+            const link = e.target?.closest?.("a[href]");
+            if (!link || link.dataset.noOverlay === "1") return;
+            if (link.matches(".pz-man-thumbnail, .pz-man-image-box-trigger")) return;
+            if (link.target === "_blank" || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+            const href = link.getAttribute("href") || "";
+            if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+            showProcessingOverlay(processingOverlayDelay);
         });
 
         // Admin setting handler
@@ -72,6 +86,7 @@
         initUnsavedFormWarnings();
         initSettingsSaveShortcut();
         initSettingsScrollMemory();
+        initCachemanScrollMemory();
         initCachemanEditorShortcuts();
         initSettingsTabs();
         initCachemanSearch();
@@ -118,8 +133,10 @@
             el.addEventListener("change", switchEnabled)
         );
 
-        document.querySelector("#pz-overlay-proc")?.classList.remove("pz-overlay-proc-active");
-        document.querySelector("#pz-overlay-proc")?.classList.add("hidden");
+    });
+
+    window.addEventListener("pageshow", e => {
+        if (e.persisted) hideProcessingOverlay();
     });
 
     // ----------- 関数群 -----------
@@ -207,8 +224,8 @@
                 jump.className = "pz-section-jump";
 
                 [
-                    { label: "🔺", title: "前の見出しへ", target: headings[index - 1], disabled: index === 0 },
-                    { label: "🔻", title: "次の見出しへ", target: headings[index + 1], disabled: index === headings.length - 1 },
+                    { label: "🔺", title: pzLinkCardAdmin.previousHeading || "Go to previous heading", target: headings[index - 1], disabled: index === 0 },
+                    { label: "🔻", title: pzLinkCardAdmin.nextHeading || "Go to next heading", target: headings[index + 1], disabled: index === headings.length - 1 },
                 ].forEach(item => {
                     const button = document.createElement("button");
                     button.type = "button";
@@ -1072,6 +1089,24 @@
         form.addEventListener("submit", () => {
             scrollNow.value = String(Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)));
         }, true);
+    }
+
+    function initCachemanScrollMemory() {
+        const cacheman = document.querySelector(".pz-cacheman");
+        const scrollNow = cacheman?.querySelector('input[name="scroll_now"]');
+        const form = scrollNow?.closest("form");
+        const clickLog = cacheman?.querySelector(".pz-man-click-log");
+        if (!cacheman || !form || !scrollNow) return;
+
+        if (!clickLog) {
+            const savedScroll = parseInt(scrollNow.value, 10) || 0;
+            if (savedScroll > 0) {
+                window.requestAnimationFrame(() => window.scrollTo(0, savedScroll));
+            }
+            form.addEventListener("submit", () => {
+                scrollNow.value = String(Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)));
+            }, true);
+        }
     }
 
     function initSettingsTabs() {

@@ -46,10 +46,14 @@
 	$alive_result	=	isset($_POST['alive_result'] )	?	esc_attr($_POST['alive_result'] )			:	null;
 
 	// インラインメニュー
+	$single_click_log	=	isset($_POST['single-click-log'] ) ? absint($_POST['single-click-log'] )		:	null;
 	$single_edit	=	isset($_POST['single-edit'] )	?	esc_attr($_POST['single-edit'] )			:	null;
 	$single_renew	=	isset($_POST['single-renew'] )	?	esc_attr($_POST['single-renew'] )			:	null;
 	$single_delete	=	isset($_POST['single-delete'] )	?	esc_attr($_POST['single-delete'] )			:	null;
-	if			($single_edit ) {
+	if			($single_click_log ) {
+		$action		=	'click-log';
+		$cache_id	=	intval($single_click_log );
+	} elseif	($single_edit ) {
 		$action		=	'edit';
 		$cache_id	=	intval($single_edit );
 		$select_id	=	array($cache_id );
@@ -59,6 +63,9 @@
 	} elseif	($single_delete ) {
 		$action		=	'delete';
 		$select_id	=	array(intval($single_delete ) );
+	}
+	if	(isset($_POST['click-period'] ) || isset($_POST['click-page'] ) ) {
+		$action		=	'click-log';
 	}
 
 	// 表示されている項目名がクリックされたら並び順を逆にする
@@ -144,6 +151,9 @@
 			'flg-inhibit'		=>		$inhibit,
 			'return_url'		=>		$return_url,
 		);
+	if	($action === 'click-log' ) {
+		$temp_param['keyword']	=	$keyword;
+	}
 	foreach		($temp_param		as	$temp_name => $temp_value ) {
 		$html_input	.=	'<input type="hidden" name="'.esc_attr($temp_name ).'" value="'.esc_attr($temp_value ).'" title="'.esc_attr($temp_name ).'" size="4" />';
 	}
@@ -157,11 +167,7 @@
 	}
 
 	// 画面描画
-	if	($inhibit ) {
-		echo	'<div id="pz-overlay-proc" style="display: flex;"><div class="pz-loader"></div></div>';
-	} else {
-		echo	'<div id="pz-overlay-proc" style="display: none;"><div class="pz-loader"></div></div>';
-	}
+	echo	'<div id="pz-overlay-proc" style="display: none;"><div class="pz-loader"></div></div>';
 	echo	'<div class="pz-dashboard'.$page_class.' wrap">';
 	echo	$html_style;
 	$infobar_allowed_html	=	wp_kses_allowed_html('post' );
@@ -179,7 +185,7 @@
 	if	($this->options['error-mode'] ) {
 		if	(!$this->options['error-mode-hide'] ) {
 			$error_url		=	$this->options['error-url'];
-			$html_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer">'.esc_html($error_url ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
+			$html_notice	.=	'<div class="notice notice-error is-dismissible pz-lkc-error-mode-notice"><p><strong>'.self::PLUGIN_NAME.': '.__('Invalid URL parameter in ', 'pz-linkcard' ).'<a href="'.esc_url($error_url ).'#lkc-error" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer">'.esc_html($this->pz_DecodeURL($error_url ) ).'</a></strong><br>'.__('*', 'pz-linkcard' ).' '.__('You can dismiss this message from <a href="./options-general.php?page=pz-linkcard-settings">the settings screen</a>.', 'pz-linkcard' ).'</p></div>';
 		}
 	}
 
@@ -220,6 +226,9 @@
 				$html_notice		.=	'<div class="notice notice-error"><p><strong>'.esc_html__('The specified link card was not found.', 'pz-linkcard' ).'</strong></p></div>';
 			}
 			$show_list				=	false;
+			break;
+
+		case	'list':
 			break;
 
 		case	'update':

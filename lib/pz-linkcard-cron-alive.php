@@ -48,7 +48,11 @@
 					$before['mod_excerpt']	=	true;
 				}
 
-				if	($before['alive_result'] < 400 && $after['alive_result'] >= 400 ) {
+				$before_result		=	$before['alive_result'] ?? null;
+				$after_result		=	$after['alive_result'] ?? null;
+				$before_succeeded	=	!is_null($before_result ) && (intval($before_result ) === 0 || (intval($before_result ) >= 100 && intval($before_result ) < 400 ) );
+				$after_failed		=	!is_null($after_result ) && intval($after_result ) !== 0 && (intval($after_result ) < 100 || intval($after_result ) >= 400 );
+				if	($before_succeeded && $after_failed ) {
 					$before['alive_nexttime']	=	$this->now + DAY_IN_SECONDS  * 2 + rand(0, HOUR_IN_SECONDS );		// 次回チェックは2日後
 				} else {
 					$before['alive_nexttime']	=	$this->now + WEEK_IN_SECONDS * 4 + rand(0, DAY_IN_SECONDS );		// 次回チェックは4週間後

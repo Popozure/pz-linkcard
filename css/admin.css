@@ -21,6 +21,111 @@
 	user-select: none;
 }
 
+/* Click log chart */
+.pz-click-chart {
+	max-width: 720px;
+	margin: 20px 0 12px;
+	padding: 16px 18px 12px;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+	box-sizing: border-box;
+}
+
+.pz-click-chart h3 {
+	margin: 0 0 12px;
+}
+
+.pz-click-chart-periods {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(64px, 1fr));
+	max-width: 420px;
+	margin-bottom: 16px;
+}
+
+.pz-click-chart-periods button {
+	padding: 7px 12px;
+	border: 1px solid #c3c4c7;
+	border-right-width: 0;
+	background: #f6f7f7;
+	color: #1d2327;
+	cursor: pointer;
+	font: inherit;
+	text-align: center;
+	text-decoration: none;
+}
+
+.pz-click-chart-periods button:first-child {
+	border-radius: 4px 0 0 4px;
+}
+
+.pz-click-chart-periods button:last-child {
+	border-right-width: 1px;
+	border-radius: 0 4px 4px 0;
+}
+
+.pz-click-chart-periods button.is-active {
+	border-color: var(--wp-admin-theme-color-darker-10, #135e96);
+	background: var(--wp-admin-theme-color, #2271b1);
+	color: #fff;
+	font-weight: 600;
+}
+
+.pz-click-chart-bars {
+	display: flex;
+	align-items: stretch;
+	gap: 10px;
+	height: 210px;
+	padding-top: 4px;
+	border-bottom: 1px solid #c3c4c7;
+	overflow-x: auto;
+}
+
+.pz-click-chart-item {
+	display: grid;
+	grid-template-rows: 22px 1fr 28px;
+	flex: 1 1 0;
+	min-width: 34px;
+	text-align: center;
+}
+
+.pz-click-chart-count,
+.pz-click-chart-label {
+	display: block;
+	font-size: 12px;
+	line-height: 20px;
+}
+
+.pz-click-chart-bar-wrap {
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	min-height: 0;
+	background-image: linear-gradient(to top, transparent 49.5%, #f0f0f1 50%, transparent 50.5%);
+}
+
+.pz-click-chart-bar {
+	display: block;
+	width: min(42px, 72%);
+	min-height: 0;
+	background: var(--wp-admin-theme-color, #2271b1);
+	border-radius: 3px 3px 0 0;
+}
+
+@media screen and (max-width: 600px) {
+	.pz-click-chart {
+		padding-right: 10px;
+		padding-left: 10px;
+	}
+
+	.pz-click-chart-bars {
+		gap: 4px;
+	}
+
+	.pz-click-chart-label {
+		font-size: 11px;
+	}
+}
+
 body.folded #pz-infobar {
 	left: 36px;
 }

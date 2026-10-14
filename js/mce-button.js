@@ -113,7 +113,7 @@
 		let match;
 		let found = null;
 		while ((match = matcher.exec(source)) !== null) {
-			if (caretOffset >= match.index && caretOffset <= match.index + match[0].length) {
+			if (caretOffset > match.index && caretOffset < match.index + match[0].length) {
 				found = { text: match[0], start: match.index, end: match.index + match[0].length };
 				break;
 			}
@@ -162,6 +162,49 @@
 			editor.nodeChanged();
 			restoreScrollPosition(editor, true);
 		}, 0);
+	}
+
+	function insertParagraphAtCaretBoundary(editor, shortcode, markerId) {
+		const selectionRange = editor.selection.getRng();
+		if (!selectionRange.collapsed) return false;
+		let block = selectionRange.startContainer;
+		if (block.nodeType !== 1) block = block.parentNode;
+		block = block.closest?.("p");
+		if (!block) return false;
+
+		const beforeCaret = editor.getDoc().createRange();
+		beforeCaret.selectNodeContents(block);
+		beforeCaret.setEnd(selectionRange.startContainer, selectionRange.startOffset);
+		const caretOffset = beforeCaret.toString().length;
+		const blockLength = (block.textContent || "").length;
+		if (caretOffset !== 0 && caretOffset !== blockLength) return false;
+
+		const paragraph = editor.getDoc().createElement("p");
+		paragraph.appendChild(editor.getDoc().createTextNode(shortcode));
+		const marker = editor.getDoc().createElement("span");
+		marker.id = markerId;
+		marker.setAttribute("data-mce-bogus", "all");
+		marker.textContent = "\ufeff";
+
+		if (caretOffset === 0) {
+			block.parentNode.insertBefore(paragraph, block);
+			block.insertBefore(marker, block.firstChild);
+			return true;
+		}
+
+		const nextBlock = block.nextElementSibling;
+		block.parentNode.insertBefore(paragraph, block.nextSibling);
+		if (nextBlock?.nodeName === "P") {
+			nextBlock.insertBefore(marker, nextBlock.firstChild);
+		} else {
+			const caretParagraph = editor.getDoc().createElement("p");
+			caretParagraph.appendChild(marker);
+			const bogusBreak = editor.getDoc().createElement("br");
+			bogusBreak.setAttribute("data-mce-bogus", "1");
+			caretParagraph.appendChild(bogusBreak);
+			block.parentNode.insertBefore(caretParagraph, paragraph.nextSibling);
+		}
+		return true;
 	}
 
 	tinymce.create( "tinymce.plugins.pz_linkcard_tinymce", {
@@ -228,7 +271,15 @@
 			ed.on("PreProcess", event => {
 				if (!previewEnabled) return;
 				const cards = event.node.querySelectorAll ? event.node.querySelectorAll(".pz-lkc-mce-card") : [];
-				Array.prototype.forEach.call(cards, card => card.parentNode.replaceChild(event.node.ownerDocument.createTextNode(decodeCard(card)), card));
+				Array.prototype.forEach.call(cards, card => {
+					if (card.parentNode?.nodeName === "P") {
+						card.parentNode.replaceChild(event.node.ownerDocument.createTextNode(decodeCard(card)), card);
+						return;
+					}
+					const paragraph = event.node.ownerDocument.createElement("p");
+					paragraph.textContent = decodeCard(card);
+					card.parentNode.replaceChild(paragraph, card);
+				});
 			});
 			ed.on("init", () => {
 				if (!previewEnabled) return;
@@ -402,13 +453,13 @@
 				if (item.published_date) {
 					const publishedLabel = document.createElement("span");
 					publishedLabel.className = "pz-post-search-date-label";
-					publishedLabel.textContent = "投稿日";
+					publishedLabel.textContent = document.getElementById("pz-code")?.dataset.postDateLabel || "Post Date";
 					date.append(publishedLabel, item.published_date);
 				}
 				if (item.modified_date && item.modified_date !== item.published_date) {
 					const modifiedLabel = document.createElement("span");
 					modifiedLabel.className = "pz-post-search-date-label";
-					modifiedLabel.textContent = "更新日";
+					modifiedLabel.textContent = document.getElementById("pz-code")?.dataset.modifiedDateLabel || "Modified Date";
 					date.append(item.published_date ? "　" : "", modifiedLabel, item.modified_date);
 				}
 				body.appendChild(date);
@@ -587,14 +638,17 @@
 				const shortcode = `[${code} url="${safeUrl}"]`;
 				const previewEnabled = document.getElementById("pz-code")?.dataset.previewEnabled === "1";
 				if (previewEnabled) {
-					editor.selection.setContent(`${shortcode}<p id="${markerId}" data-pz-caret-marker="1"><br data-mce-bogus="1"></p>`);
+					editor.selection.setContent(`${shortcode}<p><span id="${markerId}" data-mce-bogus="all">&#xfeff;</span><br data-mce-bogus="1"></p>`);
 				} else {
-					editor.selection.setContent(`<p>${shortcode}<span id="${markerId}" data-mce-bogus="all">&#xfeff;</span></p>`);
+					editor.undoManager.transact(() => {
+						if (!insertParagraphAtCaretBoundary(editor, shortcode, markerId)) {
+							editor.selection.setContent(`<p>${shortcode}</p><p><span id="${markerId}" data-mce-bogus="all">&#xfeff;</span><br data-mce-bogus="1"></p>`);
+						}
+					});
 				}
 				activeVisualCard = null;
 				activeVisualBookmark = null;
-				if (previewEnabled) focusInsertedCardCaret(editor, markerId);
-				else focusInlineMarker(editor, markerId);
+				focusInlineMarker(editor, markerId);
 				return;
 			}
 		}

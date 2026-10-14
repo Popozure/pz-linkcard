@@ -699,11 +699,11 @@ colorMenu.className = "pz-color-context-menu";
 colorMenu.hidden = true;
 const saveColorItem = document.createElement("button");
 saveColorItem.type = "button";
-saveColorItem.textContent = "今の色を保存";
+saveColorItem.textContent = window.pz_lkc_color_picker?.labels?.saveColor || "Save current color";
 colorMenu.appendChild(saveColorItem);
 const resetColorItem = document.createElement("button");
 resetColorItem.type = "button";
-resetColorItem.textContent = "オフセットに戻す";
+resetColorItem.textContent = window.pz_lkc_color_picker?.labels?.resetOffset || "Reset to offset";
 colorMenu.appendChild(resetColorItem);
 picker.appendChild(colorMenu);
 

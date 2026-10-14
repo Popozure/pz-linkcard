@@ -19,6 +19,9 @@
 		case	'version':
 		case	'string':
 			$this->options[$key]	=	strval($temp_value );
+			if	($key === 'click-log-retention' && !in_array($this->options[$key], array('1w', '1m', '2m', '3m', '6m', '1y', '2y', '3y', '5y', 'forever' ), true ) ) {
+				$this->options[$key]	=	$definition['default'];
+			}
 			break;
 
 		case	'schedule':
@@ -54,9 +57,6 @@
 				break;
 			}
 			$temp_value				=	intval($temp_value );
-			if	($key === 'click-log-retention' && !in_array($temp_value, array(0, 7, 30, 90, 365 ), true ) ) {
-				$temp_value			=	$definition['default'];
-			}
 			if	(preg_match('/-(blur|spread)$/', $key ) ) {
 				$temp_value			=	max(0, $temp_value );
 			}

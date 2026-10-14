@@ -4228,15 +4228,6 @@ msgstr "保存期間"
 msgid "1 week"
 msgstr "1週間"
 
-msgid "30 days"
-msgstr "30日間"
-
-msgid "90 days"
-msgstr "90日間"
-
-msgid "365 days"
-msgstr "365日間"
-
 msgid "Permanent (not recommended)"
 msgstr "永久（非推奨）"
 
@@ -4258,8 +4249,86 @@ msgstr "クリック詳細ログを%s件削除しました。"
 msgid "Failed to delete detailed click logs."
 msgstr "クリック詳細ログを削除できませんでした。"
 
-msgid "The click count is cumulative. Detailed logs are retained permanently."
-msgstr "クリック件数は累計です。詳細ログは永久に保存されます。"
+msgid "The click count is cumulative. Detailed logs are retained <a href=\"%s\">permanently</a>."
+msgstr "クリック件数は累計です。詳細ログは<a href=\"%s\">永久</a>に保存されます。"
 
-msgid "The click count is cumulative. Detailed logs are retained for <a href=\"%1$s\">%2$s days</a>."
-msgstr "クリック件数は累計です。詳細ログは<a href=\"%1$s\">%2$s日間</a>保存されます。"
+msgid "The click count is cumulative. Detailed logs are retained for <a href=\"%1$s\">%2$s</a>."
+msgstr "クリック件数は累計です。詳細ログは<a href=\"%1$s\">%2$s</a>保存されます。"
+
+msgid "Clicks in the last 7 days"
+msgstr "直近7日間のクリック数"
+
+msgid "%s clicks"
+msgstr "%sクリック"
+
+msgid "Day"
+msgstr "日"
+
+msgid "Week"
+msgstr "週"
+
+msgid "Month"
+msgstr "月"
+
+msgid "Year"
+msgstr "年"
+
+msgid "Chart period"
+msgstr "グラフの期間"
+
+msgid "Clicks in the last 8 weeks"
+msgstr "直近8週間のクリック数"
+
+msgid "Clicks in the last 12 months"
+msgstr "直近12か月のクリック数"
+
+msgid "Clicks in the last 5 years"
+msgstr "直近5年間のクリック数"
+
+msgid "1 month"
+msgstr "1か月"
+
+msgid "2 months"
+msgstr "2か月"
+
+msgid "3 months"
+msgstr "3か月"
+
+msgid "6 months"
+msgstr "半年"
+
+msgid "1 year"
+msgstr "1年"
+
+msgid "2 years"
+msgstr "2年"
+
+msgid "3 years"
+msgstr "3年"
+
+msgid "5 years"
+msgstr "5年"
+
+msgid "2 years (long-term)"
+msgstr "2年（長期）"
+
+msgid "3 years (long-term)"
+msgstr "3年（長期）"
+
+msgid "5 years (long-term)"
+msgstr "5年（長期）"
+
+msgid "Long-term retention increases database usage according to the number of clicks."
+msgstr "長期間保存すると、クリック数に応じてデータベースの使用量が増加します。"
+
+msgid "Go to previous heading"
+msgstr "前の見出しへ"
+
+msgid "Go to next heading"
+msgstr "次の見出しへ"
+
+msgid "Save current color"
+msgstr "今の色を保存"
+
+msgid "Reset to offset"
+msgstr "オフセットに戻す"

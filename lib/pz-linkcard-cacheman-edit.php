@@ -228,9 +228,8 @@
 					<div class="pz-man-cache-submit-meta">
 						<input name="data[id]" type="hidden" value="<?php echo esc_attr($cacheman_get_value('id' ) ); ?>" />
 						<input name="data[charset]" type="hidden" value="edit">
-						<input name="data[click_count]" type="hidden" value="<?php echo esc_attr($cacheman_get_value('click_count' ) ); ?>" />
 						<div class="pz-man-cache-submit-meta-row"><span><?php esc_html_e('ID', 'pz-linkcard' ); ?>:</span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('id' ) ); ?></span></div>
-						<div class="pz-man-cache-submit-meta-row"><span><?php esc_html_e('Character Set', 'pz-linkcard' ); ?>:</span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('regist_charset' ) ).esc_html(__('->', 'pz-linkcard' ) ).esc_html('edit' ); ?></span></div>
+						<div class="pz-man-cache-submit-meta-row"><span><?php esc_html_e('Character Set', 'pz-linkcard' ); ?>:</span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('regist_charset' ) ); ?></span></div>
 						<div class="pz-man-cache-submit-meta-row"><span><?php esc_html_e('Click Count', 'pz-linkcard' ); ?>:</span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html(number_format_i18n(intval($cacheman_get_value('click_count' ) ) ) ); ?></span></div>
 						<div class="pz-man-cache-submit-meta-row"><span><?php esc_html_e('Registered Date', 'pz-linkcard' ); ?>:</span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('regist_time' ) ) ); ?></span></div>
 						<div class="pz-man-cache-submit-meta-row"><span><?php esc_html_e('Update Date', 'pz-linkcard' ); ?>:</span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('update_time' ) ) ); ?></span></div>
@@ -271,6 +270,9 @@
 					<table class="form-table pz-man-cache-side-table">
 						<tr class="pz-man-cache-side-single-row">
 							<td colspan="2"><label><input name="data[no_failure]" type="hidden" value="0" /><input name="data[no_failure]" type="checkbox" value="1" <?php checked(!empty($data['no_failure'] ), true ); ?> accesskey="4" /><?php esc_html_e('Ignore the result code when it indicates an error.', 'pz-linkcard' ); ?></label></td>
+						</tr>
+						<tr class="pz-man-cache-side-meta-row">
+							<td colspan="2"><span><?php esc_html_e('Click Count', 'pz-linkcard' ); ?>:</span> <?php echo esc_html(number_format_i18n(intval($cacheman_get_value('click_count' ) ) ) ); ?><br class="pz-debug-only"><input name="data[click_count]" type="text" value="<?php echo esc_attr($cacheman_get_value('click_count' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly" ondblclick="this.readOnly=false;" /></td>
 						</tr>
 						<tr class="pz-man-cache-side-meta-row">
 							<td colspan="2"><span><?php esc_html_e('Update Date', 'pz-linkcard' ); ?>:</span> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('update_time' ) ) ); ?><br class="pz-debug-only"><input name="data[update_time]" type="text" value="<?php echo esc_attr($cacheman_get_value('update_time' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
@@ -325,8 +327,8 @@
 					<div class="pz-man-cache-sns-summary">
 						<?php
 							foreach	($sns_fields as $sns_key => $sns_label ) {
-								$sns_count	=	intval($cacheman_get_value($sns_key ) );
-								echo wp_kses('<span class="pz-man-cache-sns-row"><span><strong class="pz-man-cache-sns-label">'.esc_html($sns_label ).'</strong> <span class="pz-man-cache-sns-count">'.($sns_count >= 0 ? esc_html(number_format_i18n($sns_count ) ) : esc_html(__('(Not yet acquired)', 'pz-linkcard' ) ) ).'</span></span>'.$cacheman_text_input($sns_key, array(
+								$sns_count	=	$cacheman_get_value($sns_key, null );
+								echo wp_kses('<span class="pz-man-cache-sns-row"><span><strong class="pz-man-cache-sns-label">'.esc_html($sns_label ).'</strong> <span class="pz-man-cache-sns-count">'.(!is_null($sns_count ) ? esc_html(number_format_i18n(intval($sns_count ) ) ) : esc_html(__('(Not yet acquired)', 'pz-linkcard' ) ) ).'</span></span>'.$cacheman_text_input($sns_key, array(
 									'size'			=>	5,
 									'class'			=>	'pz-debug-only',
 									'readonly'		=>	true,

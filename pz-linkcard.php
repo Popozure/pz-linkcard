@@ -392,8 +392,8 @@ class class_pz_linkcard {
 			'user-agent'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'pzlkc', ],
 			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-click-log'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'click-log-retention'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	90, ],
+			'flg-click-log'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'click-log-retention'				=>	['type'	=>	'string',		'null'	=>	false,	'default'	=>	'3m', ],
 			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-alive'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
@@ -1744,7 +1744,8 @@ class class_pz_linkcard {
 		$opt	=	array('timeout' => 30 );
 
 		// 保存期間満了でソーシャルカウントをリセット
-		if	($this->now > $data['sns_nexttime'] && $data['update_result'] >= 100 && $data['update_result'] < 400 ) {
+		$update_succeeded	= isset($data['update_result'] ) && (intval($data['update_result'] ) === 0 || (intval($data['update_result'] ) >= 100 && intval($data['update_result'] ) < 400 ) );
+		if	($this->now > $data['sns_nexttime'] && $update_succeeded ) {
 			$sns_renew		=	true;
 		}
 
@@ -1753,13 +1754,13 @@ class class_pz_linkcard {
 
 		// Twitter Digitminimiのcount.jsoonを使用
 		//if	(isset($this->options['sns-tw'] ) && !is_null($this->options['sns-tw'] ) ) {
-		//	$count_before	=	isset($data['sns_twitter'] ) ? $data['sns_twitter'] : -1;
-		//	if	($sns_renew || $count_before < 0 ) {
+		//	$count_before	=	$data['sns_twitter'] ?? null;
+		//	if	($sns_renew || is_null($count_before ) ) {
 		//		$result	=	wp_safe_remote_get('https://jsoon.digitiminimi.com/twitter/count.json?url=' .$url_raw, $opt );
 		//		if	(isset($result ) && !is_wp_error($result ) && $result['response']['code'] == 200 ) {
 		//			$json 	=	json_decode($result['body'] );
 		//			$count	=	intval($json->count );
-		//			if	($count > $count_before ) {
+		//			if	(is_null($count_before ) || $count > $count_before ) {
 		//				$data['sns_twitter']	=	$count;
 		//				$update_cnt	=	true;
 		//			}
@@ -1769,13 +1770,13 @@ class class_pz_linkcard {
 
 		// facebook
 		//if	(isset($this->options['sns-fb'] ) && !is_null($this->options['sns-fb'] ) ) {
-		//	$count_before	=	intval(isset($data['sns_facebook'] ) ? $data['sns_facebook'] : -1 );
-		//	if	($sns_renew || $count_before < 0 ) {
+		//	$count_before	=	$data['sns_facebook'] ?? null;
+		//	if	($sns_renew || is_null($count_before ) ) {
 		//		$result	=	wp_safe_remote_get('https://graph.facebook.com?fields=og_object{engagement}&id=' .$url_raw, $opt );
 		//		if	(isset($result ) && !is_wp_error($result ) && $result['response']['code'] == 200 ) {
 		//			$json 	=	json_decode($result['body'] );
 		//			$count	=	intval($json->{'og_object'}->{'engagement'}->{'count'});
-		//			if	($count > $count_before ) {
+		//			if	(is_null($count_before ) || $count > $count_before ) {
 		//				$data['sns_facebook']	=	$count;
 		//				$update_cnt	=	true;
 		//			}
@@ -1785,12 +1786,12 @@ class class_pz_linkcard {
 
 		// はてなブックマーク
 		if	(isset($this->options['sns-hb'] ) && !is_null($this->options['sns-hb'] ) ) {
-			$count_before	=	isset($data['sns_hatena'] ) ? $data['sns_hatena'] : -1;
-			if	($sns_renew || $count_before < 0 ) {
+			$count_before	=	$data['sns_hatena'] ?? null;
+			if	($sns_renew || is_null($count_before ) ) {
 				$result	=	wp_safe_remote_get('http://api.b.st-hatena.com/entry.count?url=' .$url_raw, $opt );
 				if	(isset($result ) && !is_wp_error($result ) && $result['response']['code'] == 200 ) {
 					$count	=	intval($result['body'] );
-					if	($count > $count_before ) {
+					if	(is_null($count_before ) || $count > $count_before ) {
 						$data['sns_hatena']	=	$count;
 						$update_cnt	=	true;
 					}
@@ -1901,8 +1902,12 @@ class class_pz_linkcard {
 		$data['thumbnail']			=	isset($data['thumbnail'] )		? $data['thumbnail']		: null;			// リンク先：サムネイルURL
 		$data['favicon']			=	isset($data['favicon'] )		? $data['favicon']			: null;			// リンク先：サイトアイコンURL
 		$data['charset']			=	isset($data['charset'] )		? $data['charset']			: 'Unknown';	// リンク先：文字コード
-		if	(!isset($data['update_result'] ) || $data['update_result'] <= 0 ) {
-			$data['update_result']	=	200;
+		foreach	(array('regist_result', 'update_result', 'alive_result' ) as $result_key ) {
+			if	(!array_key_exists($result_key, $data ) || $data[$result_key] === '' || is_null($data[$result_key] ) || intval($data[$result_key] ) < 0 ) {
+				$data[$result_key]	= null;
+			} else {
+				$data[$result_key]	= intval($data[$result_key] );
+			}
 		}
 		$data['no_failure']			=	isset($data['no_failure'] )		? $data['no_failure']		: 0 ;			// 結果コードがエラーでも成功と見なす
 
@@ -1929,9 +1934,12 @@ class class_pz_linkcard {
 		}
 
 		// SNS関連
-		$data['sns_twitter']		=	isset($data['sns_twitter']	)	? $data['sns_twitter']		: -1;			// SNS：Twitter
-		$data['sns_facebook']		=	isset($data['sns_facebook'] )	? $data['sns_facebook']		: -1;			// SNS：facebook
-		$data['sns_hatena']			=	isset($data['sns_hatena'] )		? $data['sns_hatena']		: -1;			// SNS：はてなブックマーク
+		foreach	(array('sns_twitter', 'sns_facebook', 'sns_hatena' ) as $sns_count_key ) {
+			$sns_count_value	= $data[$sns_count_key] ?? null;
+			$data[$sns_count_key]	= ($sns_count_value === null || $sns_count_value === '' || intval($sns_count_value ) < 0 )
+				? null
+				: intval($sns_count_value );
+		}
 		$data['sns_nexttime']		=	isset($data['sns_nexttime'] )	? $data['sns_nexttime']		: $this->now;	// SNS：次回取得日時
 		$data['sns_time']			=	isset($data['sns_time'] )		? $data['sns_time']			: $this->now;	// SNS：最終取得日時
 
@@ -2255,8 +2263,8 @@ class class_pz_linkcard {
 		$data['thumbnail']			=	$thumbnail ?? '';
 		$data['favicon']			=	$siteicon ?? '';
 		$data['charset']			=	'UTF-8';
-		$data['update_result']		=	$update_result ?? '';
-		$data['alive_result']		=	$update_result ?? '';
+		$data['update_result']		=	$update_result ?? null;
+		$data['alive_result']		=	$update_result ?? null;
 		$data['use_post_id1']		=	$post_id ?? '';
 		$data['post_date']			=	$post_date ?? '';
 		$data['post_modified']		=	$post_modified ?? '';
@@ -2922,7 +2930,7 @@ class class_pz_linkcard {
 		$flg_alive_count	=	$this->pz_GetRequestOption('flg-alive-count', $this->options['flg-alive-count'] );
 		if	($flg_alive && $flg_alive_count ) {
 			global	$wpdb;
-			$result		=	$wpdb->get_row("SELECT COUNT(*) AS count FROM $this->db_card WHERE alive_result < 100 OR alive_result >= 400");
+			$result		=	$wpdb->get_row("SELECT COUNT(*) AS count FROM $this->db_card WHERE alive_result IS NOT NULL AND alive_result <> 0 AND (alive_result < 100 OR alive_result >= 400)");
 			if	(isset($result ) && isset($result->count ) ) {
 				$menu_manager	.=	'&nbsp;<span class="update-plugins"><span class="update-count lkc-menu-count">'.$result->count.'</span></span>';
 			}
@@ -3055,6 +3063,8 @@ class class_pz_linkcard {
 			'mediaTitle'	=>	__('Select Image', 'pz-linkcard' ),
 			'mediaButton'	=>	__('Use this image', 'pz-linkcard' ),
 			'discardChanges'	=>	__('Discard changes?', 'pz-linkcard' ),
+			'previousHeading'	=>	__('Go to previous heading', 'pz-linkcard' ),
+			'nextHeading'	=>	__('Go to next heading', 'pz-linkcard' ),
 		) );
 		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
 
@@ -3093,6 +3103,8 @@ class class_pz_linkcard {
 				'labels'	=>	array(
 					'clear'			=>	__('Clear', 'pz-linkcard' ),
 					'selectColor'	=>	__('Select color', 'pz-linkcard' ),
+					'saveColor'		=>	__('Save current color', 'pz-linkcard' ),
+					'resetOffset'	=>	__('Reset to offset', 'pz-linkcard' ),
 				),
 			) );
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_CSS,	array(),	PZLKC_PLUGIN_VERSION );
@@ -3754,16 +3766,49 @@ class class_pz_linkcard {
 
 		// カウントをインクリメント
 		global $wpdb;
-		$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %d;", $lkc_id ) );
-		if	($updated && !empty($this->options['flg-click-count'] ) && !empty($this->options['flg-click-log'] ) ) {
-			$click_time	=	current_time('timestamp', false );
-			$user_ip	=	isset($_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ) ) : '';
-			if	(!filter_var($user_ip, FILTER_VALIDATE_IP ) ) {
-				$user_ip	=	'';
+		$click_time	=	current_time('timestamp', false );
+		$user_ip	=	isset($_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ) ) : '';
+		if	(!filter_var($user_ip, FILTER_VALIDATE_IP ) ) {
+			$user_ip	=	'';
+		}
+		$ip_hash	=	$user_ip ? hash_hmac('sha256', 'pz-linkcard-click|'.date_i18n('Y-m-d', $click_time ).'|'.$user_ip, wp_salt('auth') ) : '';
+		$user_agent	=	isset($_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ) ) : '';
+		$user_agent	=	function_exists('mb_substr' ) ? mb_substr($user_agent, 0, 1024 ) : substr($user_agent, 0, 1024 );
+		$click_log_enabled	=	!empty($this->options['flg-click-count'] ) && !empty($this->options['flg-click-log'] );
+
+		// 同じカード・記事・IPハッシュ・ユーザーエージェントの30分以内のクリックは重複とする
+		if	($click_log_enabled ) {
+			$wpdb->query('START TRANSACTION' );
+			$card_exists	=	$wpdb->get_var($wpdb->prepare("SELECT id FROM $this->db_card WHERE id = %d FOR UPDATE", $lkc_id ) );
+			if	(!$card_exists ) {
+				$wpdb->query('ROLLBACK' );
+				wp_send_json_error('DB update failed');
+				return;
 			}
-			$ip_hash	=	$user_ip ? hash_hmac('sha256', 'pz-linkcard-click|'.date_i18n('Y-m-d', $click_time ).'|'.$user_ip, wp_salt('auth') ) : '';
-			$user_agent	=	isset($_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ) ) : '';
-			$user_agent	=	function_exists('mb_substr' ) ? mb_substr($user_agent, 0, 1024 ) : substr($user_agent, 0, 1024 );
+			$duplicate_click_id	=	$wpdb->get_var($wpdb->prepare(
+				"SELECT click_id FROM $this->db_click
+				WHERE card_id = %d
+					AND click_time >= %d
+					AND COALESCE(post_id, 0) = %d
+					AND COALESCE(ip_hash, '') = %s
+					AND COALESCE(user_agent, '') = %s
+				ORDER BY click_time DESC
+				LIMIT 1 FOR UPDATE",
+				$lkc_id,
+				$click_time - (30 * MINUTE_IN_SECONDS ),
+				$post_id,
+				$ip_hash,
+				$user_agent
+			) );
+			if	($duplicate_click_id ) {
+				$wpdb->query('COMMIT' );
+				wp_send_json_success('Click already counted');
+				return;
+			}
+		}
+
+		$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %d;", $lkc_id ) );
+		if	($updated && $click_log_enabled ) {
 			$logged		=	$wpdb->insert(
 				$this->db_click,
 				array(
@@ -3776,15 +3821,20 @@ class class_pz_linkcard {
 				array('%d', '%d', '%d', '%s', '%s' )
 			);
 			if	($logged === false ) {
+				$wpdb->query('ROLLBACK' );
 				wp_send_json_error('Click log failed');
 				return;
 			}
+			$wpdb->query('COMMIT' );
 		}
 
 		// 更新結果
 		if	($updated ) {
 			wp_send_json_success('Click counted');
 		} else {
+			if	($click_log_enabled ) {
+				$wpdb->query('ROLLBACK' );
+			}
 			wp_send_json_error('DB update failed');
 		}
 	}
@@ -3832,6 +3882,27 @@ class class_pz_linkcard {
 		wp_schedule_single_event($next->getTimestamp(), self::CRON_CLICK_CLEANUP );
 	}
 
+	// 保存期間から期限日時を求める（存在しない月末日は対象月の末日に丸める）
+	private	function	pz_GetClickLogCutoff($retention ) {
+		$period_months	= array('1m' => 1, '2m' => 2, '3m' => 3, '6m' => 6, '1y' => 12, '2y' => 24, '3y' => 36, '5y' => 60 );
+		$now	= new DateTimeImmutable('now', wp_timezone() );
+		if	($retention === '1w' ) {
+			$cutoff	= $now->modify('-7 days' );
+		} elseif (isset($period_months[$retention] ) ) {
+			$total_month	= (intval($now->format('Y' ) ) * 12 ) + intval($now->format('n' ) ) - 1 - $period_months[$retention];
+			$target_year	= intdiv($total_month, 12 );
+			$target_month	= ($total_month % 12 ) + 1;
+			$target_month_first	= new DateTimeImmutable(sprintf('%04d-%02d-01', $target_year, $target_month ), wp_timezone() );
+			$target_day	= min(intval($now->format('j' ) ), intval($target_month_first->format('t' ) ) );
+			$cutoff	= $now->setDate($target_year, $target_month, $target_day );
+		} else {
+			return	null;
+		}
+
+		// click_time は current_time('timestamp', false) と同じローカル時刻形式で保存されている
+		return	$cutoff->getTimestamp() + $cutoff->getOffset();
+	}
+
 	// 期限切れ・孤立クリックログを一度に最大5,000件ずつ削除
 	private	function	pz_DeleteExpiredClickLogs() {
 		global $wpdb;
@@ -3840,12 +3911,12 @@ class class_pz_linkcard {
 			return	$result;
 		}
 
-		$retention	= intval($this->options['click-log-retention'] ?? 90 );
-		if	(!in_array($retention, array(0, 7, 30, 90, 365 ), true ) ) {
-			$retention	= 90;
+		$retention	= strval($this->options['click-log-retention'] ?? '3m' );
+		if	(!in_array($retention, array('1w', '1m', '2m', '3m', '6m', '1y', '2y', '3y', '5y', 'forever' ), true ) ) {
+			$retention	= '3m';
 		}
-		if	($retention > 0 ) {
-			$cutoff	= current_time('timestamp', false ) - ($retention * DAY_IN_SECONDS );
+		if	($retention !== 'forever' ) {
+			$cutoff	= $this->pz_GetClickLogCutoff($retention );
 			$deleted	= $wpdb->query($wpdb->prepare("DELETE FROM $this->db_click WHERE click_time < %d ORDER BY click_time ASC LIMIT 5000", $cutoff ) );
 			$result['expired']	= $deleted === false ? 0 : intval($deleted );
 		}

@@ -389,9 +389,9 @@
     $data['alive_time']			=	$this->now;														// 生存確認：確認日時
     $data['alive_nexttime']		=	$this->now + WEEK_IN_SECONDS * 4 + rand(0, DAY_IN_SECONDS );	// 生存確認：次回確認日時
     $data['alive_result']		=	$http_code;														// 生存確認：HTTPレスポンス
-    $data['sns_twitter']		=	$data['sns_twitter']	??	-1;					// SNS：Twitter
-    $data['sns_facebook']		=	$data['sns_facebook']	??	-1;					// SNS：facebook
-    $data['sns_hatena']			=	$data['sns_hatena']		??	-1;					// SNS：はてなブックマーク
+    $data['sns_twitter']		=	$data['sns_twitter']	??	null;				// SNS：Twitter
+    $data['sns_facebook']		=	$data['sns_facebook']	??	null;				// SNS：facebook
+    $data['sns_hatena']			=	$data['sns_hatena']		??	null;				// SNS：はてなブックマーク
     $data['sns_time']			=	$data['sns_time']		??	0;					// SNS：最終取得日時
     $data['sns_nexttime']		=	$data['sns_nexttime']	??	0;					// SNS：次回取得日時
     $data['use_post_id1']		=	$data['use_post_id1']	??	null;				// 呼ばれている記事

@@ -3180,15 +3180,6 @@ msgstr ""
 msgid "1 week"
 msgstr ""
 
-msgid "30 days"
-msgstr ""
-
-msgid "90 days"
-msgstr ""
-
-msgid "365 days"
-msgstr ""
-
 msgid "Permanent (not recommended)"
 msgstr ""
 
@@ -3210,8 +3201,86 @@ msgstr ""
 msgid "Failed to delete detailed click logs."
 msgstr ""
 
-msgid "The click count is cumulative. Detailed logs are retained permanently."
+msgid "The click count is cumulative. Detailed logs are retained <a href=\"%s\">permanently</a>."
 msgstr ""
 
-msgid "The click count is cumulative. Detailed logs are retained for <a href=\"%1$s\">%2$s days</a>."
+msgid "The click count is cumulative. Detailed logs are retained for <a href=\"%1$s\">%2$s</a>."
+msgstr ""
+
+msgid "Clicks in the last 7 days"
+msgstr ""
+
+msgid "%s clicks"
+msgstr ""
+
+msgid "Day"
+msgstr ""
+
+msgid "Week"
+msgstr ""
+
+msgid "Month"
+msgstr ""
+
+msgid "Year"
+msgstr ""
+
+msgid "Chart period"
+msgstr ""
+
+msgid "Clicks in the last 8 weeks"
+msgstr ""
+
+msgid "Clicks in the last 12 months"
+msgstr ""
+
+msgid "Clicks in the last 5 years"
+msgstr ""
+
+msgid "1 month"
+msgstr ""
+
+msgid "2 months"
+msgstr ""
+
+msgid "3 months"
+msgstr ""
+
+msgid "6 months"
+msgstr ""
+
+msgid "1 year"
+msgstr ""
+
+msgid "2 years"
+msgstr ""
+
+msgid "3 years"
+msgstr ""
+
+msgid "5 years"
+msgstr ""
+
+msgid "2 years (long-term)"
+msgstr ""
+
+msgid "3 years (long-term)"
+msgstr ""
+
+msgid "5 years (long-term)"
+msgstr ""
+
+msgid "Long-term retention increases database usage according to the number of clicks."
+msgstr ""
+
+msgid "Go to previous heading"
+msgstr ""
+
+msgid "Go to next heading"
+msgstr ""
+
+msgid "Save current color"
+msgstr ""
+
+msgid "Reset to offset"
 msgstr ""

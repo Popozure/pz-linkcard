@@ -3,10 +3,19 @@
 	global	$wpdb;
 
 	$card_id		=	intval($data['id'] ?? 0 );
-	$click_page	=	isset($_GET['click_page'] ) ? max(1, absint($_GET['click_page'] ) ) : 1;
+	$click_page	=	isset($_POST['click-page'] ) ? max(1, absint($_POST['click-page'] ) ) : 1;
+	$chart_period	=	isset($_POST['click-period'] )
+		? sanitize_key(wp_unslash($_POST['click-period'] ) )
+		: (isset($_POST['chart_period'] ) ? sanitize_key(wp_unslash($_POST['chart_period'] ) ) : 'day' );
+	if	(!in_array($chart_period, array('day', 'week', 'month', 'year' ), true ) ) {
+		$chart_period	= 'day';
+	}
 	$page_limit	=	50;
 	$count_now	=	0;
 	$click_logs	=	array();
+	$chart_items	=	array();
+	$chart_ranges	=	array();
+	$chart_title	=	'';
 	$db_click_exists	=	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_click ) ) === $this->db_click );
 
 	if	($db_click_exists && $card_id ) {
@@ -20,32 +29,97 @@
 			$page_limit,
 			$offset
 		) );
+
+		$local_now	= current_time('timestamp', false );
+		if	($chart_period === 'day' ) {
+			$today_bucket	= intdiv($local_now, DAY_IN_SECONDS );
+			$first_bucket	= $today_bucket - 6;
+			for	($bucket = $first_bucket; $bucket <= $today_bucket; $bucket++ ) {
+				$chart_items[(string) $bucket]	= array('label' => date_i18n('n/j', $bucket * DAY_IN_SECONDS ), 'count' => 0 );
+				$chart_ranges[]	= array('key' => (string) $bucket, 'start' => $bucket * DAY_IN_SECONDS, 'end' => ($bucket + 1 ) * DAY_IN_SECONDS );
+			}
+			$chart_title	= __('Clicks in the last 7 days', 'pz-linkcard' );
+		} elseif ($chart_period === 'week' ) {
+			$week_offset	= 4 * DAY_IN_SECONDS;
+			$this_week	= intdiv($local_now - $week_offset, WEEK_IN_SECONDS );
+			$first_week	= $this_week - 7;
+			for	($bucket = $first_week; $bucket <= $this_week; $bucket++ ) {
+				$week_start	= ($bucket * WEEK_IN_SECONDS ) + $week_offset;
+				$chart_items[(string) $bucket]	= array('label' => date_i18n('n/j', $week_start ), 'count' => 0 );
+				$chart_ranges[]	= array('key' => (string) $bucket, 'start' => $week_start, 'end' => $week_start + WEEK_IN_SECONDS );
+			}
+			$chart_title	= __('Clicks in the last 8 weeks', 'pz-linkcard' );
+		} elseif ($chart_period === 'month' ) {
+			$current_month	= new DateTimeImmutable(gmdate('Y-m-01', $local_now ), new DateTimeZone('UTC' ) );
+			for	($index = 11; $index >= 0; $index-- ) {
+				$month	= $current_month->modify('-'.$index.' months' );
+				$period_key	= $month->format('Y-m' );
+				$chart_items[$period_key]	= array('label' => $month->format('Y/n' ), 'count' => 0 );
+				$chart_ranges[]	= array('key' => $period_key, 'start' => $month->getTimestamp(), 'end' => $month->modify('+1 month' )->getTimestamp() );
+			}
+			$chart_title	= __('Clicks in the last 12 months', 'pz-linkcard' );
+		} else {
+			$current_year	= intval(gmdate('Y', $local_now ) );
+			for	($year = $current_year - 4; $year <= $current_year; $year++ ) {
+				$chart_items[(string) $year]	= array('label' => (string) $year, 'count' => 0 );
+				$chart_ranges[]	= array('key' => (string) $year, 'start' => gmmktime(0, 0, 0, 1, 1, $year ), 'end' => gmmktime(0, 0, 0, 1, 1, $year + 1 ) );
+			}
+			$chart_title	= __('Clicks in the last 5 years', 'pz-linkcard' );
+		}
+		$chart_selects	= array();
+		$chart_query_args	= array();
+		foreach	($chart_ranges as $index => $range ) {
+			$chart_selects[]	= "SUM(CASE WHEN click_time >= %d AND click_time < %d THEN 1 ELSE 0 END) AS period_$index";
+			$chart_query_args[]	= $range['start'];
+			$chart_query_args[]	= $range['end'];
+		}
+		$chart_query_args[]	= $card_id;
+		$chart_query_args[]	= $chart_ranges[0]['start'];
+		$chart_query_args[]	= $chart_ranges[count($chart_ranges ) - 1]['end'];
+		$chart_counts	= $wpdb->get_row($wpdb->prepare("SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE card_id = %d AND click_time >= %d AND click_time < %d", $chart_query_args ) );
+		if	($chart_counts ) {
+			foreach	($chart_ranges as $index => $range ) {
+				$column	= 'period_'.$index;
+				$chart_items[$range['key']]['count']	= intval($chart_counts->$column ?? 0 );
+			}
+		}
 	} else {
 		$page_max	=	1;
 	}
 
-	$base_url	=	add_query_arg(array('action' => 'click-log', 'cache_id' => $card_id ), $this->cacheman_url );
 	$click_settings_url	=	add_query_arg('tab', 'pz-check', $this->settings_url ).'#pz-click-count-settings';
 	$click_retention_settings_url	=	add_query_arg('tab', 'pz-check', $this->settings_url ).'#pz-click-log-retention-settings';
 	$click_log_enabled	=	!empty($this->options['flg-click-count'] ) && !empty($this->options['flg-click-log'] );
-	$click_log_retention	=	intval($this->options['click-log-retention'] ?? 90 );
-	$pagination	=	paginate_links(array(
-		'base'		=>	add_query_arg('click_page', '%#%', $base_url ),
-		'format'	=>	'',
-		'current'	=>	$click_page,
-		'total'		=>	$page_max,
-		'type'		=>	'list',
-		'prev_text'	=>	__('&lsaquo;', 'pz-linkcard' ),
-		'next_text'	=>	__('&rsaquo;', 'pz-linkcard' ),
-	) );
+	$click_log_retention	=	strval($this->options['click-log-retention'] ?? '3m' );
+	$click_log_retention_labels	=	array(
+		'1w' => __('1 week', 'pz-linkcard' ),
+		'1m' => __('1 month', 'pz-linkcard' ),
+		'2m' => __('2 months', 'pz-linkcard' ),
+		'3m' => __('3 months', 'pz-linkcard' ),
+		'6m' => __('6 months', 'pz-linkcard' ),
+		'1y' => __('1 year', 'pz-linkcard' ),
+		'2y' => __('2 years', 'pz-linkcard' ),
+		'3y' => __('3 years', 'pz-linkcard' ),
+		'5y' => __('5 years', 'pz-linkcard' ),
+	);
+	$click_log_retention_label	=	$click_log_retention_labels[$click_log_retention] ?? $click_log_retention_labels['3m'];
+	$chart_max	=	$chart_items ? max(array_column($chart_items, 'count' ) ) : 0;
+	$chart_periods	=	array(
+		'day'	=> __('Day', 'pz-linkcard' ),
+		'week'	=> __('Week', 'pz-linkcard' ),
+		'month'	=> __('Month', 'pz-linkcard' ),
+		'year'	=> __('Year', 'pz-linkcard' ),
+	);
 ?>
 <div class="pz-man-click-log">
+	<input type="hidden" name="cache_id" value="<?php echo intval($card_id ); ?>">
+	<input type="hidden" name="chart_period" value="<?php echo esc_attr($chart_period ); ?>">
 	<h2><?php esc_html_e('Click Log', 'pz-linkcard' ); ?></h2>
 	<p>
 		<strong><?php esc_html_e('ID', 'pz-linkcard' ); ?>:</strong> <?php echo esc_html($card_id ); ?><br>
 		<strong><?php esc_html_e('Title', 'pz-linkcard' ); ?>:</strong> <?php echo esc_html($data['title'] ?? '' ); ?><br>
 		<strong><?php esc_html_e('URL', 'pz-linkcard' ); ?>:</strong>
-		<a href="<?php echo esc_url($data['url'] ?? '' ); ?>" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer"><?php echo esc_html($data['url'] ?? '' ); ?></a>
+		<a href="<?php echo esc_url($data['url'] ?? '' ); ?>" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer"><?php echo esc_html($this->pz_DecodeURL($data['url'] ?? '' ) ); ?></a>
 	</p>
 	<?php if	(!$click_log_enabled ) : ?>
 		<div class="notice notice-warning inline"><p><?php
@@ -55,22 +129,60 @@
 			);
 		?></p></div>
 	<?php endif; ?>
+	<?php if	($chart_items ) : ?>
+		<section class="pz-click-chart" aria-labelledby="pz-click-chart-title">
+			<nav class="pz-click-chart-periods" aria-label="<?php echo esc_attr__('Chart period', 'pz-linkcard' ); ?>">
+				<?php foreach	($chart_periods as $period_key => $period_label ) : ?>
+					<button type="submit" name="click-period" value="<?php echo esc_attr($period_key ); ?>" class="<?php echo $chart_period === $period_key ? 'is-active' : ''; ?>"<?php echo $chart_period === $period_key ? ' aria-current="page"' : ''; ?>><?php echo esc_html($period_label ); ?></button>
+				<?php endforeach; ?>
+			</nav>
+			<h3 id="pz-click-chart-title"><?php echo esc_html($chart_title ); ?></h3>
+			<div class="pz-click-chart-bars">
+				<?php foreach	($chart_items as $chart_day ) : ?>
+					<?php
+						$chart_count	= intval($chart_day['count'] );
+						$chart_height	= $chart_max > 0 ? intval(round(($chart_count / $chart_max ) * 100 ) ) : 0;
+						if	($chart_count > 0 ) {
+							$chart_height	= max(4, $chart_height );
+						}
+					?>
+					<div class="pz-click-chart-item" title="<?php echo esc_attr(sprintf(__('%s clicks', 'pz-linkcard' ), number_format_i18n($chart_count ) ) ); ?>">
+						<span class="pz-click-chart-count"><?php echo esc_html(number_format_i18n($chart_count ) ); ?></span>
+						<span class="pz-click-chart-bar-wrap"><span class="pz-click-chart-bar" style="height: <?php echo esc_attr($chart_height ); ?>%;"></span></span>
+						<span class="pz-click-chart-label"><?php echo esc_html($chart_day['label'] ); ?></span>
+					</div>
+				<?php endforeach; ?>
+			</div>
+		</section>
+	<?php endif; ?>
 	<p class="description">
-		<?php if	($click_log_retention === 0 ) : ?>
-			<?php esc_html_e('The click count is cumulative. Detailed logs are retained permanently.', 'pz-linkcard' ); ?>
+		<?php if	($click_log_retention === 'forever' ) : ?>
+			<?php
+				echo wp_kses(
+					sprintf(__('The click count is cumulative. Detailed logs are retained <a href="%s">permanently</a>.', 'pz-linkcard' ), esc_url($click_retention_settings_url ) ),
+					array('a' => array('href' => true ) )
+				);
+			?>
 		<?php else : ?>
 			<?php
 				echo wp_kses(
-					sprintf(__('The click count is cumulative. Detailed logs are retained for <a href="%1$s">%2$s days</a>.', 'pz-linkcard' ), esc_url($click_retention_settings_url ), number_format_i18n($click_log_retention ) ),
+					sprintf(__('The click count is cumulative. Detailed logs are retained for <a href="%1$s">%2$s</a>.', 'pz-linkcard' ), esc_url($click_retention_settings_url ), esc_html($click_log_retention_label ) ),
 					array('a' => array('href' => true ) )
 				);
 			?>
 		<?php endif; ?>
 	</p>
+	<p><button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button></p>
 	<p><?php echo esc_html(sprintf(_n('%s item', '%s items', $count_now, 'pz-linkcard' ), number_format_i18n($count_now ) ) ); ?></p>
 
-	<?php if	($pagination ) : ?>
-		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>"><?php echo wp_kses_post($pagination ); ?></nav>
+	<?php if	($page_max > 1 ) : ?>
+		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>">
+			<button type="submit" name="click-page" value="1" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&laquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo max(1, $click_page - 1 ); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
+			<span class="paging-input"><?php echo esc_html(number_format_i18n($click_page ).' / '.number_format_i18n($page_max ) ); ?></span>
+			<button type="submit" name="click-page" value="<?php echo min($page_max, $click_page + 1 ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo intval($page_max ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&raquo;', 'pz-linkcard' ) ); ?></button>
+		</nav>
 	<?php endif; ?>
 
 	<table class="widefat striped">
@@ -113,8 +225,14 @@
 		</tbody>
 	</table>
 
-	<?php if	($pagination ) : ?>
-		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>"><?php echo wp_kses_post($pagination ); ?></nav>
+	<?php if	($page_max > 1 ) : ?>
+		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>">
+			<button type="submit" name="click-page" value="1" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&laquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo max(1, $click_page - 1 ); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
+			<span class="paging-input"><?php echo esc_html(number_format_i18n($click_page ).' / '.number_format_i18n($page_max ) ); ?></span>
+			<button type="submit" name="click-page" value="<?php echo min($page_max, $click_page + 1 ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo intval($page_max ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&raquo;', 'pz-linkcard' ) ); ?></button>
+		</nav>
 	<?php endif; ?>
-	<p><a href="<?php echo esc_url($this->cacheman_url ); ?>" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></a></p>
+	<p><button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button></p>
 </div>

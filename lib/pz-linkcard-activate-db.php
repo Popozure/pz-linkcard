@@ -3,12 +3,13 @@
 	// DB作成
 	global	$wpdb;
 	$wpdb->hide_errors();
+	require_once(ABSPATH.'wp-admin/includes/upgrade.php' );
 
 	// CREATE TABLE
-	$sql = "CREATE TABLE $this->db_card (
+	$sql	=	"CREATE TABLE $this->db_card (
 				id				BIGINT			UNSIGNED	NOT NULL	AUTO_INCREMENT,
 				url				VARCHAR(3000)							DEFAULT NULL,
-				url_key			CHAR(32)							DEFAULT NULL,
+				url_key			CHAR(32)								DEFAULT NULL,
 				url_redir		VARCHAR(3000)							DEFAULT NULL,
 				scheme			VARCHAR(20)								DEFAULT NULL,
 				domain			VARCHAR(200)							DEFAULT NULL,
@@ -22,28 +23,28 @@
 				post_modified	BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
 				no_failure		INT				UNSIGNED				DEFAULT 0,
 				click_count		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				alive_result	INT										DEFAULT -1,
+				alive_result	INT										DEFAULT NULL,
 				alive_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
 				alive_nexttime	BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				sns_twitter		INT										DEFAULT -1,
-				sns_facebook	INT										DEFAULT -1,
-				sns_hatena		INT										DEFAULT -1,
+				sns_twitter		INT										DEFAULT NULL,
+				sns_facebook	INT										DEFAULT NULL,
+				sns_hatena		INT										DEFAULT NULL,
 				sns_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
 				sns_nexttime	BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				use_post_id1	INT				UNSIGNED,
-				use_post_id2	INT				UNSIGNED,
-				use_post_id3	INT				UNSIGNED,
-				use_post_id4	INT				UNSIGNED,
-				use_post_id5	INT				UNSIGNED,
-				use_post_id6	INT				UNSIGNED,
+				use_post_id1	INT				UNSIGNED				DEFAULT NULL,
+				use_post_id2	INT				UNSIGNED				DEFAULT NULL,
+				use_post_id3	INT				UNSIGNED				DEFAULT NULL,
+				use_post_id4	INT				UNSIGNED				DEFAULT NULL,
+				use_post_id5	INT				UNSIGNED				DEFAULT NULL,
+				use_post_id6	INT				UNSIGNED				DEFAULT NULL,
 				regist_title	VARCHAR(200)							DEFAULT NULL,
 				regist_excerpt	VARCHAR(500)							DEFAULT NULL,
 				regist_charset	VARCHAR(30)								DEFAULT NULL,
-				regist_result 	INT										DEFAULT 0,
+				regist_result 	INT										DEFAULT NULL,
 				regist_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
 				mod_title		INT				UNSIGNED	NOT NULL	DEFAULT 0,
 				mod_excerpt		INT				UNSIGNED	NOT NULL	DEFAULT 0,
-				update_result	INT										DEFAULT 0,
+				update_result	INT										DEFAULT NULL,
 				update_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
 				PRIMARY KEY		(id),
 				UNIQUE KEY url_key (url_key),
@@ -95,8 +96,24 @@
 	}
 
 	// DBテーブル作成・更新
-	require_once(ABSPATH.'wp-admin/includes/upgrade.php' );
 	$result		=	dbDelta($sql, true );
+
+	// 旧仕様で未取得を表していた負数をNULLへ統一
+	$wpdb->query(
+		"UPDATE $this->db_card SET
+			sns_twitter = CASE WHEN sns_twitter < 0 THEN NULL ELSE sns_twitter END,
+			sns_facebook = CASE WHEN sns_facebook < 0 THEN NULL ELSE sns_facebook END,
+			sns_hatena = CASE WHEN sns_hatena < 0 THEN NULL ELSE sns_hatena END,
+			alive_result = CASE WHEN alive_result < 0 THEN NULL ELSE alive_result END,
+			regist_result = CASE WHEN regist_result < 0 THEN NULL ELSE regist_result END,
+			update_result = CASE WHEN update_result < 0 THEN NULL ELSE update_result END
+		WHERE sns_twitter < 0
+			OR sns_facebook < 0
+			OR sns_hatena < 0
+			OR alive_result < 0
+			OR regist_result < 0
+			OR update_result < 0"
+	);
 	// if	($wpdb->last_error ) {
 	// 	$error_code	=	'';
 	// 	if	(function_exists('mysqli_errno' ) && isset($wpdb->dbh ) && $wpdb->dbh instanceof mysqli ) {
