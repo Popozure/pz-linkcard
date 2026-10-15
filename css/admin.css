@@ -1,6 +1,15 @@
 @charset "UTF-8";
 /* Pz-LinkCard CSS for Admin Screen */
 
+body {
+	--pz-overlay-top: 72px;
+	--pz-overlay-left: 160px;
+}
+
+body.folded {
+	--pz-overlay-left: 36px;
+}
+
 #pz-infobar {
 	position: fixed;
 	top: 32px;
@@ -681,10 +690,10 @@ body.folded #pz-infobar {
 	display: none;
 	z-index: 100001;
 	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
+	top: var(--pz-overlay-top);
+	right: 0;
+	bottom: 0;
+	left: var(--pz-overlay-left);
 	background-color: rgba(0,0,0,0);
 	cursor: wait;
 	transition: background-color 0.2s ease;
@@ -3915,6 +3924,10 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 
 /* Responsive */
 @media screen and (max-width: 960px) {
+	body.auto-fold {
+		--pz-overlay-left: 36px;
+	}
+
 	body.auto-fold #pz-infobar {
 		left: 36px;
 	}
@@ -4042,6 +4055,13 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 }
 
 @media screen and (max-width: 782px) {
+	body,
+	body.auto-fold,
+	body.folded {
+		--pz-overlay-top: 86px;
+		--pz-overlay-left: 0px;
+	}
+
 	.pz-toast-container {
 		top: 72px;
 		right: 12px;

@@ -563,14 +563,14 @@ class class_pz_linkcard {
 		define('PZLKC_PLUGIN_VERSION',	$plugin_info['Version'] );									// バージョン
 
 		// 定数
-		define('PZLKC_PZLKC_URL_ADMIN_JS',			plugins_url('js/admin-settings.js', __FILE__ ) );		// 管理画面のJSのURL（設定画面）
-		define('PZLKC_PZLKC_URL_ADMIN_SEARCH',		plugins_url('js/admin-search.js', __FILE__ ) );		// 管理画面のJSのURL（設定画面検索）
-		define('PZLKC_PZLKC_URL_PREVIEW_JS',		plugins_url('js/pz-linkcard-preview.js', __FILE__ ) );	// 管理画面のJSのURL（プレビュー）
-		define('PZLKC_PZLKC_URL_ADMIN_TAB',			plugins_url('js/admin-tabs.js', __FILE__ ) );			// 管理画面のJSのURL（設定画面タブ）
-		define('PZLKC_PZLKC_URL_COLOR_PICKER_JS',	plugins_url('js/color-picker.js', __FILE__ ) );			// 管理画面のJSのURL（カラーピッカー）
-		define('PZLKC_JS_COUNT',					plugins_url('js/click-count.js', __FILE__ ) );			// 管理画面のJSのURL（クリックカウント）
-		define('PZLKC_PZLKC_URL_ADMIN_CSS',			plugins_url('css/admin.css', __FILE__ ) );				// 管理画面のCSSのURL
-		define('PZLKC_PZLKC_URL_COLOR_PICKER_CSS',	plugins_url('css/color-picker.css', __FILE__ ) );		// 管理画面のCSSのURL（カラーピッカー）
+		define('PZLKC_URL_ADMIN_JS',			plugins_url('js/admin-settings.js', __FILE__ ) );		// 管理画面のJSのURL（設定画面）
+		define('PZLKC_URL_ADMIN_SEARCH',		plugins_url('js/admin-search.js', __FILE__ ) );			// 管理画面のJSのURL（設定画面検索）
+		define('PZLKC_URL_PREVIEW_JS',			plugins_url('js/pz-linkcard-preview.js', __FILE__ ) );	// 管理画面のJSのURL（プレビュー）
+		define('PZLKC_URL_ADMIN_TAB',			plugins_url('js/admin-tabs.js', __FILE__ ) );			// 管理画面のJSのURL（設定画面タブ）
+		define('PZLKC_URL_COLOR_PICKER_JS',		plugins_url('js/color-picker.js', __FILE__ ) );			// 管理画面のJSのURL（カラーピッカー）
+		define('PZLKC_JS_COUNT',				plugins_url('js/click-count.js', __FILE__ ) );			// 管理画面のJSのURL（クリックカウント）
+		define('PZLKC_URL_ADMIN_CSS',			plugins_url('css/admin.css', __FILE__ ) );				// 管理画面のCSSのURL
+		define('PZLKC_URL_COLOR_PICKER_CSS',	plugins_url('css/color-picker.css', __FILE__ ) );		// 管理画面のCSSのURL（カラーピッカー）
 
 		define('PZLKC_DIR_UPLOAD',			wp_upload_dir()['basedir']. '/'.self::PLUGIN_SLUG.'/' );	// アップロード ディレクトリのパス
 		define('PZLKC_URL_UPLOAD',			preg_replace('/(http|https):(\/\/.*)/', '$2', wp_upload_dir()['baseurl'] ).'/'.self::PLUGIN_SLUG.'/' );		// アップロード ディレクトリのURL
@@ -605,8 +605,8 @@ class class_pz_linkcard {
 		$this->cacheman_url			=	admin_url(self::CACHEMAN_URL );						// Pzカード管理のURL
 
 		// オプション取得
-		$this->suppression		=	false;													// 出力抑制（header出力前かどうか）
-		$result					=	$this->pz_LoadOptions();
+		$this->suppression			=	false;												// 出力抑制（header出力前かどうか）
+		$result						=	$this->pz_LoadOptions();
 		define('PZLKC_URL_CSS_ADD',		$this->options['css-add-url'] );					// 追加CSSのURL
 
 		// ログ出力
@@ -652,13 +652,13 @@ class class_pz_linkcard {
 		add_action(self::CRON_CLICK_CLEANUP, [$this, 'schedule_hook_click_cleanup' ] );
 
 		// WP-CRONスケジュール登録
-		$cron_schedules		= wp_get_schedules();
-		$sns_period			= $this->options['sns-period'];
-		$alive_period		= $this->options['alive-period'];
-		$sns_interval		= isset($cron_schedules[$sns_period]['interval'] ) ? intval($cron_schedules[$sns_period]['interval'] ) : 0;
-		$alive_interval		= isset($cron_schedules[$alive_period]['interval'] ) ? intval($cron_schedules[$alive_period]['interval'] ) : 0;
-		$sns_first_delay	= 30 * MINUTE_IN_SECONDS;
-		$alive_first_delay	= intdiv($sns_interval + $alive_interval, 4 ) + $sns_first_delay;
+		$cron_schedules		=	wp_get_schedules();
+		$sns_period			=	$this->options['sns-period'];
+		$alive_period		=	$this->options['alive-period'];
+		$sns_interval		=	isset($cron_schedules[$sns_period]['interval'] ) ? intval($cron_schedules[$sns_period]['interval'] ) : 0;
+		$alive_interval		=	isset($cron_schedules[$alive_period]['interval'] ) ? intval($cron_schedules[$alive_period]['interval'] ) : 0;
+		$sns_first_delay	=	30 * MINUTE_IN_SECONDS;
+		$alive_first_delay	=	intdiv($sns_interval + $alive_interval, 4 ) + $sns_first_delay;
 
 		if	(!$this->options['sns-position'] || !$sns_period ) {
 			wp_clear_scheduled_hook(self::CRON_CHECK );
@@ -3035,7 +3035,7 @@ class class_pz_linkcard {
 
 		$admin_css_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/admin.css' );
 		if	($this->is_editor_modal_screen($hook ) ) {
-			wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
+			wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
 			return;
 		}
 
@@ -3054,7 +3054,7 @@ class class_pz_linkcard {
 			}
 		}
 		$admin_js_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-settings.js' );
-		wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-js',		PZLKC_PZLKC_URL_ADMIN_JS,			array(),			$admin_js_version, true );
+		wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-js',		PZLKC_URL_ADMIN_JS,			array(),			$admin_js_version, true );
 		wp_localize_script	(self::PLUGIN_SLUG.'-admin-js',		'pzLinkCardAdmin', array(
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 			'noticeNonce'	=>	wp_create_nonce('pz_lkc_clear_error_mode' ),
@@ -3066,7 +3066,7 @@ class class_pz_linkcard {
 			'previousHeading'	=>	__('Go to previous heading', 'pz-linkcard' ),
 			'nextHeading'	=>	__('Go to next heading', 'pz-linkcard' ),
 		) );
-		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
+		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
 
 		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			wp_enqueue_media();
@@ -3077,9 +3077,9 @@ class class_pz_linkcard {
 			$preview_js_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/pz-linkcard-preview.js' );
 			$preview_today		=	current_datetime();
 			$preview_yesterday	=	$preview_today->modify('-1 day' );
-			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-tabs',	PZLKC_PZLKC_URL_ADMIN_TAB,	array(),	$admin_tabs_version, true );
-			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-search', PZLKC_PZLKC_URL_ADMIN_SEARCH, array(self::PLUGIN_SLUG.'-admin-js' ), $admin_search_version, true );
-			wp_enqueue_script	(self::PLUGIN_SLUG.'-preview',		PZLKC_PZLKC_URL_PREVIEW_JS,	array(),	$preview_js_version, true );
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-tabs',	PZLKC_URL_ADMIN_TAB,	array(),	$admin_tabs_version, true );
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-search', PZLKC_URL_ADMIN_SEARCH, array(self::PLUGIN_SLUG.'-admin-js' ), $admin_search_version, true );
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-preview',		PZLKC_URL_PREVIEW_JS,	array(),	$preview_js_version, true );
 			wp_localize_script	(self::PLUGIN_SLUG.'-preview',		'pzLinkCardPreview',		array(
 					'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 					'nonce'			=>	wp_create_nonce('pz_lkc_preview_render' ),
@@ -3098,7 +3098,7 @@ class class_pz_linkcard {
 						'previewModifiedDate'	=>	wp_date(PZLKC_DATE_FORMAT, $preview_today->getTimestamp(), wp_timezone() ),
 					),
 			) );
-			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );
+			wp_enqueue_script	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_URL_COLOR_PICKER_JS,	array(),	PZLKC_PLUGIN_VERSION, true );
 			wp_localize_script	(self::PLUGIN_SLUG.'-color-picker',	'pz_lkc_color_picker', array(
 				'labels'	=>	array(
 					'clear'			=>	__('Clear', 'pz-linkcard' ),
@@ -3107,7 +3107,7 @@ class class_pz_linkcard {
 					'resetOffset'	=>	__('Reset to offset', 'pz-linkcard' ),
 				),
 			) );
-			wp_enqueue_style	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_PZLKC_URL_COLOR_PICKER_CSS,	array(),	PZLKC_PLUGIN_VERSION );
+			wp_enqueue_style	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_URL_COLOR_PICKER_CSS,	array(),	PZLKC_PLUGIN_VERSION );
 		}
 	}
 
@@ -3246,7 +3246,7 @@ class class_pz_linkcard {
 	public	function	action_enqueue_block_editor_assets() {
 		if	($this->options['survey-mode'] ) { $this->pz_OutputLog(__FUNCTION__ ); }
 
-		wp_enqueue_style(self::PLUGIN_SLUG.'-block-editor', PZLKC_PZLKC_URL_ADMIN_CSS, array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/admin.css' ) );
+		wp_enqueue_style(self::PLUGIN_SLUG.'-block-editor', PZLKC_URL_ADMIN_CSS, array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/admin.css' ) );
 		$this->enqueue_block_card_styles();
 	}
 

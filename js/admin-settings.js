@@ -146,11 +146,24 @@
 		if (!infobar) return;
 
 		const adminBar = document.querySelector("#wpadminbar");
+		const adminMenu = document.querySelector("#adminmenuwrap");
 		let frame = null;
 		const updatePosition = () => {
 			frame = null;
 			const adminBarBottom = adminBar ? adminBar.getBoundingClientRect().bottom : 0;
 			infobar.style.top = `${Math.max(0, Math.round(adminBarBottom))}px`;
+
+			const infobarBottom = infobar.getBoundingClientRect().bottom;
+			let adminMenuRight = 0;
+			if (adminMenu) {
+				const menuRect = adminMenu.getBoundingClientRect();
+				const menuStyle = window.getComputedStyle(adminMenu);
+				if (menuStyle.display !== "none" && menuStyle.visibility !== "hidden" && menuRect.left <= 0 && menuRect.right > 0) {
+					adminMenuRight = menuRect.right;
+				}
+			}
+			document.body.style.setProperty("--pz-overlay-top", `${Math.max(0, Math.round(infobarBottom))}px`);
+			document.body.style.setProperty("--pz-overlay-left", `${Math.max(0, Math.round(adminMenuRight))}px`);
 		};
 		const scheduleUpdate = () => {
 			if (frame !== null) return;
@@ -162,6 +175,12 @@
 		window.addEventListener("scroll", scheduleUpdate, { passive: true });
 		if (adminBar && "ResizeObserver" in window) {
 			new ResizeObserver(scheduleUpdate).observe(adminBar);
+		}
+		if (adminMenu && "ResizeObserver" in window) {
+			new ResizeObserver(scheduleUpdate).observe(adminMenu);
+		}
+		if ("ResizeObserver" in window) {
+			new ResizeObserver(scheduleUpdate).observe(infobar);
 		}
 	}
 
