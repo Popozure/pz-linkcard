@@ -35,7 +35,7 @@ $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
 				<span><?php echo is_numeric($prop['error-time'] ) ? esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, esc_attr($prop['error-time'] ) ) ) : esc_attr($prop['error-time'] ); ?></span>
 			</td>
 		</tr>
-		<tr>
+		<tr id="pz-error-reset-settings">
 			<th scope="row"><?php esc_html_e('Error Reset', 'pz-linkcard' ); ?></th>
 			<td>
 				<button type="submit" name="action" value="clear-error" class="pz-button"><?php esc_html_e('Reset', 'pz-linkcard' ); ?></button>

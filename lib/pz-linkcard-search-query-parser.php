@@ -181,13 +181,16 @@ final class pz_LinkCard_Search_Query_Parser {
 		}
 
 		$key		=	strtolower(substr($token, 0, $separator['position'] ) );
-		$value		=	substr($token, $separator['position'] + 1 );
+		$value		=	substr($token, $separator['position'] + $separator['length'] );
 		$operator	=	$separator['operator'];
 		if	('' === $key || '' === $value || !isset($this->keys[$key] ) ) {
 			return	null;
 		}
 
 		$definition	=	$this->keys[$key];
+		if	(':' !== $operator && ('date' === $definition['type'] || 'number' === $definition['type'] ) ) {
+			$value	=	$separator['comparison'].$value;
+		}
 		$columns	=	is_array($definition['column'] ) ? $definition['column'] : array($definition['column'] );
 		$condition	=	$this->build_multi_column_condition($columns, $definition['type'], $value, $negative, $operator );
 		if	(null === $condition ) {
@@ -341,11 +344,11 @@ final class pz_LinkCard_Search_Query_Parser {
 			return	array('kind' => 'keyed', 'negative' => $negative, 'sql' => $sql, 'params' => array($from, $to ) );
 		}
 
-		if	(!preg_match('/^(<=|>=|=|<|>)?(.*)$/s', $value, $matches ) ) {
+		if	(!preg_match('/^(<=|=<|>=|=>|<>|=|<|>)?(.*)$/s', $value, $matches ) ) {
 			return	null;
 		}
 
-		$operator	=	isset($matches[1] ) && '' !== $matches[1] ? $matches[1] : '=';
+		$operator	=	$this->normalize_comparison_operator(isset($matches[1] ) && '' !== $matches[1] ? $matches[1] : '=' );
 		$date		=	$this->parse_date($matches[2], 'start' );
 		if	(null === $date ) {
 			return	null;
@@ -373,6 +376,10 @@ final class pz_LinkCard_Search_Query_Parser {
 		case	'<=':
 			$sql	=	$column.' <= %d';
 			$params	=	array($this->parse_date($matches[2], 'end' ) );
+			break;
+		case	'<>':
+			$sql	=	'NOT ( '.$column.' BETWEEN %d AND %d )';
+			$params	=	array($this->parse_date($matches[2], 'start' ), $this->parse_date($matches[2], 'end' ) );
 			break;
 		default:
 			return	null;
@@ -406,10 +413,10 @@ final class pz_LinkCard_Search_Query_Parser {
 			return	array('kind' => 'keyed', 'negative' => $negative, 'sql' => $sql, 'params' => array($from, $to ) );
 		}
 
-		if	(!preg_match('/^(<=|>=|=|<|>)?([0-9]+)$/', $value, $matches ) ) {
+		if	(!preg_match('/^(<=|=<|>=|=>|<>|=|<|>)?([0-9]+)$/', $value, $matches ) ) {
 			return	null;
 		}
-		$operator	=	isset($matches[1] ) && '' !== $matches[1] ? $matches[1] : '=';
+		$operator	=	$this->normalize_comparison_operator(isset($matches[1] ) && '' !== $matches[1] ? $matches[1] : '=' );
 		$sql		=	$column.' '.$operator.' %d';
 		if	($negative ) {
 			$sql	=	'NOT ( '.$sql.' )';
@@ -418,21 +425,37 @@ final class pz_LinkCard_Search_Query_Parser {
 		return	array('kind' => 'keyed', 'negative' => $negative, 'sql' => $sql, 'params' => array((int) $matches[2] ) );
 	}
 
+	private	function	normalize_comparison_operator($operator ) {
+		if	('=<' === $operator ) {
+			return	'<=';
+		}
+		if	('=>' === $operator ) {
+			return	'>=';
+		}
+		return	$operator;
+	}
+
 	private	function	find_key_separator($token ) {
 		$colon_position		=	strpos($token, ':' );
-		$equals_position	=	strpos($token, '=' );
-		if	(false === $colon_position && false === $equals_position ) {
+		if	(false !== $colon_position ) {
+			return	array('position' => $colon_position, 'length' => 1, 'operator' => ':', 'comparison' => '' );
+		}
+
+		if	(!preg_match('/^([a-z_][a-z0-9_]*)(<=|=<|>=|=>|<>|=|<|>)(.+)$/i', $token, $matches ) ) {
 			return	null;
 		}
-		if	(false === $equals_position || (false !== $colon_position && $colon_position < $equals_position ) ) {
-			return	array('position' => $colon_position, 'operator' => ':' );
-		}
-		return	array('position' => $equals_position, 'operator' => '=' );
+
+		return	array(
+			'position'	=>	strlen($matches[1] ),
+			'length'	=>	strlen($matches[2] ),
+			'operator'	=>	$matches[2],
+			'comparison'	=>	$matches[2],
+		);
 	}
 
 	private	function	looks_like_invalid_key_expression($token ) {
 		foreach	($this->keys as $key => $definition ) {
-			if	(preg_match('/^'.preg_quote($key, '/' ).'\s*(?:<=|>=|=|<|>)/i', $token ) ) {
+			if	(preg_match('/^'.preg_quote($key, '/' ).'\s*(?:<=|=<|>=|=>|<>|=|<|>)/i', $token ) ) {
 				return	true;
 			}
 		}

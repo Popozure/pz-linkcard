@@ -353,6 +353,7 @@
             keyword: cardId,
             page_now: "1",
             filter: "all",
+            return_url: window.location.href,
         });
     }
 
@@ -388,7 +389,9 @@
                 menu.appendChild(makeButton(labels.cacheManager, openCacheManager, "dashicons-excerpt-view"));
             }
             if (config.settings_url) {
-                menu.appendChild(makeLink(labels.cardSettings, config.settings_url, "dashicons-admin-generic"));
+				const settingsUrl = new URL(config.settings_url, window.location.href);
+				settingsUrl.searchParams.set("return_url", window.location.href);
+				menu.appendChild(makeLink(labels.cardSettings, settingsUrl.toString(), "dashicons-admin-generic"));
             }
         }
         menu.appendChild(makeSeparator());

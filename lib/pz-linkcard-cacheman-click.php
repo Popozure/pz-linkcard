@@ -7,10 +7,16 @@
 	$chart_period	=	isset($_POST['click-period'] )
 		? sanitize_key(wp_unslash($_POST['click-period'] ) )
 		: (isset($_POST['chart_period'] ) ? sanitize_key(wp_unslash($_POST['chart_period'] ) ) : 'day' );
+	$click_range	= isset($_POST['click-period'] )
+		? ''
+		: (isset($_POST['click-range-select'] )
+			? sanitize_text_field(wp_unslash($_POST['click-range-select'] ) )
+			: (isset($_POST['click-range'] ) ? sanitize_text_field(wp_unslash($_POST['click-range'] ) ) : '' ) );
 	if	(!in_array($chart_period, array('day', 'week', 'month', 'year' ), true ) ) {
 		$chart_period	= 'day';
 	}
 	$page_limit	=	50;
+	$page_max	=	1;
 	$count_now	=	0;
 	$click_logs	=	array();
 	$chart_items	=	array();
@@ -18,17 +24,33 @@
 	$chart_title	=	'';
 	$db_click_exists	=	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_click ) ) === $this->db_click );
 
-	if	($db_click_exists && $card_id ) {
-		$count_now	=	intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click WHERE card_id = %d", $card_id ) ) );
+	if	($db_click_exists ) {
+		$count_now	=	$card_id
+			?	intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click WHERE card_id = %d", $card_id ) ) )
+			:	intval($wpdb->get_var("SELECT COUNT(*) FROM $this->db_click" ) );
 		$page_max	=	max(1, intval(ceil($count_now / $page_limit ) ) );
 		$click_page	=	min($click_page, $page_max );
 		$offset		=	($click_page - 1 ) * $page_limit;
-		$click_logs	=	(array) $wpdb->get_results($wpdb->prepare(
-			"SELECT click_id,click_time,card_id,post_id,ip_hash,user_agent FROM $this->db_click WHERE card_id = %d ORDER BY click_id DESC LIMIT %d OFFSET %d",
-			$card_id,
-			$page_limit,
-			$offset
-		) );
+		if	($card_id ) {
+			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare(
+				"SELECT click_log.click_id,click_log.click_time,click_log.card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				FROM $this->db_click AS click_log
+				LEFT JOIN $this->db_card AS card ON card.id = click_log.card_id
+				WHERE click_log.card_id = %d ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
+				$card_id,
+				$page_limit,
+				$offset
+			) );
+		} else {
+			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare(
+				"SELECT click_log.click_id,click_log.click_time,click_log.card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				FROM $this->db_click AS click_log
+				LEFT JOIN $this->db_card AS card ON card.id = click_log.card_id
+				ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
+				$page_limit,
+				$offset
+			) );
+		}
 
 		$local_now	= current_time('timestamp', false );
 		if	($chart_period === 'day' ) {
@@ -73,15 +95,50 @@
 			$chart_query_args[]	= $range['start'];
 			$chart_query_args[]	= $range['end'];
 		}
-		$chart_query_args[]	= $card_id;
+		if	($card_id ) {
+			$chart_query_args[]	= $card_id;
+			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE card_id = %d AND click_time >= %d AND click_time < %d";
+		} else {
+			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE click_time >= %d AND click_time < %d";
+		}
 		$chart_query_args[]	= $chart_ranges[0]['start'];
 		$chart_query_args[]	= $chart_ranges[count($chart_ranges ) - 1]['end'];
-		$chart_counts	= $wpdb->get_row($wpdb->prepare("SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE card_id = %d AND click_time >= %d AND click_time < %d", $chart_query_args ) );
+		$chart_counts	= $wpdb->get_row($wpdb->prepare($chart_sql, $chart_query_args ) );
 		if	($chart_counts ) {
 			foreach	($chart_ranges as $index => $range ) {
 				$column	= 'period_'.$index;
 				$chart_items[$range['key']]['count']	= intval($chart_counts->$column ?? 0 );
 			}
+		}
+
+		$selected_range	= null;
+		foreach	($chart_ranges as $range ) {
+			if	($click_range === $range['key'] ) {
+				$selected_range	= $range;
+				break;
+			}
+		}
+		if	($selected_range ) {
+			$where_sql	= 'click_log.click_time >= %d AND click_log.click_time < %d';
+			$where_args	= array($selected_range['start'], $selected_range['end'] );
+			if	($card_id ) {
+				$where_sql	= 'click_log.card_id = %d AND '.$where_sql;
+				array_unshift($where_args, $card_id );
+			}
+			$count_now	= intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click AS click_log WHERE $where_sql", $where_args ) ) );
+			$page_max	= max(1, intval(ceil($count_now / $page_limit ) ) );
+			$click_page	= min($click_page, $page_max );
+			$offset	= ($click_page - 1 ) * $page_limit;
+			$list_args	= array_merge($where_args, array($page_limit, $offset ) );
+			$click_logs	= (array) $wpdb->get_results($wpdb->prepare(
+				"SELECT click_log.click_id,click_log.click_time,click_log.card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				FROM $this->db_click AS click_log
+				LEFT JOIN $this->db_card AS card ON card.id = click_log.card_id
+				WHERE $where_sql ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
+				$list_args
+			) );
+		} else {
+			$click_range	= '';
 		}
 	} else {
 		$page_max	=	1;
@@ -114,13 +171,16 @@
 <div class="pz-man-click-log">
 	<input type="hidden" name="cache_id" value="<?php echo intval($card_id ); ?>">
 	<input type="hidden" name="chart_period" value="<?php echo esc_attr($chart_period ); ?>">
+	<input type="hidden" name="click-range" value="<?php echo esc_attr($click_range ); ?>">
 	<h2><?php esc_html_e('Click Log', 'pz-linkcard' ); ?></h2>
+	<?php if	($card_id ) : ?>
 	<p>
 		<strong><?php esc_html_e('ID', 'pz-linkcard' ); ?>:</strong> <?php echo esc_html($card_id ); ?><br>
 		<strong><?php esc_html_e('Title', 'pz-linkcard' ); ?>:</strong> <?php echo esc_html($data['title'] ?? '' ); ?><br>
 		<strong><?php esc_html_e('URL', 'pz-linkcard' ); ?>:</strong>
 		<a href="<?php echo esc_url($data['url'] ?? '' ); ?>" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer"><?php echo esc_html($this->pz_DecodeURL($data['url'] ?? '' ) ); ?></a>
 	</p>
+	<?php endif; ?>
 	<?php if	(!$click_log_enabled ) : ?>
 		<div class="notice notice-warning inline"><p><?php
 			echo wp_kses(
@@ -132,13 +192,18 @@
 	<?php if	($chart_items ) : ?>
 		<section class="pz-click-chart" aria-labelledby="pz-click-chart-title">
 			<nav class="pz-click-chart-periods" aria-label="<?php echo esc_attr__('Chart period', 'pz-linkcard' ); ?>">
-				<?php foreach	($chart_periods as $period_key => $period_label ) : ?>
-					<button type="submit" name="click-period" value="<?php echo esc_attr($period_key ); ?>" class="<?php echo $chart_period === $period_key ? 'is-active' : ''; ?>"<?php echo $chart_period === $period_key ? ' aria-current="page"' : ''; ?>><?php echo esc_html($period_label ); ?></button>
-				<?php endforeach; ?>
+				<div class="pz-click-chart-period-buttons">
+					<?php foreach	($chart_periods as $period_key => $period_label ) : ?>
+						<button type="submit" name="click-period" value="<?php echo esc_attr($period_key ); ?>" class="<?php echo $chart_period === $period_key ? 'is-active' : ''; ?>"<?php echo $chart_period === $period_key ? ' aria-current="page"' : ''; ?>><?php echo esc_html($period_label ); ?></button>
+					<?php endforeach; ?>
+				</div>
+				<?php if	($click_range ) : ?>
+					<button type="submit" name="click-period" value="<?php echo esc_attr($chart_period ); ?>" class="button-link pz-click-chart-clear"><?php esc_html_e('Remove filter', 'pz-linkcard' ); ?></button>
+				<?php endif; ?>
 			</nav>
 			<h3 id="pz-click-chart-title"><?php echo esc_html($chart_title ); ?></h3>
 			<div class="pz-click-chart-bars">
-				<?php foreach	($chart_items as $chart_day ) : ?>
+				<?php foreach	($chart_items as $chart_key => $chart_day ) : ?>
 					<?php
 						$chart_count	= intval($chart_day['count'] );
 						$chart_height	= $chart_max > 0 ? intval(round(($chart_count / $chart_max ) * 100 ) ) : 0;
@@ -146,11 +211,11 @@
 							$chart_height	= max(4, $chart_height );
 						}
 					?>
-					<div class="pz-click-chart-item" title="<?php echo esc_attr(sprintf(__('%s clicks', 'pz-linkcard' ), number_format_i18n($chart_count ) ) ); ?>">
+					<button type="submit" name="click-range-select" value="<?php echo esc_attr((string) $chart_key ); ?>" class="pz-click-chart-item<?php echo $click_range === (string) $chart_key ? ' is-active' : ''; ?>" title="<?php echo esc_attr(sprintf(__('%s clicks', 'pz-linkcard' ), number_format_i18n($chart_count ) ) ); ?>" aria-pressed="<?php echo $click_range === (string) $chart_key ? 'true' : 'false'; ?>">
 						<span class="pz-click-chart-count"><?php echo esc_html(number_format_i18n($chart_count ) ); ?></span>
 						<span class="pz-click-chart-bar-wrap"><span class="pz-click-chart-bar" style="height: <?php echo esc_attr($chart_height ); ?>%;"></span></span>
 						<span class="pz-click-chart-label"><?php echo esc_html($chart_day['label'] ); ?></span>
-					</div>
+					</button>
 				<?php endforeach; ?>
 			</div>
 		</section>
@@ -172,10 +237,14 @@
 			?>
 		<?php endif; ?>
 	</p>
-	<p><button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button></p>
-	<p><?php echo esc_html(sprintf(_n('%s item', '%s items', $count_now, 'pz-linkcard' ), number_format_i18n($count_now ) ) ); ?></p>
-
-	<?php if	($page_max > 1 ) : ?>
+	<p>
+		<button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button>
+		<?php if	($this->pz_IsDashboardWidgetReturnUrl($return_url ) ) : ?>
+			<a href="<?php echo esc_url($return_url ); ?>" class="button"><?php esc_html_e('Return to Dashboard', 'pz-linkcard' ); ?></a>
+		<?php endif; ?>
+	</p>
+	<div class="pz-click-log-list-navigation">
+		<p class="pz-click-log-item-count"><?php echo esc_html(sprintf(_n('%s item', '%s items', $count_now, 'pz-linkcard' ), number_format_i18n($count_now ) ) ); ?></p>
 		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>">
 			<button type="submit" name="click-page" value="1" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&laquo;', 'pz-linkcard' ) ); ?></button>
 			<button type="submit" name="click-page" value="<?php echo max(1, $click_page - 1 ); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
@@ -183,12 +252,13 @@
 			<button type="submit" name="click-page" value="<?php echo min($page_max, $click_page + 1 ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
 			<button type="submit" name="click-page" value="<?php echo intval($page_max ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&raquo;', 'pz-linkcard' ) ); ?></button>
 		</nav>
-	<?php endif; ?>
+	</div>
 
 	<table class="widefat striped">
 		<thead>
 			<tr>
 				<th scope="col"><?php esc_html_e('ID', 'pz-linkcard' ); ?></th>
+				<th scope="col"><?php esc_html_e('Card ID', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('Click Date', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('Post ID', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('IP Hash', 'pz-linkcard' ); ?></th>
@@ -197,10 +267,16 @@
 		</thead>
 		<tbody>
 		<?php if	(!$click_logs ) : ?>
-			<tr><td colspan="5"><?php esc_html_e('No click logs found.', 'pz-linkcard' ); ?></td></tr>
+			<tr><td colspan="6"><?php esc_html_e('No click logs found.', 'pz-linkcard' ); ?></td></tr>
 		<?php else : ?>
 			<?php foreach	($click_logs as $click_log ) : ?>
 				<?php
+					$log_card_id	= intval($click_log->card_id );
+					$card_log_args	= array('action' => 'click-log', 'cache_id' => $log_card_id );
+					if	($return_url ) {
+						$card_log_args['return_url']	= $return_url;
+					}
+					$card_log_url	= add_query_arg($card_log_args, $this->cacheman_url );
 					$log_post_id	=	intval($click_log->post_id );
 					$post_url		=	$log_post_id ? get_permalink($log_post_id ) : '';
 					$post_title	=	$log_post_id ? get_the_title($log_post_id ) : '';
@@ -209,6 +285,7 @@
 				?>
 				<tr>
 					<td><?php echo esc_html(intval($click_log->click_id ) ); ?></td>
+					<td><a href="<?php echo esc_url($card_log_url ); ?>" title="<?php echo esc_attr((string) ($click_log->card_title ?? '' ) ); ?>"><?php echo esc_html($log_card_id ); ?></a></td>
 					<td><?php echo esc_html(date_i18n(PZLKC_DATE_FORMAT.' H:i:s', intval($click_log->click_time ) ) ); ?></td>
 					<td>
 						<?php if	($post_url ) : ?>
@@ -234,5 +311,10 @@
 			<button type="submit" name="click-page" value="<?php echo intval($page_max ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&raquo;', 'pz-linkcard' ) ); ?></button>
 		</nav>
 	<?php endif; ?>
-	<p><button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button></p>
+	<p>
+		<button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button>
+		<?php if	($this->pz_IsDashboardWidgetReturnUrl($return_url ) ) : ?>
+			<a href="<?php echo esc_url($return_url ); ?>" class="button"><?php esc_html_e('Return to Dashboard', 'pz-linkcard' ); ?></a>
+		<?php endif; ?>
+	</p>
 </div>

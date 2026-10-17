@@ -42,8 +42,6 @@
 				regist_charset	VARCHAR(30)								DEFAULT NULL,
 				regist_result 	INT										DEFAULT NULL,
 				regist_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				mod_title		INT				UNSIGNED	NOT NULL	DEFAULT 0,
-				mod_excerpt		INT				UNSIGNED	NOT NULL	DEFAULT 0,
 				update_result	INT										DEFAULT NULL,
 				update_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
 				PRIMARY KEY		(id),
@@ -70,6 +68,14 @@
 				$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key" );
 			}
 			$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN url_key" );
+		}
+
+		// Remove obsolete modification flags.
+		foreach	(array('mod_title', 'mod_excerpt' ) as $obsolete_column ) {
+			$column_exists	=	$wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM $this->db_card LIKE %s", $obsolete_column ) );
+			if	($column_exists ) {
+				$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN `$obsolete_column`" );
+			}
 		}
 
 		// 同じURLは最も古いIDへ統合し、クリック数とクリックログを引き継ぐ

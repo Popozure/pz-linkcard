@@ -21,6 +21,7 @@
 	// WP-Cron の実行結果
 	if (isset($cron_log ) ) {
 		$cron_log			=	esc_attr(esc_html($cron_log ) );
+		$cron_log			=	str_replace('&amp;ensp;', '&ensp;', $cron_log );
 		$cron_log			=	str_replace(PHP_EOL, '<br>', $cron_log );
 	}
 
@@ -83,8 +84,17 @@
 			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Version', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>
 			<td><span class="pz-monospace"><?php echo esc_html($prop['db-version'] ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row" rowspan="2"><?php esc_html_e('Count Information', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_click ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html($prop['db-click-version'] ); ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row" colspan="2"><?php esc_html_e('Size of the options', 'pz-linkcard' ); ?></th>
@@ -171,7 +181,7 @@
 		</div>
 	<?php } ?>
 
-	<h2><?php esc_html_e('WP-Cron Information', 'pz-linkcard' ); ?></h2>
+	<h2><?php esc_html_e('WP-Cron Information', 'pz-linkcard' ); ?> <a href="<?php echo esc_url(admin_url('admin.php?page='.self::SCHEDULER_PAGE ) ); ?>" class="button"><?php esc_html_e('Scheduler', 'pz-linkcard' ); ?></a></h2>
 	<div class="pz-cron-margin">
 		<label>
 			<input type="checkbox" value="1" class="pz-cron-all" />

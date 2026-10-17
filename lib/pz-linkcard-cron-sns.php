@@ -10,8 +10,13 @@
 	// DBの宣言
 	global	$wpdb;
 
-	// SNS次回取得日時を越えているものを抽出
-	$proc_datas	=	$wpdb->get_results($wpdb->prepare("SELECT url,sns_nexttime FROM $this->db_card WHERE sns_nexttime < %d ORDER BY sns_nexttime ASC", $this->now ) );
+	// SNS次回取得日時を越えているものを古い順に必要件数だけ抽出
+	$max_count	=	max(1, intval($this->options['sns-period-num'] ) );
+	$proc_datas	=	$wpdb->get_results($wpdb->prepare(
+		"SELECT id FROM $this->db_card WHERE sns_nexttime < %d ORDER BY sns_nexttime ASC, id ASC LIMIT %d",
+		$this->now,
+		$max_count
+	) );
 
 	// 実行ログ
 	$message	=	sprintf('There were %d links that passed the next "Check SNS Count" confirmation date and time.', count($proc_datas ) );
@@ -22,22 +27,15 @@
 
 	// SNSカウント取得
 	$proc_count	=	0;
-	$max_count		=	max(1, intval($this->options['sns-period-num'] ) );
 	if (isset($proc_datas ) && is_array($proc_datas ) && count($proc_datas ) > 0) {
 		foreach($proc_datas as $data ) {
 			$proc_count++;
 
-			// 設定された件数を超えたら終わる
-			if ($proc_count > $max_count) {
-				$log	.=	'Break.'.PHP_EOL;
-				break;
-			}
-
 			// SNSカウントを取得
-			$result		=	$this->pz_RenewSNSCount(array('url' => $data->url ) );	// SNS取得＆キャッシュ更新
+			$result		=	$this->pz_RenewSNSCount(array('id' => intval($data->id ) ) );	// SNS取得＆キャッシュ更新
 
 			// 実行ログ
-			$message	=	'['.$proc_count.'] '.'Confirmed the "Check SNS Count". (NextTime='.date('Y-m-d H:i:s', $result['alive_nexttime'] ).' URL='.$result['url'].')';
+			$message	=	'['.$proc_count.'] '.'Confirmed the "Check SNS Count". (NextTime='.date('Y-m-d H:i:s', $result['sns_nexttime'] ).' URL='.$result['url'].')';
 			$log		.=	$message.PHP_EOL;
 			if	($this->options['survey-mode'] ) {
 				$this->pz_OutputLOG(__FUNCTION__, $message );

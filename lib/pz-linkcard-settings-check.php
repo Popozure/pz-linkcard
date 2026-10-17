@@ -111,7 +111,7 @@
 				</label>
 			</td>
 		</tr>
-		<tr>
+		<tr id="pz-click-log-settings">
 			<th scope="row"><?php esc_html_e('Record', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
@@ -138,15 +138,11 @@
 				</select>
 				<p class="description"><?php esc_html_e('Detailed click logs older than the retention period are deleted daily after 4:00 AM. The cumulative click count is retained.', 'pz-linkcard' ); ?></p>
 				<p class="description"><?php esc_html_e('Long-term retention increases database usage according to the number of clicks.', 'pz-linkcard' ); ?></p>
-				<p>
-					<button type="submit" name="action" value="delete-expired-click-logs" class="button"><?php esc_html_e('Delete expired logs now', 'pz-linkcard' ); ?></button>
-					<button type="submit" name="action" value="delete-all-click-logs" class="button" onclick="return confirm('<?php echo esc_js(__('Delete all detailed click logs? The cumulative click count will not be reset.', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Delete all logs', 'pz-linkcard' ); ?></button>
-				</p>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" rowspan="3"><?php esc_html_e('Broken Link', 'pz-linkcard' ); ?></th>
-			<th scope="row"><?php esc_html_e('Number', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="2"><?php esc_html_e('Broken Link', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Display', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-alive-count]" value="" />
@@ -156,19 +152,11 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Inspection', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-alive]" value="" />
-					<input type="checkbox" name="properties[flg-alive]" value="1" <?php checked($this->options['flg-alive'] ); ?> />
-					<?php esc_html_e('Alive confirmation of the link destination.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-		<tr>
 			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
 			<td>
-				<?php esc_html_e('The settings are located on the “Advanced” tab.', 'pz-linkcard' ); ?>
+				<?php
+					echo esc_html(sprintf(__('The %s are located on the “Advanced” tab.', 'pz-linkcard' ), __('Settings item', 'pz-linkcard' ) ) );
+				?>
 			</td>
 		</tr>
 	</table>

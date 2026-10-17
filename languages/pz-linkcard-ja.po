@@ -288,6 +288,22 @@ msgstr "シェア数取得日時"
 msgid "Alive Check Date"
 msgstr "状態チェック日時"
 
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next Share Count Retrieval Date"
+msgstr "次回シェア数取得日時"
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next Status Check Date"
+msgstr "次回状態チェック日時"
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next<br>Share Count<br>Date"
+msgstr "次回<br>ｼｪｱ数<br>日時"
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next<br>Status<br>Date"
+msgstr "次回<br>状態<br>日時"
+
 #: ../lib/pz-linkcard-cacheman-list.php:94
 msgid "Result code"
 msgstr "結果コード"
@@ -551,10 +567,10 @@ msgstr "※"
 #: ../lib/pz-linkcard-cacheman.php:175 ../lib/pz-linkcard-settings.php:279
 msgid ""
 "You can dismiss this message from <a href=\"./options-general.php?page=pz-"
-"linkcard-settings\">the settings screen</a>."
+"linkcard-settings&tab=pz-error#pz-error-reset-settings\">the settings screen</a>."
 msgstr ""
 "このメッセージの表示は<a href=\"./options-general.php?page=pz-linkcard-"
-"settings\">設定画面</a>から解除できます。"
+"settings&tab=pz-error#pz-error-reset-settings\">設定画面</a>から解除できます。"
 
 #: ../lib/pz-linkcard-cacheman.php:211 ../lib/pz-linkcard-cacheman.php:234
 #: ../lib/pz-linkcard-cacheman.php:254 ../lib/pz-linkcard-cacheman.php:275
@@ -786,6 +802,14 @@ msgstr "オプション名"
 msgid "Link-Card"
 msgstr "リンクカード情報"
 
+#: ../lib/pz-linkcard-settings-admin.php
+msgid "Count Information"
+msgstr "カウント情報"
+
+#: ../lib/pz-linkcard-settings-admin.php
+msgid "Hash"
+msgstr "ハッシュ"
+
 #: ../lib/pz-linkcard-settings-admin.php:77
 #: ../lib/pz-linkcard-settings-multisite.php:61
 msgid "Table Name"
@@ -861,7 +885,17 @@ msgstr "処理スケジュール情報"
 
 #: ../lib/pz-linkcard-settings-admin.php:173
 msgid "View all schedules."
-msgstr "すべてのスケジュールを表示する。"
+msgstr "全てのスケジュールを表示する"
+
+#: ../lib/pz-linkcard-scheduler.php
+#: ../lib/pz-linkcard-settings-admin.php
+#: ../pz-linkcard.php
+msgid "Scheduler"
+msgstr "スケジューラ"
+
+#: ../lib/pz-linkcard-scheduler.php
+msgid "Hook List"
+msgstr "フック一覧"
 
 #: ../lib/pz-linkcard-settings-admin.php:180
 #: ../lib/pz-linkcard-settings-initialize.php:9
@@ -2837,23 +2871,23 @@ msgid "Do not run"
 msgstr "しない"
 
 #: ../lib/pz-linkcard-settings.php:91
-msgid "1 case"
+msgid "1 card"
 msgstr "1件"
 
 #: ../lib/pz-linkcard-settings.php:92
-msgid "5 cases"
+msgid "5 cards"
 msgstr "5件"
 
 #: ../lib/pz-linkcard-settings.php:93
-msgid "10 cases"
+msgid "10 cards"
 msgstr "10件"
 
 #: ../lib/pz-linkcard-settings.php:94
-msgid "20 cases"
+msgid "20 cards"
 msgstr "20件"
 
 #: ../lib/pz-linkcard-settings.php:95
-msgid "50 cases"
+msgid "50 cards"
 msgstr "50件"
 
 #: ../lib/pz-linkcard-settings.php:232
@@ -4332,3 +4366,165 @@ msgstr "今の色を保存"
 
 msgid "Reset to offset"
 msgstr "オフセットに戻す"
+
+msgid "Recent Clicks"
+msgstr "最近のクリック"
+
+msgid "Recent Registrations"
+msgstr "最近の登録"
+
+msgid "M j, H:i"
+msgstr "n月j日 H:i"
+
+#, php-format
+msgid "%s card"
+msgstr "%s件"
+
+#, php-format
+msgid "%s cards"
+msgstr "%s件"
+
+msgid "Click count recording"
+msgstr "クリック件数の記録"
+
+#, php-format
+msgid "Enable %s to display recent clicks."
+msgstr "表示するには%sを有効にしてください。"
+
+msgid "There is a URL parameter error."
+msgstr "URLパラメータのエラーがあります。"
+
+msgid "Equal"
+msgstr "一致"
+
+msgid "Less than"
+msgstr "より小さい"
+
+msgid "Less than or equal to"
+msgstr "以下"
+
+msgid "Greater than"
+msgstr "より大きい"
+
+msgid "Greater than or equal to"
+msgstr "以上"
+
+msgid "Not equal to"
+msgstr "以外"
+
+msgid "The colon before a comparison operator can be omitted."
+msgstr "比較演算子の前のコロンは省略できます。"
+
+msgid "Comparison operators"
+msgstr "比較演算子"
+
+msgid "Return to Dashboard"
+msgstr "ダッシュボードへ戻る"
+
+msgid "Card ID"
+msgstr "カードID"
+
+msgid "View List"
+msgstr "一覧表示"
+
+msgid "Remove filter"
+msgstr "解除"
+
+msgid "Unregistered"
+msgstr "未登録"
+
+msgid "Return to Previous Page"
+msgstr "元の画面へ戻る"
+
+msgid "LinkCard Tables"
+msgstr "リンクカード テーブル"
+
+msgid "Database Table Information"
+msgstr "DBテーブル情報"
+
+msgid "LinkCard Data"
+msgstr "リンクカード情報"
+
+msgid "Click Data"
+msgstr "クリック情報"
+
+msgid "Total Size: %1$s (%2$s bytes), Index: %3$s (%4$s bytes), Data: %5$s (%6$s bytes)"
+msgstr "総容量：%1$s (%2$s bytes)、インデックス：%3$s (%4$s bytes)、データ：%5$s (%6$s bytes)"
+
+msgid "I understand that this data cannot be restored and authorize its deletion."
+msgstr "復元が出来ないことを理解して許可する。"
+
+msgid "Delete All"
+msgstr "全て削除"
+
+msgid "Please confirm that the data cannot be restored."
+msgstr "復元できないことを確認してください。"
+
+msgid "Delete all LinkCard data? This action cannot be undone."
+msgstr "リンクカード情報を全て削除しますか？ この操作は取り消せません。"
+
+msgid "Delete all click data? This action cannot be undone."
+msgstr "クリック情報を全て削除しますか？ この操作は取り消せません。"
+
+msgid "Please confirm that deleted LinkCard data cannot be restored."
+msgstr "削除したリンクカード情報を復元できないことを確認してください。"
+
+msgid "Please confirm that deleted click data cannot be restored."
+msgstr "削除したクリック情報を復元できないことを確認してください。"
+
+msgid "Failed to delete all LinkCard data."
+msgstr "リンクカード情報を全て削除できませんでした。"
+
+msgid "Failed to delete all click data."
+msgstr "クリック情報を全て削除できませんでした。"
+
+msgid "Deleted %s LinkCard records."
+msgstr "リンクカード情報を%s件削除しました。"
+
+msgid "Deleted %s click records."
+msgstr "クリック情報を%s件削除しました。"
+
+msgid "Delete all image cache files? This action cannot be undone."
+msgstr "画像キャッシュを全て削除しますか？ この操作は取り消せません。"
+
+msgid "Please confirm that deleted image cache files cannot be restored."
+msgstr "削除した画像キャッシュを復元できないことを確認してください。"
+
+msgid "The image cache directory is not configured or does not exist."
+msgstr "画像キャッシュディレクトリが設定されていないか、存在しません。"
+
+msgid "Deleted %1$s image cache files. Failed to delete %2$s files."
+msgstr "画像キャッシュを%1$s件削除しました。%2$s件の削除に失敗しました。"
+
+msgid "Deleted %s image cache files."
+msgstr "画像キャッシュを%s件削除しました。"
+
+msgid "Records: %s"
+msgstr "件数：%s件"
+
+msgid "File Count: %s"
+msgstr "ファイル数：%s"
+
+msgid "Used: %1$s (%2$s bytes)"
+msgstr "使用中：%1$s (%2$s bytes)"
+
+msgid "Settings item"
+msgstr "設定項目"
+
+msgid "The %s are located on the “Advanced” tab."
+msgstr "「上級者向け」タブに%sがあります。"
+
+msgid "[SKIP] URL=%s"
+msgstr "[SKIP] URL=%s"
+
+msgid "&ensp;&ensp;&ensp;&ensp;It will be skipped because the domain is the same. The next check date and time=%s was set."
+msgstr "&ensp;&ensp;&ensp;&ensp;同じドメインのためスキップします。次回確認日時=%s を設定しました。"
+
+msgid "[%1$d] URL=%2$s"
+msgstr "[%1$d] URL=%2$s"
+
+msgid "&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed."
+msgstr "&ensp;&ensp;&ensp;&ensp;次回確認日時=%s を過ぎています。"
+
+msgid "&ensp;&ensp;&ensp;&ensp;HTTP code=%1$d was returned. The next check date and time=%2$s was set."
+msgstr "&ensp;&ensp;&ensp;&ensp;HTTPコード=%1$d が返却されました。次回確認日時=%2$s を設定しました。"

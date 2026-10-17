@@ -132,7 +132,7 @@
 	</table>
 	<?php submit_button(); ?>
 
-	<h2><?php echo	__('Schedule', 'pz-linkcard' ).$help_open.'schedule'.$help_close; ?></h2>
+	<h2 id="pz-schedule"><?php echo	__('Schedule', 'pz-linkcard' ).$help_open.'schedule'.$help_close; ?></h2>
 	<table class="form-table pz-schedule-table">
 		<tr>
 			<th rowspan="2"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>

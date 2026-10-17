@@ -266,6 +266,22 @@ msgstr ""
 msgid "Alive Check Date"
 msgstr ""
 
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next Share Count Retrieval Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next Status Check Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next<br>Share Count<br>Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Next<br>Status<br>Date"
+msgstr ""
+
 #: ../lib/pz-linkcard-cacheman-list.php:94
 msgid "Result code"
 msgstr ""
@@ -514,7 +530,7 @@ msgstr ""
 
 #: ../lib/pz-linkcard-cacheman.php:175 ../lib/pz-linkcard-settings.php:259
 msgid ""
-"You can dismiss this message from <a href=\"./options-general.php?page=pz-linkcard-settings\">the "
+"You can dismiss this message from <a href=\"./options-general.php?page=pz-linkcard-settings&tab=pz-error#pz-error-reset-settings\">the "
 "settings screen</a>."
 msgstr ""
 
@@ -718,6 +734,14 @@ msgid "Link-Card"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-admin.php
+msgid "Count Information"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-admin.php
+msgid "Hash"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-admin.php
 msgid "Last Saved Settings"
 msgstr ""
 
@@ -814,6 +838,16 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-admin.php:164
 msgid "View all schedules."
+msgstr ""
+
+#: ../lib/pz-linkcard-scheduler.php
+#: ../lib/pz-linkcard-settings-admin.php
+#: ../pz-linkcard.php
+msgid "Scheduler"
+msgstr ""
+
+#: ../lib/pz-linkcard-scheduler.php
+msgid "Hook List"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-admin.php:172
@@ -952,23 +986,23 @@ msgid "Link Availability Check"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php
-msgid "1 case"
+msgid "1 card"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php
-msgid "5 cases"
+msgid "5 cards"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php
-msgid "10 cases"
+msgid "10 cards"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php
-msgid "20 cases"
+msgid "20 cards"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php
-msgid "50 cases"
+msgid "50 cards"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:109
@@ -3283,4 +3317,85 @@ msgid "Save current color"
 msgstr ""
 
 msgid "Reset to offset"
+msgstr ""
+
+msgid "Recent Clicks"
+msgstr ""
+
+msgid "Recent Registrations"
+msgstr ""
+
+msgid "M j, H:i"
+msgstr ""
+
+#, php-format
+msgid "%s card"
+msgstr ""
+
+#, php-format
+msgid "%s cards"
+msgstr ""
+
+msgid "Click count recording"
+msgstr ""
+
+#, php-format
+msgid "Enable %s to display recent clicks."
+msgstr ""
+
+msgid "There is a URL parameter error."
+msgstr ""
+
+msgid "Equal"
+msgstr ""
+
+msgid "Less than"
+msgstr ""
+
+msgid "Less than or equal to"
+msgstr ""
+
+msgid "Greater than"
+msgstr ""
+
+msgid "Greater than or equal to"
+msgstr ""
+
+msgid "Not equal to"
+msgstr ""
+
+msgid "The colon before a comparison operator can be omitted."
+msgstr ""
+
+msgid "Comparison operators"
+msgstr ""
+
+msgid "Return to Dashboard"
+msgstr ""
+
+msgid "Card ID"
+msgstr ""
+
+msgid "View List"
+msgstr ""
+
+msgid "Settings item"
+msgstr ""
+
+msgid "The %s are located on the “Advanced” tab."
+msgstr ""
+
+msgid "[SKIP] URL=%s"
+msgstr ""
+
+msgid "&ensp;&ensp;&ensp;&ensp;It will be skipped because the domain is the same. The next check date and time=%s was set."
+msgstr ""
+
+msgid "[%1$d] URL=%2$s"
+msgstr ""
+
+msgid "&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed."
+msgstr ""
+
+msgid "&ensp;&ensp;&ensp;&ensp;HTTP code=%1$d was returned. The next check date and time=%2$s was set."
 msgstr ""

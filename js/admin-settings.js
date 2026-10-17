@@ -10,11 +10,17 @@
     let processingOverlayTimer = null;
 	const processingOverlayDelay = 800;
 	initInfobarPosition();
+	initTargetHighlight();
+	initTargetHighlightLinks();
+	initDbClearDelay();
+	initScheduler();
+	const initialOverlay = document.querySelector("#pz-overlay-proc");
+	const keepInitialOverlay = initialOverlay?.classList.contains("pz-overlay-proc-active");
 
 	// カード管理画面はナビゲーション開始から一定時間を超えた場合だけ表示する
     if (dashboard.classList.contains("pz-cacheman")) {
         showProcessingOverlay(Math.max(0, processingOverlayDelay - performance.now()));
-    } else {
+    } else if (!keepInitialOverlay) {
         hideProcessingOverlay();
     }
     initSettingsToasts();
@@ -59,7 +65,8 @@
                 }
 
                 if (submitter?.dataset?.noOverlay === "1") return;
-                showProcessingOverlay(processingOverlayDelay);
+                const isRunNow = submitter?.name === "action" && String(submitter.value || "").startsWith("run-");
+                showProcessingOverlay(isRunNow ? 0 : processingOverlayDelay);
             });
         });
 
@@ -83,7 +90,6 @@
         document.addEventListener("click", selectImageFromMedia);
         document.addEventListener("click", clearCachemanImage);
         initCharacterCounts();
-        initUnsavedFormWarnings();
         initSettingsSaveShortcut();
         initSettingsScrollMemory();
         initCachemanScrollMemory();
@@ -132,6 +138,9 @@
         document.querySelectorAll(".pz-sync-check,.pz-show,input[name='properties[centering]'],select[name='properties[thumbnail-position]'],select[name='properties[info-position]']").forEach(el =>
             el.addEventListener("change", switchEnabled)
         );
+
+        // Start change detection after every control has reached its initial state.
+        initUnsavedFormWarnings();
 
     });
 
@@ -182,6 +191,52 @@
 		if ("ResizeObserver" in window) {
 			new ResizeObserver(scheduleUpdate).observe(infobar);
 		}
+	}
+
+	function initTargetHighlight() {
+		activateTargetHighlight(window.location.hash);
+	}
+
+	function initTargetHighlightLinks() {
+		document.addEventListener("click", event => {
+			const link = event.target.closest?.('a[href*="#pz-error-reset-settings"]');
+			if (!link || !link.closest(".pz-lkc-error-mode-notice")) return;
+
+			event.preventDefault();
+			activateTargetHighlight("#pz-error-reset-settings");
+		});
+	}
+
+	function activateTargetHighlight(hash) {
+		const targets = {
+			"#pz-click-log-settings": ["#pz-click-log-settings", "pz-settings-target-highlight"],
+			"#pz-error-reset-settings": ["#pz-error-reset-settings", "pz-settings-error-target-highlight"],
+		};
+		const targetConfig = targets[hash];
+		if (!targetConfig) return;
+
+		const [selector, className] = targetConfig;
+		const target = document.querySelector(selector);
+		if (!target) return;
+		const page = target.closest(".pz-page");
+		if (page && !page.classList.contains("pz-page-active")) {
+			document.querySelectorAll(".pz-page-active").forEach(item => item.classList.remove("pz-page-active"));
+			document.querySelectorAll(".pz-tab-active").forEach(item => item.classList.remove("pz-tab-active"));
+			page.classList.add("pz-page-active");
+			const tab = document.querySelector(`.pz-tab[name="${page.id}"], .pz-tab[href="#${page.id}"]`);
+			tab?.classList.add("pz-tab-active");
+			const tabNow = document.querySelector('input[name="tab-now"]');
+			if (tabNow) tabNow.value = page.id;
+		}
+
+		target.classList.remove(className);
+		void target.offsetWidth;
+		target.classList.add(className);
+		window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}`);
+		window.requestAnimationFrame(() => {
+			window.requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+		});
+		window.setTimeout(() => target.classList.remove(className), 5000);
 	}
 
     function initFileImport() {
@@ -285,6 +340,55 @@
         const indicator = document.querySelector(".pz-indicator");
         if (!indicator) return;
         indicator.classList.toggle("pz-indicator-active", window.scrollY > 80);
+    }
+
+    function initDbClearDelay() {
+        document.querySelectorAll(".pz-db-clear-enabled").forEach(checkbox => {
+            const button = checkbox.closest("td")?.querySelector(".pz-db-clear");
+            if (!button) return;
+
+            const delayMs = 5000;
+            let timer = null;
+            let startedAt = 0;
+
+            const setProgress = progress => {
+                button.style.setProperty("--pz-db-clear-progress", `${Math.max(0, Math.min(100, progress))}%`);
+            };
+
+            const reset = () => {
+                if (timer) window.cancelAnimationFrame(timer);
+                timer = null;
+                startedAt = 0;
+                button.disabled = true;
+                button.dataset.ready = "0";
+                button.classList.remove("pz-db-clear-ready");
+                setProgress(0);
+            };
+
+            const tick = now => {
+                const progress = ((now - startedAt) / delayMs) * 100;
+                setProgress(progress);
+                if (progress >= 100) {
+                    timer = null;
+                    button.disabled = false;
+                    button.dataset.ready = "1";
+                    button.classList.add("pz-db-clear-ready");
+                    setProgress(100);
+                    return;
+                }
+                timer = window.requestAnimationFrame(tick);
+            };
+
+            checkbox.addEventListener("change", () => {
+                reset();
+                if (checkbox.checked) {
+                    startedAt = performance.now();
+                    timer = window.requestAnimationFrame(tick);
+                }
+            });
+
+            reset();
+        });
     }
 
     // Admin setting helper
@@ -435,6 +539,47 @@
             }
         });
     }
+
+	function initScheduler() {
+		const root = document.querySelector(".pz-scheduler");
+		const tbody = root?.querySelector(".pz-cron-list tbody");
+		const showAll = root?.querySelector(".pz-cron-all");
+		if (!root || !tbody || !showAll || !window.pzLinkCardAdmin?.schedulerNonce) return;
+
+		let currentRows = tbody.innerHTML;
+		const applyFilter = () => {
+			root.querySelectorAll(".pz-cron-list-other").forEach(row => {
+				row.style.display = showAll.checked ? "table-row" : "none";
+			});
+		};
+		const refresh = () => {
+			const body = new URLSearchParams({
+				action: "pz_lkc_scheduler_tasks",
+				nonce: window.pzLinkCardAdmin.schedulerNonce,
+			});
+			fetch(window.pzLinkCardAdmin.ajaxUrl, {
+				method: "POST",
+				credentials: "same-origin",
+				headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+				body: body.toString(),
+			})
+				.then(response => response.ok ? response.json() : Promise.reject())
+				.then(result => {
+					const rows = result?.success ? String(result.data?.rows || "") : currentRows;
+					if (rows !== currentRows) {
+						tbody.innerHTML = rows;
+						currentRows = rows;
+						applyFilter();
+					}
+				})
+				.catch(() => {})
+				.finally(() => window.setTimeout(refresh, 5000));
+		};
+
+		showAll.addEventListener("change", applyFilter);
+		applyFilter();
+		window.setTimeout(refresh, 5000);
+	}
 
     // Admin setting helper
     function syncColor(e) {
@@ -962,10 +1107,13 @@
         });
     }
 
-    function serializeFormValues(form) {
+    function serializeFormValues(form, options = {}) {
         const params = new URLSearchParams();
+        const fieldNamePrefix = options.fieldNamePrefix || "";
         Array.from(form.elements).forEach(el => {
             if (!el.name || el.disabled) return;
+            if (fieldNamePrefix && !el.name.startsWith(fieldNamePrefix)) return;
+            if (el.classList.contains("pz-db-clear-enabled")) return;
             if (["button", "submit", "reset"].includes(el.type)) return;
             if (["scroll-now", "scroll_now", "tab-now"].includes(el.name)) return;
             if ((el.type === "checkbox" || el.type === "radio") && !el.checked) return;
@@ -989,11 +1137,12 @@
         const confirmMessage = window.pzLinkCardAdmin?.discardChanges || "Discard changes?";
         const confirmNonUpdateSubmit = options.confirmNonUpdateSubmit || false;
         let isSubmitting = false;
-        let initialState = serializeFormValues(form);
+        let initialState = serializeFormValues(form, options);
         let hasUnsavedChanges = false;
 
-        const updateUnsavedChanges = () => {
-            hasUnsavedChanges = serializeFormValues(form) !== initialState;
+        const updateUnsavedChanges = e => {
+            if (e?.target?.classList?.contains("pz-db-clear-enabled")) return;
+            hasUnsavedChanges = serializeFormValues(form, options) !== initialState;
         };
 
         form.addEventListener("input", updateUnsavedChanges);
@@ -1011,7 +1160,7 @@
             }
 
             isSubmitting = true;
-            initialState = serializeFormValues(form);
+            initialState = serializeFormValues(form, options);
             hasUnsavedChanges = false;
         }, true);
 
@@ -1020,7 +1169,10 @@
         });
 
         window.addEventListener("beforeunload", e => {
-            if (isSubmitting || !hasUnsavedChanges) return;
+            if (isSubmitting) return;
+
+            hasUnsavedChanges = serializeFormValues(form, options) !== initialState;
+            if (!hasUnsavedChanges) return;
 
             e.preventDefault();
             e.returnValue = confirmMessage;
@@ -1032,7 +1184,9 @@
         initUnsavedFormWarning(document.querySelector(".pz-man-cache-dirty-check")?.closest("form"), {
             confirmNonUpdateSubmit: true,
         });
-        initUnsavedFormWarning(document.querySelector(".pz-settings form"));
+        initUnsavedFormWarning(document.querySelector(".pz-settings form"), {
+            fieldNamePrefix: "properties[",
+        });
     }
 
     function initCachemanEditorShortcuts() {
@@ -2017,6 +2171,8 @@
             update_time: [".pz-man-head-update_time", ".pz-man-body-update-time"],
             sns_time: [".pz-man-head-sns_time", ".pz-man-body-sns-time"],
             alive_time: [".pz-man-head-alive_time", ".pz-man-body-alive-time"],
+            sns_nexttime: [".pz-man-head-sns_nexttime", ".pz-man-body-sns-nexttime"],
+            alive_nexttime: [".pz-man-head-alive_nexttime", ".pz-man-body-alive-nexttime"],
             post_id: [".pz-man-head-use_post_id1", ".pz-man-body-post-id"],
             click_count: [".pz-man-head-click_count", ".pz-man-body-click-count"],
             result: [".pz-man-head-update_result", ".pz-man-body-result"],

@@ -21,3 +21,4 @@
 			) ".$wpdb->get_charset_collate()." ;";
 
 	dbDelta($sql, true );
+	$this->options['db-click-version']	=	md5($sql, false );

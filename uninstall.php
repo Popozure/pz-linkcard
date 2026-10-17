@@ -1,56 +1,64 @@
-<?php defined('WP_UNINSTALL_PLUGIN' ) || exit; ?>
 <?php
-	// アンインストーラー
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	exit;
+}
 
-	////////////////////////////////////////////////////////////////////////////////
-	$settings = get_option('pz_linkcard_options', array() );
+$settings = get_option( 'pz_linkcard_options', array() );
 
-	// ディレクトリの削除（画像キャッシュ、スタイルシート）
-	if (!empty($settings['flg-delete-image'] ) ) {
-		$result		=	remove_directory_pre('pz-linkcard' );
-	}
+if ( ! empty( $settings['flg-delete-image'] ) ) {
+	$upload_dir = wp_upload_dir();
+	$upload_root = isset( $upload_dir['basedir'] ) ? realpath( $upload_dir['basedir'] ) : false;
+	$target_dir = $upload_root ? realpath( trailingslashit( $upload_root ) . 'pz-linkcard' ) : false;
 
-	// DBテーブルの削除 
-	if (!empty($settings['flg-delete-db'] ) ) {
-		global	$wpdb;
-		$result		=	drop_table($wpdb->prefix.'pz_linkcard' );
-	}
+	if ( $upload_root && $target_dir && is_dir( $target_dir ) && ! is_link( trailingslashit( $upload_root ) . 'pz-linkcard' ) ) {
+		$normalized_root = strtolower( wp_normalize_path( $upload_root ) );
+		$normalized_target = strtolower( wp_normalize_path( $target_dir ) );
+		$root_prefix = trailingslashit( $normalized_root );
 
-	// 設定の削除
-	if (!empty($settings['flg-delete-settings'] ) ) {
-		$result		=	delete_option('pz_linkcard_options' );
-	}
+		// Only remove the plugin directory when it is a strict child of uploads.
+		if ( $normalized_target !== $normalized_root && strpos( trailingslashit( $normalized_target ), $root_prefix ) === 0 ) {
+			$iterator = new RecursiveIteratorIterator(
+				new RecursiveDirectoryIterator( $target_dir, FilesystemIterator::SKIP_DOTS ),
+				RecursiveIteratorIterator::CHILD_FIRST
+			);
 
-	////////////////////////////////////////////////////////////////////////////////
+			foreach ( $iterator as $entry ) {
+				$path = $entry->getPathname();
+				if ( $entry->isLink() ) {
+					@unlink( $path );
+					continue;
+				}
 
-	// ディレクトリの削除（準備）
-	function remove_directory_pre($dir_name ) {
-		$wp_upload_dir		=	wp_upload_dir();
-		$upload_dir_path	=	$wp_upload_dir['basedir'].'/'.$dir_name;
-		if (file_exists($upload_dir_path ) ) {
-			remove_directory($upload_dir_path );
-		}
-	}
+				$real_path = realpath( $path );
+				if ( false === $real_path || strpos( strtolower( wp_normalize_path( $real_path ) ), trailingslashit( $normalized_target ) ) !== 0 ) {
+					continue;
+				}
 
-	// ディレクトリの削除（処理）
-	function remove_directory($dir ) {
-		if	(mb_substr($dir, -1, 1) <> '/' ) {
-			$dir	=	$dir.'/';
-		}
-		$files = array_diff(scandir($dir), array('.','..'));
-		foreach ($files as $file ) {
-			if (is_dir($dir.$file ) ) {
-				remove_directory($dir.$file);
-			} else {
-				unlink($dir.$file );
+				if ( $entry->isDir() ) {
+					@rmdir( $real_path );
+				} elseif ( $entry->isFile() ) {
+					wp_delete_file( $real_path );
+				}
 			}
-		}
-		return rmdir($dir );
-	}
 
-	// DBテーブルの削除
-	function drop_table($table_name ) {
-		global	$wpdb;
-		$sql	=	"DROP TABLE IF EXISTS ".$table_name;
-		$wpdb->query($sql );
+			@rmdir( $target_dir );
+		}
 	}
+}
+
+if ( ! empty( $settings['flg-delete-db'] ) ) {
+	global $wpdb;
+	$tables = array(
+		$wpdb->prefix . 'pz_linkcard',
+		$wpdb->prefix . 'pz_linkcard_click',
+	);
+
+	foreach ( $tables as $table ) {
+		$quoted_table = '`' . str_replace( '`', '``', $table ) . '`';
+		$wpdb->query( "DROP TABLE IF EXISTS {$quoted_table}" );
+	}
+}
+
+if ( ! empty( $settings['flg-delete-settings'] ) ) {
+	delete_option( 'pz_linkcard_options' );
+}

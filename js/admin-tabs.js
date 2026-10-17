@@ -23,6 +23,12 @@
 			document.querySelectorAll('input[name^="properties"], input[name$="-mode"]').forEach(input => {
 				input.addEventListener('change', tab_enabled);
 			});
+			if (window.location.hash) {
+				window.setTimeout(() => {
+					const target = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+					target?.scrollIntoView({ block: 'start' });
+				}, 50);
+			}
 		}
 	});
 
@@ -35,12 +41,12 @@
 		let tab = document.querySelector(`a[name="${name}"]`);
 		// 無効化されているタブの場合、次のタブにする
 		if (!tab || tab.style.display === 'none') {
-			document.querySelectorAll('.pz-tab').forEach(el => {
+			for (const el of document.querySelectorAll('.pz-tab')) {
 				if (el.style.display !== 'none') {
 					name = el.getAttribute('name');
-					return;
+					break;
 				}
-			});
+			}
 		}
 		// タブを選択する
 		document.querySelectorAll('.pz-tab-active, .pz-page-active').forEach(el => el.classList.remove('pz-tab-active', 'pz-page-active'));

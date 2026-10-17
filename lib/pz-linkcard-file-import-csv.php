@@ -41,8 +41,6 @@
 		'regist_charset'	=>	array('regist_charset' ),
 		'regist_result'		=>	array('regist_result' ),
 		'regist_time'		=>	array('regist_time' ),
-		'mod_title'			=>	array('mod_title' ),
-		'mod_excerpt'		=>	array('mod_excerpt' ),
 		'update_result'		=>	array('update_result', 'result', 'http_code', 'status_code' ),
 		'update_time'		=>	array('update_time', 'updated_time', 'update_date', 'update_datetime', 'updated_at' ),
 	);

@@ -5,19 +5,19 @@
 
 	<table class="form-table" style="width: 100%;">
 		<tr>
-			<th scope="row"><?php esc_html_e('Reset Image', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Reset Image', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Checkbox($prop, 'flg-style-reset', __('When unnecessary frame is displayed on the image, you can improve it by case', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Important Style', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Important Style', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Checkbox($prop, 'flg-style-important', __('If the style is not applied due to the theme or plugin, you can apply it forcibly.', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" rowspan="4"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="4" colspan="2"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Option($prop, 'display-url', __('Position to display URL', 'pz-linkcard' ), array(
 								''		=>		__('None', 'pz-linkcard' ),
@@ -45,7 +45,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Border color for broken links', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Border color for broken links', 'pz-linkcard' ); ?></th>
 			<td>
 				<div class="pz-color-note-row">
 					<input name="properties[unlink-border-color]" type="text" value="<?php echo esc_attr($prop['unlink-border-color'] ); ?>" class="pz-sync-text pz-color pz-monospace pz-color-picker" />
@@ -54,13 +54,19 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Display SNS Count', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="3"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Position', 'pz-linkcard' ); ?></th>
 			<td>
 				<select name="properties[sns-position]">
 					<option value=""  <?php selected($prop['sns-position'] == ''  ); ?>><?php esc_html_e('None',				'pz-linkcard' ); ?></option>
 					<option value="1" <?php selected($prop['sns-position'] == '1' ); ?>><?php esc_html_e('Under Title',			'pz-linkcard' ); ?></option>
 					<option value="2" <?php selected($prop['sns-position'] == '2' ); ?>><?php esc_html_e('Behind site info',	'pz-linkcard' ); ?></option>
 				</select>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Display', 'pz-linkcard' ); ?></th>
+			<td>
 				<ul>
 					<li>
 						<label>
@@ -89,6 +95,14 @@
 						</label>
 					</li>
 				</ul>
+			</td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
+			<td>
+				<?php
+					echo esc_html(sprintf(__('The %s are located on the “Advanced” tab.', 'pz-linkcard' ), __('Settings item', 'pz-linkcard' ) ) );
+				?>
 			</td>
 		</tr>
 	</table>

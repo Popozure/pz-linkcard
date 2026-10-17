@@ -76,7 +76,7 @@
         }
         return	$this->pz_EncodeURL($location, true );
     };
-    $trace_redirect_url	=	function($start_url ) use ($rget_args, $get_request_args, $get_response_url, $get_location_url, $redirect_limit, $is_robots_allowed, &$robots_blocked_url ) {
+    $trace_redirect_url	=	function($start_url ) use ($rget_args, $get_request_args, $get_response_url, $get_location_url, $redirect_limit, $is_robots_allowed, $headers_only, &$robots_blocked_url ) {
         $current_url	=	$start_url;
         $trace_args		=	$rget_args;
         $trace_args['redirection']	=	0;
@@ -93,7 +93,7 @@
             $head_args['method']	=	'HEAD';
             $response				=	wp_safe_remote_head($current_url, $head_args );
 
-            if	(is_wp_error($response ) ) {
+            if	(is_wp_error($response ) && !$headers_only ) {
                 $get_args							=	$get_request_args($current_url, $trace_args );
                 $get_args['limit_response_size']	=	1;
                 $response							=	wp_safe_remote_get($current_url, $get_args );
@@ -146,7 +146,12 @@
         if	($is_amazon_access || $is_twitter_access ) {
             $rget_args	=	$get_request_args($url_access, $rget_args );
         }
-        $rget_data	=	wp_safe_remote_get($url_access, $rget_args );	// wp_remote_get実行
+        if	($headers_only ) {
+            $rget_args['method']	=	'HEAD';
+            $rget_data	=	wp_safe_remote_head($url_access, $rget_args );
+        } else {
+            $rget_data	=	wp_safe_remote_get($url_access, $rget_args );	// wp_remote_get実行
+        }
     }
 
     // 初期化
@@ -405,8 +410,6 @@
     $data['regist_charset']		=	$data['regist_charset']	??	$charset;			// 登録時：文字コード
     $data['regist_time']		=	$data['regist_time']	??	0;					// 登録時：登録日時
     $data['regist_result']		=	$data['regist_result']	??	$http_code;			// 登録時：HTTPレスポンス
-    $data['mod_title']			=	false;											// 更新：登録後からタイトル変更有無
-    $data['mod_excerpt']		=	false;											// 更新：登録後から抜粋文変更有無
     $data['update_time']		=	$this->now;										// 更新：最終更新日
     $data['update_result']		=	$http_code;										// 更新：HTTPレスポンス
     return	$data;
