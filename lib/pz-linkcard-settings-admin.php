@@ -5,11 +5,13 @@
 		wp_clear_scheduled_hook(self::CRON_CHECK );
 		$cron_log		=	'* execute: '.self::CRON_CHECK.PHP_EOL.PHP_EOL;
 		$cron_log		.=	$this->schedule_hook_check();
+		$this->pz_SyncCronSchedules();
 		break;
 	case	'run-'.self::CRON_ALIVE:
 		wp_clear_scheduled_hook(self::CRON_ALIVE );
 		$cron_log		=	'* execute: '.self::CRON_ALIVE.PHP_EOL.PHP_EOL;
 		$cron_log		.=	$this->schedule_hook_alive();
+		$this->pz_SyncCronSchedules();
 		break;
 	case	'run-'.self::CRON_CLICK_CLEANUP:
 		wp_clear_scheduled_hook(self::CRON_CLICK_CLEANUP );
@@ -181,7 +183,7 @@
 		</div>
 	<?php } ?>
 
-	<h2><?php esc_html_e('WP-Cron Information', 'pz-linkcard' ); ?> <a href="<?php echo esc_url(admin_url('admin.php?page='.self::SCHEDULER_PAGE ) ); ?>" class="button"><?php esc_html_e('Scheduler', 'pz-linkcard' ); ?></a></h2>
+	<h2><?php esc_html_e('WP-Cron Information', 'pz-linkcard' ); ?></h2>
 	<div class="pz-cron-margin">
 		<label>
 			<input type="checkbox" value="1" class="pz-cron-all" />

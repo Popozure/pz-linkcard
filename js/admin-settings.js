@@ -13,7 +13,6 @@
 	initTargetHighlight();
 	initTargetHighlightLinks();
 	initDbClearDelay();
-	initScheduler();
 	const initialOverlay = document.querySelector("#pz-overlay-proc");
 	const keepInitialOverlay = initialOverlay?.classList.contains("pz-overlay-proc-active");
 
@@ -95,6 +94,7 @@
         initCachemanScrollMemory();
         initCachemanEditorShortcuts();
         initSettingsTabs();
+        initCachemanUsedPostRefresh();
         initCachemanSearch();
         initCachemanPaginationKeys();
         initImageBox();
@@ -539,47 +539,6 @@
             }
         });
     }
-
-	function initScheduler() {
-		const root = document.querySelector(".pz-scheduler");
-		const tbody = root?.querySelector(".pz-cron-list tbody");
-		const showAll = root?.querySelector(".pz-cron-all");
-		if (!root || !tbody || !showAll || !window.pzLinkCardAdmin?.schedulerNonce) return;
-
-		let currentRows = tbody.innerHTML;
-		const applyFilter = () => {
-			root.querySelectorAll(".pz-cron-list-other").forEach(row => {
-				row.style.display = showAll.checked ? "table-row" : "none";
-			});
-		};
-		const refresh = () => {
-			const body = new URLSearchParams({
-				action: "pz_lkc_scheduler_tasks",
-				nonce: window.pzLinkCardAdmin.schedulerNonce,
-			});
-			fetch(window.pzLinkCardAdmin.ajaxUrl, {
-				method: "POST",
-				credentials: "same-origin",
-				headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
-				body: body.toString(),
-			})
-				.then(response => response.ok ? response.json() : Promise.reject())
-				.then(result => {
-					const rows = result?.success ? String(result.data?.rows || "") : currentRows;
-					if (rows !== currentRows) {
-						tbody.innerHTML = rows;
-						currentRows = rows;
-						applyFilter();
-					}
-				})
-				.catch(() => {})
-				.finally(() => window.setTimeout(refresh, 5000));
-		};
-
-		showAll.addEventListener("change", applyFilter);
-		applyFilter();
-		window.setTimeout(refresh, 5000);
-	}
 
     // Admin setting helper
     function syncColor(e) {
@@ -2167,13 +2126,16 @@
             charset: [".pz-man-head-charset", ".pz-man-body-charset"],
             domain: [".pz-man-head-domain", ".pz-man-body-domain-cell"],
             sns: [".pz-man-head-sns_twitter", ".pz-man-body-sns"],
+			post_id: [".pz-man-head-post_id", ".pz-man-body-post-id-value"],
+			post_date: [".pz-man-head-post_date", ".pz-man-body-post-date"],
+			post_modified: [".pz-man-head-post_modified", ".pz-man-body-post-modified"],
             regist_time: [".pz-man-head-regist_time", ".pz-man-body-regist-time"],
             update_time: [".pz-man-head-update_time", ".pz-man-body-update-time"],
             sns_time: [".pz-man-head-sns_time", ".pz-man-body-sns-time"],
             alive_time: [".pz-man-head-alive_time", ".pz-man-body-alive-time"],
             sns_nexttime: [".pz-man-head-sns_nexttime", ".pz-man-body-sns-nexttime"],
             alive_nexttime: [".pz-man-head-alive_nexttime", ".pz-man-body-alive-nexttime"],
-            post_id: [".pz-man-head-use_post_id1", ".pz-man-body-post-id"],
+			use_post_id: [".pz-man-head-use_post_id1", ".pz-man-body-use-post-id"],
             click_count: [".pz-man-head-click_count", ".pz-man-body-click-count"],
             result: [".pz-man-head-update_result", ".pz-man-body-result"],
         };
@@ -2353,6 +2315,56 @@
             });
         });
     }
+
+	function initCachemanUsedPostRefresh() {
+		const button = document.querySelector(".pz-man-cache-post-id-refresh");
+		if (!button) return;
+
+		button.addEventListener("click", async e => {
+			e.preventDefault();
+			if (button.disabled) return;
+			button.classList.remove("is-rotating");
+			void button.offsetWidth;
+			button.classList.add("is-rotating");
+
+			const config = window.pzLinkCardAdmin || {};
+			const body = new URLSearchParams({
+				action: "pz_lkc_find_used_posts",
+				nonce: config.findUsedPostsNonce || "",
+				card_id: button.dataset.cardId || "0"
+			});
+
+			button.disabled = true;
+			try {
+				const response = await fetch(config.ajaxUrl || window.ajaxurl, {
+					method: "POST",
+					credentials: "same-origin",
+					headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+					body: body.toString()
+				});
+				const result = await response.json();
+				if (!response.ok || !result?.success) return;
+
+				const postIds = Array.isArray(result.data?.post_ids) ? result.data.post_ids.slice(0, 6) : [];
+				for (let index = 1; index <= 6; index++) {
+					const input = document.querySelector(`input[name="data[use_post_id${index}]"]`);
+					if (!input) continue;
+					input.value = postIds[index - 1] || "";
+					input.dispatchEvent(new Event("input", { bubbles: true }));
+					input.dispatchEvent(new Event("change", { bubbles: true }));
+				}
+
+				const summary = document.querySelector(".pz-man-cache-post-id-summary-value");
+				if (summary) {
+					summary.textContent = postIds.length ? postIds.join("、") : "-";
+					summary.classList.add("is-refreshed");
+				}
+			} finally {
+				button.disabled = false;
+			}
+		});
+		button.addEventListener("animationend", () => button.classList.remove("is-rotating"));
+	}
 
     function initCachemanSearch() {
         const input = document.querySelector("#post-search-input");

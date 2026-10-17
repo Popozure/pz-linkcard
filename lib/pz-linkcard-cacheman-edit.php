@@ -21,6 +21,7 @@
 	$cacheman_allowed_html['button']	=	array(
 		'aria-label'	=>	true,
 		'class'			=>	true,
+		'data-card-id'	=>	true,
 		'data-target'	=>	true,
 		'hidden'		=>	true,
 		'formnovalidate'	=>	true,
@@ -139,13 +140,7 @@
 					'</div>'.
 				'</div>';
 	};
-	$post_id_value	=	0;
-	for	($post_id_index = 1; $post_id_index <= 6; $post_id_index++ ) {
-		$post_id_value	=	intval($cacheman_get_value('use_post_id'.$post_id_index ) );
-		if	($post_id_value > 0 ) {
-			break;
-		}
-	}
+	$link_post_id_value	=	intval($cacheman_get_value('post_id' ) );
 ?>
 	<div class="pz-page-help">
 		<button type="button" class="pz-page-help-toggle" aria-expanded="false" aria-controls="pz-cache-edit-help-panel" data-no-overlay="1">
@@ -199,10 +194,10 @@
 
 				<?php echo wp_kses($cacheman_postbox_open(__('Internal Link Data', 'pz-linkcard' ) ), $cacheman_allowed_html ); ?>
 					<table class="form-table pz-man-cache-form-table">
-						<?php echo wp_kses($cacheman_field_row(esc_html__('Post ID', 'pz-linkcard' ), '<input name="" type="text" value="'.esc_attr($post_id_value > 0 ? $post_id_value : '' ).'" size="8" readonly="readonly" class="pz-debug-only"> '.esc_html($post_id_value > 0 ? $post_id_value : '-' ) ), $cacheman_allowed_html ); ?>
-						<?php echo wp_kses($cacheman_field_row(esc_html__('Post Date', 'pz-linkcard' ), '<input name="data[post_date]" type="text" value="'.esc_attr($cacheman_get_value('post_date' ) ).'" size="8" readonly="readonly" class="pz-debug-only"> '.esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('post_date' ) ) ) ), $cacheman_allowed_html ); ?>
-						<?php echo wp_kses($cacheman_field_row(esc_html__('Modified Date', 'pz-linkcard' ), '<input name="data[post_modified]" type="text" value="'.esc_attr($cacheman_get_value('post_modified' ) ).'" size="8" readonly="readonly" class="pz-debug-only"> '.esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('post_modified' ) ) ) ), $cacheman_allowed_html ); ?>
-						<?php echo wp_kses($cacheman_field_row(esc_html__('Category', 'pz-linkcard' ), $cacheman_category_checklist($post_id_value ) ), $cacheman_allowed_html ); ?>
+						<?php echo wp_kses($cacheman_field_row(esc_html__('Post ID', 'pz-linkcard' ), '<input name="data[post_id]" type="text" value="'.esc_attr($link_post_id_value > 0 ? $link_post_id_value : '' ).'" size="8" readonly="readonly" ondblclick="this.readOnly=false;" class="pz-debug-only"> '.esc_html($link_post_id_value > 0 ? $link_post_id_value : '-' ) ), $cacheman_allowed_html ); ?>
+						<?php echo wp_kses($cacheman_field_row(esc_html__('Post Date', 'pz-linkcard' ), '<input name="data[post_date]" type="text" value="'.esc_attr($cacheman_get_value('post_date' ) ).'" size="8" readonly="readonly" ondblclick="this.readOnly=false;" class="pz-debug-only"> '.esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('post_date' ) ) ) ), $cacheman_allowed_html ); ?>
+						<?php echo wp_kses($cacheman_field_row(esc_html__('Post Modified Date', 'pz-linkcard' ), '<input name="data[post_modified]" type="text" value="'.esc_attr($cacheman_get_value('post_modified' ) ).'" size="8" readonly="readonly" ondblclick="this.readOnly=false;" class="pz-debug-only"> '.esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('post_modified' ) ) ) ), $cacheman_allowed_html ); ?>
+						<?php echo wp_kses($cacheman_field_row(esc_html__('Category', 'pz-linkcard' ), $cacheman_category_checklist($link_post_id_value ) ), $cacheman_allowed_html ); ?>
 					</table>
 				<?php echo wp_kses($cacheman_postbox_close(), $cacheman_allowed_html ); ?>
 
@@ -294,24 +289,24 @@
 						</tr>
 
 						<?php
-							$post_id_fields = '';
-							$post_id_values = array();
-							for	($post_id_index = 1; $post_id_index <= 6; $post_id_index++ ) {
-								$post_id_key	=	'use_post_id'.$post_id_index;
-								$post_id_value_each	=	intval($cacheman_get_value($post_id_key ) );
-								if	($post_id_value_each > 0 ) {
-									$post_id_values[] = $post_id_value_each;
+							$use_post_id_fields = '';
+							$use_post_id_values = array();
+							for	($use_post_id_index = 1; $use_post_id_index <= 6; $use_post_id_index++ ) {
+								$use_post_id_key	=	'use_post_id'.$use_post_id_index;
+								$use_post_id_value	=	intval($cacheman_get_value($use_post_id_key ) );
+								if	($use_post_id_value > 0 ) {
+									$use_post_id_values[] = $use_post_id_value;
 								}
-								$post_id_fields	.=	$cacheman_text_input($post_id_key, array(
-									'value'			=>	$post_id_value_each > 0 ? $post_id_value_each : '',
+								$use_post_id_fields	.=	$cacheman_text_input($use_post_id_key, array(
+									'value'			=>	$use_post_id_value > 0 ? $use_post_id_value : '',
 									'size'			=>	5,
 									'class'			=>	'pz-man-cache-post-id-input pz-debug-only',
 									'readonly'		=>	true,
 									'editable'		=>	true,
 								) );
 							}
-							echo wp_kses('<tr class="pz-man-cache-side-meta-row pz-man-cache-post-id-summary-row"><td colspan="2"><span>'.esc_html__('Post ID', 'pz-linkcard' ).':</span> '.esc_html(implode(__(', ', 'pz-linkcard' ), $post_id_values ) ?: '-' ).'</td></tr>', $cacheman_allowed_html );
-							echo wp_kses('<tr class="pz-debug-only pz-man-cache-post-id-row"><td colspan="2">'.$post_id_fields.'</td></tr>', $cacheman_allowed_html );
+							echo wp_kses('<tr class="pz-man-cache-side-meta-row pz-man-cache-post-id-summary-row"><td colspan="2"><span>'.esc_html__('Used Post ID', 'pz-linkcard' ).':</span> <span class="pz-man-cache-post-id-summary-value">'.esc_html(implode(__(', ', 'pz-linkcard' ), $use_post_id_values ) ?: '-' ).'</span> <button type="button" class="button-link pz-man-cache-post-id-refresh" data-card-id="'.intval($cache_id ).'" title="'.esc_attr__('Renew Post ID', 'pz-linkcard' ).'">↻</button></td></tr>', $cacheman_allowed_html );
+							echo wp_kses('<tr class="pz-debug-only pz-man-cache-post-id-row"><td colspan="2">'.$use_post_id_fields.'</td></tr>', $cacheman_allowed_html );
 						?>
 					</table>
 				<?php echo wp_kses($cacheman_postbox_close(), $cacheman_allowed_html ); ?>

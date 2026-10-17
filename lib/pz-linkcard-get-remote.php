@@ -26,8 +26,12 @@
         $check_host	=	strtolower((string) wp_parse_url($check_url, PHP_URL_HOST ) );
         return	preg_match('/(^|\.)x\.com$/i', $check_host ) === 1;
     };
-    $get_request_args	=	function($check_url, $request_args ) use ($browser_user_agent, $is_amazon_url, $is_twitter_url ) {
-        if	($is_amazon_url($check_url ) || $is_twitter_url($check_url ) ) {
+	$is_jmty_url	=	function($check_url ) {
+		$check_host	=	strtolower((string) wp_parse_url($check_url, PHP_URL_HOST ) );
+		return	preg_match('/(^|\.)jmty\.jp$/i', $check_host ) === 1;
+	};
+    $get_request_args	=	function($check_url, $request_args ) use ($browser_user_agent, $is_amazon_url, $is_twitter_url, $is_jmty_url ) {
+        if	($is_amazon_url($check_url ) || $is_twitter_url($check_url ) || $is_jmty_url($check_url ) ) {
             $request_args['user-agent']	=	$browser_user_agent;
         }
         return	$request_args;
@@ -137,13 +141,14 @@
     }
     $is_amazon_access	=	$is_amazon_url($url_access );
     $is_twitter_access	=	$is_twitter_url($url_access );
+	$is_jmty_access		=	$is_jmty_url($url_access );
     $blocked_local_url	=	$this->pz_ShouldBlockLocalAddress($url ) || ($url_redir && $this->pz_ShouldBlockLocalAddress($url_redir ) );
     if	($blocked_local_url ) {
         $rget_data	=	new WP_Error('pz_lkc_local_redirect', 'Local address blocked' );
     } elseif ($robots_blocked_url ) {
         $rget_data	=	new WP_Error('pz_lkc_robots_disallowed', 'Blocked by robots.txt' );
     } else {
-        if	($is_amazon_access || $is_twitter_access ) {
+        if	($is_amazon_access || $is_twitter_access || $is_jmty_access ) {
             $rget_args	=	$get_request_args($url_access, $rget_args );
         }
         if	($headers_only ) {
@@ -290,6 +295,33 @@
             }
         }
 
+		// ジモティー専用処理：作成日時・更新日時
+		if	(!empty($this->options['flg-special-jmty'] ) && $is_jmty_access ) {
+			$jmty_body	=	html_entity_decode($http_body, ENT_QUOTES | ENT_HTML5, $this->charset );
+			$jmty_date_pattern	=	'(\d{4})年\s*(\d{1,2})月\s*(\d{1,2})日\s*(\d{1,2}):(\d{2})';
+			$parse_jmty_date	=	function($label ) use ($jmty_body, $jmty_date_pattern ) {
+				if	(!preg_match('/'.preg_quote($label, '/').'(?:\s|<!--.*?-->)*'.$jmty_date_pattern.'/su', $jmty_body, $matches ) ) {
+					return	0;
+				}
+				$date	=	DateTimeImmutable::createFromFormat(
+					'!Y-n-j G:i',
+					sprintf('%04d-%d-%d %d:%02d', intval($matches[1] ), intval($matches[2] ), intval($matches[3] ), intval($matches[4] ), intval($matches[5] ) ),
+					wp_timezone()
+				);
+				return	$date instanceof DateTimeImmutable ? $date->getTimestamp() : 0;
+			};
+			$jmty_created	=	$parse_jmty_date('作成' );
+			$jmty_updated	=	$parse_jmty_date('更新' );
+			if	($jmty_created ) {
+				$data['post_date']	=	$jmty_created;
+			}
+			if	($jmty_updated ) {
+				$data['post_modified']	=	$jmty_updated;
+			} elseif	($jmty_created ) {
+				$data['post_modified']	=	$jmty_created;
+			}
+		}
+
         // Open Graph Protcol
         $og_url			=	$tags['og:url']					??	'';
         $og_type		=	$tags['og:type']				??	'';
@@ -371,7 +403,10 @@
 
     // 呼ばれている記事
     if	(!isset($data['use_post_id1'] ) ) {
-        $data['use_post_id1']	=	get_the_ID();
+		$post_id_t	=	intval(get_the_ID() );
+		if	($post_id_t > 0 ) {
+			$data['use_post_id1']	=	$post_id_t;
+		}
     }
 
     // リダイレクト先URL

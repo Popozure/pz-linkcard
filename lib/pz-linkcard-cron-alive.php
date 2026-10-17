@@ -1,12 +1,6 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	// WP-CRONスケジュール（存在チェック）
-	if (!$this->options['sns-period'] || !$this->options['alive-period'] ) {
-		$log	.=	'Clear schedule "Site Alive Check".'.PHP_EOL;
-		wp_clear_scheduled_hook(self::CRON_ALIVE );
-		return	null;
-	}
-
 	// DBの宣言
 	global	$wpdb;
 

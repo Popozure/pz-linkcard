@@ -230,6 +230,7 @@
 
 	// スタイルシート再生成の有無
 	$flg_style		=	false;			// スタイルシートを再生成するか
+	$reset_client_storage	=	false;
 
 	// プラグイン名・バージョン・環境表示
 	$html_mode		=	($debug_mode			?	'<span class="pz-infobar-env pz-infobar-env-debug">'.	__('Debug Mode', 'pz-linkcard' ).'</span>'				:	'' ).
@@ -384,6 +385,9 @@
 
 		case	'init-settings':						// 設定の初期化
 			$result		=	$this->pz_InitializeOptions();
+			delete_user_meta(get_current_user_id(), 'pz_lkc_cacheman_columns' );
+			delete_user_meta(get_current_user_id(), 'pz_lkc_cacheman_per_page' );
+			$reset_client_storage	=	true;
 			if	($result ) {
 				$flg_style		=	true;				// スタイルシートの再生成
 				$prop		=	$this->options;
@@ -514,6 +518,9 @@
 			$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to load the CSS template.', 'pz-linkcard').'</strong></p></div>';
 		default:
 		}
+	}
+	if	($reset_client_storage ) {
+		echo '<script>(function(){try{Object.keys(window.localStorage).forEach(function(key){if(key.indexOf("pz-linkcard-")===0){window.localStorage.removeItem(key);}});}catch(e){}})();</script>';
 	}
 
 	// 記述エラー（保存処理後の設定値で表示を判定）

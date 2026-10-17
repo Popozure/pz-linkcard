@@ -19,6 +19,34 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Jmty.jp"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Retrieve Created and Updated Dates"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Used Post ID"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Published Post ID"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Published<br>Post<br>ID"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Post Modified Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Post<br>Modified Date"
+msgstr ""
+
 #: ../lib/pz-linkcard-cacheman-edit.php:84
 msgid "Update"
 msgstr ""
@@ -838,16 +866,6 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-admin.php:164
 msgid "View all schedules."
-msgstr ""
-
-#: ../lib/pz-linkcard-scheduler.php
-#: ../lib/pz-linkcard-settings-admin.php
-#: ../pz-linkcard.php
-msgid "Scheduler"
-msgstr ""
-
-#: ../lib/pz-linkcard-scheduler.php
-msgid "Hook List"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-admin.php:172
@@ -3398,4 +3416,8 @@ msgid "&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed."
 msgstr ""
 
 msgid "&ensp;&ensp;&ensp;&ensp;HTTP code=%1$d was returned. The next check date and time=%2$s was set."
+msgstr ""
+
+#: ../lib/pz-linkcard-cron-sns.php
+msgid "&ensp;&ensp;&ensp;&ensp;Hatena Bookmark=%1$s was returned. The next check date and time=%2$s was set."
 msgstr ""

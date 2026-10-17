@@ -19,18 +19,19 @@
 				charset			VARCHAR(30)								DEFAULT NULL,
 				thumbnail		VARCHAR(2000)							DEFAULT NULL,
 				favicon			VARCHAR(2000)							DEFAULT NULL,
-				post_date		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				post_modified	BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
+				post_id			BIGINT			UNSIGNED				DEFAULT 0,
+				post_date		BIGINT			UNSIGNED				DEFAULT 0,
+				post_modified	BIGINT			UNSIGNED				DEFAULT 0,
 				no_failure		INT				UNSIGNED				DEFAULT 0,
-				click_count		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
+				click_count		BIGINT			UNSIGNED				DEFAULT 0,
 				alive_result	INT										DEFAULT NULL,
-				alive_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				alive_nexttime	BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
+				alive_time		BIGINT			UNSIGNED				DEFAULT 0,
+				alive_nexttime	BIGINT			UNSIGNED				DEFAULT 0,
 				sns_twitter		INT										DEFAULT NULL,
 				sns_facebook	INT										DEFAULT NULL,
 				sns_hatena		INT										DEFAULT NULL,
-				sns_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
-				sns_nexttime	BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
+				sns_time		BIGINT			UNSIGNED				DEFAULT 0,
+				sns_nexttime	BIGINT			UNSIGNED				DEFAULT 0,
 				use_post_id1	INT				UNSIGNED				DEFAULT NULL,
 				use_post_id2	INT				UNSIGNED				DEFAULT NULL,
 				use_post_id3	INT				UNSIGNED				DEFAULT NULL,
@@ -41,9 +42,9 @@
 				regist_excerpt	VARCHAR(500)							DEFAULT NULL,
 				regist_charset	VARCHAR(30)								DEFAULT NULL,
 				regist_result 	INT										DEFAULT NULL,
-				regist_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
+				regist_time		BIGINT			UNSIGNED				DEFAULT 0,
 				update_result	INT										DEFAULT NULL,
-				update_time		BIGINT			UNSIGNED	NOT NULL	DEFAULT 0,
+				update_time		BIGINT			UNSIGNED				DEFAULT 0,
 				PRIMARY KEY		(id),
 				UNIQUE KEY url_key (url_key),
 				KEY alive_nexttime (alive_nexttime),
@@ -120,6 +121,35 @@
 			OR regist_result < 0
 			OR update_result < 0"
 	);
+
+	// 内部リンクはリンク先投稿のID・投稿日・更新日を取得する
+	$internal_link_cards	=	(array) $wpdb->get_results(
+		"SELECT id, url FROM $this->db_card WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC"
+	);
+	foreach	($internal_link_cards as $internal_link_card ) {
+		$url_info	=	$this->Pz_GetURLInfo($internal_link_card->url );
+		if	(empty($url_info['is_internal'] ) ) {
+			continue;
+		}
+
+		$post_id	=	url_to_postid($internal_link_card->url );
+		$post		=	$post_id ? get_post($post_id ) : null;
+		if	(!$post ) {
+			continue;
+		}
+
+		$wpdb->update(
+			$this->db_card,
+			array(
+				'post_id'		=>	intval($post_id ),
+				'post_date'		=>	intval(get_post_timestamp($post, 'date' ) ),
+				'post_modified'	=>	intval(get_post_timestamp($post, 'modified' ) ),
+			),
+			array('id' => intval($internal_link_card->id ) ),
+			array('%d', '%d', '%d' ),
+			array('%d' )
+		);
+	}
 	// if	($wpdb->last_error ) {
 	// 	$error_code	=	'';
 	// 	if	(function_exists('mysqli_errno' ) && isset($wpdb->dbh ) && $wpdb->dbh instanceof mysqli ) {

@@ -91,6 +91,9 @@
 	$screen_option_columns	=	array(
 		'id'			=>	array('label' => __('ID', 'pz-linkcard' ) ),
 		'excerpt'		=>	array('label' => __('Excerpt', 'pz-linkcard' ) ),
+		'post_id'		=>	array('label' => __('Post ID', 'pz-linkcard' ) ),
+		'post_date'		=>	array('label' => __('Post Date', 'pz-linkcard' ) ),
+		'post_modified'=>	array('label' => __('Post Modified Date', 'pz-linkcard' ) ),
 		'charset'		=>	array('label' => __('Charset', 'pz-linkcard' ) ),
 		'domain'		=>	array('label' => __('Domain', 'pz-linkcard' ) ),
 		'sns'			=>	array('label' => __('SNS', 'pz-linkcard' ) ),
@@ -100,23 +103,26 @@
 		'sns_nexttime'	=>	array('label' => __('Next Share Count Retrieval Date', 'pz-linkcard' ), 'debug_only' => true ),
 		'alive_time'	=>	array('label' => __('Alive Check Date', 'pz-linkcard' ) ),
 		'alive_nexttime'=>	array('label' => __('Next Status Check Date', 'pz-linkcard' ), 'debug_only' => true ),
-		'post_id'		=>	array('label' => __('Post ID', 'pz-linkcard' ) ),
+		'use_post_id'	=>	array('label' => __('Published Post ID', 'pz-linkcard' ) ),
 		'click_count'	=>	array('label' => __('Click Count', 'pz-linkcard' ) ),
 		'result'		=>	array('label' => __('Result code', 'pz-linkcard' ) ),
 	);
 	$screen_option_defaults	=	array(
 		'id'			=>	true,
 		'excerpt'		=>	true,
+		'post_id'		=>	false,
+		'post_date'		=>	false,
+		'post_modified'=>	false,
 		'charset'		=>	false,
 		'domain'		=>	true,
 		'sns'			=>	true,
-		'regist_time'	=>	false,
+		'regist_time'	=>	true,
 		'update_time'	=>	true,
 		'sns_time'		=>	false,
-		'sns_nexttime'	=>	true,
+		'sns_nexttime'	=>	false,
 		'alive_time'	=>	false,
-		'alive_nexttime'=>	true,
-		'post_id'		=>	true,
+		'alive_nexttime'=>	false,
+		'use_post_id'	=>	true,
 		'click_count'	=>	true,
 		'result'		=>	true,
 	);
@@ -416,6 +422,24 @@
 	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
+	$item		=	'post_id';
+	$item_name	=	__('Post<br>ID', 'pz-linkcard' );
+	$add_class	=	$screen_option_hidden_class($item );
+	$sort		=	$get_sort_icon($item );
+	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
+
+	$item		=	'post_date';
+	$item_name	=	__('Post Date', 'pz-linkcard' );
+	$add_class	=	$screen_option_hidden_class($item );
+	$sort		=	$get_sort_icon($item );
+	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
+
+	$item		=	'post_modified';
+	$item_name	=	__('Post<br>Modified Date', 'pz-linkcard' );
+	$add_class	=	$screen_option_hidden_class($item );
+	$sort		=	$get_sort_icon($item );
+	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
+
 	$item		=	'charset';
 	$item_name	=	__('Charset', 'pz-linkcard' );
 	$add_class	=	$screen_option_hidden_class('charset');
@@ -493,8 +517,8 @@
 	}
 
 	$item		=	'use_post_id1';
-	$item_name	=	__('Post<br>ID', 'pz-linkcard' );
-	$add_class	=	$screen_option_hidden_class('post_id');
+	$item_name	=	__('Published<br>Post<br>ID', 'pz-linkcard' );
+	$add_class	=	$screen_option_hidden_class('use_post_id');
 	$sort		=	$get_sort_icon($item);
 	echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'"><button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button></th>';
 
@@ -599,8 +623,9 @@
 					// サムネイル
 					$thumbnail_url				=	null;
 					$html_thumbnail				=	null;
+					$post_id					=	0;
 					if	($domain === $this->domain ) {
-						$post_id				=	url_to_postid($data->url );											// 記事IDを取得
+						$post_id				=	intval($data->post_id ?? 0 ) ?: url_to_postid($data->url );			// 内部リンク先の投稿IDを取得
 						$thumbnail_id			=	get_post_thumbnail_id($post_id );									// サムネイルIDを取得
 						if	($thumbnail_id ) {
 							$thumbnail_size		=	$this->options['in-thumbnail-size'] ? $this->options['in-thumbnail-size'] : 'thumbnail' ;
@@ -621,16 +646,20 @@
 						$html_thumbnail			=	'<a href="'.esc_url($thumbnail_url ).'" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer" class="pz-man-thumbnail"><div><img src="'.esc_url($thumbnail_url ).'" alt="" class="pz-man-thumbnail-img"></div></a>';
 					}
 
-					// 記事ID
-					$html_post_id		=	null;
-					for	($j = 1; $j < 5; $j++ ) {
+					// リンクカードが貼られている投稿ID
+					$post_id_t			=	array();
+					for	($j = 1; $j <= 6; $j++ ) {
 						$use_post_id	=	'use_post_id'.$j;
-						$post_id		=	$data->$use_post_id;
-						if	($post_id > 0 ) {
-							$post_title	=	get_the_title($post_id );
-							$post_url	=	get_permalink($post_id ).'#pz-lkc-'.intval($data_id );
-							$html_post_id	.=	'<span class="pz-man-post-id-line"><button type="button" class="pz-man-inline-menu pz-man-post-search" data-pz-man-search-post="'.intval($post_id ).'" title="post:'.intval($post_id ).'">'.intval($post_id ).'</button><a href="'.esc_url($post_url ).'" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" class="pz-man-post-open" title="'.esc_attr($post_title ).'" aria-label="'.esc_attr($post_title ).'"><span class="dashicons dashicons-external" aria-hidden="true"></span></a></span><br>';
+						$use_post_id_value	=	intval($data->$use_post_id );
+						if	($use_post_id_value > 0 ) {
+							$post_id_t[]	=	$use_post_id_value;
 						}
+					}
+					$html_post_id		=	null;
+					foreach	($post_id_t as $use_post_id_value ) {
+						$post_title	=	get_the_title($use_post_id_value );
+						$post_url	=	get_permalink($use_post_id_value ).'#pz-lkc-'.intval($data_id );
+						$html_post_id	.=	'<span class="pz-man-post-id-line"><button type="button" class="pz-man-inline-menu pz-man-post-search" data-pz-man-search-post="'.intval($use_post_id_value ).'" title="post:'.intval($use_post_id_value ).'">'.intval($use_post_id_value ).'</button><a href="'.esc_url($post_url ).'" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" class="pz-man-post-open" title="'.esc_attr($post_title ).'" aria-label="'.esc_attr($post_title ).'"><span class="dashicons dashicons-external" aria-hidden="true"></span></a></span><br>';
 					}
 
 					// クリック数
@@ -658,6 +687,15 @@
 					</div>
 				</td>
 				<td class="pz-man-body-excerpt-cell<?php echo esc_attr($screen_option_hidden_class('excerpt') ); ?>"><div class="pz-man-body-excerpt" title="<?php echo esc_attr($excerpt); ?>"><?php echo wp_kses_post($html_excerpt ); ?></div></td>
+				<td class="pz-man-body-post-id-value<?php echo esc_attr($screen_option_hidden_class('post_id') ); ?>">
+					<?php if ($post_id ) { ?>
+						<a href="<?php echo esc_url(get_permalink($post_id ) ); ?>" target="_blank" rel="noopener noreferrer" title="<?php echo esc_attr(get_the_title($post_id ) ); ?>"><?php echo esc_html((string) $post_id ); ?></a>
+					<?php } else { ?>
+						-
+					<?php } ?>
+				</td>
+				<td class="pz-man-body-post-date<?php echo esc_attr($screen_option_hidden_class('post_date') ); ?>"><?php $dt=intval($data->post_date ?? 0 ); ?><?php if ($dt > 0 ) { ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span><?php } else { echo '-'; } ?></td>
+				<td class="pz-man-body-post-modified<?php echo esc_attr($screen_option_hidden_class('post_modified') ); ?>"><?php $dt=intval($data->post_modified ?? 0 ); ?><?php if ($dt > 0 ) { ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span><?php } else { echo '-'; } ?></td>
 				<td class="pz-man-body-charset<?php echo esc_attr($screen_option_hidden_class('charset') ); ?>"><?php echo esc_html($data->charset ); ?></td>
 				<td class="pz-man-body-domain-cell<?php echo esc_attr($screen_option_hidden_class('domain') ); ?>">
 					<div class="pz-man-body-domain">
@@ -682,7 +720,7 @@
 				<?php if ($debug_mode ) { ?>
 				<td class="pz-man-body-alive-nexttime pz-debug-only<?php echo esc_attr($screen_option_hidden_class('alive_nexttime') ); ?>"><?php $dt=$data->alive_nexttime; ?><span title="<?php echo esc_attr(date(PZLKC_DATETIME_FORMAT, $dt ) ); ?>"><?php echo wp_kses($this->pz_Date($this->options['date-format-man'], $dt ), $date_allowed_html ); ?></span></td>
 				<?php } ?>
-				<td class="pz-man-body-post-id<?php echo esc_attr($screen_option_hidden_class('post_id') ); ?>"><?php echo wp_kses($html_post_id, $cacheman_list_allowed_html ); ?></td>
+				<td class="pz-man-body-use-post-id<?php echo esc_attr($screen_option_hidden_class('use_post_id') ); ?>"><?php echo wp_kses($html_post_id, $cacheman_list_allowed_html ); ?></td>
 				<td class="pz-man-body-click-count<?php echo esc_attr($screen_option_hidden_class('click_count') ); ?>"><button type="submit" name="single-click-log" value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu"><?php echo esc_html(number_format_i18n(intval($data->click_count ) ) ); ?></button></td>
 				<td class="pz-man-body-result<?php echo esc_attr($screen_option_hidden_class('result') ); ?>"><?php echo wp_kses_post($html_result ); ?></td>
 			</tr>

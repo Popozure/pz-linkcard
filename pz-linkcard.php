@@ -430,6 +430,7 @@ class class_pz_linkcard {
 
 			'flg-special-amazon'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-special-twitter'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-special-jmty'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 
 			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
 			'alive-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
@@ -487,7 +488,6 @@ class class_pz_linkcard {
 	private		const	CACHEMAN_URL		=	'/tools.php?page=pz-linkcard-cacheman';				// Pzカード管理のURL
 	private		const	SETTINGS_PAGE		=	'pz-linkcard-settings';								// Pzカード設定のページ名
 	private		const	SETTINGS_URL		=	'/options-general.php?page=pz-linkcard-settings';	// Pzカード設定のURL
-	private		const	SCHEDULER_PAGE		=	'pz-linkcard-scheduler';
 
 	private		const	ENV_PRODUCT_URL		=	'https://popozure.info/';
 	private		const	ENV_DEVELOP_URL		=	'https://popozure.xsrv.jp/develop/';
@@ -654,26 +654,7 @@ class class_pz_linkcard {
 		add_action(self::CRON_CLICK_CLEANUP, [$this, 'schedule_hook_click_cleanup' ] );
 
 		// WP-CRONスケジュール登録
-		$cron_schedules		=	wp_get_schedules();
-		$sns_period			=	$this->options['sns-period'];
-		$alive_period		=	$this->options['alive-period'];
-		$sns_interval		=	isset($cron_schedules[$sns_period]['interval'] ) ? intval($cron_schedules[$sns_period]['interval'] ) : 0;
-		$alive_interval		=	isset($cron_schedules[$alive_period]['interval'] ) ? intval($cron_schedules[$alive_period]['interval'] ) : 0;
-		$sns_first_delay	=	30 * MINUTE_IN_SECONDS;
-		$alive_first_delay	=	intdiv($sns_interval + $alive_interval, 4 ) + $sns_first_delay;
-
-		if	(!$this->options['sns-position'] || !$sns_period ) {
-			wp_clear_scheduled_hook(self::CRON_CHECK );
-		} elseif (wp_get_schedule(self::CRON_CHECK ) !== $sns_period ) {
-			wp_clear_scheduled_hook(self::CRON_CHECK );
-			wp_schedule_event(time() + $sns_first_delay, $sns_period, self::CRON_CHECK );
-		}
-		if	(!$sns_period || !$alive_period ) {
-			wp_clear_scheduled_hook(self::CRON_ALIVE );
-		} elseif (wp_get_schedule(self::CRON_ALIVE ) !== $alive_period ) {
-			wp_clear_scheduled_hook(self::CRON_ALIVE );
-			wp_schedule_event(time() + $alive_first_delay, $alive_period, self::CRON_ALIVE );
-		}
+		$this->pz_SyncCronSchedules();
 		$this->pz_ScheduleClickLogCleanup();
 
 		// 管理画面のとき
@@ -698,10 +679,10 @@ class class_pz_linkcard {
 			add_action		('wp_ajax_pz_lkc_clear_error_mode',			[$this, 'action_ajax_pz_lkc_error_mode_clear'] );
 			add_action		('wp_ajax_pz_lkc_preview_render',			[$this, 'action_ajax_pz_lkc_preview_render'] );
 			add_action		('wp_ajax_pz_lkc_preview_state',			[$this, 'action_ajax_pz_lkc_preview_state'] );
-			add_action		('wp_ajax_pz_lkc_scheduler_tasks',		[$this, 'action_ajax_pz_lkc_scheduler_tasks'] );
 
 			// カード管理画面用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
+			add_action		('wp_ajax_pz_lkc_find_used_posts',		[$this, 'action_ajax_pz_lkc_find_used_posts'] );
 
 			// ビジュアルエディター用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_mce_post_search',			[$this, 'action_ajax_pz_lkc_mce_post_search'] );
@@ -1103,6 +1084,7 @@ class class_pz_linkcard {
 		$site_name		=	$data['site_name']		??	'';
 		$thumbnail_url	=	$data['thumbnail']		??	'';
 		$siteicon_url	=	$data['favicon']		??	'';
+		$post_id		=	$data['post_id']		??	'';
 		$post_date		=	$data['post_date']		??	'';
 		$post_modified	=	$data['post_modified']	??	'';
 		$update_result	=	$data['update_result']	??	'';
@@ -1395,15 +1377,25 @@ class class_pz_linkcard {
 		if	($is_internal && $display_date_mode ) {
 			$html_url1	=	null;
 			$html_url2	=	null;
+			$post_date_timestamp		=	is_numeric($post_date ) ? intval($post_date ) : strtotime($post_date );
+			$post_modified_timestamp	=	is_numeric($post_modified ) ? intval($post_modified ) : strtotime($post_modified );
 			switch		($display_date_mode ) {
 			case	1:
-				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_date ) ).'</div>';
+				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, $post_date_timestamp ).'</div>';
 				break;
 			case	2:
-				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_modified ) ).'</div>';
+				if	($post_modified_timestamp > $post_date_timestamp ) {
+					$html_date	=	'<div class="lkc-date">'.__('&#x1F501;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, $post_modified_timestamp ).'</div>';
+				} else {
+					$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, $post_date_timestamp ).'</div>';
+				}
 				break;
 			case	3:
-				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_date ) ).'&ensp;'.__('&#x1F501;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, strtotime($post_modified ) ).'</div>';
+				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, $post_date_timestamp );
+				if	($post_modified_timestamp !== $post_date_timestamp ) {
+					$html_date	.=	'&ensp;'.__('&#x1F501;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, $post_modified_timestamp );
+				}
+				$html_date	.=	'</div>';
 				break;
 			}
 		}
@@ -1742,6 +1734,7 @@ class class_pz_linkcard {
 		// ソーシャルカウント
 		$sns_renew	= false;
 		$update_cnt	= false;
+		$hatena_response_count	= null;
 
 		// タイムオーバー
 		$opt	=	array('timeout' => 30 );
@@ -1794,9 +1787,10 @@ class class_pz_linkcard {
 				$result	=	wp_safe_remote_get('http://api.b.st-hatena.com/entry.count?url=' .$url_raw, $opt );
 				if	(isset($result ) && !is_wp_error($result ) && $result['response']['code'] == 200 ) {
 					$count	=	intval($result['body'] );
+					$hatena_response_count	=	$count;
 					if	(is_null($count_before ) || $count > $count_before ) {
 						$data['sns_hatena']	=	$count;
-						$update_cnt	=	true;
+						$update_cnt	=	$count > intval($count_before );
 					}
 				}
 			}
@@ -1804,10 +1798,10 @@ class class_pz_linkcard {
 
 		// 登録してから一週間までは毎日、それ以降は週一回更新（取得が固まらないようにランダム時間付与）
 		$data['sns_time']			=	$this->now;
-		if	($update_cnt || ($this->now - $data['regist_time'] < WEEK_IN_SECONDS ) ) {
-			$data['sns_nexttime']	=	$this->now + DAY_IN_SECONDS + rand(0, DAY_IN_SECONDS );	// 1day + 0-24h
+		if	($update_cnt ) {
+			$data['sns_nexttime']	=	$this->now + DAY_IN_SECONDS;
 		} else {
-			$data['sns_nexttime']	=	$this->now + WEEK_IN_SECONDS + rand(0, DAY_IN_SECONDS );	// 7days + 0-24h
+			$data['sns_nexttime']	=	$this->now + MONTH_IN_SECONDS;
 		}
 		// MINUTE_IN_SECONDS	= 60
 		// HOUR_IN_SECONDS		= 60	*	MINUTE_IN_SECONDS	= 3600
@@ -1819,8 +1813,21 @@ class class_pz_linkcard {
 		global	$wpdb;
 
 		// DB更新
-		$result	=	$wpdb->update($this->db_card, $data, array('id' => $data['id'] ) );
+		$result	=	$wpdb->update(
+			$this->db_card,
+			array(
+				'sns_hatena'	=>	$data['sns_hatena'],
+				'sns_time'		=>	$data['sns_time'],
+				'sns_nexttime'	=>	$data['sns_nexttime'],
+				'update_time'	=>	$data['update_time'],
+			),
+			array('id' => intval($data['id'] ) ),
+			array('%d', '%d', '%d', '%d' ),
+			array('%d' )
+		);
 		$this->request_cache	=	array();
+		$data['sns_hatena_response']	=	$hatena_response_count;
+		$data['sns_count_increased']	=	$update_cnt;
 
 		return	$data;
 	}
@@ -1948,20 +1955,21 @@ class class_pz_linkcard {
 
 		// 使われている記事ID
 		global	$wpdb;
-		$use_post_id_t				=	$wpdb->get_results($wpdb->prepare("SELECT id FROM $wpdb->prefix"."posts WHERE post_type = 'post' AND post_content LIKE '%%%s%%' ORDER BY id ASC", $data['url'] ) );
-		if	($use_post_id_t ) {
-			$use_post_id_t			=	(array) $use_post_id_t[0];
-			$use_post_id_t			=	array_unique($use_post_id_t );
-			$use_post_id_t			=	array_values($use_post_id_t );
-		} else {
-			$use_post_id_t			=	array();
+		$use_post_ids	=	array();
+		for	($use_post_index = 1; $use_post_index <= 6; $use_post_index++ ) {
+			$use_post_key	=	'use_post_id'.$use_post_index;
+			if	(!empty($data[$use_post_key] ) ) {
+				$use_post_ids[]	=	intval($data[$use_post_key] );
+			}
 		}
-		$data['use_post_id1']		=	isset($use_post_id_t[0])		? $use_post_id_t[0]			: null;
-		$data['use_post_id2']		=	isset($use_post_id_t[1])		? $use_post_id_t[1]			: null;
-		$data['use_post_id3']		=	isset($use_post_id_t[2])		? $use_post_id_t[2]			: null;
-		$data['use_post_id4']		=	isset($use_post_id_t[3])		? $use_post_id_t[3]			: null;
-		$data['use_post_id5']		=	isset($use_post_id_t[4])		? $use_post_id_t[4]			: null;
-		$data['use_post_id6']		=	isset($use_post_id_t[5])		? $use_post_id_t[5]			: null;
+		$post_id_t	=	$wpdb->get_col($wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'post' AND post_content LIKE %s ORDER BY ID ASC",
+			'%'.$wpdb->esc_like($data['url'] ).'%'
+		) );
+		$use_post_ids	=	array_values(array_unique(array_filter(array_map('intval', array_merge($use_post_ids, $post_id_t ) ) ) ) );
+		for	($use_post_index = 1; $use_post_index <= 6; $use_post_index++ ) {
+			$data['use_post_id'.$use_post_index]	=	$use_post_ids[$use_post_index - 1] ?? null;
+		}
 
 		// 最終更新日時
 		$data['update_time']		=	$this->now;
@@ -2081,7 +2089,7 @@ class class_pz_linkcard {
 
 		// 初期化
 		$url			=	'';
-		$post_id		=	'';
+		$link_post_id	=	0;
 		$site_name		=	'';
 		$domain_url		=	'';
 		$domain			=	'';
@@ -2090,7 +2098,7 @@ class class_pz_linkcard {
 		$thumbnail		=	'';
 		$siteicon		=	'';
 		$post_date		=	0;
-		$post_fodified	=	0;
+		$post_modified	=	0;
 
 		// サイト名取得
 		$site_name		=	get_bloginfo('name' );
@@ -2106,12 +2114,12 @@ class class_pz_linkcard {
 
 		// 記事内容
 		$url					=	$data['url'];
-		$post_id				=	url_to_postid($url );					// 記事IDを取得
+		$link_post_id			=	url_to_postid($url );					// リンク先の記事IDを取得
 		// 記事IDが取得できた場合
-		if	($post_id ) {
+		if	($link_post_id ) {
 			// 記事IDが取得できた場合
 			$update_result		=	200;									// 外部取得と同じコードをセット
-			$post				=	get_post($post_id );					// 記事情報
+			$post				=	get_post($link_post_id );				// 記事情報
 			$title				=	$post->post_title;						// 記事タイトル
 			$excerpt			=	$post->post_content;					// 記事内容から抜粋
 
@@ -2122,19 +2130,19 @@ class class_pz_linkcard {
 
 			// 「カスタムフィールド」優先
 			if	($this->options['in-get-from'] == 3 ) {						// 記事取得方法：「カスタムフィールド」があった場合、優先する
-				$meta_title		=	get_post_meta($post_id, $this->options['in-field-title'] );
+				$meta_title		=	get_post_meta($link_post_id, $this->options['in-field-title'] );
 				if	(array($meta_title ) && array_key_exists(0, $meta_title ) ) {
 					$title		=	$meta_title[0];
 				}
-				$meta_excerpt	=	get_post_meta($post_id, $this->options['in-field-excerpt'] );
+				$meta_excerpt	=	get_post_meta($link_post_id, $this->options['in-field-excerpt'] );
 				if	(array($meta_excerpt ) && array_key_exists(0, $meta_excerpt ) ) {
 					$excerpt	=	$meta_excerpt[0];
 				}
 			}
 
-			$post_date			=	$post->post_date;						// 投稿日
-			$post_modified		=	$post->post_modified;					// 更新日
-			$thumbnail_id		=	get_post_thumbnail_id($post_id );		// サムネイル
+			$post_date			=	get_post_timestamp($post, 'date' );		// 投稿日
+			$post_modified		=	get_post_timestamp($post, 'modified' );	// 更新日
+			$thumbnail_id		=	get_post_thumbnail_id($link_post_id );	// サムネイル
 			if	($thumbnail_id ) {
 				$thumbnail_size		=	$this->options['in-thumbnail-size'] ? $this->options['in-thumbnail-size'] : 'thumbnail' ;
 				$attach				=	wp_get_attachment_image_src($thumbnail_id, $thumbnail_size, true );
@@ -2240,9 +2248,6 @@ class class_pz_linkcard {
 		}
 
 		// データセット
-		if	(!isset($data['use_post_id1'] ) ) {
-			$data['use_post_id1']	=	get_the_ID();
-		}
 		$url_info					=	$this->Pz_GetURLInfo($url );	// URL解析（自サイトチェック）
 		$data['scheme']				=	$url_info['scheme'] ?? '';		// スキーム
 		$data['domain']				=	$url_info['domain'] ?? '';		// ドメイン名
@@ -2254,7 +2259,11 @@ class class_pz_linkcard {
 		$data['charset']			=	'UTF-8';
 		$data['update_result']		=	$update_result ?? null;
 		$data['alive_result']		=	$update_result ?? null;
-		$data['use_post_id1']		=	$post_id ?? '';
+		$post_id_t	=	intval(get_the_ID() );
+		if	(!isset($data['use_post_id1'] ) && $post_id_t > 0 ) {
+			$data['use_post_id1']	=	$post_id_t;
+		}
+		$data['post_id']			=	$link_post_id;
 		$data['post_date']			=	$post_date ?? '';
 		$data['post_modified']		=	$post_modified ?? '';
 		return	$data;
@@ -2743,6 +2752,7 @@ class class_pz_linkcard {
 			$return_status	=	false;
 		} else {
 			$this->options	=	$saved_options;
+			$this->pz_SyncCronSchedules();
 		}
 		// 返却
 		return	$return_status;
@@ -3168,7 +3178,6 @@ class class_pz_linkcard {
 		}
 		add_management_page	('pz-linkcard-manager',		$menu_manager,		'manage_options', 	self::CACHEMAN_PAGE,	array($this, 'page_cacheman' ) );
 		add_options_page	('pz-linkcard-settings',	$menu_settings,		'manage_options', 	self::SETTINGS_PAGE,	array($this, 'page_settings' ) );
-		add_submenu_page	(null, __('Scheduler', 'pz-linkcard' ), __('Scheduler', 'pz-linkcard' ), 'manage_options', self::SCHEDULER_PAGE, array($this, 'page_scheduler' ) );
 	}
 
 	// 設定・ツール内の [Pz] サブメニューを名前順に並べ替え
@@ -3237,14 +3246,6 @@ class class_pz_linkcard {
 		require_once('lib/pz-linkcard-settings.php' );
 	}
 
-	public	function	page_scheduler() {
-		if	(!current_user_can('manage_options' ) ) {
-			wp_die(__('Sorry, you are not allowed to access this page.', 'pz-linkcard' ) );
-		}
-
-		require_once('lib/pz-linkcard-scheduler.php' );
-	}
-
 	// ファイルエクスポート
 	private	function	pz_GetFilesystem() {
 		global	$wp_filesystem;
@@ -3282,7 +3283,6 @@ class class_pz_linkcard {
 		$allowed_hooks	=	array(
 			'settings_page_'.self::SETTINGS_PAGE,
 			'tools_page_'.self::CACHEMAN_PAGE,
-			'admin_page_'.self::SCHEDULER_PAGE,
 		);
 		if	(!in_array($hook, $allowed_hooks, true ) ) {
 			return;
@@ -3300,7 +3300,7 @@ class class_pz_linkcard {
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 			'noticeNonce'	=>	wp_create_nonce('pz_lkc_clear_error_mode' ),
 			'cachemanColumnsNonce'	=>	wp_create_nonce('pz_lkc_cacheman_columns' ),
-			'schedulerNonce'	=>	wp_create_nonce('pz_lkc_scheduler_tasks' ),
+			'findUsedPostsNonce'	=>	wp_create_nonce('pz_lkc_find_used_posts' ),
 			'numericOptions'	=>	$numeric_options,
 			'mediaTitle'	=>	__('Select Image', 'pz-linkcard' ),
 			'mediaButton'	=>	__('Use this image', 'pz-linkcard' ),
@@ -3864,72 +3864,35 @@ class class_pz_linkcard {
 		) );
 	}
 
+	public	function	action_ajax_pz_lkc_find_used_posts() {
+		if	(!current_user_can('manage_options' ) ) {
+			wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard' ), 403 );
+		}
+		if	(!check_ajax_referer('pz_lkc_find_used_posts', 'nonce', false ) ) {
+			wp_send_json_error(__('Invalid request.', 'pz-linkcard' ), 403 );
+		}
+
+		$card_id	=	isset($_POST['card_id'] ) ? absint(wp_unslash($_POST['card_id'] ) ) : 0;
+		$data		=	$card_id > 0 ? $this->pz_GetCache(array('id' => $card_id ) ) : null;
+		if	(!is_array($data ) || empty($data['url'] ) ) {
+			wp_send_json_error(__('Invalid card ID', 'pz-linkcard' ), 400 );
+		}
+
+		global	$wpdb;
+		$post_ids	=	$wpdb->get_col($wpdb->prepare(
+			"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'post' AND post_content LIKE %s ORDER BY ID ASC LIMIT 6",
+			'%'.$wpdb->esc_like($data['url'] ).'%'
+		) );
+
+		wp_send_json_success(array('post_ids' => array_values(array_map('intval', $post_ids ) ) ) );
+	}
+
 	private	function	pz_GetCachemanColumnKeys() {
-		return	array('id', 'excerpt', 'charset', 'domain', 'sns', 'regist_time', 'update_time', 'sns_time', 'alive_time', 'sns_nexttime', 'alive_nexttime', 'post_id', 'click_count', 'result' );
+		return	array('id', 'excerpt', 'charset', 'domain', 'sns', 'post_id', 'post_date', 'post_modified', 'regist_time', 'update_time', 'sns_time', 'alive_time', 'sns_nexttime', 'alive_nexttime', 'use_post_id', 'click_count', 'result' );
 	}
 
 	private	function	pz_GetCachemanPerPageChoices() {
 		return	array(10, 20, 50, 100);
-	}
-
-	private	function	pz_GetSchedulerRows() {
-		$rows		=	array();
-		$schedules	=	wp_get_schedules();
-		$cron_array	=	_get_cron_array();
-		if	(!is_array($cron_array ) ) {
-			return	$rows;
-		}
-
-		foreach	($cron_array as $timestamp => $hooks ) {
-			foreach	($hooks as $hook => $events ) {
-				foreach	($events as $event ) {
-					$schedule_key	=	isset($event['schedule'] ) ? (string) $event['schedule'] : '';
-					$schedule		=	isset($schedules[$schedule_key]['display'] ) ? $schedules[$schedule_key]['display'] : $schedule_key;
-					$rows[]	=	array(
-						'hook'		=>	(string) $hook,
-						'is_linkcard'	=>	strpos((string) $hook, 'pz_linkcard_' ) === 0,
-						'timestamp'	=>	intval($timestamp ),
-						'next_time'	=>	get_date_from_gmt(date('Y-m-d H:i:s', intval($timestamp ) ), PZLKC_DATETIME_FORMAT ),
-						'schedule'	=>	(string) $schedule,
-					);
-				}
-			}
-		}
-
-		usort($rows, function($a, $b ) {
-			$result	=	$a['timestamp'] <=> $b['timestamp'];
-			return	$result !== 0 ? $result : strcmp($a['hook'], $b['hook'] );
-		} );
-		return	$rows;
-	}
-
-	private	function	pz_RenderSchedulerRows() {
-		$html	=	'';
-		foreach	($this->pz_GetSchedulerRows() as $row ) {
-			$row_class	=	$row['is_linkcard'] ? 'pz-cron-list-lkc' : 'pz-cron-list-other';
-			$can_run	=	in_array($row['hook'], array(self::CRON_CHECK, self::CRON_ALIVE, self::CRON_CLICK_CLEANUP ), true );
-			$button_attributes	=	$can_run
-				? 'class="pz-button-sure" name="action" value="run-'.esc_attr($row['hook'] ).'" onclick="return confirm(\''.esc_js(__('Are you sure?', 'pz-linkcard' ) ).'\');"'
-				: 'class="pz-button-disabled" disabled="disabled"';
-			$html	.= '<tr class="'.esc_attr($row_class ).'">';
-			$html	.= '<td class="pz-cron-body-run"><button type="submit" '.$button_attributes.'>'.esc_html__('Run Now', 'pz-linkcard' ).'</button></td>';
-			$html	.= '<td class="pz-cron-body-hook">'.esc_html($row['hook'] ).'</td>';
-			$html	.= '<td class="pz-cron-body-next-time">'.esc_html($row['next_time'] ).'</td>';
-			$html	.= '<td class="pz-cron-body-schedule">'.esc_html($row['schedule'] ).'</td>';
-			$html	.= '</tr>';
-		}
-		return	$html;
-	}
-
-	public	function	action_ajax_pz_lkc_scheduler_tasks() {
-		if	(!current_user_can('manage_options' ) ) {
-			wp_send_json_error('forbidden', 403 );
-		}
-		if	(!check_ajax_referer('pz_lkc_scheduler_tasks', 'nonce', false ) ) {
-			wp_send_json_error('invalid nonce', 403 );
-		}
-
-		wp_send_json_success(array('rows' => $this->pz_RenderSchedulerRows() ) );
 	}
 
 	public	function	action_ajax_pz_lkc_refresh_card() {
@@ -4304,6 +4267,30 @@ class class_pz_linkcard {
 		$log	=	null;
 		require_once('lib/pz-linkcard-cron-sns.php' );
 		return		$log;
+	}
+
+	private	function	pz_SyncCronSchedules() {
+		$cron_schedules		=	wp_get_schedules();
+		$sns_period			=	isset($this->options['sns-period'] ) ? (string) $this->options['sns-period'] : '';
+		$alive_period		=	isset($this->options['alive-period'] ) ? (string) $this->options['alive-period'] : '';
+		$sns_interval		=	isset($cron_schedules[$sns_period]['interval'] ) ? intval($cron_schedules[$sns_period]['interval'] ) : 0;
+		$alive_interval		=	isset($cron_schedules[$alive_period]['interval'] ) ? intval($cron_schedules[$alive_period]['interval'] ) : 0;
+		$sns_first_delay	=	30 * MINUTE_IN_SECONDS;
+		$alive_first_delay	=	intdiv($sns_interval + $alive_interval, 4 ) + $sns_first_delay;
+
+		if	(!$sns_period ) {
+			wp_clear_scheduled_hook(self::CRON_CHECK );
+		} elseif	(wp_get_schedule(self::CRON_CHECK ) !== $sns_period ) {
+			wp_clear_scheduled_hook(self::CRON_CHECK );
+			wp_schedule_event(time() + $sns_first_delay, $sns_period, self::CRON_CHECK );
+		}
+
+		if	(!$alive_period ) {
+			wp_clear_scheduled_hook(self::CRON_ALIVE );
+		} elseif	(wp_get_schedule(self::CRON_ALIVE ) !== $alive_period ) {
+			wp_clear_scheduled_hook(self::CRON_ALIVE );
+			wp_schedule_event(time() + $alive_first_delay, $alive_period, self::CRON_ALIVE );
+		}
 	}
 
 	// WP-CRONスケジュール（存在チェック）

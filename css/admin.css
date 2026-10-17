@@ -1442,6 +1442,35 @@ input.pz-admin-only[type="submit"],
 	width: 80px;
 }
 
+.pz-man-cache-post-id-summary-value.is-refreshed {
+	color: #d63638;
+}
+
+.pz-man-cache-post-id-refresh {
+	display: inline-block;
+	margin-left: 4px;
+	font-size: 18px;
+	color: #000;
+	text-decoration: none !important;
+}
+
+.pz-man-cache-post-id-refresh:hover,
+.pz-man-cache-post-id-refresh:focus,
+.pz-man-cache-post-id-refresh:active {
+	color: #000;
+	text-decoration: none !important;
+}
+
+.pz-man-cache-post-id-refresh.is-rotating {
+	animation: pz-man-cache-post-id-refresh-rotate 0.5s ease-out 1;
+}
+
+@keyframes pz-man-cache-post-id-refresh-rotate {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
 .pz-man-cache-sns-summary {
 	display: grid;
 	gap: 8px;
@@ -2036,6 +2065,12 @@ input.pz-admin-only[type="submit"],
 	text-align: right;
 }
 
+.pz-man-body-post-id-value,
+.pz-man-body-post-date,
+.pz-man-body-post-modified {
+	text-align: center;
+}
+
 .pz-man-body-regist-time {
 	text-align: center;
 }
@@ -2057,7 +2092,7 @@ input.pz-admin-only[type="submit"],
 	text-align: center;
 }
 
-.pz-man-body-post-id {
+.pz-man-body-use-post-id {
 	height: calc(20px * 4);
 	line-height: 20px;
 	overflow: hidden;
@@ -2797,10 +2832,6 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 	white-space: nowrap;
 	overflow: scroll;
 	resize: both;
-}
-
-.pz-scheduler .pz-cron-log {
-	height: 600px;
 }
 
 .pz-cron-margin {
@@ -3772,12 +3803,16 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 .pz-man-head-regist_time,
 .pz-man-head-regist-time,
 .pz-man-head-update_time,
+.pz-man-head-post_date,
+.pz-man-head-post_modified,
 .pz-man-head-sns_time,
 .pz-man-head-alive_time,
 .pz-man-head-sns_nexttime,
 .pz-man-head-alive_nexttime,
 .pz-man-body-regist-time,
 .pz-man-body-update-time,
+.pz-man-body-post-date,
+.pz-man-body-post-modified,
 .pz-man-body-sns-time,
 .pz-man-body-alive-time,
 .pz-man-body-sns-nexttime,
@@ -3799,8 +3834,9 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 }
 
 .pz-man-head-use_post_id1,
-.pz-man-head-post-id,
-.pz-man-body-post-id {
+.pz-man-head-post_id,
+.pz-man-body-use-post-id,
+.pz-man-body-post-id-value {
 	width: 72px;
 	min-width: 72px;
 	max-width: 72px;
@@ -4472,6 +4508,9 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 	.pz-cacheman .pz-man-head-charset,
 	.pz-cacheman .pz-man-head-domain,
 	.pz-cacheman .pz-man-head-sns_twitter,
+	.pz-cacheman .pz-man-head-post_id,
+	.pz-cacheman .pz-man-head-post_date,
+	.pz-cacheman .pz-man-head-post_modified,
 	.pz-cacheman .pz-man-head-regist_time,
 	.pz-cacheman .pz-man-head-update_time,
 	.pz-cacheman .pz-man-head-sns_time,
@@ -4486,13 +4525,16 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 	.pz-cacheman .pz-man-body-charset,
 	.pz-cacheman .pz-man-body-domain-cell,
 	.pz-cacheman .pz-man-body-sns,
+	.pz-cacheman .pz-man-body-post-id-value,
+	.pz-cacheman .pz-man-body-post-date,
+	.pz-cacheman .pz-man-body-post-modified,
 	.pz-cacheman .pz-man-body-regist-time,
 	.pz-cacheman .pz-man-body-update-time,
 	.pz-cacheman .pz-man-body-sns-time,
 	.pz-cacheman .pz-man-body-alive-time,
 	.pz-cacheman .pz-man-body-sns-nexttime,
 	.pz-cacheman .pz-man-body-alive-nexttime,
-	.pz-cacheman .pz-man-body-post-id,
+	.pz-cacheman .pz-man-body-use-post-id,
 	.pz-cacheman .pz-man-body-click-count,
 	.pz-cacheman .pz-man-body-result {
 		display: none !important;

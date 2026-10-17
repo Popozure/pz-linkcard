@@ -275,11 +275,18 @@
 				break;
 			}
 			foreach	($select_id as $data_id ) {
-				$data		= $this->pz_GetCache(array('id' => $data_id ) );
+				$data		=	$this->pz_GetCache(array('id' => $data_id ) );
 				if	(isset($data ) && is_array($data ) ) {
-					$data			=	$this->pz_GetHTML( array('url' => $data['url'], 'force' => true ) );
-					$data			=	$this->pz_SetCache( $data );
-					$success_count++;
+					$url_info	=	$this->Pz_GetURLInfo($data['url'] );
+					$data		=	!empty($url_info['is_internal'] )
+						?	$this->pz_GetPost($data )
+						:	$this->pz_GetRemote($data );
+					$result		=	is_array($data ) ? $this->pz_SetCache($data ) : null;
+					if	($result ) {
+						$success_count++;
+					} else {
+						$skip_count++;
+					}
 				} else {
 					$skip_count++;
 				}
