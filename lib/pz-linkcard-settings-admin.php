@@ -29,6 +29,7 @@
 
 	// WP-Cronスケジュールを取得
 	$cron_schedule	=	_get_cron_array();
+	$cron_list		=	array();
 	$schedules		=	wp_get_schedules();		// タイミングの定数（604800→週1回 など）
 	foreach			($cron_schedule	as $timestamp	=> $cronhooks ) {
 		foreach		($cronhooks		as $hook		=> $dings ) {
@@ -58,7 +59,10 @@
 			}
 		}
 	}
-	asort($cron_list );
+	usort($cron_list, function($a, $b ) {
+		$time_compare	=	intval($a['key'] ) <=> intval($b['key'] );
+		return	$time_compare !== 0 ? $time_compare : strcmp($a['hook'], $b['hook'] );
+	} );
 
 ?>
 <div class="pz-page pz-page-admin<?php echo $pz_page_active('pz-admin' ); ?>" id="pz-admin">
@@ -196,7 +200,7 @@
 				<tr>
 					<th scope="col" class="pz-cron-head-run"><?php esc_html_e('Run', 'pz-linkcard' ); ?></th>
 					<th scope="col" class="pz-cron-head-hook"><?php esc_html_e('Hook', 'pz-linkcard' ); ?></th>
-					<th scope="col" class="pz-cron-head-next-time"><?php echo __('Next Time', 'pz-linkcard' ).__('▼', 'pz-linkcard' ); ?></th>
+					<th scope="col" class="pz-cron-head-next-time"><?php echo __('Next Time', 'pz-linkcard' ).__('🔺', 'pz-linkcard' ); ?></th>
 					<th scope="col" class="pz-cron-head-schedule"><?php esc_html_e('Schedule', 'pz-linkcard' ); ?></th>
 				</tr>
 			</thead>
