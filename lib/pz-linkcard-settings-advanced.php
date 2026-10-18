@@ -153,6 +153,18 @@
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Microsoft', 'pz-linkcard' ); ?></th>
+			<td>
+				<p>
+					<label>
+						<input type="hidden"   name="properties[flg-special-microsoft]" value="" />
+						<input type="checkbox" name="properties[flg-special-microsoft]" value="1" <?php checked($this->options['flg-special-microsoft'] ); ?> />
+						<?php echo esc_html__('Use User-Agent', 'pz-linkcard' ).' (pzlkc)'; ?>
+					</label>
+				</p>
+			</td>
+		</tr>
 	</table>
 	<?php submit_button(); ?>
 

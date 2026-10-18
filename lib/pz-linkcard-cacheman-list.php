@@ -84,7 +84,7 @@
 	$where				=	$parsed_search['where'];
 	$param				=	$parsed_search['params'];
 	if	($filter_unregistered ) {
-		$where	= $where ? "($where) AND regist_time IS NULL" : 'regist_time IS NULL';
+	$where	= $where ? "($where) AND (regist_time IS NULL OR regist_time = 0)" : '(regist_time IS NULL OR regist_time = 0)';
 	}
 
 	// 表示オプション
@@ -185,7 +185,7 @@
 	$sql			.=	"COUNT( CASE WHEN domain <> '".$this->domain."' THEN 1 END ) AS count_external, ";
 	$sql			.=	"COUNT( CASE WHEN alive_result <> update_result THEN 1 END ) AS count_modify, ";
 	$sql			.=	"COUNT( CASE WHEN alive_result IS NOT NULL AND alive_result <> 0 AND ( alive_result < 100 OR alive_result >= 400 ) THEN 1 END ) AS count_unlink, ";
-	$sql			.=	"COUNT( CASE WHEN regist_time IS NULL THEN 1 END ) AS count_unregistered ";
+	$sql			.=	"COUNT( CASE WHEN regist_time IS NULL OR regist_time = 0 THEN 1 END ) AS count_unregistered ";
 	$sql			.=	"FROM $this->db_card";
 	$result			=	$wpdb->get_row($sql );
 	$count_list['all'	  ]	=	$result->count_all		??	0;
@@ -558,6 +558,7 @@
 
 					// データID
 					$data_id	=	$data->id;
+					$is_pending	=	is_null($data->regist_time ) || intval($data->regist_time ) === 0;
 
 					// URL
 					$url		=	$data->url;
@@ -679,7 +680,7 @@
 
 					// HTML 明細行
 			?>
-			<tr>
+			<tr<?php if ($is_pending ) { ?> data-pz-pending-id="<?php echo intval($data_id ); ?>"<?php } ?>>
 				<th scope="row" class="pz-man-body-check check-column"><input id="cb-select-<?php echo intval($data_id ); ?>" type="checkbox" name="select_id[]" value="<?php echo intval($data_id ); ?>" /><div class="locked-indicator"></div></th>
 				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search"><?php echo intval($data_id ); ?></button><?php echo wp_kses($html_thumbnail, $cacheman_list_allowed_html ); ?></td>
 				<td colspan="2" class="pz-man-body-url-title-cell">

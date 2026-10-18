@@ -34,7 +34,15 @@
 		$check_host	=	strtolower((string) wp_parse_url($check_url, PHP_URL_HOST ) );
 		return	preg_match('/(^|\.)auctions\.yahoo\.co\.jp$/i', $check_host ) === 1;
 	};
-    $get_request_args	=	function($check_url, $request_args ) use ($browser_user_agent, $is_amazon_url, $is_twitter_url, $is_jmty_url, $is_yahoo_auction_url ) {
+	$is_microsoft_url	=	function($check_url ) {
+		$check_host	=	strtolower((string) wp_parse_url($check_url, PHP_URL_HOST ) );
+		return	preg_match('/(^|\.)microsoft\.com$/i', $check_host ) === 1;
+	};
+    $get_request_args	=	function($check_url, $request_args ) use ($browser_user_agent, $is_amazon_url, $is_twitter_url, $is_jmty_url, $is_yahoo_auction_url, $is_microsoft_url ) {
+		if	(!empty($this->options['flg-special-microsoft'] ) && $is_microsoft_url($check_url ) ) {
+			$request_args['user-agent']	=	'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)';
+			return	$request_args;
+		}
         if	($is_amazon_url($check_url ) || $is_twitter_url($check_url ) || $is_jmty_url($check_url ) || $is_yahoo_auction_url($check_url ) ) {
             $request_args['user-agent']	=	$browser_user_agent;
         }
@@ -97,24 +105,15 @@
             if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
                 return	$current_url;
             }
-            $head_args				=	$get_request_args($current_url, $trace_args );
-            $head_args['method']	=	'HEAD';
-            $response				=	wp_safe_remote_head($current_url, $head_args );
-
-            if	(is_wp_error($response ) && !$headers_only ) {
-                $get_args							=	$get_request_args($current_url, $trace_args );
-                $get_args['limit_response_size']	=	1;
-                $response							=	wp_safe_remote_get($current_url, $get_args );
-            }
-
-            $response_url	=	$get_response_url($response );
-            if	($response_url && $response_url !== $current_url ) {
-                $current_url	=	$this->pz_EncodeURL($response_url, true );
-                if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
-                    return	$current_url;
-                }
-                continue;
-            }
+			$probe_args	=	$get_request_args($current_url, $trace_args );
+			if	($headers_only ) {
+				$probe_args['method']	=	'HEAD';
+				$response				=	wp_safe_remote_head($current_url, $probe_args );
+			} else {
+				// Some sites redirect GET requests but not HEAD requests.
+				$probe_args['limit_response_size']	=	1;
+				$response							=	wp_safe_remote_get($current_url, $probe_args );
+			}
 
             $http_code		=	intval(wp_remote_retrieve_response_code($response ) );
             $location_url	=	$get_location_url($response, $current_url );
@@ -125,6 +124,15 @@
                 }
                 continue;
             }
+
+			$response_url	=	$get_response_url($response );
+			if	($response_url && rtrim($response_url, '/' ) !== rtrim($current_url, '/' ) ) {
+				$current_url	=	$this->pz_EncodeURL($response_url, true );
+				if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
+					return	$current_url;
+				}
+				continue;
+			}
 
             break;
         }
@@ -153,9 +161,7 @@
     } elseif ($robots_blocked_url ) {
         $rget_data	=	new WP_Error('pz_lkc_robots_disallowed', 'Blocked by robots.txt' );
     } else {
-        if	($is_amazon_access || $is_twitter_access || $is_jmty_access || $is_yahoo_auction_access ) {
-            $rget_args	=	$get_request_args($url_access, $rget_args );
-        }
+		$rget_args	=	$get_request_args($url_access, $rget_args );
         if	($headers_only ) {
             $rget_args['method']	=	'HEAD';
             $rget_data	=	wp_safe_remote_head($url_access, $rget_args );
@@ -483,11 +489,6 @@
     $data['use_post_id4']		=	$data['use_post_id4']	??	null;				// 呼ばれている記事
     $data['use_post_id5']		=	$data['use_post_id5']	??	null;				// 呼ばれている記事
     $data['use_post_id6']		=	$data['use_post_id6']	??	null;				// 呼ばれている記事
-    $data['regist_title']		=	$data['regist_title']	??	$title;				// 登録時：タイトル
-    $data['regist_excerpt']		=	$data['regist_excerpt']	??	$excerpt;			// 登録時：抜粋文
-    $data['regist_charset']		=	$data['regist_charset']	??	$charset;			// 登録時：文字コード
-    $data['regist_time']		=	$data['regist_time']	??	0;					// 登録時：登録日時
-    $data['regist_result']		=	$data['regist_result']	??	$http_code;			// 登録時：HTTPレスポンス
     $data['update_time']		=	$this->now;										// 更新：最終更新日
     $data['update_result']		=	$http_code;										// 更新：HTTPレスポンス
     return	$data;

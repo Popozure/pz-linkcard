@@ -3381,7 +3381,7 @@ msgstr "ページを再読み込み"
 
 #: ../pz-linkcard.php:3245
 msgid "Retrieving..."
-msgstr "取得中..."
+msgstr "取得中…"
 
 #: ../pz-linkcard.php:3246 ../pz-linkcard.php:3553 ../pz-linkcard.php:3585
 msgid "Failed to retrieve the post content."

@@ -42,7 +42,7 @@
 				regist_excerpt	VARCHAR(500)							DEFAULT NULL,
 				regist_charset	VARCHAR(30)								DEFAULT NULL,
 				regist_result 	INT										DEFAULT NULL,
-				regist_time		BIGINT			UNSIGNED				DEFAULT 0,
+				regist_time		BIGINT			UNSIGNED				DEFAULT NULL,
 				update_result	INT										DEFAULT NULL,
 				update_time		BIGINT			UNSIGNED				DEFAULT 0,
 				PRIMARY KEY		(id),
@@ -104,6 +104,12 @@
 
 	// DBテーブル作成・更新
 	$result		=	dbDelta($sql, true );
+
+	// 旧定義の NOT NULL DEFAULT 0 を外し、取得待ちをNULLで保存できるようにする
+	$regist_time_column = $wpdb->get_row("SHOW COLUMNS FROM $this->db_card LIKE 'regist_time'", ARRAY_A );
+	if (isset($regist_time_column['Null'] ) && strtoupper($regist_time_column['Null'] ) !== 'YES' ) {
+		$wpdb->query("ALTER TABLE $this->db_card MODIFY regist_time BIGINT UNSIGNED NULL DEFAULT NULL" );
+	}
 
 	// 旧仕様で未取得を表していた負数をNULLへ統一
 	$wpdb->query(

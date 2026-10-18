@@ -101,6 +101,7 @@
         initCachemanEditorShortcuts();
         initSettingsTabs();
         initCachemanUsedPostRefresh();
+        initCachemanPendingMonitor();
         initCachemanSearch();
         initCachemanPaginationKeys();
         initImageBox();
@@ -2503,6 +2504,46 @@
 			toggle.focus();
 		});
 	}
+
+    function initCachemanPendingMonitor() {
+        const pendingRows = Array.from(document.querySelectorAll(".pz-cacheman tr[data-pz-pending-id]"));
+        const config = window.pzLinkCardAdmin;
+        if (!pendingRows.length || !config?.ajaxUrl || !config?.cachemanPendingNonce) return;
+
+        const cardIds = pendingRows
+            .map(row => parseInt(row.dataset.pzPendingId || "", 10))
+            .filter(id => Number.isInteger(id) && id > 0);
+        if (!cardIds.length) return;
+
+        let stopped = false;
+        const poll = async () => {
+            if (stopped || document.visibilityState === "hidden") return;
+
+            const body = new URLSearchParams();
+            body.set("action", "pz_lkc_cacheman_pending");
+            body.set("nonce", config.cachemanPendingNonce);
+            cardIds.forEach(id => body.append("card_ids[]", String(id)));
+
+            try {
+                const response = await fetch(config.ajaxUrl, {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" },
+                    body: body.toString()
+                });
+                const json = await response.json();
+                if (json?.success && Array.isArray(json.data?.ready_ids) && json.data.ready_ids.length) {
+                    stopped = true;
+                    window.location.reload();
+                }
+            } catch (error) {
+                // 一時的な通信エラーでは監視を継続する。
+            }
+        };
+
+        window.setInterval(poll, 3000);
+        poll();
+    }
 
 	function initCachemanUsedPostRefresh() {
 		const button = document.querySelector(".pz-man-cache-post-id-refresh");
