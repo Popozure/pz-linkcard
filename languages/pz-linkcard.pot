@@ -27,6 +27,26 @@ msgstr ""
 msgid "Retrieve Created and Updated Dates"
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Yahoo! Auctions"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Retrieve Title and Start Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-cacheman-list.php
+#: ../lib/pz-linkcard-settings.php
+msgid "Show Help"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-cacheman-list.php
+#: ../lib/pz-linkcard-settings.php
+msgid "Switch between Card Manager and Settings"
+msgstr ""
+
 #: ../lib/pz-linkcard-cacheman-list.php
 msgid "Used Post ID"
 msgstr ""
@@ -362,8 +382,16 @@ msgstr ""
 msgid "Unlink"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:223
+#: ../lib/pz-linkcard-cacheman-list.php:223 ../lib/pz-linkcard-settings.php:739
 msgid "Screen Options"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php ../lib/pz-linkcard-settings.php
+msgid "Show Screen Options"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:743
+msgid "Modes"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-list.php:227
@@ -1043,14 +1071,6 @@ msgstr ""
 msgid "Display the menu in the admin bar."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-advanced.php:136
-msgid "Initialize Tab"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php:141
-msgid "Display the initialize tab on the settings screen."
-msgstr ""
-
 #: ../lib/pz-linkcard-settings-advanced.php:151
 msgid "Displays normally hidden items to find and fix defects."
 msgstr ""
@@ -1077,6 +1097,22 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:181
 msgid "Displays a menu for Multi-Site"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Unlock special settings."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Display the Multisite tab on the settings screen."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Initialize Tab"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Display the Initialize tab on the settings screen."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:186

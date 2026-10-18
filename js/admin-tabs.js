@@ -107,11 +107,33 @@
 	}
 
 	// タブの有効化／無効化
-	function tab_enabled() {
+	function tab_enabled(event) {
+		const changedControl = event?.currentTarget;
+		const tabs = Array.from(document.querySelectorAll('.pz-tab'));
+		const activeTab = tabs.find(tab => tab.classList.contains('pz-tab-active')) || null;
+		const activeIndex = activeTab ? tabs.indexOf(activeTab) : -1;
+		const debugCheckbox = document.querySelector('input[type=checkbox][name="properties[debug-mode]"]');
+		document.querySelectorAll('.pz-settings-debug-dependent').forEach(element => {
+			element.style.display = debugCheckbox?.checked ? '' : 'none';
+		});
+		if (debugCheckbox && !debugCheckbox.checked) {
+			['survey-mode', 'admin-mode'].forEach(mode => {
+				const checkbox = document.querySelector(`input[type=checkbox][name="properties[${mode}]"]`);
+				if (!checkbox) return;
+				checkbox.checked = false;
+				if (mode === 'admin-mode') checkbox.readOnly = true;
+			});
+		}
+		const adminCheckbox = document.querySelector('input[type=checkbox][name="properties[admin-mode]"]');
+		if (adminCheckbox) adminCheckbox.readOnly = !adminCheckbox.checked;
+		const dashboard = document.querySelector('.pz-settings');
+		dashboard?.classList.toggle('pz-debug-mode', !!debugCheckbox?.checked);
+		dashboard?.classList.toggle('pz-admin-mode', !!adminCheckbox?.checked);
+
 		const modeSettings = {
 			'error-mode':		'pz-error',
-			'flg-initialize':	'pz-initialize',
 			'multi-mode':		'pz-multisite',
+			'flg-initialize':	'pz-initialize',
 			'debug-mode':		'pz-debug-only',
 			'admin-mode':		'pz-admin',
 			'develop-mode':		'pz-develop-only'
@@ -134,5 +156,15 @@
 				});
 			}
 		});
+
+		const switchesCurrentTab = changedControl
+			&& !changedControl.checked
+			&& ['properties[multi-mode]', 'properties[flg-initialize]'].includes(changedControl.name)
+			&& activeTab?.style.display === 'none';
+		if (switchesCurrentTab) {
+			const nextTab = tabs.slice(activeIndex + 1).find(tab => tab.style.display !== 'none')
+				|| tabs.slice(0, activeIndex).find(tab => tab.style.display !== 'none');
+			nextTab?.click();
+		}
 	}
 })();

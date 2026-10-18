@@ -14,7 +14,10 @@ $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
 		<tr>
 			<th scope="row"><?php esc_html_e('Post ID', 'pz-linkcard' ); ?></th>
 			<td>
-				<a href="<?php echo get_permalink($prop['error-postid'] ); ?>#lkc-error" class="pz-error-url"><?php echo esc_html($prop['error-postid'] ); ?></a>
+				<span class="pz-admin-only">
+					<input name="properties[error-postid]" type="text" size="5" value="<?php echo esc_attr($prop['error-postid'] ); ?>" /><br/>
+				</span>
+				<a href="<?php echo get_permalink($prop['error-postid'] ); ?>#lkc-error" class="pz-error-url" title="<?php echo esc_attr($error_post_title ); ?>"><?php echo esc_html($prop['error-postid'] ); ?></a>
 			</td>
 		</tr>
 		<tr>
@@ -26,12 +29,18 @@ $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
 		<tr>
 			<th scope="row"><?php esc_html_e('Post URL', 'pz-linkcard' ); ?></th>
 			<td>
+				<span class="pz-admin-only">
+					<input name="properties[error-url]" type="url" size="80" value="<?php echo esc_attr($prop['error-url'] ); ?>" /><br/>
+				</span>
 				<a href="<?php echo esc_url($prop['error-url'] ); ?>#lkc-error" class="pz-error-url"><?php echo esc_html($this->pz_DecodeURL($prop['error-url'] ) ); ?></a>
 			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Occurrence Time', 'pz-linkcard' ); ?></th>
 			<td>
+				<span class="pz-admin-only">
+					<input name="properties[error-time]" type="text" value="<?php echo esc_attr($prop['error-time'] ); ?>" /><br/>
+				</span>
 				<span><?php echo is_numeric($prop['error-time'] ) ? esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, esc_attr($prop['error-time'] ) ) ) : esc_attr($prop['error-time'] ); ?></span>
 			</td>
 		</tr>

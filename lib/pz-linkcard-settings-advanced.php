@@ -141,6 +141,18 @@
 				</p>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Yahoo! Auctions', 'pz-linkcard' ); ?></th>
+			<td>
+				<p>
+					<label>
+						<input type="hidden"   name="properties[flg-special-yahoo-auc]" value="" />
+						<input type="checkbox" name="properties[flg-special-yahoo-auc]" value="1" <?php checked($this->options['flg-special-yahoo-auc'] ); ?> />
+						<?php echo esc_html__('Retrieve Title and Start Date', 'pz-linkcard' ); ?>
+					</label>
+				</p>
+			</td>
+		</tr>
 	</table>
 	<?php submit_button(); ?>
 
@@ -176,56 +188,6 @@
 					<input type="hidden"   name="properties[flg-adminbar]" value="" />
 					<input type="checkbox" name="properties[flg-adminbar]" value="1" <?php checked($this->options['flg-adminbar'] ?? 0 ); ?> />
 					<?php esc_html_e('Display the menu in the admin bar.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Initialize Tab', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-initialize]" value="" />
-					<input type="checkbox" name="properties[flg-initialize]" value="1" class="pz-tab-show" <?php checked($this->options['flg-initialize'] ); ?> />
-					<?php esc_html_e('Display the initialize tab on the settings screen.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-		<tr>
-			<th scope="row" style="color: #06f !important; background-color: #ccccee !important;"><span ><?php esc_html_e('Debug Mode', 'pz-linkcard' ); ?></span></th>
-			<td	style="background-color: #f8f8ff !important;">
-				<label>
-					<input type="hidden"   name="properties[debug-mode]" value="" />
-					<input type="checkbox" name="properties[debug-mode]" value="1" class="pz-tab-show" <?php checked($this->options['debug-mode'] ); ?> />
-					<span style="color: #06f !important;"><?php echo __('Displays normally hidden items to find and fix defects.', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?></span>
-				</label>
-			</td>
-		</tr>
-		<tr class="pz-debug-only">
-			<th scope="row" style="color: #06f !important; background-color: #ccccee !important;"><span ><?php esc_html_e('Survey Mode', 'pz-linkcard' ); ?></span></th>
-			<td	style="background-color: #f8f8ff !important;">
-				<label>
-					<input type="hidden"   name="properties[survey-mode]" value="" />
-					<input type="checkbox" name="properties[survey-mode]" value="1" class="pz-tab-show" <?php checked($this->options['survey-mode'] ); ?> />
-					<span style="color: #06f !important;"><?php echo __('Collect logs. May slow down operation.', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?></span>
-				</label>
-			</td>
-		</tr>
-		<tr class="pz-debug-only">
-			<th scope="row" style="color: #c38 !important; background-color: #d8cce0 !important;"><?php esc_html_e('Administrator Mode', 'pz-linkcard' ); ?></th>
-			<td style="background-color: #fff8ff !important;">
-				<label>
-					<input type="hidden"   name="properties[admin-mode]" value="" />
-					<input type="checkbox" name="properties[admin-mode]" value="1" class="pz-tab-show" <?php checked($this->options['admin-mode'] ); if (!$this->options['admin-mode'] ) {echo 'readonly="readonly"'; }; if (!$this->options['admin-mode'] ) { echo 'ondblclick="this.readOnly=false;"'; } ?> />
-					<span style="color: #c38 !important;"><?php echo __('Display information that is not normally needed or open special settings.', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?></span>
-				</label>
-			</td>
-		</tr>
-		<tr class="pz-admin-only">
-			<th scope="row" style="color: #f62 !important; background-color: #ddccbb !important;"><?php esc_html_e('MultiSite Mode', 'pz-linkcard' ); ?></th>
-			<td style="background-color: #fcf4f0 !important;">
-				<label>
-					<input type="hidden"   name="properties[multi-mode]" value="" />
-					<input type="checkbox" name="properties[multi-mode]" value="1" <?php checked($menu_multi || $is_multisite ); echo ($is_multisite ? ' readonly="readonly"' : '' ); ?> />
-					<span style="color: #f62 !important;"><?php esc_html_e('Displays a menu for Multi-Site', 'pz-linkcard' ); ?></span>
 				</label>
 			</td>
 		</tr>

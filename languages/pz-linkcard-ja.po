@@ -27,6 +27,26 @@ msgstr "ジモティー（jmty.jp）"
 msgid "Retrieve Created and Updated Dates"
 msgstr "作成日と更新日を取得する"
 
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Yahoo! Auctions"
+msgstr "Yahoo!オークション"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Retrieve Title and Start Date"
+msgstr "タイトルと開始日時を取得する"
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-cacheman-list.php
+#: ../lib/pz-linkcard-settings.php
+msgid "Show Help"
+msgstr "ヘルプを表示"
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-cacheman-list.php
+#: ../lib/pz-linkcard-settings.php
+msgid "Switch between Card Manager and Settings"
+msgstr "管理画面と設定画面を切り替え"
+
 #: ../lib/pz-linkcard-cacheman-list.php
 msgid "Used Post ID"
 msgstr "使用投稿ID"
@@ -390,9 +410,17 @@ msgstr "更新あり"
 msgid "Unlink"
 msgstr "リンク切れ"
 
-#: ../lib/pz-linkcard-cacheman-list.php:223
+#: ../lib/pz-linkcard-cacheman-list.php:223 ../lib/pz-linkcard-settings.php:739
 msgid "Screen Options"
 msgstr "表示オプション"
+
+#: ../lib/pz-linkcard-cacheman-list.php ../lib/pz-linkcard-settings.php
+msgid "Show Screen Options"
+msgstr "表示オプションを表示"
+
+#: ../lib/pz-linkcard-settings.php:743
+msgid "Modes"
+msgstr "モード"
 
 #: ../lib/pz-linkcard-cacheman-list.php:227
 msgid "Columns"
@@ -895,12 +923,12 @@ msgstr "チェックを付けると記述エラーの状態になります。"
 #: ../lib/pz-linkcard-settings-admin.php:146
 #: ../lib/pz-linkcard-settings-error.php:27
 msgid "Post URL"
-msgstr "記事URL"
+msgstr "投稿URL"
 
 #: ../lib/pz-linkcard-settings-admin.php:150
 #: ../lib/pz-linkcard-settings-error.php:33
 msgid "Occurrence Time"
-msgstr "発生日時"
+msgstr "エラー発生日時"
 
 #: ../lib/pz-linkcard-settings-admin.php:160
 #: ../lib/pz-linkcard-settings-admin.php:162
@@ -1102,14 +1130,6 @@ msgstr "管理者バー"
 msgid "Display the menu in the admin bar."
 msgstr "管理者バーにメニューを表示します。"
 
-#: ../lib/pz-linkcard-settings-advanced.php:171
-msgid "Initialize Tab"
-msgstr "初期化タブ"
-
-#: ../lib/pz-linkcard-settings-advanced.php:176
-msgid "Display the initialize tab on the settings screen."
-msgstr "設定画面に「初期化」タブを表示します。"
-
 #: ../lib/pz-linkcard-settings-advanced.php:186
 msgid "Displays normally hidden items to find and fix defects."
 msgstr "不具合を発見するために、通常は隠されている項目を表示する。"
@@ -1139,6 +1159,22 @@ msgstr "マルチサイトタブ"
 #: ../lib/pz-linkcard-settings-advanced.php:216
 msgid "Displays a menu for Multi-Site"
 msgstr "設定画面に「マルチサイト」タブを表示します。"
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Unlock special settings."
+msgstr "特別な設定を解放します。"
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Display the Multisite tab on the settings screen."
+msgstr "設定画面に「マルチサイト」タブを表示します。"
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Initialize Tab"
+msgstr "初期化タブ"
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Display the Initialize tab on the settings screen."
+msgstr "設定画面に「初期化」タブを表示します。"
 
 #: ../lib/pz-linkcard-settings-advanced.php:221
 msgid "Develop Mode"
@@ -2105,7 +2141,7 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-error.php:21
 msgid "Post Title"
-msgstr "記事タイトル"
+msgstr "投稿タイトル"
 
 #: ../lib/pz-linkcard-settings-error.php:39
 msgid "Error Reset"
@@ -4244,11 +4280,11 @@ msgstr "タブを切り替え"
 
 #: ../lib/pz-linkcard-settings.php:665
 msgid "Wheel"
-msgstr "ホイール"
+msgstr "ﾎｲｰﾙ"
 
 #: ../lib/pz-linkcard-settings.php:665
 msgid "Right click"
-msgstr "右クリック"
+msgstr "右ｸﾘｯｸ"
 
 #: ../lib/pz-linkcard-settings.php:665
 msgid "Increase or decrease values, or select the previous or next option"

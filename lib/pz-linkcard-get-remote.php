@@ -30,8 +30,12 @@
 		$check_host	=	strtolower((string) wp_parse_url($check_url, PHP_URL_HOST ) );
 		return	preg_match('/(^|\.)jmty\.jp$/i', $check_host ) === 1;
 	};
-    $get_request_args	=	function($check_url, $request_args ) use ($browser_user_agent, $is_amazon_url, $is_twitter_url, $is_jmty_url ) {
-        if	($is_amazon_url($check_url ) || $is_twitter_url($check_url ) || $is_jmty_url($check_url ) ) {
+	$is_yahoo_auction_url	=	function($check_url ) {
+		$check_host	=	strtolower((string) wp_parse_url($check_url, PHP_URL_HOST ) );
+		return	preg_match('/(^|\.)auctions\.yahoo\.co\.jp$/i', $check_host ) === 1;
+	};
+    $get_request_args	=	function($check_url, $request_args ) use ($browser_user_agent, $is_amazon_url, $is_twitter_url, $is_jmty_url, $is_yahoo_auction_url ) {
+        if	($is_amazon_url($check_url ) || $is_twitter_url($check_url ) || $is_jmty_url($check_url ) || $is_yahoo_auction_url($check_url ) ) {
             $request_args['user-agent']	=	$browser_user_agent;
         }
         return	$request_args;
@@ -142,13 +146,14 @@
     $is_amazon_access	=	$is_amazon_url($url_access );
     $is_twitter_access	=	$is_twitter_url($url_access );
 	$is_jmty_access		=	$is_jmty_url($url_access );
+	$is_yahoo_auction_access	=	$is_yahoo_auction_url($url_access );
     $blocked_local_url	=	$this->pz_ShouldBlockLocalAddress($url ) || ($url_redir && $this->pz_ShouldBlockLocalAddress($url_redir ) );
     if	($blocked_local_url ) {
         $rget_data	=	new WP_Error('pz_lkc_local_redirect', 'Local address blocked' );
     } elseif ($robots_blocked_url ) {
         $rget_data	=	new WP_Error('pz_lkc_robots_disallowed', 'Blocked by robots.txt' );
     } else {
-        if	($is_amazon_access || $is_twitter_access || $is_jmty_access ) {
+        if	($is_amazon_access || $is_twitter_access || $is_jmty_access || $is_yahoo_auction_access ) {
             $rget_args	=	$get_request_args($url_access, $rget_args );
         }
         if	($headers_only ) {
@@ -173,6 +178,7 @@
     $error			=	false;
     $amazon_image	=	'';
     $twitter_icon	=	'';
+	$yahoo_auction_title	=	'';
 
     // URL解析（自サイトチェック）
     $url_info		=	$this->Pz_GetURLInfo($url_access );
@@ -322,6 +328,40 @@
 			}
 		}
 
+		// Yahoo! Auctions: retrieve the auction title and listing start time.
+		if	(!empty($this->options['flg-special-yahoo-auc'] ) && $is_yahoo_auction_access ) {
+			$yahoo_auction_body	=	html_entity_decode($http_body, ENT_QUOTES | ENT_HTML5, $this->charset );
+			if	(class_exists('DOMDocument' ) ) {
+				$previous_libxml_errors	=	libxml_use_internal_errors(true );
+				$document	=	new DOMDocument();
+				if	($document->loadHTML($http_body, LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_NONET ) ) {
+					$xpath	=	new DOMXPath($document );
+					$headings	=	$xpath->query('(//h1[contains(@class, "gv-u-fontSize16--") and contains(@class, "gv-u-fontWeightBold--")])[1]' );
+					if	($headings && $headings->length > 0 ) {
+						$yahoo_auction_title	=	preg_replace('/\s+/u', ' ', trim($headings->item(0 )->textContent ) );
+					}
+				}
+				libxml_clear_errors();
+				libxml_use_internal_errors($previous_libxml_errors );
+			}
+
+			if	(preg_match('/["\']starttime["\']\s*:\s*(?:["\']([^"\']+)["\']|(\d{10,13}))/i', $yahoo_auction_body, $matches ) ) {
+				$starttime	=	trim($matches[1] !== '' ? $matches[1] : $matches[2] );
+				$starttime	=	str_replace(array('\\/', '\\u002F' ), '/', $starttime );
+				if	(ctype_digit($starttime ) ) {
+					$starttime_timestamp	=	intval($starttime );
+					if	($starttime_timestamp > 9999999999 ) {
+						$starttime_timestamp	=	intval($starttime_timestamp / 1000 );
+					}
+				} else {
+					$starttime_timestamp	=	strtotime($starttime );
+				}
+				if	($starttime_timestamp > 0 ) {
+					$data['post_date']	=	$starttime_timestamp;
+				}
+			}
+		}
+
         // Open Graph Protcol
         $og_url			=	$tags['og:url']					??	'';
         $og_type		=	$tags['og:type']				??	'';
@@ -354,6 +394,9 @@
                 $excerpt		=	$tw_excerpt;
             }
         }
+		if	($yahoo_auction_title ) {
+			$title	=	$yahoo_auction_title;
+		}
         
         // サムネイル画像
         if				(!$thumbnail_url ) {

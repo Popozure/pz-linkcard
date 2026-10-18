@@ -4,7 +4,7 @@
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
 Description:	Displays links in card format.
-Version:		2.6.3
+Version:		2.6.3.2.TEST
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -417,7 +417,7 @@ class class_pz_linkcard {
 			'date-format-man'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'Y\<\b\r\>m/d\<\b\r\>H:i', ],
 			'flg-inhibit'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-preview'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'preview-mode'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
+			'preview-mode'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'icon', ],
 			'preview-left'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-top'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
@@ -431,6 +431,7 @@ class class_pz_linkcard {
 			'flg-special-amazon'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-special-twitter'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-special-jmty'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
+			'flg-special-yahoo-auc'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 
 			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
 			'alive-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
@@ -438,11 +439,11 @@ class class_pz_linkcard {
 			'sns-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
 
 			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'debug-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'survey-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'admin-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'multi-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'develop-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 
 			'css-add-url'						=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
@@ -682,7 +683,7 @@ class class_pz_linkcard {
 
 			// カード管理画面用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
-			add_action		('wp_ajax_pz_lkc_find_used_posts',		[$this, 'action_ajax_pz_lkc_find_used_posts'] );
+			add_action		('wp_ajax_pz_lkc_find_used_posts',			[$this, 'action_ajax_pz_lkc_find_used_posts'] );
 
 			// ビジュアルエディター用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_mce_post_search',			[$this, 'action_ajax_pz_lkc_mce_post_search'] );
@@ -891,7 +892,7 @@ class class_pz_linkcard {
 					$result	=	$this->pz_SaveOptions();
 				}
 			}
-			$tag		=	'<div class="linkcard"><a id="lkc-error" class="lkc-error" style="display:block;scroll-margin-top:33vh;"></a><div class="lkc-internal-wrap"><div class="lkc-info">'.self::PLUGIN_NAME.'</div><div class="lkc-excerpt">'.__('-', 'pz-linkcard' ).' '.__('Incorrect URL specification.', 'pz-linkcard' ).'<br>'.__('-', 'pz-linkcard' ).' '.__('URL', 'pz-linkcard' ).'='.esc_url($url_org ).'</div></div></div>';
+			$tag		=	'<div class="linkcard"><a id="lkc-error" class="lkc-error" style="display:block;scroll-margin-top:33vh;"></a><div class="lkc-internal-wrap lkc-unlink"><div class="lkc-info">'.self::PLUGIN_NAME.'</div><div class="lkc-excerpt">'.__('-', 'pz-linkcard' ).' '.__('Incorrect URL specification.', 'pz-linkcard' ).'<br>'.__('-', 'pz-linkcard' ).' '.__('URL', 'pz-linkcard' ).'='.esc_url($url_org ).'</div></div></div>';
 			return			PHP_EOL.$tag.PHP_EOL;
 		}
 
@@ -2766,7 +2767,7 @@ class class_pz_linkcard {
 		$takeover			=	array('saved-date', 'db-version', 'db-click-version' );
 		if	(!empty($this->options['initialize-exception'] ) ) {
 			// 初期化例外が有効の時に引き継ぐ設定値
-			array_push($takeover, 'initialize-exception', 'admin-mode', 'debug-mode' );
+			array_push($takeover, 'initialize-exception', 'debug-mode', 'survey-mode', 'admin-mode' );
 		}
 
 		// 引き継ぐ設定値を一時保存
@@ -3298,6 +3299,8 @@ class class_pz_linkcard {
 		wp_enqueue_script	(self::PLUGIN_SLUG.'-admin-js',		PZLKC_URL_ADMIN_JS,			array(),			$admin_js_version, true );
 		wp_localize_script	(self::PLUGIN_SLUG.'-admin-js',		'pzLinkCardAdmin', array(
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
+			'settingsUrl'	=>	$this->settings_url,
+			'cachemanUrl'	=>	$this->cacheman_url,
 			'noticeNonce'	=>	wp_create_nonce('pz_lkc_clear_error_mode' ),
 			'cachemanColumnsNonce'	=>	wp_create_nonce('pz_lkc_cacheman_columns' ),
 			'findUsedPostsNonce'	=>	wp_create_nonce('pz_lkc_find_used_posts' ),

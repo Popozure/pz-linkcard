@@ -10,8 +10,14 @@
     let processingOverlayTimer = null;
 	const processingOverlayDelay = 800;
 	initInfobarPosition();
-	initTargetHighlight();
 	initTargetHighlightLinks();
+	initAdminScreenSwitchAnimation();
+	window.addEventListener("load", () => {
+		// Let admin-tabs.js finish restoring the active tab before jumping to
+		// a setting linked from another admin screen. Keep this independent of
+		// the main load initializer so another feature cannot prevent the jump.
+		window.setTimeout(initTargetHighlight, 100);
+	}, { once: true });
 	initDbClearDelay();
 	const initialOverlay = document.querySelector("#pz-overlay-proc");
 	const keepInitialOverlay = initialOverlay?.classList.contains("pz-overlay-proc-active");
@@ -99,6 +105,7 @@
         initCachemanPaginationKeys();
         initImageBox();
         initScreenOptions();
+		initSettingsScreenOptions();
         initPageHelp();
         initFileImport();
         initSettingsSectionJump();
@@ -197,6 +204,96 @@
 		activateTargetHighlight(window.location.hash);
 	}
 
+	function initAdminScreenSwitchAnimation() {
+		const isSettings = dashboard.classList.contains("pz-settings");
+		const isCacheman = dashboard.classList.contains("pz-cacheman");
+		if (!isSettings && !isCacheman) return;
+		const switchLink = dashboard.querySelector('.pz-infobar-switch[href]');
+		if (!switchLink) return;
+
+		let navigating = false;
+		const navigate = targetUrl => {
+			if (navigating) {
+				return;
+			}
+			if (!targetUrl) return;
+			navigating = true;
+
+			if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+				window.location.assign(targetUrl);
+				window.setTimeout(() => { navigating = false; }, 1000);
+				return;
+			}
+
+			const startRect = switchLink.getBoundingClientRect();
+			const bodyStyle = window.getComputedStyle(document.body);
+			const overlayTop = parseFloat(bodyStyle.getPropertyValue("--pz-overlay-top")) || 0;
+			const overlayLeft = parseFloat(bodyStyle.getPropertyValue("--pz-overlay-left")) || 0;
+			const endRect = {
+				top: Math.max(0, overlayTop),
+				left: Math.max(0, overlayLeft),
+				right: window.innerWidth,
+				bottom: window.innerHeight,
+			};
+			endRect.width = Math.max(0, endRect.right - endRect.left);
+			endRect.height = Math.max(0, endRect.bottom - endRect.top);
+			const frame = document.createElement("div");
+			frame.className = "pz-manager-switch-frame";
+			frame.setAttribute("aria-hidden", "true");
+			Object.assign(frame.style, {
+				top: `${startRect.top}px`,
+				left: `${startRect.left}px`,
+				width: `${startRect.width}px`,
+				height: `${startRect.height}px`,
+			});
+			document.body.appendChild(frame);
+
+			frame.animate([
+				{
+					top: `${startRect.top}px`,
+					left: `${startRect.left}px`,
+					width: `${startRect.width}px`,
+					height: `${startRect.height}px`,
+					borderRadius: "6px",
+				},
+				{
+					top: `${endRect.top}px`,
+					left: `${endRect.left}px`,
+					width: `${endRect.width}px`,
+					height: `${endRect.height}px`,
+					borderRadius: "0",
+				},
+			], {
+				duration: 300,
+				easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+				fill: "forwards",
+			});
+
+			window.setTimeout(() => {
+				frame.remove();
+				window.location.assign(targetUrl);
+				window.setTimeout(() => { navigating = false; }, 1000);
+			}, 340);
+		};
+
+		switchLink.addEventListener("click", event => {
+			if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) return;
+			event.preventDefault();
+			navigate(switchLink.href);
+		});
+
+		document.addEventListener("keydown", event => {
+			if (event.ctrlKey || event.altKey || event.metaKey || event.shiftKey || event.isComposing || event.key !== "F4") return;
+			const targetUrl = isSettings
+				? window.pzLinkCardAdmin?.cachemanUrl
+				: window.pzLinkCardAdmin?.settingsUrl;
+			if (!targetUrl) return;
+
+			event.preventDefault();
+			navigate(targetUrl);
+		});
+	}
+
 	function initTargetHighlightLinks() {
 		document.addEventListener("click", event => {
 			const link = event.target.closest?.('a[href*="#pz-error-reset-settings"]');
@@ -232,9 +329,13 @@
 		target.classList.remove(className);
 		void target.offsetWidth;
 		target.classList.add(className);
-		window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}`);
 		window.requestAnimationFrame(() => {
-			window.requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+			window.requestAnimationFrame(() => {
+				target.scrollIntoView({ block: "start" });
+				window.setTimeout(() => {
+					window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}`);
+				}, 100);
+			});
 		});
 		window.setTimeout(() => target.classList.remove(className), 5000);
 	}
@@ -1196,9 +1297,15 @@
         const form = settings?.querySelector("form");
         if (!settings || !form) return;
 
+        form.querySelectorAll(".pz-submit-float input[type='submit']").forEach(button => {
+            button.title = "変更した設定を保存します ALT+S";
+        });
+
         document.addEventListener("keydown", e => {
             if (e.isComposing || e.repeat) return;
-            if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.key.toLowerCase() !== "s") return;
+            const isAltSave = e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && e.key.toLowerCase() === "s";
+            const isCtrlSave = e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && e.key.toLowerCase() === "s";
+            if (!isAltSave && !isCtrlSave) return;
 
             const submitButton = form.querySelector(".pz-page-active .pz-submit-float input[type='submit']:not(:disabled)")
                 || form.querySelector("input[type='submit']:not(:disabled)");
@@ -1783,8 +1890,8 @@
         });
 
         document.addEventListener("keydown", e => {
-            if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && !e.isComposing && e.key === "F2") {
-                const activeTab = tabbar.querySelector(".pz-tab-active");
+			if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && !e.isComposing && e.key === "F6") {
+				const activeTab = tabbar.querySelector(".pz-tab-active");
                 if (!activeTab) return;
 
                 e.preventDefault();
@@ -2152,6 +2259,7 @@
             panelOpen = open;
 
             if (open) {
+				window.scrollTo(0, 0);
                 panel.hidden = false;
                 window.requestAnimationFrame(() => {
                     if (panelOpen) panel.classList.add("is-open");
@@ -2171,6 +2279,7 @@
             helpOpen = open;
 
             if (open) {
+				window.scrollTo(0, 0);
                 helpPanel.hidden = false;
                 window.requestAnimationFrame(() => {
                     if (helpOpen) helpPanel.classList.add("is-open");
@@ -2261,6 +2370,18 @@
         });
 
         document.addEventListener("keydown", e => {
+			if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && !e.isComposing && e.key === "F2") {
+				e.preventDefault();
+				if (!panelOpen) setHelpOpen(false);
+				setPanelOpen(!panelOpen);
+				return;
+			}
+			if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && !e.isComposing && e.key === "F1") {
+				e.preventDefault();
+				if (!helpOpen) setPanelOpen(false);
+				setHelpOpen(!helpOpen);
+				return;
+			}
             if (e.key !== "Escape") return;
             if (panelOpen) {
                 setPanelOpen(false);
@@ -2277,6 +2398,7 @@
             const toggle = root.querySelector(".pz-page-help-toggle");
             const panel = root.querySelector(".pz-page-help-panel");
             if (!toggle || !panel) return;
+			const scrollOnOpen = !!root.closest(".pz-settings");
 
             let open = !panel.hidden;
             let hideTimer = null;
@@ -2285,6 +2407,7 @@
                 open = nextOpen;
 
                 if (open) {
+					if (scrollOnOpen) window.scrollTo(0, 0);
                     panel.hidden = false;
                     window.requestAnimationFrame(() => {
                         if (open) panel.classList.add("is-open");
@@ -2309,12 +2432,77 @@
             });
 
             document.addEventListener("keydown", e => {
+				if (!e.ctrlKey && !e.altKey && !e.metaKey && !e.shiftKey && !e.isComposing && e.key === "F1") {
+					e.preventDefault();
+					setOpen(!open);
+					return;
+				}
                 if (e.key !== "Escape" || !open) return;
                 setOpen(false);
                 toggle.focus();
             });
         });
     }
+
+	function initSettingsScreenOptions() {
+		const root = document.querySelector(".pz-settings-screen-options");
+		const toggle = document.querySelector("#pz-settings-screen-options-toggle");
+		const panel = document.querySelector("#pz-settings-screen-options-panel");
+		const helpToggle = document.querySelector(".pz-settings-screen-tabs .pz-page-help-toggle");
+		if (!root || !toggle || !panel) return;
+
+		let open = !panel.hidden;
+		let hideTimer = null;
+		const setOpen = nextOpen => {
+			window.clearTimeout(hideTimer);
+			open = nextOpen;
+
+			if (open) {
+				window.scrollTo(0, 0);
+				panel.hidden = false;
+				window.requestAnimationFrame(() => {
+					if (open) panel.classList.add("is-open");
+				});
+			} else {
+				panel.classList.remove("is-open");
+				hideTimer = window.setTimeout(() => {
+					if (!open) panel.hidden = true;
+				}, 160);
+			}
+
+			toggle.setAttribute("aria-expanded", open ? "true" : "false");
+		};
+
+		toggle.addEventListener("click", event => {
+			event.preventDefault();
+			if (!open && helpToggle?.getAttribute("aria-expanded") === "true") helpToggle.click();
+			setOpen(!open);
+		});
+
+		helpToggle?.addEventListener("click", () => {
+			if (open) setOpen(false);
+		});
+
+		document.addEventListener("click", event => {
+			if (open && !root.contains(event.target)) setOpen(false);
+		});
+
+		document.addEventListener("keydown", event => {
+			if (!event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey && !event.isComposing && event.key === "F2") {
+				event.preventDefault();
+				if (!open && helpToggle?.getAttribute("aria-expanded") === "true") helpToggle.click();
+				setOpen(!open);
+				return;
+			}
+			if (!event.ctrlKey && !event.altKey && !event.metaKey && !event.shiftKey && !event.isComposing && event.key === "F1") {
+				if (open) setOpen(false);
+				return;
+			}
+			if (event.key !== "Escape" || !open) return;
+			setOpen(false);
+			toggle.focus();
+		});
+	}
 
 	function initCachemanUsedPostRefresh() {
 		const button = document.querySelector(".pz-man-cache-post-id-refresh");

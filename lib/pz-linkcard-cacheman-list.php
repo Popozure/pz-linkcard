@@ -258,7 +258,7 @@
 	?>
 	<div class="pz-man-screen-tabs">
 		<div class="pz-man-screen-options">
-			<button type="button" id="pz-man-screen-options-toggle" class="pz-man-screen-options-toggle" aria-expanded="false" aria-controls="pz-man-screen-options-panel" data-no-overlay="1">
+			<button type="button" id="pz-man-screen-options-toggle" class="pz-man-screen-options-toggle" title="<?php echo esc_attr(__('Screen Options', 'pz-linkcard' ) ); ?>" aria-expanded="false" aria-controls="pz-man-screen-options-panel" data-no-overlay="1">
 				<?php echo esc_html(__('Screen Options', 'pz-linkcard' ) ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
 			</button>
 			<div id="pz-man-screen-options-panel" class="pz-man-screen-options-panel" hidden>
@@ -273,6 +273,8 @@
 							$classes		=	array();
 							if	(!empty($screen_option_defaults[$column_key] ) ) {
 								$classes[]	=	'pz-man-screen-option-default';
+							} else {
+								$classes[]	=	'pz-man-screen-option-default-hidden';
 							}
 							if	(!empty($column['debug_only'] ) ) {
 								$classes[]	=	'pz-debug-only';
@@ -298,7 +300,7 @@
 			</div>
 		</div>
 		<div class="pz-man-help">
-			<button type="button" id="pz-man-help-toggle" class="pz-man-help-toggle" aria-expanded="false" aria-controls="pz-man-help-panel" data-no-overlay="1">
+			<button type="button" id="pz-man-help-toggle" class="pz-man-help-toggle" title="<?php echo esc_attr($help_label.' F1'); ?>" aria-expanded="false" aria-controls="pz-man-help-panel" data-no-overlay="1">
 				<?php echo esc_html($help_label ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
 			</button>
 			<div id="pz-man-help-panel" class="pz-man-help-panel" hidden>
@@ -331,11 +333,14 @@
 			</dl>
 			<h3 class="pz-man-shortcut-title"><?php echo esc_html(__('Keyboard Shortcuts' ) ); ?></h3>
 			<dl class="pz-man-shortcut-list">
-				<div><dt><kbd>Ctrl+F</kbd> / <kbd>Alt+Q</kbd></dt><dd><?php echo esc_html(__('Search', 'pz-linkcard' ) ); ?></dd></div>
+				<div><dt><kbd>F1</kbd></dt><dd><?php echo esc_html__('Show Help', 'pz-linkcard' ); ?></dd></div>
+				<div><dt><kbd>F2</kbd></dt><dd><?php echo esc_html__('Show Screen Options', 'pz-linkcard' ); ?></dd></div>
 				<div><dt><kbd>F3</kbd></dt><dd><?php echo esc_html(__('Search cards', 'pz-linkcard' ) ); ?></dd></div>
-				<div><dt><kbd>Ctrl+A</kbd></dt><dd><?php echo esc_html(__('Select All' ) ); ?></dd></div>
-				<div><dt><kbd>Ctrl+;</kbd></dt><dd><?php echo esc_html(__('Today' ).' (yyyy-mm-dd)' ); ?></dd></div>
-				<div><dt><kbd>Ctrl+←</kbd> / <kbd>Ctrl+→</kbd></dt><dd><?php echo esc_html(__('Previous page' ).' / '.__('Next page' ) ); ?></dd></div>
+				<div><dt><kbd>F4</kbd></dt><dd><?php echo esc_html__('Switch between Card Manager and Settings', 'pz-linkcard' ); ?></dd></div>
+				<div><dt><kbd>Ctrl</kbd>+<kbd>A</kbd></dt><dd><?php echo esc_html(__('Select All' ) ); ?></dd></div>
+				<div><dt><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>Alt</kbd>+<kbd>Q</kbd></dt><dd><?php echo esc_html(__('Search', 'pz-linkcard' ) ); ?></dd></div>
+				<div><dt><kbd>Ctrl</kbd>+<kbd>;</kbd></dt><dd><?php echo esc_html(__('Today' ).' (yyyy-mm-dd)' ); ?></dd></div>
+				<div><dt><kbd>Ctrl</kbd>+<kbd>←</kbd> / <kbd>Ctrl</kbd>+<kbd>→</kbd></dt><dd><?php echo esc_html(__('Previous page' ).' / '.__('Next page' ) ); ?></dd></div>
 			</dl>
 		</div>
 		</div>
@@ -346,7 +351,7 @@
 			<label>
 				<span class="dashicons dashicons-search" style="vertical-align: text-bottom;"></span>
 				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" placeholder="<?php esc_attr_e('Search', 'pz-linkcard' ); ?>" data-pz-today="<?php echo esc_attr($search_help_date ); ?>" />
-				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action"><?php esc_html_e('Search cards', 'pz-linkcard' ); ?></button>
+				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action" title="<?php echo esc_attr(__('Search cards', 'pz-linkcard' ).' F3'); ?>"><?php esc_html_e('Search cards', 'pz-linkcard' ); ?></button>
 			</label>
 		</p>
 	</div>

@@ -135,21 +135,6 @@
 	<h2><?php esc_html_e('for Debug', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
 		<tr>
-			<th scope="row"><?php esc_html_e('DB Update Mode', 'pz-linkcard' ); ?></span></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[debug-nocache]" value="" />
-					<input type="checkbox" name="properties[debug-nocache]" value="1" <?php checked($prop['debug-nocache'] ); ?> class="pz-tab-show" />
-					<?php esc_html_e('Forced access to links even if they are recorded in DB.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-	</table>
-	<?php submit_button(); ?>
-
-	<h2><?php esc_html_e('Error Settings', 'pz-linkcard' ); ?></h2>
-	<table class="form-table">
-		<tr>
 			<th scope="row"><?php esc_html_e('Error Conditions', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
@@ -160,18 +145,13 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Post ID', 'pz-linkcard' ); ?></th>
-			<td><input name="properties[error-postid]" type="number" min="0" step="1" size="5" value="<?php echo esc_attr($prop['error-postid'] ); ?>" /></td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Post URL', 'pz-linkcard' ); ?></th>
-			<td><input name="properties[error-url]" type="url" size="80" value="<?php echo esc_attr($prop['error-url'] ); ?>" /></td>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Occurrence Time', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('DB Update Mode', 'pz-linkcard' ); ?></span></th>
 			<td>
-				<input name="properties[error-time]" type="text" value="<?php echo esc_attr($prop['error-time'] ); ?>" class="pz-ad______min-only" />
-				<span><?php echo esc_attr(is_numeric($prop['error-time'] ) ? $this->pz_Date(PZLKC_DATETIME_FORMAT, $prop['error-time'] ) : $prop['error-time'] ); ?></span>
+				<label>
+					<input type="hidden"   name="properties[debug-nocache]" value="" />
+					<input type="checkbox" name="properties[debug-nocache]" value="1" <?php checked($prop['debug-nocache'] ); ?> class="pz-tab-show" />
+					<?php esc_html_e('Forced access to links even if they are recorded in DB.', 'pz-linkcard' ); ?>
+				</label>
 			</td>
 		</tr>
 	</table>

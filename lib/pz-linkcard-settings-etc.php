@@ -17,11 +17,11 @@
 			<th scope="row"><?php esc_html_e('Stylesheet Version', 'pz-linkcard' ); ?></th>
 			<td><input name="" type="number" min="0" step="1" size="10" title="<?php echo esc_attr($prop['css-count'] ); ?>" value="<?php echo esc_attr($prop['css-count'] ); ?>" readonly="readonly" /></td>
 		</tr>
-		<tr class="pz-debu-only">
+		<tr>
 			<th scope="row"><?php echo __('CSS File URL', 'pz-linkcard' ); ?></th>
 			<td><input name=""							type="text" size="120" title="<?php echo esc_attr(PZLKC_URL_STYLE.'style.css'     ); ?>" class="pz-click-all-select" value="<?php echo	esc_attr(PZLKC_URL_STYLE.'style.css'     ); ?>" readonly="readonly" /></td>
 		</tr>
-		<tr class="pz-debug-only">
+		<tr>
 			<th scope="row"><?php echo __('CSS File URL', 'pz-linkcard' ).' '.__('(Compressed)', 'pz-linkcard' ); ?></th>
 			<td><input name="" 							type="text" size="120" title="<?php echo esc_attr(PZLKC_URL_STYLE.'style.min.css' ); ?>" class="pz-click-all-select" value="<?php echo	esc_attr(PZLKC_URL_STYLE.'style.min.css' ); ?>" readonly="readonly" /></td>
 		</tr>

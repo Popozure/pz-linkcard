@@ -122,33 +122,44 @@
 			OR update_result < 0"
 	);
 
-	// 内部リンクはリンク先投稿のID・投稿日・更新日を取得する
-	$internal_link_cards	=	(array) $wpdb->get_results(
-		"SELECT id, url FROM $this->db_card WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC"
-	);
-	foreach	($internal_link_cards as $internal_link_card ) {
-		$url_info	=	$this->Pz_GetURLInfo($internal_link_card->url );
-		if	(empty($url_info['is_internal'] ) ) {
-			continue;
-		}
-
-		$post_id	=	url_to_postid($internal_link_card->url );
-		$post		=	$post_id ? get_post($post_id ) : null;
-		if	(!$post ) {
-			continue;
-		}
-
-		$wpdb->update(
-			$this->db_card,
-			array(
-				'post_id'		=>	intval($post_id ),
-				'post_date'		=>	intval(get_post_timestamp($post, 'date' ) ),
-				'post_modified'	=>	intval(get_post_timestamp($post, 'modified' ) ),
-			),
-			array('id' => intval($internal_link_card->id ) ),
-			array('%d', '%d', '%d' ),
-			array('%d' )
+	// 内部リンクはリンク先投稿のID・投稿日・更新日を取得する。
+	// コンストラクターから更新処理が呼ばれた場合、url_to_postid() が使用する
+	// $wp_rewrite はまだ生成されていないため、初期化後までこの処理だけ遅延する。
+	$update_internal_posts	=	function() use ($wpdb ) {
+		$internal_link_cards	=	(array) $wpdb->get_results(
+			"SELECT id, url FROM $this->db_card WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC"
 		);
+		foreach	($internal_link_cards as $internal_link_card ) {
+			$url_info	=	$this->Pz_GetURLInfo($internal_link_card->url );
+			if	(empty($url_info['is_internal'] ) ) {
+				continue;
+			}
+
+			$post_id	=	url_to_postid($internal_link_card->url );
+			$post		=	$post_id ? get_post($post_id ) : null;
+			if	(!$post ) {
+				continue;
+			}
+
+			$wpdb->update(
+				$this->db_card,
+				array(
+					'post_id'		=>	intval($post_id ),
+					'post_date'		=>	intval(get_post_timestamp($post, 'date' ) ),
+					'post_modified'	=>	intval(get_post_timestamp($post, 'modified' ) ),
+				),
+				array('id' => intval($internal_link_card->id ) ),
+				array('%d', '%d', '%d' ),
+				array('%d' )
+			);
+		}
+	};
+
+	global $wp_rewrite;
+	if	(is_object($wp_rewrite ) ) {
+		$update_internal_posts();
+	} else {
+		add_action('init', $update_internal_posts, 20 );
 	}
 	// if	($wpdb->last_error ) {
 	// 	$error_code	=	'';

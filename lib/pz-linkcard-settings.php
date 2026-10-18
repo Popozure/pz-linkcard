@@ -155,6 +155,10 @@
 	$menu_multi			=	isset($prop['multi-mode'] )					?	intval($prop['multi-mode'] )				:	$menu_multi ;
 	$menu_initialize	=	isset($prop['flg-initialize'] )				?	intval($prop['flg-initialize'] )			:	$menu_initialize ;
 	$inhibit			=	isset($prop['flg-inhibit'] )				?	intval($prop['flg-inhibit'] )				:	$inhibit ;
+	if	(!$debug_mode ) {
+		$survey_mode	=	0;
+		$admin_mode	=	0;
+	}
 
 	$visible_tabs		=	array(
 		'pz-error'			=>		($menu_error			!=	0 ),
@@ -244,8 +248,8 @@
 	$switch_link	=	esc_url($this->cacheman_url );
 	$switch_icon	=	'<span class="dashicons dashicons-archive" style="vertical-align: text-bottom;"></span>';
 	$switch_label	=	__('Manager', 'pz-linkcard' );
-	$html_search	=	'<div id="pz-infobar-search"><div class="pz-infobar-search-box"><span class="dashicons dashicons-search pz-infobar-search-icon" aria-hidden="true"></span><input type="text" id="pz-search-box" class="pz-infobar-search-text" placeholder="'.esc_attr__('Search settings', 'pz-linkcard' ).'" autocomplete="off"><span id="pz-search-status"></span></div><button type="button" id="pz-search-btn" class="pz-infobar-search-button">'.esc_html__('Find next', 'pz-linkcard' ).'</button><button type="button" id="pz-search-prev-btn" class="pz-infobar-search-button" disabled>'.esc_html__('Find previous', 'pz-linkcard' ).'</button></div>';
-	$html_plugin	=	'<div id="pz-infobar"><div class="pz-infobar-left"><a href="'.esc_url($this->settings_url ).'" class="pz-infobar-plugin-logo"><img src="'.esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg' ).'" width="156px" height="28px" alt="'.esc_attr(self::PLUGIN_NAME ).'"></a><span class="pz-infobar-plugin-ver pz-monospace">ver.'.esc_html(PZLKC_PLUGIN_VERSION ).'</span>'.$html_mode.'</div><div class="pz-infobar-right">'.$html_search.'<a href="'.$switch_link.'" class="pz-infobar-switch" title="'.esc_attr($switch_label ).'"><span class="pz-infobar-switch-icon">'.$switch_icon.'</span><span class="pz-infobar-switch-label">'.$switch_label.'</span></a></div></div>';
+	$html_search	=	'<div id="pz-infobar-search"><div class="pz-infobar-search-box"><span class="dashicons dashicons-search pz-infobar-search-icon" aria-hidden="true"></span><input type="text" id="pz-search-box" class="pz-infobar-search-text" placeholder="'.esc_attr__('Search settings', 'pz-linkcard' ).'" autocomplete="off"><span id="pz-search-status"></span></div><button type="button" id="pz-search-btn" class="pz-infobar-search-button" title="次を検索 F3">'.esc_html__('Find next', 'pz-linkcard' ).'</button><button type="button" id="pz-search-prev-btn" class="pz-infobar-search-button" title="前を検索 SHIFT+F3" disabled>'.esc_html__('Find previous', 'pz-linkcard' ).'</button></div>';
+	$html_plugin	=	'<div id="pz-infobar"><div class="pz-infobar-left"><a href="'.esc_url($this->settings_url ).'" class="pz-infobar-plugin-logo"><img src="'.esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg' ).'" width="156px" height="28px" alt="'.esc_attr(self::PLUGIN_NAME ).'"></a><span class="pz-infobar-plugin-ver pz-monospace">ver.'.esc_html(PZLKC_PLUGIN_VERSION ).'</span>'.$html_mode.'</div><div class="pz-infobar-right">'.$html_search.'<a href="'.$switch_link.'" class="pz-infobar-switch" title="Pz カード管理画面へ切り替える F4"><span class="pz-infobar-switch-icon">'.$switch_icon.'</span><span class="pz-infobar-switch-label">'.$switch_label.'</span></a></div></div>';
 	$title_icon		=	'<span class="dashicons dashicons-admin-generic" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Settings', 'pz-linkcard' );
 	$help_page		=	self::AUTHOR_URL.'/pz-linkcard-manager';
@@ -270,14 +274,7 @@
 	foreach		($temp_param		as	$temp_name => $temp_value ) {
 		$html_input	.=	'<input type="hidden" name="'.$temp_name.'" value="'.$temp_value.'" title="'.$temp_name.'" size="4" />';
 	}
-	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards' ) as $temp_name ) {
-		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
-		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
-	}
-
 	// モードによって表示させる
-	$html_style		.=	$debug_mode		==	0	?	'.pz-debug-only { display: none; } '	:	'';
-	$html_style		.=	$admin_mode		==	0	?	'.pz-admin-only { display: none; } '	:	'';
 	$html_style		.=	$develop_mode	==	0	?	'.pz-develop-only { display: none; } '	:	'';
 	if	($html_style ) {
 		$html_style	=	'<style>'.$html_style.'</style>';
@@ -384,11 +381,29 @@
 			break;
 
 		case	'init-settings':						// 設定の初期化
+			// 保存済みの値ではなく、実行時に画面で選択されている状態を優先する
+			$this->options['initialize-exception']	=	!empty($prop['initialize-exception'] ) ? 1 : 0;
+			if	($this->options['initialize-exception'] ) {
+				foreach	(array('debug-mode', 'survey-mode', 'admin-mode' ) as $mode_name ) {
+					$this->options[$mode_name]	=	!empty($prop[$mode_name] ) ? 1 : 0;
+				}
+			}
 			$result		=	$this->pz_InitializeOptions();
 			delete_user_meta(get_current_user_id(), 'pz_lkc_cacheman_columns' );
 			delete_user_meta(get_current_user_id(), 'pz_lkc_cacheman_per_page' );
 			$reset_client_storage	=	true;
 			if	($result ) {
+				// 表示オプションも初期化後の値で直ちに描画する
+				$debug_mode		=	intval($this->options['debug-mode'] );
+				$survey_mode	=	intval($this->options['survey-mode'] );
+				$admin_mode		=	intval($this->options['admin-mode'] );
+				$develop_mode	=	intval($this->options['develop-mode'] );
+				$menu_error		=	intval($this->options['error-mode'] );
+				$menu_multi		=	intval($this->options['multi-mode'] );
+				$menu_initialize =	intval($this->options['flg-initialize'] );
+				$html_style		=	'';
+				$html_style		.=	$develop_mode	== 0 ? '.pz-develop-only { display: none; } ' : '';
+				$html_style		=	$html_style ? '<style>'.$html_style.'</style>' : '';
 				$flg_style		=	true;				// スタイルシートの再生成
 				$prop		=	$this->options;
 				$html_notice	.=	'<div class="notice notice-success is-dismissible"><p><strong>'.__('Successfully initialized the settings.', 'pz-linkcard' ).'</strong></p></div>';
@@ -479,9 +494,12 @@
 			if	(!is_array($saved_options ) ) {
 				$saved_options	=	array();
 			}
-			$saved_options['error-mode']	=	false;
+			$saved_options['error-mode']	=	null;
 			$result				=	update_option(self::OPTION_NAME, $saved_options );
 			$this->options		=	$saved_options;
+			if	(!$result && get_option(self::OPTION_NAME, array() ) !== $saved_options ) {
+				$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to reset the error condition.', 'pz-linkcard' ).'</strong></p></div>';
+			}
 			break;
 
 		case	'run-pz_linkcard_check':
@@ -499,6 +517,12 @@
 		default:
 
 		}
+	}
+
+	// 操作後の状態をプレビュー用の非表示項目へ反映する
+	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards' ) as $temp_name ) {
+		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
+		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
 	}
 
 	// スタイルシート生成
@@ -686,7 +710,12 @@
 	ksort($meta_list );
 
 	// プロパティーズにコピー
-	$prop		=	$this->options;
+	if	($action !== 'clear-error' || !is_array($prop ) ) {
+		$prop		=	$this->options;
+	}
+	if	($action === 'clear-error' ) {
+		$prop['error-mode']	=	null;
+	}
 	if	(!array_key_exists('enclose-tag', $prop ) ) {
 		$prop['enclose-tag']	=	!empty($prop['blockquote'] ) ? 'blockquote' : 'div';
 	}
@@ -712,7 +741,7 @@ echo	wp_kses($html_style, array('style' => array() ) );
 $settings_allowed_html	=	wp_kses_allowed_html('post' );
 $settings_allowed_html['a']['referrerpolicy']	=	true;
 ?>
-<div class="pz-dashboard<?php echo esc_attr($page_class ); ?> wrap">
+<div class="pz-dashboard<?php echo esc_attr($page_class.($debug_mode ? ' pz-debug-mode' : '' ).($admin_mode ? ' pz-admin-mode' : '' ) ); ?> wrap">
 	<header class="pz-header">
 		<?php
 			$infobar_allowed_html			=	wp_kses_allowed_html('post' );
@@ -736,21 +765,66 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 				echo	'<div class="pz-toast-container" role="status" aria-live="polite" style="display:none;">'.wp_kses($html_notice, $settings_allowed_html ).'</div>';
 			}
 		?>
+		<div class="pz-man-screen-tabs pz-settings-screen-tabs">
+		<div class="pz-man-screen-options pz-settings-screen-options">
+			<button type="button" id="pz-settings-screen-options-toggle" class="pz-man-screen-options-toggle" title="<?php echo esc_attr(__('Screen Options', 'pz-linkcard' ).' F2'); ?>" aria-expanded="false" aria-controls="pz-settings-screen-options-panel" data-no-overlay="1">
+				<?php esc_html_e('Screen Options', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+			</button>
+			<div id="pz-settings-screen-options-panel" class="pz-man-screen-options-panel pz-settings-screen-options-panel" hidden>
+				<fieldset>
+					<legend><?php esc_html_e('Modes', 'pz-linkcard' ); ?></legend>
+					<label title="<?php echo esc_attr(__('Displays normally hidden items to find and fix defects.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?>">
+						<input type="hidden" name="properties[debug-mode]" value="" form="pz-settings-form" />
+						<input type="checkbox" name="properties[debug-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($this->options['debug-mode'] ); ?> />
+						<span class="pz-screen-option-name"><?php esc_html_e('Debug Mode', 'pz-linkcard' ); ?></span>
+						<span class="pz-screen-option-description"><?php echo esc_html(__('Displays normally hidden items to find and fix defects.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?></span>
+					</label>
+					<label class="pz-settings-debug-dependent"<?php echo $debug_mode ? '' : ' style="display: none;"'; ?> title="<?php echo esc_attr(__('Collect logs. May slow down operation.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?>">
+						<input type="hidden" name="properties[survey-mode]" value="" form="pz-settings-form" />
+						<input type="checkbox" name="properties[survey-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($survey_mode ); ?> />
+						<span class="pz-screen-option-name"><?php esc_html_e('Survey Mode', 'pz-linkcard' ); ?></span>
+						<span class="pz-screen-option-description"><?php echo esc_html(__('Collect logs. May slow down operation.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?></span>
+					</label>
+					<label class="pz-settings-debug-dependent"<?php echo $debug_mode ? '' : ' style="display: none;"'; ?> title="<?php echo esc_attr(__('Unlock special settings.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?>">
+						<input type="hidden" name="properties[admin-mode]" value="" form="pz-settings-form" />
+						<input type="checkbox" name="properties[admin-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($admin_mode ); echo (!$admin_mode ? ' readonly="readonly"' : '' ); ?> ondblclick="this.readOnly=false;" />
+						<span class="pz-screen-option-name"><?php esc_html_e('Administrator Mode', 'pz-linkcard' ); ?></span>
+						<span class="pz-screen-option-description"><?php echo esc_html(__('Unlock special settings.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?></span>
+					</label>
+					<label title="<?php echo esc_attr__('Display the Multisite tab on the settings screen.', 'pz-linkcard' ); ?>">
+						<input type="hidden" name="properties[multi-mode]" value="" form="pz-settings-form" />
+						<input type="checkbox" name="properties[multi-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($menu_multi || $is_multisite ); echo ($is_multisite ? ' readonly="readonly"' : '' ); ?> />
+						<span class="pz-screen-option-name"><?php esc_html_e('MultiSite Mode', 'pz-linkcard' ); ?></span>
+						<span class="pz-screen-option-description"><?php esc_html_e('Display the Multisite tab on the settings screen.', 'pz-linkcard' ); ?></span>
+					</label>
+					<label title="<?php echo esc_attr__('Display the Initialize tab on the settings screen.', 'pz-linkcard' ); ?>">
+						<input type="hidden" name="properties[flg-initialize]" value="" form="pz-settings-form" />
+						<input type="checkbox" name="properties[flg-initialize]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($menu_initialize ); ?> />
+						<span class="pz-screen-option-name"><?php esc_html_e('Initialize Tab', 'pz-linkcard' ); ?></span>
+						<span class="pz-screen-option-description"><?php esc_html_e('Display the Initialize tab on the settings screen.', 'pz-linkcard' ); ?></span>
+					</label>
+				</fieldset>
+			</div>
+		</div>
 		<div class="pz-page-help">
-			<button type="button" class="pz-page-help-toggle" aria-expanded="false" aria-controls="pz-settings-help-panel" data-no-overlay="1">
+			<button type="button" class="pz-page-help-toggle" title="<?php echo esc_attr(__('Help', 'pz-linkcard' ).' F1'); ?>" aria-expanded="false" aria-controls="pz-settings-help-panel" data-no-overlay="1">
 				<?php esc_html_e('Help', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
 			</button>
 			<div id="pz-settings-help-panel" class="pz-page-help-panel" hidden>
 				<h3><?php esc_html_e('Keyboard Shortcuts'); ?></h3>
 				<dl class="pz-man-shortcut-list">
-					<div><dt><kbd>F2</kbd></dt><dd><?php esc_html_e('Focus current tab', 'pz-linkcard' ); ?></dd></div>
-					<div><dt><kbd>Ctrl+F</kbd> / <kbd>Alt+Q</kbd></dt><dd><?php esc_html_e('Search settings', 'pz-linkcard' ); ?></dd></div>
-					<div><dt><kbd>F3</kbd> / <kbd>Shift+F3</kbd></dt><dd><?php echo esc_html(__('Find next', 'pz-linkcard' ).' / '.__('Find previous', 'pz-linkcard' ) ); ?></dd></div>
-					<div><dt><kbd>Alt+S</kbd></dt><dd><?php esc_html_e('Save Changes'); ?></dd></div>
-					<div><dt><kbd>Ctrl+← / Ctrl+→</kbd></dt><dd><?php esc_html_e('Switch tabs', 'pz-linkcard' ); ?></dd></div>
-					<div><dt><kbd>Shift+<?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd> / <kbd><?php esc_html_e('Right click', 'pz-linkcard' ); ?>+<?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd></dt><dd><?php esc_html_e('Increase or decrease values, or select the previous or next option', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>F1</kbd></dt><dd><?php esc_html_e('Show Help', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>F2</kbd></dt><dd><?php esc_html_e('Show Screen Options', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>F3</kbd> / <kbd>Shift</kbd>+<kbd>F3</kbd></dt><dd><?php echo esc_html(__('Find next', 'pz-linkcard' ).' / '.__('Find previous', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><kbd>F4</kbd></dt><dd><?php esc_html_e('Switch between Card Manager and Settings', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>F6</kbd></dt><dd><?php esc_html_e('Focus current tab', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>Alt</kbd>+<kbd>Q</kbd></dt><dd><?php esc_html_e('Search settings', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Ctrl</kbd>+<kbd>S</kbd> / <kbd>Alt</kbd>+<kbd>S</kbd></dt><dd><?php esc_html_e('Save Changes'); ?></dd></div>
+					<div><dt><kbd>Ctrl</kbd>+<kbd>←</kbd> / <kbd>Ctrl</kbd>+<kbd>→</kbd></dt><dd><?php esc_html_e('Switch tabs', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Shift</kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd> / <kbd><?php esc_html_e('Right click', 'pz-linkcard' ); ?></kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd></dt><dd><?php esc_html_e('Increase or decrease values, or select the previous or next option', 'pz-linkcard' ); ?></dd></div>
 				</dl>
 			</div>
+		</div>
 		</div>
 		<div id="pz-tabbar-wrapper" class="pz-tabbar-wrapper">
 			<button type="button" class="pz-tab-scroll pz-tab-left" aria-label="<?php esc_attr_e('Scroll tabs left', 'pz-linkcard' ); ?>"><span class="dashicons dashicons-arrow-left-alt2"></span></button>
@@ -774,7 +848,7 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 		</div>
 	</header>
 	<article>
-		<form action="" method="post">
+		<form id="pz-settings-form" action="" method="post">
 			<?php wp_nonce_field('pz-settings' ); ?>
 			<?php
 				echo wp_kses(

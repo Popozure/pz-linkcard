@@ -143,14 +143,16 @@
 	$link_post_id_value	=	intval($cacheman_get_value('post_id' ) );
 ?>
 	<div class="pz-page-help">
-		<button type="button" class="pz-page-help-toggle" aria-expanded="false" aria-controls="pz-cache-edit-help-panel" data-no-overlay="1">
+		<button type="button" class="pz-page-help-toggle" title="<?php echo esc_attr(__('Help', 'pz-linkcard' ).' F1'); ?>" aria-expanded="false" aria-controls="pz-cache-edit-help-panel" data-no-overlay="1">
 			<?php esc_html_e('Help', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
 		</button>
 		<div id="pz-cache-edit-help-panel" class="pz-page-help-panel" hidden>
 			<h3><?php esc_html_e('Keyboard Shortcuts'); ?></h3>
 			<dl class="pz-man-shortcut-list">
+				<div><dt><kbd>F1</kbd></dt><dd><?php esc_html_e('Show Help', 'pz-linkcard' ); ?></dd></div>
 				<div><dt><kbd>F2</kbd></dt><dd><?php esc_html_e('Edit title', 'pz-linkcard' ); ?></dd></div>
-				<div><dt><kbd>Alt+S</kbd> / <kbd>Ctrl+S</kbd></dt><dd><?php esc_html_e('Update', 'pz-linkcard' ); ?></dd></div>
+				<div><dt><kbd>F4</kbd></dt><dd><?php esc_html_e('Switch between Card Manager and Settings', 'pz-linkcard' ); ?></dd></div>
+				<div><dt><kbd>Alt</kbd>+<kbd>S</kbd> / <kbd>Ctrl</kbd>+<kbd>S</kbd></dt><dd><?php esc_html_e('Update', 'pz-linkcard' ); ?></dd></div>
 				<div><dt><kbd>Esc</kbd></dt><dd><?php esc_html_e('Cancel', 'pz-linkcard' ); ?></dd></div>
 			</dl>
 		</div>
