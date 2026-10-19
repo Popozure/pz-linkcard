@@ -3457,3 +3457,23 @@ msgstr ""
 #: ../lib/pz-linkcard-cron-sns.php
 msgid "&ensp;&ensp;&ensp;&ensp;Hatena Bookmark=%1$s was returned. The next check date and time=%2$s was set."
 msgstr ""
+
+#: ../lib/pz-linkcard-settings-error.php
+msgid "Edit post"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-error.php
+msgid "View post"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Show one item"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "History"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "Edit card"
+msgstr ""
