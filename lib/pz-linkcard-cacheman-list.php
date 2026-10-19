@@ -606,6 +606,10 @@
 					if	($data->title	<>	$data->regist_title ) {
 						$html_title		=	'<b>'.$html_title.'</b>';
 					}
+					if	($is_pending ) {
+						$title			=	__('Retrieving...', 'pz-linkcard' );
+						$html_title		=	esc_html($title ).'<span class="pz-man-pending-loader" aria-hidden="true"></span>';
+					}
 
 					// 抜粋文
 					if			($str	=	$data->excerpt ) {						// 代入しながら判定

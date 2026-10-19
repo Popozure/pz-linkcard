@@ -1201,7 +1201,8 @@ class class_pz_linkcard {
 			$sw_siteicon			=	isset($this->options['in-siteicon'] )		?	esc_attr($this->options['in-siteicon'] )			:	0 ;
 		} else {
 			$wrap_class				=	'lkc-external-wrap';
-			$html_wrap_op			=	'<div class="'.$wrap_class.'">';
+			$html_pending_loader	=	!empty($atts['pz-pending'] ) ? '<span class="pz-lkc-pending-loader" aria-hidden="true"></span>' : '';
+			$html_wrap_op			=	'<div class="'.$wrap_class.'">'.$html_pending_loader;
 			$html_wrap_cl			=	'</div>';
 			$added_text				=	isset($this->options['ex-added-text'] )		?	esc_attr($this->options['ex-added-text'] )		:	null ;
 			$heading_text			=	isset($this->options['ex-heading-text'] )	?	esc_attr($this->options['ex-heading-text'] )	:	null ;
@@ -3608,11 +3609,13 @@ class class_pz_linkcard {
 	// ブロックエディタ内プレビュー用カードスタイル
 	private	function	enqueue_block_card_styles() {
 		$css_version	=	PZLKC_PLUGIN_VERSION.'.'.$this->options['css-count'];
+		$pending_loader_css	= '.pz-lkc-pending .lkc-external-wrap{position:relative}.pz-lkc-pending-loader{position:absolute;z-index:10;top:50%;left:50%;display:flex;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:4px;background:rgba(0,0,0,.45);align-items:center;justify-content:center;pointer-events:none}.pz-lkc-pending-loader::after{content:"";width:50px;aspect-ratio:1;border-radius:50%;background:radial-gradient(farthest-side,#fff 94%,#0000) top/8px 8px no-repeat,conic-gradient(#0000 30%,#fff);mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);-webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);animation:pz-lkc-pending-loader-spin 1s infinite linear}@keyframes pz-lkc-pending-loader-spin{100%{transform:rotate(1turn)}}';
 		if	($this->options['flg-compress'] ) {
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-block-card-css',	PZLKC_URL_STYLE.'style.min.css',	array(),	$css_version );
 		} else {
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-block-card-css',	PZLKC_URL_STYLE.'style.css',		array(),	$css_version );
 		}
+		wp_add_inline_style(self::PLUGIN_SLUG.'-block-card-css', $pending_loader_css );
 		if	($this->options['css-add-url'] ) {
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-block-card-css-add',	$this->options['css-add-url'],	array(),	$css_version );
 		}
@@ -3640,7 +3643,7 @@ class class_pz_linkcard {
 		} else {
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-css',			PZLKC_URL_STYLE.'style.css',			array(),	$css_version );
 		}
-		wp_add_inline_style(self::PLUGIN_SLUG.'-css', '.linkcard[id^="pz-lkc-"]{scroll-margin-top:96px}.linkcard[id^="pz-lkc-"]:target{animation:pz-lkc-target-highlight 5s steps(1,end)}.lkc-error:target+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}body:has(.lkc-error:target) .lkc-error+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}@keyframes pz-lkc-target-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(0,140,255,.95);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(0,140,255,0);outline-offset:8px}}@keyframes pz-lkc-error-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(214,54,56,.9);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(214,54,56,0);outline-offset:8px}}' );
+		wp_add_inline_style(self::PLUGIN_SLUG.'-css', '.linkcard[id^="pz-lkc-"]{scroll-margin-top:96px}.linkcard[id^="pz-lkc-"]:target{animation:pz-lkc-target-highlight 5s steps(1,end)}.lkc-error:target+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}body:has(.lkc-error:target) .lkc-error+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}.pz-lkc-pending .lkc-external-wrap{position:relative}.pz-lkc-pending-loader{position:absolute;z-index:10;top:50%;left:50%;display:flex;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:4px;background:rgba(0,0,0,.45);align-items:center;justify-content:center;pointer-events:none}.pz-lkc-pending-loader::after{content:"";width:50px;aspect-ratio:1;border-radius:50%;background:radial-gradient(farthest-side,#fff 94%,#0000) top/8px 8px no-repeat,conic-gradient(#0000 30%,#fff);mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);-webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);animation:pz-lkc-pending-loader-spin 1s infinite linear}@keyframes pz-lkc-target-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(0,140,255,.95);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(0,140,255,0);outline-offset:8px}}@keyframes pz-lkc-error-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(214,54,56,.9);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(214,54,56,0);outline-offset:8px}}@keyframes pz-lkc-pending-loader-spin{100%{transform:rotate(1turn)}}' );
 		if	($this->options['css-add-url'] ) {
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-css-add',		$this->options['css-add-url'],			array(),	$css_version );
 		}
