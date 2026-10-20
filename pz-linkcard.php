@@ -1341,7 +1341,7 @@ class class_pz_linkcard {
 		}
 
 		// サイトアイコン取得
-		if	($this->options['info-position'] ) {
+		if	($this->options['info-position'] || $is_preview ) {
 			if	($sw_siteicon == 1 || $sw_siteicon == 13 ) {							// 直接取得
 				if	($is_internal ) {
 					$siteicon_url	=	get_site_icon_url(16 );						// 自サイトのサイトアイコン
@@ -1567,6 +1567,9 @@ class class_pz_linkcard {
 			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 		}
 		$enclose_tag	=	isset($this->options['enclose-tag'] ) ? strtolower($this->options['enclose-tag'] ) : (!empty($this->options['blockquote'] ) ? 'blockquote' : 'div');
+		if (intval($this->options['info-position'] ?? 0 ) === 3 && $html_info && strpos($html_tag, 'lkc-info' ) === false ) {
+			$html_tag = str_replace($html_title, $html_info.$html_title, $html_tag);
+		}
 		if	(!in_array($enclose_tag, array('div', 'blockquote', 'figure', 'article', 'section', 'nav', 'aside' ), true ) ) {
 			$enclose_tag	=	'div';
 		}

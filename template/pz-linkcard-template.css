@@ -310,6 +310,8 @@
 }
 .lkc-siteicon {
 	display: inline-flex /*IMPORTANT*/;
+	flex: 0 0 auto;
+	flex-shrink: 0;
 	vertical-align: middle /*IMPORTANT*/;
 	border: none;
 

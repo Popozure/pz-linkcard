@@ -1477,6 +1477,9 @@
                 if (borderRadius > 0) {
                     node.style.borderRadius = `${borderRadius}px`;
                 }
+            } else {
+                node.style.setProperty("border", "none", "important");
+                node.style.borderRadius = "";
             }
             applyConfiguredBoxShadow(node, prefix);
             if (isLinkBox && !stitchPreset && !ingressPreset) {
@@ -1652,6 +1655,17 @@
                     }
                     wrap.style.margin = checked("centering") ? "0 auto" : "0";
                     applyPartBox(card, ".lkc-external-wrap, .lkc-internal-wrap", prefix);
+
+                    if (specialFormat === "metal") {
+                        wrap.style.backgroundImage = "linear-gradient(165deg, #f1f3f5 0%, #b7bec5 45%, #e7eaed 52%, #9aa3ac 100%)";
+                        wrap.style.backgroundBlendMode = "multiply";
+                        wrap.style.boxShadow = "0 2px 5px rgba(0,0,0,.25)";
+                    } else if (specialFormat === "glass") {
+                        wrap.style.backgroundImage = "radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14))";
+                        wrap.style.backdropFilter = "blur(12px) saturate(125%)";
+                        wrap.style.webkitBackdropFilter = "blur(12px) saturate(125%)";
+                        wrap.style.boxShadow = "0 8px 24px rgba(31,56,85,.18)";
+                    }
                 }
 
                 if (cardBody) {
@@ -1703,8 +1717,14 @@
                 }
 
                 applyDisplay(info, infoPosition !== "");
+                info?.querySelectorAll?.(".lkc-siteicon").forEach(icon => {
+                    icon.style.flexShrink = "0";
+                    icon.style.flexGrow = "0";
+                });
                 if (info && content && title && cardBody) {
-                    if (infoPosition === "2") {
+					if (infoPosition === "1") {
+						cardBody.insertBefore(info, content);
+					} else if (infoPosition === "2") {
                         cardBody.appendChild(info);
                     } else if (infoPosition === "3") {
                         content.insertBefore(info, title);

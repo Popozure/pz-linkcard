@@ -158,6 +158,55 @@
 				$css	.=	'.lkc-excerpt	{ padding: 4px; }';
 				$file_text	=	str_replace('/*OPTION*/', $css, $file_text );
 				break;
+			case 'mac': // Mac OS
+				$file_text = str_replace('/*EX-BORDER*/', 'border: none;', $file_text );
+				$file_text = str_replace('/*IN-BORDER*/', 'border: none;', $file_text );
+				$file_text = str_replace('/*CONTENT-MARGIN*/', 'margin: 8px 0;', $file_text );
+				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; }';
+				$css .= '.lkc-card { margin: 12px; padding: 8px; border: 1px solid #b8c0cc; border-radius: 10px; background: linear-gradient(#f8fafc, #e8edf3); box-shadow: 0 3px 10px rgba(0,0,0,.22); }';
+				$css .= '.lkc-info { position: relative; margin: -8px -8px 8px; padding: 5px 8px 5px 44px; border-radius: 9px 9px 0 0; background: linear-gradient(#eaf3ff, #c9dcf5); color: #1d3557; font-size: 11px; line-height: 16px; }';
+				$css .= '.lkc-info::before { content: ""; position: absolute; left: 10px; top: 9px; width: 9px; height: 9px; border-radius: 50%; background: #ff5f57; box-shadow: 13px 0 #febc2e, 26px 0 #28c840; }';
+				$css .= '.lkc-info * { color: #1d3557 !important; } .lkc-title { color: #111827; font-weight: 600; } .lkc-url, .lkc-url-info { color: #1769aa; } .lkc-thumbnail { margin: 0 8px !important; }';
+				$file_text = str_replace('/*OPTION*/', $css, $file_text );
+				break;
+			case 'glass': // Glass
+				$glass_ex_bg = sanitize_hex_color($prop['ex-bg-color'] ?? '') ?: '#dbeeff';
+				$glass_in_bg = sanitize_hex_color($prop['in-bg-color'] ?? '') ?: '#fff4d9';
+				$glass_rgba = function($hex ) {
+					$hex = ltrim($hex, '#');
+					if (strlen($hex) === 3 ) $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
+					return 'rgba('.hexdec(substr($hex, 0, 2 )).','.hexdec(substr($hex, 2, 2 )).','.hexdec(substr($hex, 4, 2 )).',.75)';
+				};
+				$css = '.lkc-external-wrap { background-color: '.$glass_rgba($glass_ex_bg ).'; } .lkc-internal-wrap { background-color: '.$glass_rgba($glass_in_bg ).'; }';
+				$css .= '.lkc-external-wrap, .lkc-internal-wrap { position: relative; overflow: hidden; background-image: radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14)); background-size: 100% 100%; box-shadow: 0 8px 24px rgba(31,56,85,.18), inset 0 1px rgba(255,255,255,.62); backdrop-filter: blur(12px) saturate(125%); -webkit-backdrop-filter: blur(12px) saturate(125%); }';
+				$css .= '.lkc-card, .lkc-content, .lkc-info { background-color: transparent !important; background-image: none !important; }';
+				$css .= '.lkc-external-wrap::after, .lkc-internal-wrap::after { content: ""; position: absolute; z-index: 5; top: -30%; left: -70%; width: 36%; height: 160%; transform: rotate(20deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent); opacity: 0; pointer-events: none; transition: left .55s ease, opacity .2s ease; }';
+				$css .= '.lkc-external-wrap:hover::after, .lkc-internal-wrap:hover::after { left: 135%; opacity: 1; }';
+				$css .= '.lkc-title { text-shadow: 0 1px rgba(255,255,255,.7); }';
+				$css .= '.lkc-info { background: rgba(255,255,255,.28); }';
+				$file_text = str_replace('/*OPTION*/', $css, $file_text );
+				break;
+			case 'fancy': // Fancy
+				$file_text = str_replace('/*CONTENT-MARGIN*/', 'margin: 8px 0;', $file_text );
+				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; }';
+				$css .= '.lkc-card { margin: 12px; padding: 8px; border: 1px solid rgba(255,255,255,.65); border-radius: 14px; background: linear-gradient(135deg, rgba(255,255,255,.62), rgba(220,235,255,.28)); box-shadow: 0 8px 24px rgba(31,56,85,.25), inset 0 1px rgba(255,255,255,.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }';
+				$css .= '.lkc-info { margin: -8px -8px 8px; padding: 5px 8px; border-radius: 13px 13px 0 0; background: rgba(255,255,255,.35); color: #18324d; font-size: 11px; line-height: 16px; }';
+				$css .= '.lkc-info * { color: #18324d !important; } .lkc-title { color: #102a43; font-weight: 600; text-shadow: 0 1px rgba(255,255,255,.65); } .lkc-url, .lkc-url-info { color: #1769aa; } .lkc-thumbnail { margin: 0 8px !important; }';
+				$file_text = str_replace('/*OPTION*/', $css, $file_text );
+				break;
+			case 'metal': // Metal
+				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; }';
+				$ex_bg = sanitize_hex_color($prop['ex-bg-color'] ?? '') ?: '#dbe3ea';
+				$in_bg = sanitize_hex_color($prop['in-bg-color'] ?? '') ?: '#dbe3ea';
+				$metal_gradient = 'linear-gradient(165deg, #f1f3f5 0%, #b7bec5 45%, #e7eaed 52%, #9aa3ac 100%)';
+				$css .= '.lkc-external-wrap { background-color: '.$ex_bg.'; background-image: '.$metal_gradient.'; background-blend-mode: multiply; }';
+				$css .= '.lkc-internal-wrap { background-color: '.$in_bg.'; background-image: '.$metal_gradient.'; background-blend-mode: multiply; }';
+				$css .= '.lkc-external-wrap, .lkc-internal-wrap { position: relative; overflow: hidden; }';
+				$css .= '.lkc-external-wrap::after, .lkc-internal-wrap::after { content: ""; position: absolute; z-index: 5; top: -30%; left: -70%; width: 32%; height: 160%; transform: rotate(20deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent); opacity: 0; pointer-events: none; transition: left .55s ease, opacity .2s ease; }';
+				$css .= '.lkc-external-wrap:hover::after, .lkc-internal-wrap:hover::after { left: 135%; opacity: 1; }';
+				$css .= '.lkc-title { color: #111820; font-weight: 700; text-shadow: 0 1px rgba(255,255,255,.7); } .lkc-url, .lkc-url-info { color: #164f7a; }';
+				$file_text = str_replace('/*OPTION*/', $css, $file_text );
+				break;
 			case 'ct1': // プリセット: セロファンテープ中央
 				$file_text	=	str_replace('/*WRAP-BEFORE*/',		'content: ""; display: block; position: absolute; left:   40%; top: -16px; width: 95px; height: 25px; z-index: 2; background-color: rgba(243,245,228,0.5); border: 2px solid rgba(255,255,255,0.5); -webkit-box-shadow: 1px 1px 4px rgba(200,200,180,0.8); -moz-box-shadow: 1px 1px 4px rgba(200,200,180,0.8); box-shadow: 1px 1px 4px rgba(200,200,180,0.8); -webkit-transform: rotate(3deg); -moz-transform: rotate(3deg); -o-transform: rotate(3deg);', $file_text );
 				$file_text	=	str_replace('/*SHADOW*/',			'box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);', $file_text );
