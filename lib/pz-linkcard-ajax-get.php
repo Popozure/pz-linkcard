@@ -15,7 +15,6 @@ if (!is_array($data ) || empty($data['url'] ) ) {
 	wp_send_json_error(array('message' => 'Card not found.' ), 404 );
 }
 
-<<<<<<< HEAD
 $url_info = $this->Pz_GetURLInfo($data['url'] );
 if (!empty($url_info['is_internal'] ) ) {
 	$post_id = url_to_postid($data['url'] );
@@ -28,8 +27,6 @@ if (!empty($url_info['is_internal'] ) ) {
 	}
 }
 
-=======
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 if (!array_key_exists('regist_time', $data ) || is_null($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) {
 	wp_send_json_success(array('ready' => false ) );
 }

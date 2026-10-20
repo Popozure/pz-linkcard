@@ -2571,7 +2571,6 @@
             .filter(id => Number.isInteger(id) && id > 0);
         if (!cardIds.length) return;
 
-<<<<<<< HEAD
 		const pendingCardIds = new Set(cardIds);
         let stopped = false;
 		let timerId = 0;
@@ -2582,20 +2581,11 @@
 				if (timerId) window.clearInterval(timerId);
 				return;
 			}
-=======
-        let stopped = false;
-        const poll = async () => {
-            if (stopped || document.visibilityState === "hidden") return;
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 
             const body = new URLSearchParams();
             body.set("action", "pz_lkc_cacheman_pending");
             body.set("nonce", config.cachemanPendingNonce);
-<<<<<<< HEAD
 			pendingCardIds.forEach(id => body.append("card_ids[]", String(id)));
-=======
-            cardIds.forEach(id => body.append("card_ids[]", String(id)));
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 
             try {
                 const response = await fetch(config.ajaxUrl, {
@@ -2605,7 +2595,6 @@
                     body: body.toString()
                 });
                 const json = await response.json();
-<<<<<<< HEAD
 				if (!json?.success || !Array.isArray(json.data?.ready_ids)) return;
 				const readyCards = new Map(
 					(Array.isArray(json.data.ready_cards) ? json.data.ready_cards : [])
@@ -2625,22 +2614,12 @@
 					}
 					row.removeAttribute("data-pz-pending-id");
 				});
-=======
-                if (json?.success && Array.isArray(json.data?.ready_ids) && json.data.ready_ids.length) {
-                    stopped = true;
-                    window.location.reload();
-                }
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
             } catch (error) {
                 // 一時的な通信エラーでは監視を継続する。
             }
         };
 
-<<<<<<< HEAD
 		timerId = window.setInterval(poll, 3000);
-=======
-        window.setInterval(poll, 3000);
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
         poll();
     }
 

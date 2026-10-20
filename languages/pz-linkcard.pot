@@ -3582,23 +3582,3 @@ msgstr ""
 #: ../pz-linkcard.php:4235
 msgid "You do not have permission to preview this post."
 msgstr ""
-
-#: ../lib/pz-linkcard-settings-error.php
-msgid "Edit post"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-error.php
-msgid "View post"
-msgstr ""
-
-#: ../lib/pz-linkcard-cacheman-list.php
-msgid "Show one item"
-msgstr ""
-
-#: ../lib/pz-linkcard-cacheman-list.php
-msgid "History"
-msgstr ""
-
-#: ../lib/pz-linkcard-cacheman-click.php
-msgid "Edit card"
-msgstr ""

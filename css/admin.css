@@ -1531,7 +1531,6 @@ input.pz-admin-only[type="submit"],
 	font-size: 15px;
 }
 
-<<<<<<< HEAD
 .pz-click-log-table-scroll {
 	box-sizing: border-box;
 	width: 100%;
@@ -1544,8 +1543,6 @@ input.pz-admin-only[type="submit"],
 	min-width: 900px;
 }
 
-=======
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 .pz-man-click-log table.widefat tbody td:nth-child(2),
 .pz-man-click-log table.widefat tbody td:nth-child(4) {
 	font-size: 15px;

@@ -967,7 +967,6 @@ class class_pz_linkcard {
 		if (!$url ) {
 			return null;
 		}
-<<<<<<< HEAD
 		$url_info = $this->Pz_GetURLInfo($url );
 		if (isset($atts['preview-data'] ) && is_array($atts['preview-data'] ) ) {
 			if (!empty($this->options['flg-public-only'] ) && !empty($url_info['is_internal'] ) && !$this->pz_IsInternalCardPubliclyViewable($url, $atts['preview-data'] ) ) {
@@ -986,15 +985,6 @@ class class_pz_linkcard {
 		if (!empty($url_info['is_internal'] ) && !$this->pz_IsInternalCardPubliclyViewable($url, $data ) ) {
 			return null;
 		}
-=======
-		if (isset($atts['preview-data'] ) && is_array($atts['preview-data'] ) ) {
-			return $this->pz_GetHTML($atts );
-		}
-
-		$url_info = $this->Pz_GetURLInfo($url );
-		$data = $this->pz_GetCache(array('url' => $url ) );
-		$data = is_array($data ) && !empty($data['url'] ) ? $data : array('url' => $url );
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 		$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
 		$force = isset($atts['force'] ) && $atts['force'] == true;
 
@@ -1585,11 +1575,7 @@ class class_pz_linkcard {
 		$html_data_id			=	'';
 		static $html_anchor_ids	=	array();
 		if	(!$is_preview && !empty($data_id ) ) {
-<<<<<<< HEAD
 			$html_data_id		=	$html_click_data;
-=======
-			$html_data_id		=	' data-lkc-id="'.esc_attr($data_id ).'" data-post-id="'.esc_attr(get_the_ID() ).'"';
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 			if	(empty($html_anchor_ids[$data_id] ) ) {
 				$html_data_id		=	' id="pz-lkc-'.esc_attr($data_id ).'"'.$html_data_id;
 				$html_anchor_ids[$data_id]	=	true;
@@ -4094,15 +4080,11 @@ class class_pz_linkcard {
 			? array_values(array_unique(array_filter(array_map('absint', wp_unslash($_POST['card_ids'] ) ) ) ) )
 			: array();
 		$ready_ids	= array();
-<<<<<<< HEAD
 		$ready_cards	= array();
-=======
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 		foreach	($card_ids as $card_id ) {
 			$data = $this->pz_GetCache(array('id' => $card_id ) );
 			if	(is_array($data ) && isset($data['regist_time'] ) && intval($data['regist_time'] ) > 0 ) {
 				$ready_ids[] = $card_id;
-<<<<<<< HEAD
 				$ready_cards[] = array(
 					'id'	=> $card_id,
 					'title'	=> wp_strip_all_tags(stripslashes((string) ($data['title'] ?? '' ) ) ),
@@ -4114,12 +4096,6 @@ class class_pz_linkcard {
 			'ready_ids'	=> $ready_ids,
 			'ready_cards'	=> $ready_cards,
 		) );
-=======
-			}
-		}
-
-		wp_send_json_success(array('ready_ids' => $ready_ids ) );
->>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 	}
 
 	private	function	pz_GetCachemanColumnKeys() {
