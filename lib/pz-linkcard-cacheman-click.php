@@ -167,6 +167,7 @@
 		'month'	=> __('Month', 'pz-linkcard' ),
 		'year'	=> __('Year', 'pz-linkcard' ),
 	);
+	$card_edit_url	= $card_id ? add_query_arg(array('action' => 'edit', 'cache_id' => $card_id ), $this->cacheman_url ) : '';
 ?>
 <div class="pz-man-click-log">
 	<input type="hidden" name="cache_id" value="<?php echo intval($card_id ); ?>">
@@ -174,11 +175,12 @@
 	<input type="hidden" name="click-range" value="<?php echo esc_attr($click_range ); ?>">
 	<h2><?php esc_html_e('Click Log', 'pz-linkcard' ); ?></h2>
 	<?php if	($card_id ) : ?>
-	<p>
-		<strong><?php esc_html_e('ID', 'pz-linkcard' ); ?>:</strong> <?php echo esc_html($card_id ); ?><br>
+	<p class="pz-click-log-card-details">
+		<strong><?php esc_html_e('Card ID', 'pz-linkcard' ); ?>:</strong>
+		<a href="<?php echo esc_url($card_edit_url ); ?>" class="pz-click-log-card-edit-link" title="<?php echo esc_attr__('Edit card', 'pz-linkcard' ); ?>"><span><?php echo esc_html($card_id ); ?></span><span class="dashicons dashicons-edit-page" aria-hidden="true"></span></a><br>
 		<strong><?php esc_html_e('Title', 'pz-linkcard' ); ?>:</strong> <?php echo esc_html($data['title'] ?? '' ); ?><br>
 		<strong><?php esc_html_e('URL', 'pz-linkcard' ); ?>:</strong>
-		<a href="<?php echo esc_url($data['url'] ?? '' ); ?>" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer"><?php echo esc_html($this->pz_DecodeURL($data['url'] ?? '' ) ); ?></a>
+		<a href="<?php echo esc_url($data['url'] ?? '' ); ?>" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer" class="pz-monospace"><?php echo esc_html($this->pz_DecodeURL($data['url'] ?? '' ) ); ?></a>
 	</p>
 	<?php endif; ?>
 	<?php if	(!$click_log_enabled ) : ?>
@@ -259,7 +261,7 @@
 			<tr>
 				<th scope="col"><?php esc_html_e('ID', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('Card ID', 'pz-linkcard' ); ?></th>
-				<th scope="col"><?php esc_html_e('Click Date', 'pz-linkcard' ); ?></th>
+				<th scope="col"><?php esc_html_e('Click Date', 'pz-linkcard' ); ?>🔻</th>
 				<th scope="col"><?php esc_html_e('Post ID', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('IP Hash', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('User-Agent', 'pz-linkcard' ); ?></th>
@@ -285,17 +287,17 @@
 				?>
 				<tr>
 					<td><?php echo esc_html(intval($click_log->click_id ) ); ?></td>
-					<td><a href="<?php echo esc_url($card_log_url ); ?>" title="<?php echo esc_attr((string) ($click_log->card_title ?? '' ) ); ?>"><?php echo esc_html($log_card_id ); ?></a></td>
+					<td><a href="<?php echo esc_url($card_log_url ); ?>" title="<?php echo esc_attr((string) ($click_log->card_title ?? '' ) ); ?>" class="pz-click-log-card-link"><span><?php echo esc_html($log_card_id ); ?></span><span class="dashicons dashicons-chart-bar" aria-hidden="true"></span></a></td>
 					<td><?php echo esc_html(date_i18n(PZLKC_DATE_FORMAT.' H:i:s', intval($click_log->click_time ) ) ); ?></td>
 					<td>
 						<?php if	($post_url ) : ?>
-							<a href="<?php echo esc_url($post_url ); ?>" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" title="<?php echo esc_attr($post_title ); ?>"><?php echo esc_html($log_post_id ); ?></a>
+							<a href="<?php echo esc_url($post_url ); ?>" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" title="<?php echo esc_attr($post_title ); ?>" class="pz-click-log-post-link"><span><?php echo esc_html($log_post_id ); ?></span><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
 						<?php else : ?>
 							<?php echo esc_html($log_post_id ?: '' ); ?>
 						<?php endif; ?>
 					</td>
-					<td><?php echo esc_html($ip_hash_display ); ?></td>
-					<td><?php echo esc_html($click_log->user_agent ); ?></td>
+					<td class="pz-monospace"><?php echo esc_html($ip_hash_display ); ?></td>
+					<td class="pz-monospace"><?php echo esc_html($click_log->user_agent ); ?></td>
 				</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>

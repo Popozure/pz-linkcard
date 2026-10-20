@@ -3381,7 +3381,7 @@ msgstr "ページを再読み込み"
 
 #: ../pz-linkcard.php:3245
 msgid "Retrieving..."
-msgstr "取得中..."
+msgstr "取得中…"
 
 #: ../pz-linkcard.php:3246 ../pz-linkcard.php:3553 ../pz-linkcard.php:3585
 msgid "Failed to retrieve the post content."
@@ -4586,3 +4586,23 @@ msgstr "&ensp;&ensp;&ensp;&ensp;HTTPコード=%1$d が返却されました。�
 #: ../lib/pz-linkcard-cron-sns.php
 msgid "&ensp;&ensp;&ensp;&ensp;Hatena Bookmark=%1$s was returned. The next check date and time=%2$s was set."
 msgstr "&ensp;&ensp;&ensp;&ensp;はてなブックマーク=%1$s が返却されました。次回確認日時=%2$s を設定しました。"
+
+#: ../lib/pz-linkcard-settings-error.php
+msgid "Edit post"
+msgstr "投稿を編集する"
+
+#: ../lib/pz-linkcard-settings-error.php
+msgid "View post"
+msgstr "投稿を表示する"
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Show one item"
+msgstr "1件表示"
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "History"
+msgstr "履歴"
+
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "Edit card"
+msgstr "カード編集"

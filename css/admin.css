@@ -1464,6 +1464,78 @@ input.pz-admin-only[type="submit"],
 	vertical-align: middle;
 }
 
+.pz-click-log-card-link,
+.pz-click-log-post-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	text-decoration: none;
+}
+
+.pz-click-log-card-link .dashicons,
+.pz-click-log-post-link .dashicons {
+	width: 15px;
+	height: 15px;
+	font-size: 15px;
+	line-height: 15px;
+	color: #50575e;
+	visibility: hidden;
+}
+
+.pz-click-log-card-link > span:first-child:hover,
+.pz-click-log-post-link > span:first-child:hover {
+	text-decoration: underline;
+}
+
+.pz-click-log-card-link > span:first-child:hover + .dashicons,
+.pz-click-log-post-link > span:first-child:hover + .dashicons,
+.pz-click-log-card-link:focus .dashicons,
+.pz-click-log-card-link:focus-visible .dashicons,
+.pz-click-log-post-link:focus .dashicons,
+.pz-click-log-post-link:focus-visible .dashicons {
+	visibility: visible;
+}
+
+.pz-click-log-card-edit-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	text-decoration: none;
+}
+
+.pz-click-log-card-edit-link .dashicons {
+	width: 14px;
+	height: 14px;
+	color: #50575e;
+	font-size: 14px;
+	line-height: 14px;
+	visibility: hidden;
+}
+
+.pz-click-log-card-edit-link > span:first-child:hover {
+	text-decoration: underline;
+}
+
+.pz-click-log-card-edit-link > span:first-child:hover + .dashicons,
+.pz-click-log-card-edit-link:focus .dashicons,
+.pz-click-log-card-edit-link:focus-visible .dashicons {
+	visibility: visible;
+}
+
+.pz-click-log-card-details {
+	font-size: 15px;
+}
+
+.pz-man-click-log table.widefat {
+	font-size: 15px;
+}
+
+.pz-man-click-log table.widefat tbody td:nth-child(2),
+.pz-man-click-log table.widefat tbody td:nth-child(4) {
+	font-size: 15px;
+	text-align: right;
+}
+
 .pz-man-screen-tabs {
 	position: absolute;
 	z-index: 2;
@@ -1940,6 +2012,35 @@ input.pz-admin-only[type="submit"],
 	text-align: center;
 }
 
+.pz-man-id-search {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+}
+
+.pz-man-id-search .dashicons {
+	width: 14px;
+	height: 14px;
+	color: #50575e;
+	font-size: 14px;
+	line-height: 14px;
+	visibility: hidden;
+}
+
+button.pz-man-id-search:hover {
+	text-decoration: none;
+}
+
+.pz-man-id-search > span:first-child:hover {
+	text-decoration: underline;
+}
+
+.pz-man-id-search > span:first-child:hover + .dashicons,
+.pz-man-id-search:focus .dashicons,
+.pz-man-id-search:focus-visible .dashicons {
+	visibility: visible;
+}
+
 .pz-man-inline-menu {
 	border: none;
 	cursor: pointer;
@@ -2071,10 +2172,36 @@ input.pz-admin-only[type="submit"],
 }
 
 .pz-man-post-search {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
 	min-width: 0;
 	padding: 0;
 	font: inherit;
 	line-height: inherit;
+}
+
+.pz-man-post-search .dashicons {
+	width: 14px;
+	height: 14px;
+	color: #50575e;
+	font-size: 14px;
+	line-height: 14px;
+	visibility: hidden;
+}
+
+button.pz-man-post-search:hover {
+	text-decoration: none;
+}
+
+.pz-man-post-search > span:first-child:hover {
+	text-decoration: underline;
+}
+
+.pz-man-post-search > span:first-child:hover + .dashicons,
+.pz-man-post-search:focus .dashicons,
+.pz-man-post-search:focus-visible .dashicons {
+	visibility: visible;
 }
 
 .pz-man-post-open {
@@ -2092,6 +2219,35 @@ input.pz-admin-only[type="submit"],
 
 .pz-man-body-click-count {
 	text-align: center;
+}
+
+.pz-man-click-log-button {
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+}
+
+.pz-man-click-log-button .dashicons {
+	width: 14px;
+	height: 14px;
+	color: #50575e;
+	font-size: 14px;
+	line-height: 14px;
+	visibility: hidden;
+}
+
+button.pz-man-click-log-button:hover {
+	text-decoration: none;
+}
+
+.pz-man-click-log-button > span:first-child:hover {
+	text-decoration: underline;
+}
+
+.pz-man-click-log-button > span:first-child:hover + .dashicons,
+.pz-man-click-log-button:focus .dashicons,
+.pz-man-click-log-button:focus-visible .dashicons {
+	visibility: visible;
 }
 
 
@@ -2146,6 +2302,31 @@ input.pz-admin-only[type="submit"],
 	max-width: 100%;
 	overflow-wrap: anywhere;
 	word-break: break-all;
+}
+
+#pz-error .pz-error-post-link .dashicons {
+	margin-left: 4px;
+	color: #50575e;
+	font-size: 18px;
+	line-height: 1;
+	text-decoration: none;
+	visibility: hidden;
+}
+
+#pz-error .pz-error-post-link:hover .dashicons,
+#pz-error .pz-error-post-link:focus .dashicons,
+#pz-error .pz-error-post-link:focus-visible .dashicons {
+	visibility: visible;
+}
+
+#pz-error .pz-error-post-link {
+	display: inline-flex;
+	align-items: center;
+	text-decoration: none;
+}
+
+#pz-error .pz-error-post-link > span:first-child {
+	text-decoration: underline;
 }
 
 #pz-initialize h2 {

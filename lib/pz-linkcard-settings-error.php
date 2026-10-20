@@ -3,6 +3,8 @@ defined('ABSPATH' ) || wp_die;
 
 $error_post_id    = intval($prop['error-postid'] ?? 0);
 $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
+$error_post_edit_url = $error_post_id ? get_edit_post_link($error_post_id, '' ) : '';
+$error_post_url = isset($prop['error-url'] ) ? (string) $prop['error-url'] : '';
 ?>
 <div class="pz-page<?php echo $pz_page_active('pz-error' ); ?>" id="pz-error">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
@@ -17,7 +19,11 @@ $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
 				<span class="pz-admin-only">
 					<input name="properties[error-postid]" type="text" size="5" value="<?php echo esc_attr($prop['error-postid'] ); ?>" /><br/>
 				</span>
-				<a href="<?php echo get_permalink($prop['error-postid'] ); ?>#lkc-error" class="pz-error-url" title="<?php echo esc_attr($error_post_title ); ?>"><?php echo esc_html($prop['error-postid'] ); ?></a>
+				<?php if ($error_post_edit_url ) : ?>
+					<a href="<?php echo esc_url($error_post_edit_url ); ?>" class="pz-error-url pz-error-post-link" title="<?php esc_attr_e('Edit post', 'pz-linkcard' ); ?>"><span><?php echo esc_html($error_post_id ); ?></span><span class="dashicons dashicons-welcome-write-blog" aria-hidden="true"></span></a>
+				<?php else : ?>
+					<span>-</span>
+				<?php endif; ?>
 			</td>
 		</tr>
 		<tr>
@@ -32,7 +38,11 @@ $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
 				<span class="pz-admin-only">
 					<input name="properties[error-url]" type="url" size="80" value="<?php echo esc_attr($prop['error-url'] ); ?>" /><br/>
 				</span>
-				<a href="<?php echo esc_url($prop['error-url'] ); ?>#lkc-error" class="pz-error-url"><?php echo esc_html($this->pz_DecodeURL($prop['error-url'] ) ); ?></a>
+				<?php if ($error_post_url ) : ?>
+					<a href="<?php echo esc_url($error_post_url ); ?>#lkc-error" class="pz-error-url pz-error-post-link" title="<?php esc_attr_e('View post', 'pz-linkcard' ); ?>"><span><?php echo esc_html($this->pz_DecodeURL($error_post_url ) ); ?></span><span class="dashicons dashicons-format-aside" aria-hidden="true"></span></a>
+				<?php else : ?>
+					<span>-</span>
+				<?php endif; ?>
 			</td>
 		</tr>
 		<tr>
