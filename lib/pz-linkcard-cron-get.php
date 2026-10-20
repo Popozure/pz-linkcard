@@ -2,6 +2,7 @@
 defined('ABSPATH' ) || wp_die;
 
 global $wpdb;
+<<<<<<< HEAD
 $pending_rows = $wpdb->get_results(
 	"SELECT id, url, url_key, domain
 	FROM $this->db_card
@@ -29,6 +30,11 @@ foreach ((array) $pending_rows as $pending_row ) {
 	$processed_domains[$domain_key] = true;
 
 	$data = $this->pz_GetCache(array('id' => intval($pending_row->id ) ) );
+=======
+$pending_ids = $wpdb->get_col("SELECT id FROM $this->db_card WHERE regist_time IS NULL OR regist_time = 0 ORDER BY update_time ASC, id ASC" );
+foreach ((array) $pending_ids as $pending_id ) {
+	$data = $this->pz_GetCache(array('id' => intval($pending_id ) ) );
+>>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 	if (!is_array($data ) || empty($data['url'] ) || !array_key_exists('regist_time', $data ) || (!is_null($data['regist_time'] ) && intval($data['regist_time'] ) !== 0 ) ) {
 		continue;
 	}
@@ -37,7 +43,10 @@ foreach ((array) $pending_rows as $pending_row ) {
 		$this->pz_SetCache($result );
 	}
 }
+<<<<<<< HEAD
 
 if ($skipped && !wp_next_scheduled(self::CRON_GET ) ) {
 	wp_schedule_single_event(time() + 30, self::CRON_GET );
 }
+=======
+>>>>>>> 29350b1902f8f563b828997fe39df1021589f71e

@@ -3891,8 +3891,16 @@ msgstr "サムネイル画像を再取得"
 msgid "Reload page"
 msgstr "ページを再読み込み"
 
+<<<<<<< HEAD
 #: ../pz-linkcard.php:3749 ../pz-linkcard.php:4111 ../pz-linkcard.php:4143
 #: ../pz-linkcard.php:4239 ../pz-linkcard.php:4246
+=======
+#: ../pz-linkcard.php:3245
+msgid "Retrieving..."
+msgstr "取得中…"
+
+#: ../pz-linkcard.php:3246 ../pz-linkcard.php:3553 ../pz-linkcard.php:3585
+>>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
 msgid "Failed to retrieve the post content."
 msgstr "記事内容の読み込みに失敗しました。"
 
@@ -4867,3 +4875,342 @@ msgstr "リンクカードを閲覧する権限がありません。"
 
 #~ msgid "After the invalidation of the plug-in , please activate again"
 #~ msgstr "→プラグインの無効化を行った後、再度有効化してください"
+<<<<<<< HEAD
+=======
+#: ../lib/pz-linkcard-cacheman-edit.php:157
+msgid "Edit title"
+msgstr "タイトルを編集"
+
+#: ../lib/pz-linkcard-settings.php:664
+msgid "Switch tabs"
+msgstr "タブを切り替え"
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Wheel"
+msgstr "ﾎｲｰﾙ"
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Right click"
+msgstr "右ｸﾘｯｸ"
+
+#: ../lib/pz-linkcard-settings.php:665
+msgid "Increase or decrease values, or select the previous or next option"
+msgstr "値の増減、前後を選択"
+
+#: ../lib/pz-linkcard-settings.php:662
+msgid "Focus current tab"
+msgstr "現在のタブにフォーカス"
+
+#: ../lib/pz-linkcard-settings-card.php:169
+msgid "Copy Settings from Internal Link"
+msgstr "内部リンクの設定からコピー"
+
+#: ../lib/pz-linkcard-settings-card.php:170
+msgid "Copy Settings from External Link"
+msgstr "外部リンクの設定からコピー"
+
+#: ../lib/pz-linkcard-settings-card.php:173
+msgid "Are you sure you want to overwrite the external link settings?"
+msgstr "外部リンクの設定を上書きしてよろしいですか？"
+
+#: ../lib/pz-linkcard-settings-card.php:174
+msgid "Are you sure you want to overwrite the internal link settings?"
+msgstr "内部リンクの設定を上書きしてよろしいですか？"
+
+msgid "Retention Period"
+msgstr "保存期間"
+
+msgid "1 week"
+msgstr "1週間"
+
+msgid "Permanent (not recommended)"
+msgstr "永久（非推奨）"
+
+msgid "Detailed click logs older than the retention period are deleted daily after 4:00 AM. The cumulative click count is retained."
+msgstr "保存期間を過ぎたクリック詳細ログは、毎日午前4時以降に削除されます。累計クリック件数は残ります。"
+
+msgid "Delete expired logs now"
+msgstr "期限切れログを今すぐ削除"
+
+msgid "Delete all logs"
+msgstr "すべてのログを削除"
+
+msgid "Delete all detailed click logs? The cumulative click count will not be reset."
+msgstr "クリック詳細ログをすべて削除しますか？累計クリック件数はリセットされません。"
+
+msgid "Deleted %s detailed click logs."
+msgstr "クリック詳細ログを%s件削除しました。"
+
+msgid "Failed to delete detailed click logs."
+msgstr "クリック詳細ログを削除できませんでした。"
+
+msgid "The click count is cumulative. Detailed logs are retained <a href=\"%s\">permanently</a>."
+msgstr "クリック件数は累計です。詳細ログは<a href=\"%s\">永久</a>に保存されます。"
+
+msgid "The click count is cumulative. Detailed logs are retained for <a href=\"%1$s\">%2$s</a>."
+msgstr "クリック件数は累計です。詳細ログは<a href=\"%1$s\">%2$s</a>保存されます。"
+
+msgid "Clicks in the last 7 days"
+msgstr "直近7日間のクリック数"
+
+msgid "%s clicks"
+msgstr "%sクリック"
+
+msgid "Day"
+msgstr "日"
+
+msgid "Week"
+msgstr "週"
+
+msgid "Month"
+msgstr "月"
+
+msgid "Year"
+msgstr "年"
+
+msgid "Chart period"
+msgstr "グラフの期間"
+
+msgid "Clicks in the last 8 weeks"
+msgstr "直近8週間のクリック数"
+
+msgid "Clicks in the last 12 months"
+msgstr "直近12か月のクリック数"
+
+msgid "Clicks in the last 5 years"
+msgstr "直近5年間のクリック数"
+
+msgid "1 month"
+msgstr "1か月"
+
+msgid "2 months"
+msgstr "2か月"
+
+msgid "3 months"
+msgstr "3か月"
+
+msgid "6 months"
+msgstr "半年"
+
+msgid "1 year"
+msgstr "1年"
+
+msgid "2 years"
+msgstr "2年"
+
+msgid "3 years"
+msgstr "3年"
+
+msgid "5 years"
+msgstr "5年"
+
+msgid "2 years (long-term)"
+msgstr "2年（長期）"
+
+msgid "3 years (long-term)"
+msgstr "3年（長期）"
+
+msgid "5 years (long-term)"
+msgstr "5年（長期）"
+
+msgid "Long-term retention increases database usage according to the number of clicks."
+msgstr "長期間保存すると、クリック数に応じてデータベースの使用量が増加します。"
+
+msgid "Go to previous heading"
+msgstr "前の見出しへ"
+
+msgid "Go to next heading"
+msgstr "次の見出しへ"
+
+msgid "Save current color"
+msgstr "今の色を保存"
+
+msgid "Reset to offset"
+msgstr "オフセットに戻す"
+
+msgid "Recent Clicks"
+msgstr "最近のクリック"
+
+msgid "Recent Registrations"
+msgstr "最近の登録"
+
+msgid "M j, H:i"
+msgstr "n月j日 H:i"
+
+#, php-format
+msgid "%s card"
+msgstr "%s件"
+
+#, php-format
+msgid "%s cards"
+msgstr "%s件"
+
+msgid "Click count recording"
+msgstr "クリック件数の記録"
+
+#, php-format
+msgid "Enable %s to display recent clicks."
+msgstr "表示するには%sを有効にしてください。"
+
+msgid "There is a URL parameter error."
+msgstr "URLパラメータのエラーがあります。"
+
+msgid "Equal"
+msgstr "一致"
+
+msgid "Less than"
+msgstr "より小さい"
+
+msgid "Less than or equal to"
+msgstr "以下"
+
+msgid "Greater than"
+msgstr "より大きい"
+
+msgid "Greater than or equal to"
+msgstr "以上"
+
+msgid "Not equal to"
+msgstr "以外"
+
+msgid "The colon before a comparison operator can be omitted."
+msgstr "比較演算子の前のコロンは省略できます。"
+
+msgid "Comparison operators"
+msgstr "比較演算子"
+
+msgid "Return to Dashboard"
+msgstr "ダッシュボードへ戻る"
+
+msgid "Card ID"
+msgstr "カードID"
+
+msgid "View List"
+msgstr "一覧表示"
+
+msgid "Remove filter"
+msgstr "解除"
+
+msgid "Unregistered"
+msgstr "未登録"
+
+msgid "Return to Previous Page"
+msgstr "元の画面へ戻る"
+
+msgid "LinkCard Tables"
+msgstr "リンクカード テーブル"
+
+msgid "Database Table Information"
+msgstr "DBテーブル情報"
+
+msgid "LinkCard Data"
+msgstr "リンクカード情報"
+
+msgid "Click Data"
+msgstr "クリック情報"
+
+msgid "Total Size: %1$s (%2$s bytes), Index: %3$s (%4$s bytes), Data: %5$s (%6$s bytes)"
+msgstr "総容量：%1$s (%2$s bytes)、インデックス：%3$s (%4$s bytes)、データ：%5$s (%6$s bytes)"
+
+msgid "I understand that this data cannot be restored and authorize its deletion."
+msgstr "復元が出来ないことを理解して許可する。"
+
+msgid "Delete All"
+msgstr "全て削除"
+
+msgid "Please confirm that the data cannot be restored."
+msgstr "復元できないことを確認してください。"
+
+msgid "Delete all LinkCard data? This action cannot be undone."
+msgstr "リンクカード情報を全て削除しますか？ この操作は取り消せません。"
+
+msgid "Delete all click data? This action cannot be undone."
+msgstr "クリック情報を全て削除しますか？ この操作は取り消せません。"
+
+msgid "Please confirm that deleted LinkCard data cannot be restored."
+msgstr "削除したリンクカード情報を復元できないことを確認してください。"
+
+msgid "Please confirm that deleted click data cannot be restored."
+msgstr "削除したクリック情報を復元できないことを確認してください。"
+
+msgid "Failed to delete all LinkCard data."
+msgstr "リンクカード情報を全て削除できませんでした。"
+
+msgid "Failed to delete all click data."
+msgstr "クリック情報を全て削除できませんでした。"
+
+msgid "Deleted %s LinkCard records."
+msgstr "リンクカード情報を%s件削除しました。"
+
+msgid "Deleted %s click records."
+msgstr "クリック情報を%s件削除しました。"
+
+msgid "Delete all image cache files? This action cannot be undone."
+msgstr "画像キャッシュを全て削除しますか？ この操作は取り消せません。"
+
+msgid "Please confirm that deleted image cache files cannot be restored."
+msgstr "削除した画像キャッシュを復元できないことを確認してください。"
+
+msgid "The image cache directory is not configured or does not exist."
+msgstr "画像キャッシュディレクトリが設定されていないか、存在しません。"
+
+msgid "Deleted %1$s image cache files. Failed to delete %2$s files."
+msgstr "画像キャッシュを%1$s件削除しました。%2$s件の削除に失敗しました。"
+
+msgid "Deleted %s image cache files."
+msgstr "画像キャッシュを%s件削除しました。"
+
+msgid "Records: %s"
+msgstr "件数：%s件"
+
+msgid "File Count: %s"
+msgstr "ファイル数：%s"
+
+msgid "Used: %1$s (%2$s bytes)"
+msgstr "使用中：%1$s (%2$s bytes)"
+
+msgid "Settings item"
+msgstr "設定項目"
+
+msgid "The %s are located on the “Advanced” tab."
+msgstr "「上級者向け」タブに%sがあります。"
+
+msgid "[SKIP] URL=%s"
+msgstr "[SKIP] URL=%s"
+
+msgid "&ensp;&ensp;&ensp;&ensp;It will be skipped because the domain is the same. The next check date and time=%s was set."
+msgstr "&ensp;&ensp;&ensp;&ensp;同じドメインのためスキップします。次回確認日時=%s を設定しました。"
+
+msgid "[%1$d] URL=%2$s"
+msgstr "[%1$d] URL=%2$s"
+
+msgid "&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed."
+msgstr "&ensp;&ensp;&ensp;&ensp;次回確認日時=%s を過ぎています。"
+
+msgid "&ensp;&ensp;&ensp;&ensp;HTTP code=%1$d was returned. The next check date and time=%2$s was set."
+msgstr "&ensp;&ensp;&ensp;&ensp;HTTPコード=%1$d が返却されました。次回確認日時=%2$s を設定しました。"
+
+#: ../lib/pz-linkcard-cron-sns.php
+msgid "&ensp;&ensp;&ensp;&ensp;Hatena Bookmark=%1$s was returned. The next check date and time=%2$s was set."
+msgstr "&ensp;&ensp;&ensp;&ensp;はてなブックマーク=%1$s が返却されました。次回確認日時=%2$s を設定しました。"
+
+#: ../lib/pz-linkcard-settings-error.php
+msgid "Edit post"
+msgstr "投稿を編集する"
+
+#: ../lib/pz-linkcard-settings-error.php
+msgid "View post"
+msgstr "投稿を表示する"
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "Show one item"
+msgstr "1件表示"
+
+#: ../lib/pz-linkcard-cacheman-list.php
+msgid "History"
+msgstr "履歴"
+
+#: ../lib/pz-linkcard-cacheman-click.php
+msgid "Edit card"
+msgstr "カード編集"
+>>>>>>> 29350b1902f8f563b828997fe39df1021589f71e
