@@ -256,6 +256,7 @@
 		</nav>
 	</div>
 
+	<div class="pz-click-log-table-scroll" role="region" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>" tabindex="0">
 	<table class="widefat striped">
 		<thead>
 			<tr>
@@ -303,6 +304,7 @@
 		<?php endif; ?>
 		</tbody>
 	</table>
+	</div>
 
 	<?php if	($page_max > 1 ) : ?>
 		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>">

@@ -28,7 +28,11 @@
 	$build_csv_line	=	function($row ) {
 		$values	=	array();
 		foreach	($row as $value ) {
-			$values[]	=	'"'.str_replace('"', '""', (string) $value ).'"';
+			$value		=	(string) $value;
+			if (preg_match('/^[\x00-\x20]*[=+\-@]/', $value ) ) {
+				$value	=	"'".$value;
+			}
+			$values[]	=	'"'.str_replace('"', '""', $value ).'"';
 		}
 		return	implode(',', $values )."\r\n";
 	};

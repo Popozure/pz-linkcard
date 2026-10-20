@@ -125,7 +125,11 @@
 	$show_list		=	true;
 
 	// プラグイン名・バージョン・環境表示
+	$debug_mode	= isset($this->options['debug-mode'] ) ? intval($this->options['debug-mode'] ) : 0;
+	$survey_mode	= isset($this->options['survey-mode'] ) ? intval($this->options['survey-mode'] ) : 0;
 	$html_mode		=	($debug_mode			?	'<span class="pz-infobar-env pz-infobar-env-debug">'.__('Debug Mode', 'pz-linkcard' ).'</span>'				:	'' ).
+			($survey_mode	?	'<span class="pz-infobar-env pz-infobar-env-survey">'.__('Survey Mode', 'pz-linkcard' ).'</span>'	:	'' ).
+			($admin_mode	?	'<span class="pz-infobar-env pz-infobar-env-admin">'.__('Admin Mode', 'pz-linkcard' ).'</span>'	:	'' ).
 			($develop_mode	==	1	?	'<span class="pz-infobar-env pz-infobar-env-develop">'.__('Development Environment', 'pz-linkcard' ).'</span>'	:	'' ).
 			($develop_mode	==	2	?	'<span class="pz-infobar-env pz-infobar-env-product">'.__('Production Environment', 'pz-linkcard' ).'</span>'	:	'' );
 
@@ -135,8 +139,8 @@
 	$switch_icon	=	'<span class="dashicons dashicons-admin-generic" style="vertical-align: text-bottom;"></span>';
 	$switch_label	=	__('Settings', 'pz-linkcard' );
 	$html_filemenu	=	'<form method="post" class="pz-infobar-filemenu">'.wp_nonce_field('pz-cacheman', '_wpnonce', false, false ).
-			'<button type="submit" name="action" value="show-import" class="pz-man-infobar-filemenu-button" data-no-overlay="1"><span class="dashicons dashicons-download"></span><span>'.esc_html__('Import', 'pz-linkcard' ).'</span></button>'.
-			'<button type="submit" name="action" value="show-export" class="pz-man-infobar-filemenu-button" data-no-overlay="1"><span class="dashicons dashicons-upload"></span><span>'.esc_html__('Export', 'pz-linkcard' ).'</span></button></form>';
+			'<button type="submit" name="action" value="show-import" class="pz-man-infobar-filemenu-button" data-no-overlay="1"><span class="dashicons dashicons-download"></span><span class="pz-infobar-filemenu-label">'.esc_html__('Import', 'pz-linkcard' ).'</span></button>'.
+			'<button type="submit" name="action" value="show-export" class="pz-man-infobar-filemenu-button" data-no-overlay="1"><span class="dashicons dashicons-upload"></span><span class="pz-infobar-filemenu-label">'.esc_html__('Export', 'pz-linkcard' ).'</span></button></form>';
 	$html_plugin	=	'<div id="pz-infobar"><div class="pz-infobar-left"><a href="'.esc_url($this->cacheman_url ).'" class="pz-infobar-plugin-logo"><img src="'.esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg' ).'" width="156px" height="28px" alt="'.esc_attr(self::PLUGIN_NAME ).'"></a><span class="pz-infobar-plugin-ver pz-monospace">ver.'.esc_html(PZLKC_PLUGIN_VERSION ).'</span>'.$html_mode.'</div><div class="pz-infobar-right">'.$html_filemenu.'<a href="'.$switch_link.'" class="pz-infobar-switch" title="Pz カード設定画面へ切り替える F4"><span class="pz-infobar-switch-icon">'.$switch_icon.'</span><span class="pz-infobar-switch-label">'.$switch_label.'</span></a></div></div>';
 	$title_icon		=	'<span class="dashicons dashicons-archive" style="vertical-align: bottom; width: 32px; height: 32px; font-size: 32px;"></span>';
 	$title_label	=	__('Pz-LinkCard Manager', 'pz-linkcard' );

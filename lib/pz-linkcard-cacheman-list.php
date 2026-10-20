@@ -259,7 +259,7 @@
 	<div class="pz-man-screen-tabs">
 		<div class="pz-man-screen-options">
 			<button type="button" id="pz-man-screen-options-toggle" class="pz-man-screen-options-toggle" title="<?php echo esc_attr(__('Screen Options', 'pz-linkcard' ) ); ?>" aria-expanded="false" aria-controls="pz-man-screen-options-panel" data-no-overlay="1">
-				<?php echo esc_html(__('Screen Options', 'pz-linkcard' ) ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+				<span class="pz-screen-toggle-label-wide"><?php echo esc_html(__('Screen Options', 'pz-linkcard' ) ); ?></span><span class="pz-screen-toggle-label-compact dashicons dashicons-forms" aria-hidden="true"></span><span class="dashicons dashicons-arrow-down-alt2"></span>
 			</button>
 			<div id="pz-man-screen-options-panel" class="pz-man-screen-options-panel" hidden>
 				<fieldset>
@@ -301,7 +301,7 @@
 		</div>
 		<div class="pz-man-help">
 			<button type="button" id="pz-man-help-toggle" class="pz-man-help-toggle" title="<?php echo esc_attr($help_label.' F1'); ?>" aria-expanded="false" aria-controls="pz-man-help-panel" data-no-overlay="1">
-				<?php echo esc_html($help_label ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+				<span class="pz-screen-toggle-label-wide"><?php echo esc_html($help_label ); ?></span><span class="pz-screen-toggle-label-compact dashicons dashicons-editor-help" aria-hidden="true"></span><span class="dashicons dashicons-arrow-down-alt2"></span>
 			</button>
 			<div id="pz-man-help-panel" class="pz-man-help-panel" hidden>
 				<h3><?php echo esc_html($search_help_label ); ?></h3>
@@ -391,6 +391,7 @@
 		<br class="clear">
 	</div>
 
+	<div class="pz-man-cache-table-scroll" role="region" aria-label="<?php echo esc_attr__('Manager', 'pz-linkcard' ); ?>" tabindex="0">
 	<table class="pz-man-cache-list widefat striped">
 		<thead>
 			<tr>
@@ -606,6 +607,10 @@
 					if	($data->title	<>	$data->regist_title ) {
 						$html_title		=	'<b>'.$html_title.'</b>';
 					}
+					if	($is_pending ) {
+						$title			=	__('Retrieving...', 'pz-linkcard' );
+						$html_title		=	esc_html($title ).'<span class="pz-man-pending-loader" aria-hidden="true"></span>';
+					}
 
 					// 抜粋文
 					if			($str	=	$data->excerpt ) {						// 代入しながら判定
@@ -733,6 +738,7 @@
 			<?php } ?>
 		</tbody>
 	</table>
+	</div>
 	<?php /* ページネーション */ echo wp_kses($paging_bottom, $paging_allowed_html ); ?></div>
 <?php
 // 関数

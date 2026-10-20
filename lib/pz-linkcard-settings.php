@@ -768,7 +768,7 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 		<div class="pz-man-screen-tabs pz-settings-screen-tabs">
 		<div class="pz-man-screen-options pz-settings-screen-options">
 			<button type="button" id="pz-settings-screen-options-toggle" class="pz-man-screen-options-toggle" title="<?php echo esc_attr(__('Screen Options', 'pz-linkcard' ).' F2'); ?>" aria-expanded="false" aria-controls="pz-settings-screen-options-panel" data-no-overlay="1">
-				<?php esc_html_e('Screen Options', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+				<span class="pz-screen-toggle-label-wide"><?php esc_html_e('Screen Options', 'pz-linkcard' ); ?></span><span class="pz-screen-toggle-label-compact dashicons dashicons-forms" aria-hidden="true"></span><span class="dashicons dashicons-arrow-down-alt2"></span>
 			</button>
 			<div id="pz-settings-screen-options-panel" class="pz-man-screen-options-panel pz-settings-screen-options-panel" hidden>
 				<fieldset>
@@ -808,7 +808,7 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 		</div>
 		<div class="pz-page-help">
 			<button type="button" class="pz-page-help-toggle" title="<?php echo esc_attr(__('Help', 'pz-linkcard' ).' F1'); ?>" aria-expanded="false" aria-controls="pz-settings-help-panel" data-no-overlay="1">
-				<?php esc_html_e('Help', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
+				<span class="pz-screen-toggle-label-wide"><?php esc_html_e('Help', 'pz-linkcard' ); ?></span><span class="pz-screen-toggle-label-compact dashicons dashicons-editor-help" aria-hidden="true"></span><span class="dashicons dashicons-arrow-down-alt2"></span>
 			</button>
 			<div id="pz-settings-help-panel" class="pz-page-help-panel" hidden>
 				<h3><?php esc_html_e('Keyboard Shortcuts'); ?></h3>

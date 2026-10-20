@@ -169,8 +169,12 @@
 			frame = null;
 			const adminBarBottom = adminBar ? adminBar.getBoundingClientRect().bottom : 0;
 			infobar.style.top = `${Math.max(0, Math.round(adminBarBottom))}px`;
+			document.body.style.setProperty("--pz-infobar-top", `${Math.max(0, Math.round(adminBarBottom))}px`);
 
-			const infobarBottom = infobar.getBoundingClientRect().bottom;
+			const infobarRect = infobar.getBoundingClientRect();
+			const infobarBottom = infobarRect.bottom;
+			document.body.style.setProperty("--pz-infobar-height", `${Math.max(0, Math.round(infobarRect.height))}px`);
+			document.body.style.setProperty("--pz-infobar-switch-top", `${Math.max(0, Math.round(adminBarBottom + (infobarRect.height - 28) / 2))}px`);
 			let adminMenuRight = 0;
 			if (adminMenu) {
 				const menuRect = adminMenu.getBoundingClientRect();
@@ -181,6 +185,8 @@
 			}
 			document.body.style.setProperty("--pz-overlay-top", `${Math.max(0, Math.round(infobarBottom))}px`);
 			document.body.style.setProperty("--pz-overlay-left", `${Math.max(0, Math.round(adminMenuRight))}px`);
+			updateInfobarModeVisibility(infobar);
+			updateInfobarCompactLabels(infobar);
 		};
 		const scheduleUpdate = () => {
 			if (frame !== null) return;
@@ -198,6 +204,56 @@
 		}
 		if ("ResizeObserver" in window) {
 			new ResizeObserver(scheduleUpdate).observe(infobar);
+		}
+	}
+
+	function updateInfobarModeVisibility(infobar) {
+		const fileMenu = infobar.querySelector(".pz-infobar-filemenu");
+		const switchLink = infobar.querySelector(".pz-infobar-switch");
+		const modes = Array.from(infobar.querySelectorAll(".pz-infobar-env-debug, .pz-infobar-env-survey, .pz-infobar-env-admin"));
+		if (!fileMenu || !switchLink) return;
+
+		infobar.classList.remove("pz-infobar-hide-modes");
+		infobar.classList.remove("pz-infobar-hide-filemenu");
+		const infobarRect = infobar.getBoundingClientRect();
+		const fileMenuRect = fileMenu.getBoundingClientRect();
+		const visibleModes = modes.filter(mode => window.getComputedStyle(mode).display !== "none");
+		const lastMode = visibleModes[visibleModes.length - 1];
+		if (lastMode && fileMenuRect.left - lastMode.getBoundingClientRect().right <= 8) {
+			infobar.classList.add("pz-infobar-hide-modes");
+		}
+		const switchRect = switchLink.getBoundingClientRect();
+		if (switchRect.right > infobarRect.right || switchRect.left < infobarRect.left) {
+			infobar.classList.add("pz-infobar-hide-modes");
+		}
+		const switchAfterModesRect = switchLink.getBoundingClientRect();
+		if (switchAfterModesRect.right > infobarRect.right || switchAfterModesRect.left < infobarRect.left) {
+			infobar.classList.add("pz-infobar-hide-filemenu");
+		}
+	}
+
+	function updateInfobarCompactLabels(infobar) {
+		const dashboard = document.querySelector(".pz-dashboard");
+		const title = dashboard?.querySelector(".pz-header-title");
+		const tabs = dashboard?.querySelector(".pz-man-screen-tabs");
+		const version = infobar.querySelector(".pz-infobar-plugin-ver");
+		const fileMenu = infobar.querySelector(".pz-infobar-filemenu");
+		dashboard?.classList.remove("pz-infobar-compact-tabs");
+		infobar.classList.remove("pz-infobar-compact-filemenu");
+
+		if (title && tabs) {
+			const titleRect = title.getBoundingClientRect();
+			const tabsRect = tabs.getBoundingClientRect();
+			if (tabsRect.left - titleRect.right <= 8) {
+				dashboard.classList.add("pz-infobar-compact-tabs");
+			}
+		}
+		if (version && fileMenu) {
+			const versionRect = version.getBoundingClientRect();
+			const fileMenuRect = fileMenu.getBoundingClientRect();
+			if (fileMenuRect.left - versionRect.right <= 8) {
+				infobar.classList.add("pz-infobar-compact-filemenu");
+			}
 		}
 	}
 
@@ -2515,14 +2571,21 @@
             .filter(id => Number.isInteger(id) && id > 0);
         if (!cardIds.length) return;
 
+		const pendingCardIds = new Set(cardIds);
         let stopped = false;
+		let timerId = 0;
         const poll = async () => {
             if (stopped || document.visibilityState === "hidden") return;
+			if (!pendingCardIds.size) {
+				stopped = true;
+				if (timerId) window.clearInterval(timerId);
+				return;
+			}
 
             const body = new URLSearchParams();
             body.set("action", "pz_lkc_cacheman_pending");
             body.set("nonce", config.cachemanPendingNonce);
-            cardIds.forEach(id => body.append("card_ids[]", String(id)));
+			pendingCardIds.forEach(id => body.append("card_ids[]", String(id)));
 
             try {
                 const response = await fetch(config.ajaxUrl, {
@@ -2532,16 +2595,31 @@
                     body: body.toString()
                 });
                 const json = await response.json();
-                if (json?.success && Array.isArray(json.data?.ready_ids) && json.data.ready_ids.length) {
-                    stopped = true;
-                    window.location.reload();
-                }
+				if (!json?.success || !Array.isArray(json.data?.ready_ids)) return;
+				const readyCards = new Map(
+					(Array.isArray(json.data.ready_cards) ? json.data.ready_cards : [])
+						.map(card => [Number(card?.id), card])
+				);
+				json.data.ready_ids.forEach(value => {
+					const cardId = Number(value);
+					if (!Number.isInteger(cardId) || cardId <= 0) return;
+					pendingCardIds.delete(cardId);
+					const row = document.querySelector(`.pz-cacheman tr[data-pz-pending-id="${cardId}"]`);
+					if (!row) return;
+					const title = String(readyCards.get(cardId)?.title || "");
+					const titleElement = row.querySelector(".pz-man-body-title > span");
+					if (titleElement) {
+						titleElement.textContent = title;
+						titleElement.title = title;
+					}
+					row.removeAttribute("data-pz-pending-id");
+				});
             } catch (error) {
                 // 一時的な通信エラーでは監視を継続する。
             }
         };
 
-        window.setInterval(poll, 3000);
+		timerId = window.setInterval(poll, 3000);
         poll();
     }
 
@@ -2781,3 +2859,4 @@
         }
     }
 });
+

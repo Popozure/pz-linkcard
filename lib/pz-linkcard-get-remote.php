@@ -12,6 +12,7 @@
     $rget_args					=	[];
     $rget_args['user-agent']	=	$this->pz_GetUserAgent();
     $rget_args['sslverify']		=	$this->options['flg-sslverify']		?	true	:	false ;
+	$rget_args['limit_response_size']	=	defined('MB_IN_BYTES' ) ? MB_IN_BYTES : 1048576;
     $redirect_limit				=	$this->options['flg-redir']			?	8		:	0;
     $rget_args['redirection']	=	0;
     $browser_user_agent			=	$this->pz_GetUserAgent('');

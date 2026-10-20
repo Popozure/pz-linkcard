@@ -100,6 +100,16 @@
 				</label>
 			</td>
 		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Only retrieve publicly viewable posts', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-public-only]" value="" />
+					<input type="checkbox" name="properties[flg-public-only]" value="1" <?php checked($this->options['flg-public-only'] ?? null ); ?> />
+					<?php echo esc_html__('Do not retrieve non-public or password-protected internal posts, even when the current user can view them.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
 	</table>
 	<?php submit_button(); ?>
 

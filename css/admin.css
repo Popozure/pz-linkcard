@@ -6,6 +6,7 @@ body {
 	--pz-overlay-left: 160px;
 }
 
+
 body.folded {
 	--pz-overlay-left: 36px;
 }
@@ -1530,10 +1531,37 @@ input.pz-admin-only[type="submit"],
 	font-size: 15px;
 }
 
+.pz-click-log-table-scroll {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.pz-click-log-table-scroll table.widefat {
+	min-width: 900px;
+}
+
 .pz-man-click-log table.widefat tbody td:nth-child(2),
 .pz-man-click-log table.widefat tbody td:nth-child(4) {
 	font-size: 15px;
 	text-align: right;
+}
+
+.pz-man-pending-loader {
+	display: inline-block;
+	width: 18px;
+	margin-left: 6px;
+	aspect-ratio: 1;
+	border-radius: 50%;
+	background:
+		radial-gradient(farthest-side, #000 94%, #0000) top/3px 3px no-repeat,
+		conic-gradient(#0000 30%, #000);
+	mask: radial-gradient(farthest-side, #0000 calc(100% - 3px), #000 0);
+	-webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 3px), #000 0);
+	vertical-align: -3px;
+	animation: l13 1s infinite linear;
 }
 
 .pz-man-screen-tabs {
@@ -1594,6 +1622,24 @@ input.pz-admin-only[type="submit"],
 	cursor: pointer;
 }
 
+.pz-screen-toggle-label-compact {
+	display: none;
+}
+
+.pz-dashboard.pz-infobar-compact-tabs .pz-screen-toggle-label-wide,
+.pz-infobar-compact-filemenu .pz-infobar-filemenu-label {
+	display: none;
+}
+
+.pz-dashboard.pz-infobar-compact-tabs .pz-screen-toggle-label-compact {
+	display: inline;
+}
+
+.pz-infobar-compact-filemenu .pz-man-infobar-filemenu-button {
+	padding-right: 6px;
+	padding-left: 6px;
+}
+
 .pz-man-screen-options-toggle[aria-expanded="true"],
 .pz-man-help-toggle[aria-expanded="true"],
 .pz-page-help-toggle[aria-expanded="true"] {
@@ -1622,6 +1668,7 @@ input.pz-admin-only[type="submit"],
 	position: absolute;
 	top: 28px;
 	right: 0;
+	box-sizing: border-box;
 	width: 520px;
 	max-width: calc(100vw - 80px);
 	padding: 14px 16px;
@@ -1678,15 +1725,16 @@ input.pz-admin-only[type="submit"],
 }
 
 .pz-settings-screen-options-panel {
-	width: 720px;
+	width: 620px;
 }
 
 .pz-settings-screen-options-panel label {
 	display: grid;
-	grid-template-columns: 20px 150px minmax(0, 1fr);
+	grid-template-columns: 28px 142px minmax(0, 1fr);
 	align-items: baseline;
 	width: auto;
-	margin: 0 0 8px;
+	margin: 0 0 12px;
+	line-height: 1.5;
 	white-space: normal;
 }
 
@@ -1700,6 +1748,9 @@ input.pz-admin-only[type="submit"],
 
 .pz-settings-screen-options-panel .pz-screen-option-description {
 	color: #646970;
+	min-width: 0;
+	white-space: normal;
+	overflow-wrap: anywhere;
 }
 
 .pz-man-help-panel {
@@ -1715,7 +1766,7 @@ input.pz-admin-only[type="submit"],
 }
 
 .pz-settings .pz-page-help-panel .pz-man-shortcut-list > div {
-	grid-template-columns: 230px 1fr;
+	grid-template-columns: 210px 1fr;
 }
 
 .pz-settings .pz-page-help-panel .pz-man-shortcut-list,
@@ -1724,7 +1775,8 @@ input.pz-admin-only[type="submit"],
 }
 
 .pz-settings .pz-page-help-panel .pz-man-shortcut-list dd {
-	white-space: nowrap;
+	white-space: normal;
+	overflow-wrap: anywhere;
 }
 
 .pz-man-help-panel h3,
@@ -1749,7 +1801,7 @@ input.pz-admin-only[type="submit"],
 
 .pz-man-search-command-list > div {
 	display: grid;
-	grid-template-columns: minmax(120px, auto) 1fr;
+	grid-template-columns: 140px minmax(0, 1fr);
 	align-items: baseline;
 	gap: 8px;
 }
@@ -1772,6 +1824,16 @@ input.pz-admin-only[type="submit"],
 	grid-column: 1 / -1;
 	padding-top: 12px;
 	border-top: 1px solid #dcdcde;
+}
+
+@media screen and (max-width: 520px) {
+	.pz-cacheman .pz-man-search-command-list {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 8px;
+	}
+	.pz-cacheman .pz-man-search-command-list > div:not(.pz-man-search-operators) {
+		grid-template-columns: 140px minmax(0, 1fr);
+	}
 }
 
 .pz-man-search-operators dd {
@@ -1922,6 +1984,18 @@ input.pz-admin-only[type="submit"],
 .pz-man-cache-list th {
 	text-align: center;
 	vertical-align: middle !important;
+}
+
+.pz-man-cache-table-scroll {
+	box-sizing: border-box;
+	width: 100%;
+	max-width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.pz-man-cache-table-scroll .pz-man-cache-list {
+	min-width: 1200px;
 }
 
 [class^="pz-man-head-"] > button {
@@ -4275,6 +4349,34 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 
 /* Responsive */
 @media screen and (max-width: 960px) {
+	#pz-infobar .pz-infobar-right {
+		position: absolute;
+		top: 0;
+		right: 16px;
+		bottom: 0;
+		margin-left: auto;
+		justify-content: flex-end;
+		padding-right: 78px;
+	}
+
+	#pz-infobar .pz-infobar-switch {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		z-index: 12;
+		transform: translateY(-50%);
+	}
+
+	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-debug,
+	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-survey,
+	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-admin {
+		display: none;
+	}
+
+	#pz-infobar.pz-infobar-hide-filemenu .pz-infobar-filemenu {
+		display: none;
+	}
+
 	body.auto-fold {
 		--pz-overlay-left: 36px;
 	}
@@ -4317,6 +4419,25 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 
 	.pz-man-cache-side > .pz-man-cache-postbox:not(.pz-man-cache-submitbox) {
 		order: 50;
+	}
+}
+
+@media screen and (min-width: 961px) and (max-width: 1200px) {
+	#pz-infobar .pz-infobar-right {
+		position: absolute;
+		top: 0;
+		right: 16px;
+		bottom: 0;
+		padding-right: 78px;
+		justify-content: flex-end;
+	}
+
+	#pz-infobar .pz-infobar-switch {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		z-index: 12;
+		transform: translateY(-50%);
 	}
 }
 
@@ -4434,9 +4555,10 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 	body.folded #pz-infobar {
 		top: 46px;
 		left: 0;
+		box-sizing: border-box;
 		padding: 0 10px;
 		justify-content: flex-start;
-		overflow-x: auto;
+		overflow-x: hidden;
 		overflow-y: hidden;
 	}
 
@@ -4445,11 +4567,49 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 		flex: 0 0 auto;
 		overflow: visible;
 	}
-	.pz-man-screen-tabs {
+	.pz-cacheman .pz-man-screen-tabs,
+	.pz-settings .pz-man-screen-tabs {
+		display: flex;
+	}
+
+	.pz-settings .pz-page-help {
+		display: block;
+	}
+
+	.pz-cacheman .pz-screen-toggle-label-wide,
+	.pz-settings .pz-screen-toggle-label-wide {
 		display: none;
 	}
-	.pz-page-help {
+
+	.pz-cacheman .pz-screen-toggle-label-compact,
+	.pz-settings .pz-screen-toggle-label-compact {
+		display: inline;
+	}
+
+	/* Keep the file menu compact from the first paint on narrow screens. */
+	#pz-infobar .pz-infobar-filemenu-label {
 		display: none;
+	}
+	#pz-infobar .pz-man-infobar-filemenu-button {
+		padding-right: 6px;
+		padding-left: 6px;
+	}
+
+	.pz-cacheman .pz-man-screen-options-panel,
+	.pz-cacheman .pz-man-help-panel,
+	.pz-settings .pz-man-screen-options-panel,
+	.pz-settings .pz-page-help-panel {
+		position: fixed;
+		top: calc(var(--pz-overlay-top, 86px) + 36px);
+		right: 12px;
+		left: 12px;
+		z-index: 20;
+		box-sizing: border-box;
+		width: auto;
+		max-width: none;
+		max-height: calc(100vh - var(--pz-overlay-top, 86px) - 48px);
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 	.pz-cacheman .pz-man-filter-row {
 		flex-wrap: wrap;
@@ -4644,6 +4804,35 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 		position: static;
 		left: auto;
 		margin-top: 4px;
+	}
+
+	.pz-cacheman .pz-man-cache-list {
+		width: max-content;
+		min-width: 1200px;
+		max-width: none;
+		table-layout: fixed;
+	}
+
+	.pz-cacheman .pz-man-cache-list tr > :not(.pz-man-column-hidden) {
+		display: table-cell !important;
+	}
+
+	.pz-cacheman .pz-man-head-url {
+		width: 84px;
+		min-width: 84px;
+		max-width: 84px;
+	}
+
+	.pz-cacheman .pz-man-head-title {
+		width: 168px;
+		min-width: 168px;
+		max-width: 168px;
+	}
+
+	.pz-cacheman .pz-man-body-url-title-cell {
+		width: 252px;
+		min-width: 252px;
+		max-width: 252px;
 	}
 	.pz-tab {
 		font-size: 18px;

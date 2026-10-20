@@ -15,6 +15,18 @@ if (!is_array($data ) || empty($data['url'] ) ) {
 	wp_send_json_error(array('message' => 'Card not found.' ), 404 );
 }
 
+$url_info = $this->Pz_GetURLInfo($data['url'] );
+if (!empty($url_info['is_internal'] ) ) {
+	$post_id = url_to_postid($data['url'] );
+	$post_id = $post_id ?: absint($data['post_id'] ?? 0 );
+	if ($post_id && !$this->pz_IsInternalCardPubliclyViewable($data['url'], $data ) ) {
+		$post = get_post($post_id );
+		if (!$post || !empty($this->options['flg-public-only'] ) || post_password_required($post ) || !is_user_logged_in() || !current_user_can('read_post', $post_id ) ) {
+			wp_send_json_error(array('message' => 'Card not found.' ), 404 );
+		}
+	}
+}
+
 if (!array_key_exists('regist_time', $data ) || is_null($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) {
 	wp_send_json_success(array('ready' => false ) );
 }
