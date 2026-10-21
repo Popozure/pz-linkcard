@@ -1132,6 +1132,8 @@
 
         const findControl = name => {
             const controls = Array.from(form.querySelectorAll(`[name="properties[${name}]"]`));
+            const visibleControls = controls.filter(el => el.type !== "hidden" && !isControlDisabled(el) && (el.getClientRects?.().length || el.offsetParent !== null));
+            if (visibleControls.length) return visibleControls[0];
             return controls.find(el => el.type !== "hidden" && !isControlDisabled(el)) ||
                 controls.find(el => el.type !== "hidden") ||
                 controls[0] ||
@@ -1162,8 +1164,9 @@
         };
         const applyDisplay = (node, show) => {
             if (!node) return;
-            if (show) {
-                node.style.removeProperty("display");
+                if (show) {
+                const displayValue = node.matches(".lkc-info") ? "flex" : (node.matches(".lkc-sns-tw, .lkc-sns-x, .lkc-sns-fb, .lkc-sns-hb, .lkc-sns-gp") ? "inline" : "block");
+                node.style.setProperty("display", displayValue, "important");
             } else {
                 node.style.setProperty("display", "none", "important");
             }
@@ -1481,8 +1484,12 @@
                 node.style.setProperty("border", "none", "important");
                 node.style.borderRadius = "";
             }
-            applyConfiguredBoxShadow(node, prefix);
-            if (isLinkBox && !stitchPreset && !ingressPreset) {
+            if (isSimpleLinkBox) {
+                node.style.setProperty("box-shadow", "none", "important");
+            } else {
+                applyConfiguredBoxShadow(node, prefix);
+            }
+            if (isLinkBox && !isSimpleLinkBox && !stitchPreset && !ingressPreset) {
                 if (node.matches(":hover")) applyConfiguredBoxShadow(node, prefix, true);
                 if (!node.dataset.pzPreviewBoxShadowHoverBound) {
                     node.addEventListener("pointerenter", () => {
@@ -1603,7 +1610,9 @@
         };
         const updatePreview = () => {
             const thumbnailPosition = value("thumbnail-position");
-            const infoPosition = value("info-position");
+            const infoControl = Array.from(form.querySelectorAll('select[name="properties[info-position]"]')).find(el => el.getClientRects?.().length || el.offsetParent !== null);
+            const infoPosition = String(infoControl ? infoControl.value : value("info-position") ?? "").trim();
+            const showInfo = !["", "0", "none", "なし"].includes(infoPosition.toLowerCase());
             const displayUrl = value("display-url");
             const displayDate = value("display-date");
             const width = value("width");
@@ -1620,7 +1629,7 @@
                 const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap");
                 const cardBody = card.querySelector(".lkc-card");
                 const content = card.querySelector("[data-pz-preview-content]");
-                const info = card.querySelector("[data-pz-preview-info]");
+                const info = card.querySelector("[data-pz-preview-info], .lkc-info");
                 const title = card.querySelector(".lkc-title");
                 const heading = card.querySelector("[data-pz-preview-heading]");
                 const more = card.querySelector("[data-pz-preview-more]");
@@ -1636,7 +1645,7 @@
                 resetStyle(wrap, ["maxWidth", "width", "height", "margin", "transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
                 resetStyle(cardBody, ["marginTop", "marginBottom", "marginLeft", "marginRight", "padding", "border", "background", "backgroundColor", "boxShadow"]);
                 resetStyle(content, ["height", "margin", "padding", "boxShadow", "background", "backgroundColor", "borderTop", "borderBottom"]);
-                resetStyle(info, ["color", "background", "backgroundColor"]);
+                resetStyle(info, ["display", "color", "background", "backgroundColor"]);
                 resetStyle(thumbnail, ["display", "float", "width", "margin", "transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
                 resetStyle(thumbnailImg, ["width", "height"]);
 
@@ -1661,16 +1670,38 @@
                         wrap.style.backgroundBlendMode = "multiply";
                         wrap.style.boxShadow = "0 2px 5px rgba(0,0,0,.25)";
                     } else if (specialFormat === "glass") {
+                        const glassColor = value(`${prefix}-bg-color`) || "#ffffff";
+                        const glassHex = glassColor.replace("#", "");
+                        const glassRgb = glassHex.length === 3 ? glassHex.split("").map(ch => parseInt(ch + ch, 16)) : [parseInt(glassHex.slice(0, 2), 16), parseInt(glassHex.slice(2, 4), 16), parseInt(glassHex.slice(4, 6), 16)];
+                        wrap.style.backgroundColor = `rgba(${glassRgb.join(",")},.5)`;
+                        [cardBody, content, info].forEach(node => {
+                            if (!node) return;
+                            node.style.setProperty("background-color", "transparent", "important");
+                            node.style.setProperty("background-image", "none", "important");
+                        });
                         wrap.style.backgroundImage = "radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14))";
-                        wrap.style.backdropFilter = "blur(12px) saturate(125%)";
-                        wrap.style.webkitBackdropFilter = "blur(12px) saturate(125%)";
+                        wrap.style.backdropFilter = "blur(2px) saturate(125%)";
+                        wrap.style.webkitBackdropFilter = "blur(2px) saturate(125%)";
                         wrap.style.boxShadow = "0 8px 24px rgba(31,56,85,.18)";
+                        card.querySelectorAll(".lkc-info, .lkc-title, .lkc-url, .lkc-url-info, .lkc-date, .lkc-excerpt").forEach(node => {
+                            node.style.setProperty("text-shadow", "4px 4px 5px #00000088", "important");
+                        });
+                    } else if (specialFormat === "ppc" || specialFormat === "tac") {
+                        wrap.style.boxShadow = "0 2px 6px rgba(0, 0, 0, 0.8)";
+                    } else if (specialFormat === "accent") {
+                        if (wrap) wrap.style.position = "relative";
+                        if (wrap) wrap.style.setProperty("background-color", "#ffffff", "important");
+                        if (cardBody) {
+                            cardBody.style.setProperty("padding-left", "24px", "important");
+                            cardBody.style.setProperty("background-color", "transparent", "important");
+                        }
                     }
                 }
 
                 if (cardBody) {
                     if (specialFormat === "cmp") {
                         cardBody.style.margin = "0";
+                        cardBody.style.padding = "0";
                     } else {
                         cardBody.style.marginTop = cssSize("card-top") || "8px";
                         cardBody.style.marginBottom = cssSize("card-bottom") || "8px";
@@ -1679,7 +1710,34 @@
                     }
                 }
 
-                if (!usePresetLayout && thumbnail && thumbnailImg) {
+                if (specialFormat === "cmp") {
+                    if (wrap) wrap.style.margin = "0";
+                    if (content) {
+                        content.style.height = "100px";
+                        content.style.margin = "0";
+                        content.style.padding = "0";
+                    }
+                    if (info) info.style.display = "none";
+                    if (thumbnail) {
+                        thumbnail.style.display = "block";
+                        thumbnail.style.float = "left";
+                        thumbnail.style.width = "100px";
+                        thumbnail.style.height = "108px";
+                        thumbnail.style.margin = "-2px 8px 0 -1px";
+                        thumbnail.style.borderRadius = "16px 0 0 16px";
+                    }
+                    if (thumbnailImg) {
+                        const compactBorderColor = value(`${prefix}-border-color`) || "#999";
+                        const compactBorderWidth = intValue(`${prefix}-border-width`, 1);
+                        thumbnailImg.style.boxSizing = "border-box";
+                        thumbnailImg.style.borderRight = `${compactBorderWidth}px solid ${compactBorderColor}`;
+                    }
+                    if (title) title.style.margin = "0 0 0 108px";
+                    if (url) url.style.margin = "0 0 0 108px";
+                    if (excerpt) excerpt.style.margin = "0 0 0 108px";
+                }
+
+                if (specialFormat !== "cmp" && !usePresetLayout && thumbnail && thumbnailImg) {
                     applyDisplay(thumbnail, thumbnailPosition !== "0");
                     if (thumbnailPosition === "1") {
                         thumbnail.style.float = "right";
@@ -1701,7 +1759,7 @@
                     }
                 }
 
-                if (content && !usePresetLayout) {
+                if (specialFormat !== "cmp" && content && !usePresetLayout) {
                     const totalHeight = thumbnailPosition === "3" ? contentHeight + thumbnailHeight : contentHeight;
                     if (totalHeight > 0) content.style.height = `${totalHeight}px`;
                     if (checked("content-inset")) {
@@ -1716,7 +1774,7 @@
                     }
                 }
 
-                applyDisplay(info, infoPosition !== "");
+                if (specialFormat !== "cmp") applyDisplay(info, showInfo);
                 info?.querySelectorAll?.(".lkc-siteicon").forEach(icon => {
                     icon.style.flexShrink = "0";
                     icon.style.flexGrow = "0";
@@ -1730,7 +1788,6 @@
                         content.insertBefore(info, title);
                     }
                 }
-
                 const showDate = prefix !== "ex" && displayDate !== "";
                 const urlText = previewUrlText(card, prefix);
                 if (!showDate && displayUrl === "1" && content && !url) {
@@ -1836,6 +1893,13 @@
                 }
             });
             applySpecialFormat();
+            let infoVisibilityStyle = win.querySelector("#pz-preview-info-visibility");
+            if (!infoVisibilityStyle) {
+                infoVisibilityStyle = win.ownerDocument.createElement("style");
+                infoVisibilityStyle.id = "pz-preview-info-visibility";
+                win.appendChild(infoVisibilityStyle);
+            }
+            infoVisibilityStyle.textContent = showInfo ? ".lkc-info { display: flex !important; }" : ".lkc-info { display: none !important; }";
         };
 
         const syncPreview = () => {

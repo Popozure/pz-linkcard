@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pz-LinkCard\n"
 "Report-Msgid-Bugs-To: http://wppolyglots.wordpress.com\n"
-"POT-Creation-Date: 2026-10-21 00:27+0900\n"
+"POT-Creation-Date: 2026-10-22 00:13+0900\n"
 "PO-Revision-Date: 2023-12-24 19:31+0900\n"
 "Last-Translator: \n"
 "Language-Team: poporon\n"
@@ -742,7 +742,7 @@ msgstr ""
 msgid "Invalid URL parameter in "
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:206 ../lib/pz-linkcard-settings-basic.php:55 ../lib/pz-linkcard-settings.php:554
+#: ../lib/pz-linkcard-cacheman.php:206 ../lib/pz-linkcard-settings-basic.php:56 ../lib/pz-linkcard-settings.php:554
 msgid "*"
 msgstr ""
 
@@ -777,7 +777,7 @@ msgstr ""
 #: ../lib/pz-linkcard-cacheman.php:406 ../lib/pz-linkcard-file-import-csv.php:11 ../lib/pz-linkcard-file-import-csv.php:118
 #: ../lib/pz-linkcard-file-import-csv.php:125 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183
 #: ../lib/pz-linkcard-file-import.php:9 ../lib/pz-linkcard-file-import.php:51 ../lib/pz-linkcard-file-import.php:58
-#: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100 ../lib/pz-linkcard-settings-basic.php:92
+#: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100 ../lib/pz-linkcard-settings-basic.php:93
 #: ../lib/pz-linkcard-settings-etc.php:8 ../lib/pz-linkcard-settings-etc.php:42 ../lib/pz-linkcard-settings-etc.php:51
 #: ../pz-linkcard.php:2320 ../pz-linkcard.php:2337
 msgid "("
@@ -801,7 +801,7 @@ msgstr ""
 #: ../lib/pz-linkcard-cacheman.php:406 ../lib/pz-linkcard-file-import-csv.php:11 ../lib/pz-linkcard-file-import-csv.php:118
 #: ../lib/pz-linkcard-file-import-csv.php:125 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183
 #: ../lib/pz-linkcard-file-import.php:9 ../lib/pz-linkcard-file-import.php:51 ../lib/pz-linkcard-file-import.php:58
-#: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100 ../lib/pz-linkcard-settings-basic.php:92
+#: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100 ../lib/pz-linkcard-settings-basic.php:93
 #: ../lib/pz-linkcard-settings-etc.php:8 ../lib/pz-linkcard-settings-etc.php:42 ../lib/pz-linkcard-settings-etc.php:51
 #: ../pz-linkcard.php:2320 ../pz-linkcard.php:2337
 msgid ")"
@@ -1297,43 +1297,43 @@ msgid "Simple"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:28
-msgid "Headline"
+msgid "Accent"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:29
-msgid "Fancy"
+msgid "Headline"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:30
-msgid "Glass"
+msgid "Fancy"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:31
-msgid "Metal"
+msgid "Glass"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:32
-msgid "Windows XP"
+msgid "Metal"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:33
-msgid "Windows 95"
+msgid "Windows XP"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:34
-msgid "Mac OS"
+msgid "Windows 95"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:35
-msgid "Pushpin"
+msgid "Mac OS"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:36
-msgid "Cellophane tape \"center\""
+msgid "Pushpin"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:37
-msgid "Enclose"
+msgid "Cellophane tape \"center\""
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:38
@@ -1369,106 +1369,110 @@ msgid "Square"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:46
-msgid "Reflection"
+msgid "Enclose"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:47
-msgid "Information orange"
+msgid "Reflection"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:48
-msgid "Neutral bluegreen"
+msgid "Information orange"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:49
-msgid "Enlightened green"
+msgid "Neutral bluegreen"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:50
-msgid "Resistance blue"
+msgid "Enlightened green"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:51
-msgid "Slanting"
+msgid "Resistance blue"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:52
+msgid "Slanting"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:53
 msgid "3D Rotate"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:54
+#: ../lib/pz-linkcard-settings-basic.php:55
 msgid "Easy Format"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:55
+#: ../lib/pz-linkcard-settings-basic.php:56
 msgid "It applies over other formatting settings."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:59
+#: ../lib/pz-linkcard-settings-basic.php:60
 msgid "Saved Datetime"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:70
+#: ../lib/pz-linkcard-settings-basic.php:71
 msgid "Changelog"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:76
+#: ../lib/pz-linkcard-settings-basic.php:77
 msgid "Related Information"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:92
+#: ../lib/pz-linkcard-settings-basic.php:93
 msgid "How to"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:92
+#: ../lib/pz-linkcard-settings-basic.php:93
 msgid "Japanese Only"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:98
+#: ../lib/pz-linkcard-settings-basic.php:99
 msgid "When in Trouble"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:100
+#: ../lib/pz-linkcard-settings-basic.php:101
 msgid "Pz-LinkCard Forum"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:100
+#: ../lib/pz-linkcard-settings-basic.php:101
 msgid "This is a forum for Pz-LinkCard by the official WordPress.org website."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:105 ../lib/pz-linkcard-settings-basic.php:116
+#: ../lib/pz-linkcard-settings-basic.php:106 ../lib/pz-linkcard-settings-basic.php:117
 msgid "Popozure."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:105
+#: ../lib/pz-linkcard-settings-basic.php:106
 msgid "If you find any problems, please let us know via direct message."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:110
+#: ../lib/pz-linkcard-settings-basic.php:111
 msgid "Poporon@Popozure."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:110
+#: ../lib/pz-linkcard-settings-basic.php:111
 msgid "It's okay here too."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:114
+#: ../lib/pz-linkcard-settings-basic.php:115
 msgid "Author's Site"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:116
+#: ../lib/pz-linkcard-settings-basic.php:117
 msgid "Poporon's PC Daily Diary"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:121
+#: ../lib/pz-linkcard-settings-basic.php:122
 msgid "Donation"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:123
+#: ../lib/pz-linkcard-settings-basic.php:124
 msgid "Wishlist"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-basic.php:123
+#: ../lib/pz-linkcard-settings-basic.php:124
 msgid ""
 "You do not have to send me a gift, but if you make your own purchases through this link, I will receive a little extra money. That "
 "helps keep me motivated."

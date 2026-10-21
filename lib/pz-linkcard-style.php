@@ -31,16 +31,38 @@
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',			'', $file_text );
 				$file_text	=	str_replace('/*EX-BG-IMAGE*/',			'', $file_text );
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: none;', $file_text );
+				$file_text	=	str_replace('/*EX-SHADOW*/',			'box-shadow: none;', $file_text );
 				$file_text	=	str_replace('/*IN-BG-IMAGE*/',			'', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: none;', $file_text );
+				$file_text	=	str_replace('/*IN-SHADOW*/',			'box-shadow: none;', $file_text );
 				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
 				$file_text	=	str_replace('/*NONE-EXCERPT*/',			'display: none !important;', $file_text );
 				break;
+			case 'accent': // Preset: Accent (same as Normal)
+				$file_text	=	str_replace('/*EX-BG-COLOR*/',			'background-color: #ffffff;', $file_text );
+				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'background-color: #ffffff;', $file_text );
+
+				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; }';
+
+				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; z-index: 3; left: 8px; top: 8px; bottom: 8px; width: 16px; pointer-events: none; }';
+				$css .= '.lkc-external-wrap::before { background-color: '.$prop['ex-bg-color'].'; } .lkc-internal-wrap::before { background-color: '.$prop['in-bg-color'].'; }';
+
+				$css .= '.lkc-card { padding-left: 24px; }';
+
+				$file_text	= str_replace('/*OPTION*/', $css, $file_text );
+				break;
+
+
+				// $file_text	= str_replace('/*EX-BORDER*/', 'border: 1px solid rgba(0,0,0,0.1);', $file_text );
+				// $file_text	= str_replace('/*IN-BORDER*/', 'border: 1px solid rgba(0,0,0,0.1);', $file_text );
+				// $file_text	= str_replace('/*SHADOW*/', 'box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);', $file_text );
+				// $file_text	= str_replace('/*OPTION*/', '.lkc-card { padding-left: 32px; }', $file_text );
+				// break;
+
+
 			case 'cmp': // プリセット: コンパクト
-				$file_text	=	str_replace('/*EX-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
-				$file_text	=	str_replace('/*IN-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
-				$file_text	=	str_replace('/*CONTENT-HEIGHT*/',		'height: 108px;', $file_text );
+				$file_text	=	str_replace('/*CONTENT-HEIGHT*/',		'height: 100px;', $file_text );
 				$file_text	=	str_replace('/*WRAP-MARGIN*/',			'margin: 0;', $file_text );
 				$file_text	=	str_replace('/*PADDING*/',				'padding: 0;', $file_text );
 				$file_text	=	str_replace('/*CARD-TOP*/',				'margin: 0;', $file_text );
@@ -58,7 +80,7 @@
 				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',	'width: 100px;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',	'height: 108px;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-POSITION*/',	'float: left;', $file_text );
-				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',		'margin: 0 8px 0 0;', $file_text );
+				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',		'margin: -2px 8px 0 -1px;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-RADIUS*/',		'border-radius: 16px 0 0 16px;', $file_text );
 				$file_text	=	str_replace('/*POSITION-INFO*/',		'position: absolute; top: 8px; left: 108px;', $file_text );
 				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
@@ -175,14 +197,15 @@
 				$glass_rgba = function($hex ) {
 					$hex = ltrim($hex, '#');
 					if (strlen($hex) === 3 ) $hex = $hex[0].$hex[0].$hex[1].$hex[1].$hex[2].$hex[2];
-					return 'rgba('.hexdec(substr($hex, 0, 2 )).','.hexdec(substr($hex, 2, 2 )).','.hexdec(substr($hex, 4, 2 )).',.75)';
+					return 'rgba('.hexdec(substr($hex, 0, 2 )).','.hexdec(substr($hex, 2, 2 )).','.hexdec(substr($hex, 4, 2 )).',.5)';
 				};
 				$css = '.lkc-external-wrap { background-color: '.$glass_rgba($glass_ex_bg ).'; } .lkc-internal-wrap { background-color: '.$glass_rgba($glass_in_bg ).'; }';
-				$css .= '.lkc-external-wrap, .lkc-internal-wrap { position: relative; overflow: hidden; background-image: radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14)); background-size: 100% 100%; box-shadow: 0 8px 24px rgba(31,56,85,.18), inset 0 1px rgba(255,255,255,.62); backdrop-filter: blur(12px) saturate(125%); -webkit-backdrop-filter: blur(12px) saturate(125%); }';
+				$css .= '.lkc-external-wrap, .lkc-internal-wrap { position: relative; overflow: hidden; background-image: radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14)); background-size: 100% 100%; box-shadow: 0 8px 24px rgba(31,56,85,.18), inset 0 1px rgba(255,255,255,.62); backdrop-filter: blur(2px) saturate(125%); -webkit-backdrop-filter: blur(2px) saturate(125%); }';
 				$css .= '.lkc-card, .lkc-content, .lkc-info { background-color: transparent !important; background-image: none !important; }';
 				$css .= '.lkc-external-wrap::after, .lkc-internal-wrap::after { content: ""; position: absolute; z-index: 5; top: -30%; left: -70%; width: 36%; height: 160%; transform: rotate(20deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent); opacity: 0; pointer-events: none; transition: left .55s ease, opacity .2s ease; }';
 				$css .= '.lkc-external-wrap:hover::after, .lkc-internal-wrap:hover::after { left: 135%; opacity: 1; }';
 				$css .= '.lkc-title { text-shadow: 0 1px rgba(255,255,255,.7); }';
+				$css .= '.lkc-info, .lkc-title, .lkc-url, .lkc-url-info, .lkc-date, .lkc-excerpt { text-shadow: 4px 4px 5px #00000088 !important; }';
 				$css .= '.lkc-info { background: rgba(255,255,255,.28); }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;

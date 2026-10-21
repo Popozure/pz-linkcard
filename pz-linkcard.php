@@ -1564,7 +1564,7 @@ class class_pz_linkcard {
 			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 			break;
 		default:
-			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
+			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.($is_preview ? $html_info : '').'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
 		}
 		$enclose_tag	=	isset($this->options['enclose-tag'] ) ? strtolower($this->options['enclose-tag'] ) : (!empty($this->options['blockquote'] ) ? 'blockquote' : 'div');
 		if (intval($this->options['info-position'] ?? 0 ) === 3 && $html_info && strpos($html_tag, 'lkc-info' ) === false ) {
