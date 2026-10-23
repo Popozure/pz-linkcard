@@ -387,11 +387,14 @@ body.folded #pz-infobar {
 	background: yellow !important;
 }
 
+#pz-click-count-settings,
 #pz-click-log-settings,
 #pz-error-reset-settings {
 	scroll-margin-top: 140px;
 }
 
+#pz-click-count-settings:target label,
+#pz-click-count-settings.pz-settings-target-highlight label,
 #pz-click-log-settings:target label,
 #pz-click-log-settings.pz-settings-target-highlight label {
 	display: inline-block;
@@ -1416,7 +1419,7 @@ input.pz-admin-only[type="submit"],
 
 .pz-man-pages-bottom {
 	display: flex;
-	margin-top: 8px;
+	margin-top: 8px !important;
 	align-items: center;
 	float: right;
 }
@@ -1473,6 +1476,10 @@ input.pz-admin-only[type="submit"],
 	text-decoration: none;
 }
 
+.pz-click-log-user-agent {
+	font-size: 10px !important;
+}
+
 .pz-click-log-card-link .dashicons,
 .pz-click-log-post-link .dashicons {
 	width: 15px;
@@ -1492,6 +1499,12 @@ input.pz-admin-only[type="submit"],
 .pz-click-log-post-link > span:first-child:hover + .dashicons,
 .pz-click-log-card-link:focus .dashicons,
 .pz-click-log-card-link:focus-visible .dashicons,
+.pz-click-log-post-link:focus .dashicons,
+.pz-click-log-post-link:focus-visible .dashicons {
+	visibility: visible;
+}
+
+.pz-click-log-post-link:hover .dashicons,
 .pz-click-log-post-link:focus .dashicons,
 .pz-click-log-post-link:focus-visible .dashicons {
 	visibility: visible;
@@ -4172,6 +4185,7 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 }
 
 .pz-settings-preview-window.pz-settings-preview-docked {
+	z-index: 10000;
 	border-radius: 0;
 }
 
@@ -4213,7 +4227,7 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 }
 
 .pz-settings-preview-window.pz-settings-preview-animating {
-	transition: left 0.1s, top 0.1s, right 0.1s, bottom 0.1s, width 0.1s, height 0.1s, border-radius 0.1s, box-shadow 0.1s, opacity 0.16s ease, visibility 0s linear 0.16s;
+	transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, bottom 0.5s ease, width 0.5s ease, height 0.5s ease, border-radius 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease, visibility 0s linear 0.5s;
 }
 
 .pz-settings-preview-restore {

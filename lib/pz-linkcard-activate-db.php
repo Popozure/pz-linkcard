@@ -5,6 +5,16 @@
 	$wpdb->hide_errors();
 	require_once(ABSPATH.'wp-admin/includes/upgrade.php' );
 
+	// 新バージョンのカードテーブル名を、旧バージョンへ戻す際に復元する
+	$future_card_table = $wpdb->prefix.'pz_linkcard_card';
+	$old_card_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_card)) === $this->db_card);
+	$future_card_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $future_card_table)) === $future_card_table);
+	if (!$old_card_exists && $future_card_exists) {
+		$old_card_sql = str_replace('`', '``', $this->db_card);
+		$future_card_sql = str_replace('`', '``', $future_card_table);
+		$wpdb->query("RENAME TABLE `$future_card_sql` TO `$old_card_sql`");
+	}
+
 	// CREATE TABLE
 	$sql	=	"CREATE TABLE $this->db_card (
 				id				BIGINT			UNSIGNED	NOT NULL	AUTO_INCREMENT,
@@ -93,7 +103,11 @@
 			$keep_id	=	$kept_ids[$url];
 			$delete_id	=	intval($data->id );
 			if	($db_click_exists ) {
-				$wpdb->update($this->db_click, array('card_id' => $keep_id ), array('card_id' => $delete_id ), array('%d' ), array('%d' ) );
+				$keep_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $keep_id));
+				$delete_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $delete_id));
+				if ($keep_key && $delete_key) {
+					$wpdb->update($this->db_click, array('url_key' => $keep_key), array('url_key' => $delete_key), array('%s'), array('%s'));
+				}
 			}
 			if	(intval($data->click_count ) !== 0 ) {
 				$wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + %d WHERE id = %d", intval($data->click_count ), $keep_id ) );

@@ -1,5 +1,9 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
+	global $wpdb;
+	$card_table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_card)) === $this->db_card);
+	$click_table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_click)) === $this->db_click);
+
 	switch	($action) {
 	case	'run-'.self::CRON_CHECK:
 		wp_clear_scheduled_hook(self::CRON_CHECK );
@@ -87,7 +91,7 @@
 		<tr>
 			<th scope="row" rowspan="2"><?php esc_html_e('Link-Card', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span></td>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span> <?php echo $card_table_exists ? '✔️存在します。' : '❌存在しません。'; ?></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>
@@ -96,7 +100,7 @@
 		<tr>
 			<th scope="row" rowspan="2"><?php esc_html_e('Count Information', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><span class="pz-monospace"><?php echo esc_html($this->db_click ); ?></span></td>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_click ); ?></span> <?php echo $click_table_exists ? '✔️存在します。' : '❌存在しません。'; ?></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>

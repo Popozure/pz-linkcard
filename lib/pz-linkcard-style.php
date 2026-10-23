@@ -39,28 +39,15 @@
 				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
 				$file_text	=	str_replace('/*NONE-EXCERPT*/',			'display: none !important;', $file_text );
 				break;
-			case 'accent': // Preset: Accent (same as Normal)
+			case 'accent': // プリセット：アクセント
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',			'background-color: #ffffff;', $file_text );
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'background-color: #ffffff;', $file_text );
-
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; }';
-
 				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; z-index: 3; left: 8px; top: 8px; bottom: 8px; width: 16px; pointer-events: none; }';
 				$css .= '.lkc-external-wrap::before { background-color: '.$prop['ex-bg-color'].'; } .lkc-internal-wrap::before { background-color: '.$prop['in-bg-color'].'; }';
-
 				$css .= '.lkc-card { padding-left: 24px; }';
-
 				$file_text	= str_replace('/*OPTION*/', $css, $file_text );
 				break;
-
-
-				// $file_text	= str_replace('/*EX-BORDER*/', 'border: 1px solid rgba(0,0,0,0.1);', $file_text );
-				// $file_text	= str_replace('/*IN-BORDER*/', 'border: 1px solid rgba(0,0,0,0.1);', $file_text );
-				// $file_text	= str_replace('/*SHADOW*/', 'box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);', $file_text );
-				// $file_text	= str_replace('/*OPTION*/', '.lkc-card { padding-left: 32px; }', $file_text );
-				// break;
-
-
 			case 'cmp': // プリセット: コンパクト
 				$file_text	=	str_replace('/*CONTENT-HEIGHT*/',		'height: 100px;', $file_text );
 				$file_text	=	str_replace('/*WRAP-MARGIN*/',			'margin: 0;', $file_text );
@@ -157,7 +144,7 @@
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 0; border: 3px #1f61e3 solid; border-radius: 5px; background: #eeecdf; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; background: linear-gradient(to bottom, #2790ff, #1f61e3); background: -webkit-linear-gradient(top, #2790ff, #1f61e3); font-weight: bold; font-size: 11px; line-height: 16px; }';
-				$css	.=	'.lkc-info *	{ color: #fff !important; }';
+				$css	.=	'.lkc-domain	{ color: #fff !important; }';
 				$css	.=	'.lkc-thumbnail	{ margin: 0 8px !important; }';
 				$css	.=	'.lkc-title		{ padding: 0; }';
 				$css	.=	'.lkc-url		{ padding: 4px; cursor: pointer; }';
@@ -173,7 +160,7 @@
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 4px; border: 3px #c0c7c8 solid; background: #e0e0e0; border: 1px #87888f solid; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; border: 1px #87888f solid; background: #0000a8; font-weight: bold; font-size: 11px; line-height: 16px; }';
-				$css	.=	'.lkc-info *	{ color: #fff !important; font-weight: normal; }';
+				$css	.=	'.lkc-domain	{ color: #fff !important; font-weight: normal; }';
 				$css	.=	'.lkc-thumbnail	{ margin: 0 4px !important; }';
 				$css	.=	'.lkc-title		{ padding: 0; }';
 				$css	.=	'.lkc-url		{ padding: 4px; cursor: pointer; }';
@@ -188,7 +175,7 @@
 				$css .= '.lkc-card { margin: 12px; padding: 8px; border: 1px solid #b8c0cc; border-radius: 10px; background: linear-gradient(#f8fafc, #e8edf3); box-shadow: 0 3px 10px rgba(0,0,0,.22); }';
 				$css .= '.lkc-info { position: relative; margin: -8px -8px 8px; padding: 5px 8px 5px 44px; border-radius: 9px 9px 0 0; background: linear-gradient(#eaf3ff, #c9dcf5); color: #1d3557; font-size: 11px; line-height: 16px; }';
 				$css .= '.lkc-info::before { content: ""; position: absolute; left: 10px; top: 9px; width: 9px; height: 9px; border-radius: 50%; background: #ff5f57; box-shadow: 13px 0 #febc2e, 26px 0 #28c840; }';
-				$css .= '.lkc-info * { color: #1d3557 !important; } .lkc-title { color: #111827; font-weight: 600; } .lkc-url, .lkc-url-info { color: #1769aa; } .lkc-thumbnail { margin: 0 8px !important; }';
+				$css .= '.lkc-info { text-align: center; } .lkc-domain { color: #000 !important; margin-left: auto; margin-right: auto; text-align: center; } .lkc-siteicon, .lkc-share { display: none !important; } .lkc-title { color: #111827; font-weight: 600; } .lkc-url, .lkc-url-info { color: #1769aa; } .lkc-thumbnail { margin: 0 8px !important; }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'glass': // Glass

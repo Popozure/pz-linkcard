@@ -363,6 +363,7 @@
 
 	function activateTargetHighlight(hash) {
 		const targets = {
+			"#pz-click-count-settings": ["#pz-click-log-settings", "pz-settings-target-highlight"],
 			"#pz-click-log-settings": ["#pz-click-log-settings", "pz-settings-target-highlight"],
 			"#pz-error-reset-settings": ["#pz-error-reset-settings", "pz-settings-error-target-highlight"],
 		};

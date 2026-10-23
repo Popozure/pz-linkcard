@@ -418,12 +418,21 @@ class class_pz_linkcard {
 			'flg-inhibit'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-preview'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'preview-mode'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'icon', ],
+			'preview-restore-mode'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-left'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-top'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-docked-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-right-docked-width'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'window-left'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'window-top'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'window-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'window-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'docked-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'docked-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'last-bottom-docked-height'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'right-docked-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
 			'preview-two-cards'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 			'flg-quickmenu'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
 			'flg-amp-url'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
@@ -2189,7 +2198,6 @@ class class_pz_linkcard {
 			$card_id	=	intval($data['id'] );
 			$result		=	$wpdb->delete($this->db_card, array('id' => $card_id ), array('%d' ) );
 			if	($result ) {
-				$wpdb->delete($this->db_click, array('card_id' => $card_id ), array('%d' ) );
 				return	true;
 			}
 		}
@@ -2198,9 +2206,6 @@ class class_pz_linkcard {
 			$card_id	=	intval($wpdb->get_var($wpdb->prepare("SELECT id FROM $this->db_card WHERE url = %s LIMIT 1", $url ) ) );
 			$result		=	$wpdb->delete($this->db_card, array('url' => $url ), array('%s' ) );
 			if	($result ) {
-				if	($card_id ) {
-					$wpdb->delete($this->db_click, array('card_id' => $card_id ), array('%d' ) );
-				}
 				return	true;
 			}
 		}
@@ -3180,7 +3185,7 @@ class class_pz_linkcard {
 				$recent_clicks	= $wpdb->get_results(
 					"SELECT click.click_time, card.id AS card_id, card.title, card.url
 					FROM $this->db_click AS click
-					INNER JOIN $this->db_card AS card ON card.id = click.card_id
+					 LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click.url_key
 					ORDER BY click.click_time DESC, click.click_id DESC
 					LIMIT 5"
 				);
@@ -3206,7 +3211,8 @@ class class_pz_linkcard {
 		?>
 		<style>
 			#pz_linkcard_dashboard_widget { scroll-margin-top: 46px; }
-			#pz_linkcard_dashboard_widget .inside { margin-top: 0; container-type: inline-size; }
+			#pz_linkcard_dashboard_widget .postbox-header h2 { color: transparent; width: 150px; min-height: 0; background: url('<?php echo esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg' ); ?>') 12px center / 130px auto no-repeat; }
+			#pz_linkcard_dashboard_widget .inside { position: relative; margin-top: 0; container-type: inline-size; }
 			.pz-dashboard-widget-version { margin: 0 0 10px; }
 			.pz-dashboard-widget-error { display: block; margin: 0 0 10px; padding: 9px 12px; background: #ff6868; color: #fff; font-weight: 600; text-decoration: none; }
 			.pz-dashboard-widget-error:hover,
@@ -3256,7 +3262,7 @@ class class_pz_linkcard {
 			<?php foreach	($labels as $key => $label ) {
 				$manager_url	= add_query_arg(array('filter' => $key, 'return_url' => $dashboard_return_url ), $this->cacheman_url );
 			?>
-				<dt><span class="dashicons dashicons-<?php echo esc_attr($label_icons[$key] ); ?>" aria-hidden="true"></span><span class="pz-dashboard-widget-count-label"><?php echo esc_html($label ); ?></span></dt><dd><a href="<?php echo esc_url($manager_url ); ?>"><?php echo esc_html(sprintf(_n('%s card', '%s cards', $count_list[$key], 'pz-linkcard' ), number_format_i18n($count_list[$key] ) ) ); ?></a></dd>
+				<dt><span class="dashicons dashicons-<?php echo esc_attr($label_icons[$key] ); ?>" aria-hidden="true"></span><span class="pz-dashboard-widget-count-label"><?php echo esc_html($label ); ?></span></dt><dd><a href="<?php echo esc_url($manager_url ); ?>"><?php echo esc_html(sprintf('%s件', number_format_i18n($count_list[$key] ) ) ); ?></a></dd>
 			<?php } ?>
 		</dl>
 		<div class="pz-dashboard-widget-recent pz-dashboard-widget-registrations">
@@ -3289,7 +3295,8 @@ class class_pz_linkcard {
 				<?php } ?>
 			</div>
 			<?php if	(empty($this->options['flg-click-log'] ) ) {
-				$click_settings_url	= add_query_arg(array('tab' => 'pz-check', 'return_url' => $dashboard_return_url ), $this->settings_url ).'#pz-click-log-settings';
+				$settings_return_url = preg_replace('/#.*$/', '', $dashboard_return_url);
+				$click_settings_url	= add_query_arg(array('tab' => 'pz-check', 'return_url' => $settings_return_url ), $this->settings_url ).'#pz-click-log-settings';
 				$click_settings_link	= '<a href="'.esc_url($click_settings_url ).'">'.esc_html__('Click count recording', 'pz-linkcard' ).'</a>';
 			?>
 				<p class="pz-dashboard-widget-notice"><?php echo wp_kses_post(sprintf(__('Enable %s to display recent clicks.', 'pz-linkcard' ), $click_settings_link ) ); ?></p>
@@ -4309,21 +4316,21 @@ class class_pz_linkcard {
 		// 同じカード・記事・IPハッシュの30秒以内のクリックは重複とする
 		if	($click_log_enabled ) {
 			$wpdb->query('START TRANSACTION' );
-			$card_exists	=	$wpdb->get_var($wpdb->prepare("SELECT id FROM $this->db_card WHERE id = %d FOR UPDATE", $lkc_id ) );
-			if	(!$card_exists ) {
+			$url_key	= (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d FOR UPDATE", $lkc_id ) );
+			if	(!$url_key ) {
 				$wpdb->query('ROLLBACK' );
 				wp_send_json_error('DB update failed');
 				return;
 			}
 			$duplicate_click_id	=	$wpdb->get_var($wpdb->prepare(
 				"SELECT click_id FROM $this->db_click
-				WHERE card_id = %d
+				WHERE url_key = %s
 					AND click_time >= %d
 					AND COALESCE(post_id, 0) = %d
 					AND COALESCE(ip_hash, '') = %s
 				ORDER BY click_time DESC
 				LIMIT 1 FOR UPDATE",
-				$lkc_id,
+				$url_key,
 				$click_time - 30,
 				$post_id,
 				$ip_hash
@@ -4341,12 +4348,12 @@ class class_pz_linkcard {
 				$this->db_click,
 				array(
 					'click_time'	=>	$click_time,
-					'card_id'		=>	$lkc_id,
+					'url_key'		=>	$url_key,
 					'post_id'		=>	$post_id ?: null,
 					'ip_hash'		=>	$ip_hash ?: null,
 					'user_agent'	=>	$user_agent ?: null,
 				),
-				array('%d', '%d', '%d', '%s', '%s' )
+				array('%d', '%s', '%d', '%s', '%s' )
 			);
 			if	($logged === false ) {
 				$wpdb->query('ROLLBACK' );
@@ -4449,8 +4456,8 @@ class class_pz_linkcard {
 			$result['expired']	= $deleted === false ? 0 : intval($deleted );
 		}
 
-		$deleted	= $wpdb->query("DELETE FROM $this->db_click WHERE NOT EXISTS (SELECT 1 FROM $this->db_card WHERE $this->db_card.id = $this->db_click.card_id) LIMIT 5000" );
-		$result['orphaned']	= $deleted === false ? 0 : intval($deleted );
+		// カード削除後もクリックログは保持する
+		$result['orphaned']	= 0;
 		return	$result;
 	}
 

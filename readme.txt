@@ -3,7 +3,7 @@ Contributors: Poporon
 Tags: LinkCard, BlogCard, Internal Link, External Link
 Requires at least: 6.0
 Tested up to: 7.1.3
-Requires PHP: 8.0
+Requires PHP: 8.2
 Stable tag: 2.6.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -151,6 +151,7 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 == Changelog ==
 
 = 2.6.3.2.TEST =
+* [Fixed] 設定画面のプレビューで、ウィンドウ・右ドッキング・下ドッキングそれぞれの位置や大きさを切り替え時と設定保存後に復元するように修正しました。
 * [Fixed] データベース更新時に内部リンクの投稿ID、投稿日、更新日を取得できない場合がある不具合を修正しました。
 * [Fixed] 設定画面のエラータブに投稿IDが表示されない不具合を修正しました。
 * [Fixed] 設定を初期化したとき、画面上の「調査モードと管理者モードを解除しない」のチェック状態を優先するように修正しました。

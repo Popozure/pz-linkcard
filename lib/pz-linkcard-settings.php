@@ -519,10 +519,16 @@
 		}
 	}
 
-	// 操作後の状態をプレビュー用の非表示項目へ反映する
-	foreach		(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards' ) as $temp_name ) {
+	// プレビュー状態を設定保存時にも保持する
+	foreach		(array(
+		'preview-mode', 'preview-restore-mode',
+		'preview-left', 'preview-top', 'preview-width', 'preview-height',
+		'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards',
+		'window-left', 'window-top', 'window-width', 'window-height',
+		'docked-width', 'docked-height', 'last-bottom-docked-height', 'right-docked-width',
+	) as $temp_name ) {
 		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
-		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
+		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ?? '' ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
 	}
 
 	// スタイルシート生成

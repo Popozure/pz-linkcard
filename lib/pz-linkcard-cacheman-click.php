@@ -3,6 +3,9 @@
 	global	$wpdb;
 
 	$card_id		=	intval($data['id'] ?? 0 );
+	$card_url_key	= $card_id ? (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $card_id)) : '';
+	$post_filter_id	= isset($_REQUEST['click-post-id']) ? absint(wp_unslash($_REQUEST['click-post-id'])) : 0;
+	$post_filter = $post_filter_id ? get_post($post_filter_id) : null;
 	$click_page	=	isset($_POST['click-page'] ) ? max(1, absint($_POST['click-page'] ) ) : 1;
 	$chart_period	=	isset($_POST['click-period'] )
 		? sanitize_key(wp_unslash($_POST['click-period'] ) )
@@ -26,30 +29,40 @@
 
 	if	($db_click_exists ) {
 		$count_now	=	$card_id
-			?	intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click WHERE card_id = %d", $card_id ) ) )
+			?	intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click WHERE url_key = %s", $card_url_key ) ) )
 			:	intval($wpdb->get_var("SELECT COUNT(*) FROM $this->db_click" ) );
 		$page_max	=	max(1, intval(ceil($count_now / $page_limit ) ) );
 		$click_page	=	min($click_page, $page_max );
 		$offset		=	($click_page - 1 ) * $page_limit;
 		if	($card_id ) {
 			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare(
-				"SELECT click_log.click_id,click_log.click_time,click_log.card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				"SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
 				FROM $this->db_click AS click_log
-				LEFT JOIN $this->db_card AS card ON card.id = click_log.card_id
-				WHERE click_log.card_id = %d ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
-				$card_id,
+				LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click_log.url_key
+				WHERE click_log.url_key = %s AND (%d = 0 OR click_log.post_id = %d) ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
+				$card_url_key,
+				$post_filter_id,
+				$post_filter_id,
 				$page_limit,
 				$offset
 			) );
 		} else {
 			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare(
-				"SELECT click_log.click_id,click_log.click_time,click_log.card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				"SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
 				FROM $this->db_click AS click_log
-				LEFT JOIN $this->db_card AS card ON card.id = click_log.card_id
-				ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
-				$page_limit,
-				$offset
+				LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click_log.url_key
+				" . ($post_filter_id ? "WHERE click_log.post_id = %d " : "") . "ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
+				...($post_filter_id ? array($post_filter_id, $page_limit, $offset) : array($page_limit, $offset))
 			) );
+			if (!$click_logs && $count_now > 0) {
+				$click_logs = (array) $wpdb->get_results($wpdb->prepare(
+					"SELECT click_id,click_time,0 AS card_id,post_id,ip_hash,user_agent,'' AS card_title
+					FROM $this->db_click
+					ORDER BY click_id DESC LIMIT %d OFFSET %d",
+					$page_limit,
+					$offset
+				) );
+			}
 		}
 
 		$local_now	= current_time('timestamp', false );
@@ -96,8 +109,8 @@
 			$chart_query_args[]	= $range['end'];
 		}
 		if	($card_id ) {
-			$chart_query_args[]	= $card_id;
-			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE card_id = %d AND click_time >= %d AND click_time < %d";
+			array_unshift($chart_query_args, $card_url_key);
+			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE url_key = %s AND click_time >= %d AND click_time < %d";
 		} else {
 			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE click_time >= %d AND click_time < %d";
 		}
@@ -122,8 +135,8 @@
 			$where_sql	= 'click_log.click_time >= %d AND click_log.click_time < %d';
 			$where_args	= array($selected_range['start'], $selected_range['end'] );
 			if	($card_id ) {
-				$where_sql	= 'click_log.card_id = %d AND '.$where_sql;
-				array_unshift($where_args, $card_id );
+				$where_sql	= 'click_log.url_key = %s AND '.$where_sql;
+				array_unshift($where_args, $card_url_key );
 			}
 			$count_now	= intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click AS click_log WHERE $where_sql", $where_args ) ) );
 			$page_max	= max(1, intval(ceil($count_now / $page_limit ) ) );
@@ -131,9 +144,9 @@
 			$offset	= ($click_page - 1 ) * $page_limit;
 			$list_args	= array_merge($where_args, array($page_limit, $offset ) );
 			$click_logs	= (array) $wpdb->get_results($wpdb->prepare(
-				"SELECT click_log.click_id,click_log.click_time,click_log.card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				"SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
 				FROM $this->db_click AS click_log
-				LEFT JOIN $this->db_card AS card ON card.id = click_log.card_id
+				LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click_log.url_key
 				WHERE $where_sql ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
 				$list_args
 			) );
@@ -173,6 +186,7 @@
 	<input type="hidden" name="cache_id" value="<?php echo intval($card_id ); ?>">
 	<input type="hidden" name="chart_period" value="<?php echo esc_attr($chart_period ); ?>">
 	<input type="hidden" name="click-range" value="<?php echo esc_attr($click_range ); ?>">
+	<input type="hidden" name="click-post-id" value="<?php echo intval($post_filter_id ); ?>">
 	<h2><?php esc_html_e('Click Log', 'pz-linkcard' ); ?></h2>
 	<?php if	($card_id ) : ?>
 	<p class="pz-click-log-card-details">
@@ -180,7 +194,13 @@
 		<a href="<?php echo esc_url($card_edit_url ); ?>" class="pz-click-log-card-edit-link" title="<?php echo esc_attr__('Edit card', 'pz-linkcard' ); ?>"><span><?php echo esc_html($card_id ); ?></span><span class="dashicons dashicons-edit-page" aria-hidden="true"></span></a><br>
 		<strong><?php esc_html_e('Title', 'pz-linkcard' ); ?>:</strong> <?php echo esc_html($data['title'] ?? '' ); ?><br>
 		<strong><?php esc_html_e('URL', 'pz-linkcard' ); ?>:</strong>
-		<a href="<?php echo esc_url($data['url'] ?? '' ); ?>" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer" class="pz-monospace"><?php echo esc_html($this->pz_DecodeURL($data['url'] ?? '' ) ); ?></a>
+		<a href="<?php echo esc_url($data['url'] ?? '' ); ?>" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer" class="pz-click-log-post-link pz-monospace"><?php echo esc_html($this->pz_DecodeURL($data['url'] ?? '' ) ); ?><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
+	</p>
+	<?php elseif ($post_filter) : ?>
+	<p class="pz-click-log-card-details">
+		<strong>投稿ID:</strong> <a href="<?php echo esc_url(get_edit_post_link($post_filter_id)); ?>" target="_blank" rel="noopener noreferrer" class="pz-click-log-post-link"><span><?php echo intval($post_filter_id); ?></span><span class="dashicons dashicons-edit-page" aria-hidden="true"></span></a><br>
+		<strong>タイトル:</strong> <?php echo esc_html(get_the_title($post_filter)); ?><br>
+		<strong>URL:</strong> <a href="<?php echo esc_url(get_permalink($post_filter)); ?>" target="_blank" rel="noopener noreferrer" class="pz-click-log-post-link pz-monospace"><?php echo esc_html(get_permalink($post_filter)); ?><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
 	</p>
 	<?php endif; ?>
 	<?php if	(!$click_log_enabled ) : ?>
@@ -240,7 +260,7 @@
 		<?php endif; ?>
 	</p>
 	<p>
-		<button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button>
+		<button type="submit" name="action" value="list" class="button" data-no-overlay="1"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button>
 		<?php if	($this->pz_IsDashboardWidgetReturnUrl($return_url ) ) : ?>
 			<a href="<?php echo esc_url($return_url ); ?>" class="button"><?php esc_html_e('Return to Dashboard', 'pz-linkcard' ); ?></a>
 		<?php endif; ?>
@@ -262,7 +282,7 @@
 			<tr>
 				<th scope="col"><?php esc_html_e('ID', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('Card ID', 'pz-linkcard' ); ?></th>
-				<th scope="col"><?php esc_html_e('Click Date', 'pz-linkcard' ); ?>🔻</th>
+				<th scope="col"><?php esc_html_e('Click Date', 'pz-linkcard' ); ?> <img class="pz-man-head-orderby" src="<?php echo esc_url($this->plugin_dir_url.'img/sort_desc.svg' ); ?>" alt="" width="16" height="16" /></th>
 				<th scope="col"><?php esc_html_e('Post ID', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('IP Hash', 'pz-linkcard' ); ?></th>
 				<th scope="col"><?php esc_html_e('User-Agent', 'pz-linkcard' ); ?></th>
@@ -281,6 +301,10 @@
 					}
 					$card_log_url	= add_query_arg($card_log_args, $this->cacheman_url );
 					$log_post_id	=	intval($click_log->post_id );
+					$post_log_args	= array('action' => 'click-log', 'cache_id' => 0);
+					if ($return_url) { $post_log_args['return_url'] = $return_url; }
+					if ($log_post_id) { $post_log_args['click-post-id'] = $log_post_id; }
+					$post_log_url	= add_query_arg($post_log_args, $this->cacheman_url );
 					$post_url		=	$log_post_id ? get_permalink($log_post_id ) : '';
 					$post_title	=	$log_post_id ? get_the_title($log_post_id ) : '';
 					$ip_hash		=	(string) $click_log->ip_hash;
@@ -288,17 +312,17 @@
 				?>
 				<tr>
 					<td><?php echo esc_html(intval($click_log->click_id ) ); ?></td>
-					<td><a href="<?php echo esc_url($card_log_url ); ?>" title="<?php echo esc_attr((string) ($click_log->card_title ?? '' ) ); ?>" class="pz-click-log-card-link"><span><?php echo esc_html($log_card_id ); ?></span><span class="dashicons dashicons-chart-bar" aria-hidden="true"></span></a></td>
+					<td><?php if ($log_card_id > 0) : ?><a href="<?php echo esc_url($card_log_url ); ?>" title="<?php echo esc_attr((string) ($click_log->card_title ?? '' ) ); ?>" class="pz-click-log-card-link"><span><?php echo esc_html($log_card_id ); ?></span><span class="dashicons dashicons-chart-bar" aria-hidden="true"></span></a><?php else : ?>削除<?php endif; ?></td>
 					<td><?php echo esc_html(date_i18n(PZLKC_DATE_FORMAT.' H:i:s', intval($click_log->click_time ) ) ); ?></td>
 					<td>
 						<?php if	($post_url ) : ?>
-							<a href="<?php echo esc_url($post_url ); ?>" target="_blank" rel="noopener noreferrer" referrerpolicy="no-referrer" title="<?php echo esc_attr($post_title ); ?>" class="pz-click-log-post-link"><span><?php echo esc_html($log_post_id ); ?></span><span class="dashicons dashicons-external" aria-hidden="true"></span></a>
+							<a href="<?php echo esc_url($post_log_url ); ?>" title="<?php echo esc_attr($post_title ); ?>" class="pz-click-log-post-link"><span><?php echo esc_html($log_post_id ); ?></span><span class="dashicons dashicons-chart-bar" aria-hidden="true"></span></a>
 						<?php else : ?>
 							<?php echo esc_html($log_post_id ?: '' ); ?>
 						<?php endif; ?>
 					</td>
 					<td class="pz-monospace"><?php echo esc_html($ip_hash_display ); ?></td>
-					<td class="pz-monospace"><?php echo esc_html($click_log->user_agent ); ?></td>
+					<td class="pz-monospace pz-click-log-user-agent"><?php echo esc_html($click_log->user_agent ); ?></td>
 				</tr>
 			<?php endforeach; ?>
 		<?php endif; ?>
