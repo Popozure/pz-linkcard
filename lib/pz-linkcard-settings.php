@@ -610,6 +610,33 @@
 		$preview_internal_siteicon	=	esc_url($preview_internal_siteicon );
 		$preview_today	=	current_datetime();
 		$preview_yesterday	=	$preview_today->modify('-1 day' );
+		$preview_mode	=	$this->options['preview-mode'] ?? 'icon';
+		$preview_class	=	'';
+		$preview_style	=	'';
+		if	(in_array($preview_mode, array('window', 'right', 'docked' ), true ) ) {
+			$preview_class	=	' pz-settings-preview-ready';
+			if	($preview_mode === 'right' ) {
+				$preview_class	.=	' pz-settings-preview-docked pz-settings-preview-docked-right';
+				$right_width	=	max(180, absint($this->options['right-docked-width'] ?? $this->options['preview-right-docked-width'] ?? 180 ) );
+				if	($right_width > 0 ) {
+					$preview_style	=	'left:auto;right:0;top:calc(var(--wp-admin--admin-bar--height, 32px) + 40px);bottom:0;width:'.$right_width.'px;height:auto;max-height:none;';
+				}
+			} elseif	($preview_mode === 'docked' ) {
+				$preview_class	.=	' pz-settings-preview-docked';
+				$docked_height	=	absint($this->options['docked-height'] ?? $this->options['last-bottom-docked-height'] ?? $this->options['preview-docked-height'] ?? 0 );
+				if	($docked_height > 0 ) {
+					$preview_style	=	'left:160px;right:0;top:auto;bottom:0;width:calc(100vw - 160px);height:'.$docked_height.'px;max-height:none;';
+				}
+			} else {
+				$window_left	=	$this->options['window-left'] ?? null;
+				$window_top		=	$this->options['window-top'] ?? null;
+				$window_width	=	$this->options['window-width'] ?? null;
+				$window_height	=	$this->options['window-height'] ?? null;
+				if	($window_left !== null && $window_top !== null && $window_width !== null && $window_height !== null ) {
+					$preview_style	=	'left:'.intval($window_left).'px;top:'.intval($window_top).'px;right:auto;bottom:auto;width:'.max(240, absint($window_width) ).'px;height:'.max(100, absint($window_height) ).'px;max-height:none;';
+				}
+			}
+		}
 		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_external_siteicon, $preview_internal_siteicon, $preview_today, $preview_yesterday) {
 			return	$this->pz_GetHTML(array(
 				'url'			=>	$url,
@@ -635,7 +662,7 @@
 			) );
 		};
 		$html_preview	=	'<style id="pz-linkcard-preview-css" type="text/css">'.$preview_css.'</style>'.
-							'<section class="pz-settings-preview-window" role="dialog" aria-labelledby="pz-settings-preview-title">'.
+							'<section class="pz-settings-preview-window'.$preview_class.'"'.($preview_style ? ' style="'.esc_attr($preview_style ).'"' : '' ).' role="dialog" aria-labelledby="pz-settings-preview-title">'.
 							'<div class="pz-settings-preview-handle" data-pz-preview-handle>'.
 							'<span id="pz-settings-preview-title" class="pz-settings-preview-title">'.esc_html__('Preview', 'pz-linkcard' ).'</span>'.
 							'<span class="pz-settings-preview-controls">'.

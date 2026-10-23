@@ -4226,6 +4226,11 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 	margin-left: 24px;
 }
 
+.pz-settings-preview-window.pz-settings-preview-docked-right .pz-settings-preview-two-cards-control {
+	position: static;
+	display: inline-flex !important;
+}
+
 .pz-settings-preview-window.pz-settings-preview-animating {
 	transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, bottom 0.5s ease, width 0.5s ease, height 0.5s ease, border-radius 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease, visibility 0s linear 0.5s;
 }

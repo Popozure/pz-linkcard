@@ -685,6 +685,7 @@ class class_pz_linkcard {
 
 			// 管理画面用アクション
 			add_action		('init',									[$this, 'action_init' ],						10, 1 );	// プラグイン初期化
+			add_filter		('admin_body_class',						[$this, 'filter_admin_body_class'] );
 			add_action		('upgrader_process_complete',				[$this, 'action_upgrader_process_complete' ],	10, 2 );	// アップデートしたときの処理
 			add_action		('admin_post_pz_export_file',				[$this, 'action_export_file' ],					10, 1 );	// エクスポート処理
 			add_action		('enqueue_block_editor_assets',				[$this, 'action_enqueue_block_editor_assets' ],	10, 1 );	// ブロックエディタ用スクリプト
@@ -3480,6 +3481,19 @@ class class_pz_linkcard {
 			'nextHeading'	=>	__('Go to next heading', 'pz-linkcard' ),
 		) );
 		wp_enqueue_style	(self::PLUGIN_SLUG.'-admin-css',	PZLKC_URL_ADMIN_CSS,			array(),			$admin_css_version );
+		$preview_mode	=	$this->pz_GetRequestOption('preview-mode', $this->options['preview-mode'] ?? '' );
+		$preview_enabled	=	$this->pz_GetRequestOption('flg-preview', $this->options['flg-preview'] ?? null );
+		if	($hook === 'settings_page_'.self::SETTINGS_PAGE
+			&& $preview_mode === 'right'
+			&& !empty($preview_enabled ) ) {
+			$preview_width	=	$this->pz_GetRequestOption('right-docked-width', $this->pz_GetRequestOption('preview-right-docked-width', $this->options['right-docked-width'] ?? $this->options['preview-right-docked-width'] ?? 240 ) );
+			$preview_width	=	is_numeric($preview_width ) ? absint($preview_width ) : 240;
+			$preview_width	=	max(180, $preview_width );
+			wp_add_inline_style(
+				self::PLUGIN_SLUG.'-admin-css',
+				':root{--pz-settings-preview-right-docked-width:'.$preview_width.'px;}'
+			);
+		}
 
 		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			wp_enqueue_media();
@@ -3522,6 +3536,17 @@ class class_pz_linkcard {
 			) );
 			wp_enqueue_style	(self::PLUGIN_SLUG.'-color-picker',	PZLKC_URL_COLOR_PICKER_CSS,	array(),	PZLKC_PLUGIN_VERSION );
 		}
+	}
+
+	public	function	filter_admin_body_class($classes ) {
+		$preview_mode	=	$this->pz_GetRequestOption('preview-mode', $this->options['preview-mode'] ?? '' );
+		$preview_enabled	=	$this->pz_GetRequestOption('flg-preview', $this->options['flg-preview'] ?? null );
+		if	($this->now_page === 1
+			&& $preview_mode === 'right'
+			&& !empty($preview_enabled ) ) {
+			$classes	.=	' pz-settings-preview-right-docked-active';
+		}
+		return	$classes;
 	}
 
 	// Pz-LinkCard挿入ダイアログを表示する投稿編集画面か

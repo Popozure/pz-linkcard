@@ -131,7 +131,7 @@
 
         const minPreviewWidth = 240;
         const minPreviewHeight = 100;
-        const rightDockedMinWidth = 24;
+        const rightDockedMinWidth = 180;
         const dockedMinHeightFallback = 28;
         let previewDocked = false;
         let previewDockSide = null;
@@ -344,7 +344,9 @@
             if (!twoCardsControl) return;
             twoCardsControl.classList.remove("pz-settings-preview-two-cards-control-hidden");
             const controlRect = twoCardsControl.getBoundingClientRect();
-            const controlFitsWidth = rect.width >= 32 + Math.ceil(controlRect.width) + 8;
+            const controlFitsWidth = previewDockSide === "right"
+                ? rect.width >= rightDockedMinWidth
+                : rect.width >= 32 + Math.ceil(controlRect.width) + 8;
             const controlFitsHeight = rect.height >= handleHeight + Math.ceil(controlRect.height) + 12;
             twoCardsControl.classList.toggle(
                 "pz-settings-preview-two-cards-control-hidden",
@@ -522,8 +524,10 @@
         };
         const applyRightDockedRect = width => {
             const bounds = getViewportBounds();
-            const maxWidth = Math.max(rightDockedMinWidth, getViewportClientRight() - bounds.minLeft);
-            const nextWidth = Math.min(maxWidth, Math.max(rightDockedMinWidth, width || getWindowRect().width));
+            const availableWidth = Math.max(1, getViewportClientRight() - bounds.minLeft);
+            const minWidth = Math.min(rightDockedMinWidth, availableWidth);
+            const maxWidth = Math.max(minWidth, availableWidth);
+            const nextWidth = Math.min(maxWidth, Math.max(minWidth, width || getWindowRect().width));
 
             previewDocked = true;
             previewDockSide = "right";
