@@ -1297,6 +1297,14 @@ msgid "Simple"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:28
+msgid "Floating border"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:29
+msgid "Floating border 2"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:28
 msgid "Accent"
 msgstr ""
 
@@ -1314,6 +1322,10 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:32
 msgid "Metal"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:33
+msgid "Browser"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:33
@@ -1358,6 +1370,10 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:43
 msgid "Stitch blue & red"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php:47
+msgid "Stitch free"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:44

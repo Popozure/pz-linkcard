@@ -1498,6 +1498,14 @@ msgid "Simple"
 msgstr "シンプル"
 
 #: ../lib/pz-linkcard-settings-basic.php:28
+msgid "Floating border"
+msgstr "浮き出し枠"
+
+#: ../lib/pz-linkcard-settings-basic.php:29
+msgid "Floating border 2"
+msgstr "浮き出し枠2"
+
+#: ../lib/pz-linkcard-settings-basic.php:28
 msgid "Accent"
 msgstr "アクセント"
 
@@ -1516,6 +1524,10 @@ msgstr "ガラス"
 #: ../lib/pz-linkcard-settings-basic.php:32
 msgid "Metal"
 msgstr "金属"
+
+#: ../lib/pz-linkcard-settings-basic.php:33
+msgid "Browser"
+msgstr "ブラウザ風"
 
 #: ../lib/pz-linkcard-settings-basic.php:33
 msgid "Windows XP"
@@ -1560,6 +1572,10 @@ msgstr "紙がめくれた効果"
 #: ../lib/pz-linkcard-settings-basic.php:43
 msgid "Stitch blue & red"
 msgstr "縫い目（青と赤）"
+
+#: ../lib/pz-linkcard-settings-basic.php:47
+msgid "Stitch free"
+msgstr "縫い目（フリー）"
 
 #: ../lib/pz-linkcard-settings-basic.php:44
 msgid "Stitch green & yellow"

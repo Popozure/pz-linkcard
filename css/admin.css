@@ -4232,7 +4232,7 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 }
 
 .pz-settings-preview-window.pz-settings-preview-animating {
-	transition: left 0.5s ease, top 0.5s ease, right 0.5s ease, bottom 0.5s ease, width 0.5s ease, height 0.5s ease, border-radius 0.5s ease, box-shadow 0.5s ease, opacity 0.5s ease, visibility 0s linear 0.5s;
+	transition: left 100ms ease, top 100ms ease, right 100ms ease, bottom 100ms ease, width 100ms ease, height 100ms ease, border-radius 100ms ease, box-shadow 100ms ease, opacity 100ms ease, visibility 0s linear 100ms;
 }
 
 .pz-settings-preview-restore {
@@ -4685,6 +4685,7 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 
 	.pz-cacheman .pz-man-search .button {
 		flex: 0 0 auto;
+		height: 40px;
 		margin: 0;
 	}
 

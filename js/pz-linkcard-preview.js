@@ -548,7 +548,7 @@
             win.classList.add("pz-settings-preview-animating");
             window.setTimeout(() => {
                 win.classList.remove("pz-settings-preview-animating");
-            }, 550);
+            }, 100);
         };
         const normalizeBottomDockedHeight = (height, stored = {}) => {
             const bounds = getViewportBounds();
@@ -1283,9 +1283,47 @@
             node.style.setProperty("box-shadow", shadow, hover ? "important" : "");
             return true;
         };
-        const restoreConfiguredBoxShadow = (node, prefix) => {
-            node.style.removeProperty("box-shadow");
-            applyConfiguredBoxShadow(node, prefix);
+        const applyConfiguredLinkBoxHover = (node, prefix) => {
+            if (!node) return;
+			const specialFormat = value("special-format");
+			const isFloatingLinkBox = ["Floating", "Floating2", "fbd"].includes(specialFormat);
+			const isAccentLinkBox = specialFormat === "accent";
+
+            if (checked(`${prefix}-hover-transform-enabled`)) {
+                const transformX = intValue(`${prefix}-hover-transform-x`, 0);
+                const transformY = intValue(`${prefix}-hover-transform-y`, 0);
+                const transformRotate = intValue(`${prefix}-hover-transform-rotate`, 0);
+                const transformScale = intValue(`${prefix}-hover-transform-scale`, 100);
+                node.style.setProperty("transform", `translate(${transformX}px, ${transformY}px) rotate(${transformRotate}deg) scale(${transformScale / 100})`, "important");
+                node.style.setProperty("opacity", String(Math.max(0, Math.min(100, intValue(`${prefix}-hover-opacity`, 100))) / 100), "important");
+            }
+            if (checked(`${prefix}-hover-bg-enabled`) && !isAccentLinkBox) {
+                const bgColor = value(`${prefix}-hover-bg-color`);
+                const bgImage = cssBackgroundImage(`${prefix}-hover-bg-image`);
+                if (bgColor) node.style.setProperty("background-color", bgColor, "important");
+                if (bgImage) node.style.setProperty("background-image", bgImage, "important");
+            }
+            if (checked(`${prefix}-hover-border-enabled`) && !isFloatingLinkBox) {
+                const borderColor = value(`${prefix}-hover-border-color`);
+                const borderStyle = value(`${prefix}-hover-border-style`) || "solid";
+                const borderWidth = intValue(`${prefix}-hover-border-width`, 1);
+                const borderRadius = intValue(`${prefix}-hover-border-radius`, 0);
+                node.style.setProperty("border", `${borderColor ? `${borderColor} ` : ""}${borderStyle} ${borderWidth}px`, "important");
+                node.style.setProperty("border-radius", `${borderRadius}px`, "important");
+            }
+			if (isFloatingLinkBox) {
+				node.style.setProperty("border", "none", "important");
+				node.style.setProperty("border-radius", `${intValue(`${prefix}-border-radius`, 0)}px`, "important");
+			}
+			if (isAccentLinkBox) {
+				node.style.setProperty("background-color", "#ffffff", "important");
+			}
+            applyConfiguredBoxShadow(node, prefix, true);
+
+            const transition = parseFloat(value(`${prefix}-hover-transition`));
+            if (Number.isFinite(transition) && transition > 0) {
+                node.style.setProperty("transition", `all ${transition}s ease`, "important");
+            }
         };
         const applySimpleLinkBox = (node, prefix, hover = false) => {
             if (!node) return;
@@ -1319,6 +1357,16 @@
                 ex: { background: "#bcddff", outline: "#aabbee" },
                 in: { background: "#f8d0d0", outline: "#e8a8a8" },
             },
+			sFR: {
+				ex: {
+					get background() { return value("ex-bg-color") || "transparent"; },
+					get outline() { return value("ex-border-color") || "transparent"; },
+				},
+				in: {
+					get background() { return value("in-bg-color") || "transparent"; },
+					get outline() { return value("in-border-color") || "transparent"; },
+				},
+			},
             sGY: {
                 ex: { background: "#acefdd", outline: "#8abecb" },
                 in: { background: "#ffde51", outline: "#fbca4d" },
@@ -1352,13 +1400,7 @@
             node.style.setProperty("background", preset.background, "important");
             node.style.setProperty("border", "2px dashed rgba(255,255,255,0.5)", "important");
 
-            if (checked(`${prefix}-shadow-enabled`)) {
-                const shadowColor = value(`${prefix}-shadow-color`) || "rgba(0,0,0,0.3)";
-                const shadowInset = checked(`${prefix}-shadow-inset`) ? "inset " : "";
-                node.style.boxShadow = `${shadowInset}${intValue(`${prefix}-shadow-x`, 8)}px ${intValue(`${prefix}-shadow-y`, 8)}px ${intValue(`${prefix}-shadow-blur`, 8)}px ${intValue(`${prefix}-shadow-spread`, 0)}px ${shadowColor}`;
-            } else {
-                node.style.boxShadow = `0 0 0 5px ${preset.outline}, 3px 3px 6px 4px rgba(0,0,0,0.6)`;
-            }
+            node.style.boxShadow = `0 0 0 5px ${preset.outline}, 3px 3px 6px 4px rgba(0,0,0,0.6)`;
 
             if (hover) {
                 if (checked(`${prefix}-hover-bg-enabled`)) {
@@ -1442,9 +1484,11 @@
             const isLinkBox = prefix === "ex" || prefix === "in";
             const specialFormat = value("special-format");
             const isSimpleLinkBox = specialFormat === "smp" && isLinkBox;
+			const isFloatingLinkBox = isLinkBox && ["Floating", "Floating2", "fbd"].includes(specialFormat);
+			const isAccentLinkBox = isLinkBox && specialFormat === "accent";
             const stitchPreset = isLinkBox ? stitchPresets[specialFormat]?.[prefix] : null;
             const ingressPreset = isLinkBox ? ingressPresets[specialFormat]?.[prefix] : null;
-            const ignoreLinkBackground = isLinkBox && (specialFormat === "JIN" || isSimpleLinkBox || stitchPreset);
+            const ignoreLinkBackground = isLinkBox && (specialFormat === "JIN" || isAccentLinkBox || isSimpleLinkBox || stitchPreset);
             if (!ignoreLinkBackground) {
                 const bgColor = value(`${prefix}-bg-color`);
                 const bgImage = cssBackgroundImage(`${prefix}-bg-image`);
@@ -1470,19 +1514,26 @@
                 node.style.setProperty("border", "none", "important");
                 node.style.borderRadius = "";
             }
+			if (isFloatingLinkBox) {
+				node.style.setProperty("border", "none", "important");
+				node.style.borderRadius = `${intValue(`${prefix}-border-radius`, 0)}px`;
+			}
+			if (isAccentLinkBox) {
+				node.style.setProperty("background-color", "#ffffff", "important");
+			}
             if (isSimpleLinkBox) {
                 node.style.setProperty("box-shadow", "none", "important");
             } else {
                 applyConfiguredBoxShadow(node, prefix);
             }
             if (isLinkBox && !isSimpleLinkBox && !stitchPreset && !ingressPreset) {
-                if (node.matches(":hover")) applyConfiguredBoxShadow(node, prefix, true);
+                if (node.matches(":hover")) applyConfiguredLinkBoxHover(node, prefix);
                 if (!node.dataset.pzPreviewBoxShadowHoverBound) {
                     node.addEventListener("pointerenter", () => {
-                        applyConfiguredBoxShadow(node, prefix, true);
+                        applyConfiguredLinkBoxHover(node, prefix);
                     });
                     node.addEventListener("pointerleave", () => {
-                        restoreConfiguredBoxShadow(node, prefix);
+                        applyPartBox(card, selector, prefix);
                     });
                     node.dataset.pzPreviewBoxShadowHoverBound = "1";
                 }
@@ -1542,6 +1593,8 @@
                     cardBody.style.setProperty("margin", "24px 20px 20px 20px", "important");
                 }
                 if (heading && heading.textContent.trim() !== "") {
+                    heading.style.setProperty("display", "inline-flex", "important");
+                    heading.style.alignItems = "center";
                     heading.style.setProperty("padding", "0 10px", "important");
                     heading.style.position = "absolute";
                     heading.style.top = "-15px";
@@ -1588,6 +1641,66 @@
             if (specialFormat === "JIN") {
                 applyHeadlinePreset();
             }
+            if (["fancy", "glass", "metal", "mac", "browser", "ref", "ct1", "ct2", "ct3", "ct4", "tac", "Floating", "Floating2", "fbd"].includes(specialFormat)) {
+                win.querySelectorAll("[data-pz-preview-heading]").forEach(heading => {
+                    heading.style.zIndex = ["glass", "metal"].includes(specialFormat)
+                        ? "6"
+                        : (["ref", "ct1", "ct2", "ct3", "ct4", "tac"].includes(specialFormat) ? "3" : "2");
+                });
+            }
+            if (specialFormat === "browser") {
+                win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
+                    const cardBody = card.querySelector(".lkc-card");
+                    const info = card.querySelector("[data-pz-preview-info], .lkc-info");
+                    const content = card.querySelector("[data-pz-preview-content], .lkc-content");
+                    const domain = card.querySelector(".lkc-domain");
+                    if (cardBody) {
+                        cardBody.style.position = "relative";
+                        cardBody.style.overflow = "hidden";
+                        cardBody.style.background = "#eef1f5";
+                    }
+                    if (info) {
+                        info.style.setProperty("display", "flex", "important");
+                        info.style.position = "relative";
+                        info.style.width = "min(220px, calc(100% - 28px))";
+                        info.style.minHeight = "30px";
+                        info.style.margin = "-2px 0 0 4px";
+                        info.style.padding = "5px 30px 5px 10px";
+                        info.style.alignItems = "center";
+                        info.style.gap = "6px";
+                        info.style.borderRadius = "8px 8px 0 0";
+                        info.style.background = "#fff";
+                        info.style.boxSizing = "border-box";
+                    }
+                    if (content) {
+                        content.style.position = "relative";
+                        content.style.margin = "0 -8px -8px";
+                        content.style.padding = "42px 8px 8px";
+                        content.style.background = "#fff";
+                    }
+                    const contentUrl = content?.querySelector(".lkc-url");
+                    if (contentUrl) {
+                        contentUrl.style.position = "absolute";
+                        contentUrl.style.zIndex = "1";
+                        contentUrl.style.top = "8px";
+                        contentUrl.style.right = "22px";
+                        contentUrl.style.left = "92px";
+                        contentUrl.style.margin = "0";
+                        contentUrl.style.padding = "0";
+                        contentUrl.style.background = "transparent";
+                        contentUrl.style.setProperty("color", "#3c4043", "important");
+                        contentUrl.style.fontSize = "11px";
+                        contentUrl.style.lineHeight = "18px";
+                    }
+                    if (domain) {
+                        domain.style.padding = "0";
+                        domain.style.background = "transparent";
+                        domain.style.border = "0";
+                        domain.style.setProperty("color", "#3c4043", "important");
+                    }
+                    card.querySelectorAll(".lkc-share").forEach(node => node.style.setProperty("display", "none", "important"));
+                });
+            }
             const ingressPreset = ingressPresets[specialFormat];
             if (ingressPreset) {
                 applyIngressPreset(ingressPreset);
@@ -1628,12 +1741,16 @@
 
                 resetCardOrder(card);
                 resetStyle(card, ["marginTop", "marginBottom", "paddingLeft", "paddingRight"]);
-                resetStyle(wrap, ["maxWidth", "width", "height", "margin", "transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
-                resetStyle(cardBody, ["marginTop", "marginBottom", "marginLeft", "marginRight", "padding", "border", "background", "backgroundColor", "boxShadow"]);
-                resetStyle(content, ["height", "margin", "padding", "boxShadow", "background", "backgroundColor", "borderTop", "borderBottom"]);
-                resetStyle(info, ["display", "color", "background", "backgroundColor"]);
+                resetStyle(wrap, ["display", "position", "maxWidth", "width", "height", "margin", "padding", "transform", "background", "backgroundColor", "backgroundImage", "backgroundBlendMode", "backdropFilter", "webkitBackdropFilter", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "overflow", "transition"]);
+                resetStyle(cardBody, ["position", "overflow", "marginTop", "marginBottom", "marginLeft", "marginRight", "padding", "border", "background", "backgroundColor", "boxShadow", "transform"]);
+                resetStyle(content, ["position", "height", "margin", "padding", "boxShadow", "background", "backgroundColor", "borderTop", "borderBottom", "borderRadius"]);
+                resetStyle(info, ["display", "position", "width", "minHeight", "margin", "padding", "color", "background", "backgroundColor", "alignItems", "gap", "borderRadius", "boxSizing"]);
                 resetStyle(thumbnail, ["display", "float", "width", "margin", "transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
-                resetStyle(thumbnailImg, ["width", "height"]);
+                resetStyle(thumbnailImg, ["width", "height", "borderRadius"]);
+                resetStyle(url, ["position", "zIndex", "top", "right", "left", "margin"]);
+				const thumbnailBorderRadius = intValue(`${prefix}-thumbnail-border-radius`, 0);
+				if (thumbnail) thumbnail.style.borderRadius = `${thumbnailBorderRadius}px`;
+				if (thumbnailImg) thumbnailImg.style.borderRadius = `${thumbnailBorderRadius}px`;
 
                 card.style.marginTop = cssSize("margin-top") || "";
                 card.style.marginBottom = cssSize("margin-bottom") || "";
@@ -1660,6 +1777,9 @@
 						node.style.removeProperty("margin-left");
 						node.style.removeProperty("margin-right");
 						node.style.removeProperty("text-align");
+						node.style.removeProperty("padding");
+						node.style.removeProperty("background");
+						node.style.removeProperty("border");
 					});
 
                     if (specialFormat === "mac") {
@@ -1696,6 +1816,35 @@
                             cardBody.style.setProperty("padding-left", "24px", "important");
                             cardBody.style.setProperty("background-color", "transparent", "important");
                         }
+                    } else if (["Floating", "Floating2", "fbd"].includes(specialFormat)) {
+                        if (wrap) {
+                            wrap.style.position = "relative";
+                            wrap.style.display = "flow-root";
+                            wrap.style.margin = "12px";
+                            wrap.style.padding = "12px";
+                            wrap.style.border = "none";
+                            wrap.style.borderRadius = `${intValue(`${prefix}-border-radius`, 0)}px`;
+                            wrap.style.boxShadow = "none";
+                            wrap.style.overflow = "visible";
+                            wrap.querySelector(".pz-preview-floating-frame")?.remove();
+                        }
+                        if (cardBody) {
+                            cardBody.style.margin = "0";
+                            cardBody.style.padding = "0";
+                            cardBody.style.boxShadow = "none";
+                            cardBody.style.position = "relative";
+                            cardBody.style.zIndex = "1";
+							if (specialFormat === "Floating2") {
+								cardBody.style.transform = "translate(-12px, -12px)";
+							}
+                        }
+                        if (content) {
+                            content.style.position = "relative";
+                            content.style.zIndex = "1";
+                        }
+                        if (info) {
+                            info.style.borderRadius = "10px";
+                        }
                     }
                 }
 
@@ -1712,20 +1861,27 @@
                 }
 
                 if (specialFormat === "cmp") {
-                    if (wrap) wrap.style.margin = "0";
+					if (wrap) {
+						wrap.style.margin = "0";
+						wrap.style.overflow = "hidden";
+					}
                     if (content) {
                         content.style.height = "100px";
                         content.style.margin = "0";
                         content.style.padding = "0";
                     }
-                    if (info) info.style.display = "none";
+					if (info) info.style.setProperty("display", "none", "important");
                     if (thumbnail) {
+						const compactBorderRadius = intValue(`${prefix}-border-radius`, 0);
                         thumbnail.style.display = "block";
                         thumbnail.style.float = "left";
                         thumbnail.style.width = "100px";
                         thumbnail.style.height = "108px";
                         thumbnail.style.margin = "-2px 8px 0 -1px";
-                        thumbnail.style.borderRadius = "16px 0 0 16px";
+						thumbnail.style.borderRadius = `${compactBorderRadius}px ${thumbnailBorderRadius}px ${thumbnailBorderRadius}px ${compactBorderRadius}px`;
+						if (thumbnailImg) {
+							thumbnailImg.style.borderRadius = `${compactBorderRadius}px ${thumbnailBorderRadius}px ${thumbnailBorderRadius}px ${compactBorderRadius}px`;
+						}
                     }
                     if (thumbnailImg) {
                         const compactBorderColor = value(`${prefix}-border-color`) || "#999";
@@ -1800,7 +1956,8 @@
                 }
                 const showDate = prefix !== "ex" && displayDate !== "";
                 const urlText = previewUrlText(card, prefix);
-                if (!showDate && displayUrl === "1" && content && !url) {
+                const showBrowserUrl = specialFormat === "browser";
+                if ((showBrowserUrl || (!showDate && displayUrl === "1")) && content && !url) {
                     url = document.createElement("div");
                     url.className = "lkc-url";
                     url.title = urlText;
@@ -1830,12 +1987,13 @@
                     }
                 }
                 applyDisplay(date, showDate);
-                applyDisplay(url, displayUrl === "1" && !showDate);
-                applyDisplay(infoUrl, displayUrl === "2" && !showDate);
+                applyDisplay(url, showBrowserUrl || (displayUrl === "1" && !showDate));
+                applyDisplay(infoUrl, !showBrowserUrl && displayUrl === "2" && !showDate);
                 syncShare(card, content, info, title, infoUrl);
                 applyDisplay(excerpt, checked("display-excerpt"));
 
                 if (heading) {
+                    resetStyle(heading, ["alignItems", "position", "top", "left", "height", "padding", "zIndex"]);
                     let headingText = value(`${prefix}-heading-text`);
                     if (value("special-format") === "JIN" && headingText === "") {
                         if (prefix === "ex") headingText = labels.referenced || "Referenced";

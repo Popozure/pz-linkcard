@@ -18,43 +18,48 @@
 	<h2><?php echo	__('Basic Settings', 'pz-linkcard' ).$help_open.'basic'.$help_close; ?></h2>
 <?php
 	// 簡単書式設定
-	$item_name		=	'special-format';
-	$item_list		=	array(
-		''			=>		__('None',							'pz-linkcard'),
-		'LkC'		=>		__('Pz-LkC Default',				'pz-linkcard'),
-		'hbc'		=>		__('Normal',						'pz-linkcard'),
-		'cmp'		=>		__('Compact',						'pz-linkcard'),
-		'smp'		=>		__('Simple',						'pz-linkcard'),
-		'accent'	=>		__('Accent',						'pz-linkcard'),
-		'JIN'		=>		__('Headline',						'pz-linkcard'),
-		'fancy'		=>		__('Fancy',							'pz-linkcard'),
-		'glass'		=>		__('Glass',							'pz-linkcard'),
-		'metal'		=>		__('Metal',							'pz-linkcard'),
-		'wxp'		=>		__('Windows XP',					'pz-linkcard'),
-		'w95'		=>		__('Windows 95',					'pz-linkcard'),
-		'mac'		=>		__('Mac OS',						'pz-linkcard'),
-		'pin'		=>		__('Pushpin',						'pz-linkcard'),
-		'ct1'		=>		__('Cellophane tape "center"',		'pz-linkcard'),
-		'ct2'		=>		__('Cellophane tape "Top corner"',	'pz-linkcard'),
-		'ct3'		=>		__('Cellophane tape "long"',		'pz-linkcard'),
-		'ct4'		=>		__('Cellophane tape "diagonal"',	'pz-linkcard'),
-		'tac'		=>		__('Cellophane tape and curling',	'pz-linkcard'),
-		'ppc'		=>		__('Curling paper',					'pz-linkcard'),
-		'sBR'		=>		__('Stitch blue & red',				'pz-linkcard'),
-		'sGY'		=>		__('Stitch green & yellow',			'pz-linkcard'),
-		'sqr'		=>		__('Square',						'pz-linkcard'),
-		'ecl'		=>		__('Enclose',						'pz-linkcard'),
-		'ref'		=>		__('Reflection',					'pz-linkcard'),
-		'inI'		=>		__('Information orange',			'pz-linkcard'),
-		'inN'		=>		__('Neutral bluegreen',				'pz-linkcard'),
-		'inE'		=>		__('Enlightened green',				'pz-linkcard'),
-		'inR'		=>		__('Resistance blue',				'pz-linkcard'),
-		'slt'		=>		__('Slanting',						'pz-linkcard'),
-		'3Dr'		=>		__('3D Rotate',						'pz-linkcard'),
+	$item_name			=	'special-format';
+	$item_list			=	array(
+		''				=>		__('None',							'pz-linkcard'),
+		'LkC'			=>		__('Pz-LkC Default',				'pz-linkcard'),
+		'hbc'			=>		__('Normal',						'pz-linkcard'),
+		'cmp'			=>		__('Compact',						'pz-linkcard'),
+		'smp'			=>		__('Simple',						'pz-linkcard'),
+		'floating'		=>		__('Floating border',				'pz-linkcard'),
+		'floating2'		=>		__('Floating border 2',				'pz-linkcard'),
+		'accent'		=>		__('Accent',						'pz-linkcard'),
+		'JIN'			=>		__('Headline',						'pz-linkcard'),
+		'fancy'			=>		__('Fancy',							'pz-linkcard'),
+		'glass'			=>		__('Glass',							'pz-linkcard'),
+		'metal'			=>		__('Metal',							'pz-linkcard'),
+		'browser'		=>		__('Browser',						'pz-linkcard'),
+		'wxp'			=>		__('Windows XP',					'pz-linkcard'),
+		'w95'			=>		__('Windows 95',					'pz-linkcard'),
+		'mac'			=>		__('Mac OS',						'pz-linkcard'),
+		'pin'			=>		__('Pushpin',						'pz-linkcard'),
+		'ct1'			=>		__('Cellophane tape "center"',		'pz-linkcard'),
+		'ct2'			=>		__('Cellophane tape "Top corner"',	'pz-linkcard'),
+		'ct3'			=>		__('Cellophane tape "long"',		'pz-linkcard'),
+		'ct4'			=>		__('Cellophane tape "diagonal"',	'pz-linkcard'),
+		'tac'			=>		__('Cellophane tape and curling',	'pz-linkcard'),
+		'ppc'			=>		__('Curling paper',					'pz-linkcard'),
+		'sBR'			=>		__('Stitch blue & red',				'pz-linkcard'),
+		'sGY'			=>		__('Stitch green & yellow',			'pz-linkcard'),
+		'stitch-free'	=>		__('Stitch free',					'pz-linkcard'),
+		'sqr'			=>		__('Square',						'pz-linkcard'),
+		'ecl'			=>		__('Enclose',						'pz-linkcard'),
+		'ref'			=>		__('Reflection',					'pz-linkcard'),
+		'inI'			=>		__('Information orange',			'pz-linkcard'),
+		'inN'			=>		__('Neutral bluegreen',				'pz-linkcard'),
+		'inE'			=>		__('Enlightened green',				'pz-linkcard'),
+		'inR'			=>		__('Resistance blue',				'pz-linkcard'),
+		'slt'			=>		__('Slanting',						'pz-linkcard'),
+		'3Dr'			=>		__('3D Rotate',						'pz-linkcard'),
 	);
 	$item_descript		=	__('Easy Format',					'pz-linkcard' );
 	$item_notice		=	__('*', 'pz-linkcard' ).' '.__('It applies over other formatting settings.', 'pz-linkcard' );
-	echo_list($item_name, $prop[$item_name], $item_list, $item_descript, $item_notice );
+	$item_value = $prop[$item_name] === 'fbd' ? 'floating' : $prop[$item_name];
+	echo_list($item_name, $item_value, $item_list, $item_descript, $item_notice );
 ?>
 		<tr>
 			<th scope="row"><?php esc_html_e('Saved Datetime', 'pz-linkcard' ); ?></th>
