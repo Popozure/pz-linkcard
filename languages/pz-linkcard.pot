@@ -265,7 +265,7 @@ msgid "Internal Link Data"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:200 ../lib/pz-linkcard-cacheman-list.php:95 ../lib/pz-linkcard-cacheman-list.php:438
-#: ../lib/pz-linkcard-modal.php:15 ../lib/pz-linkcard-settings-display.php:32 ../pz-linkcard.php:3591
+#: ../lib/views/pz-linkcard-visual-editor.php:15 ../lib/pz-linkcard-settings-display.php:32 ../pz-linkcard.php:3591
 msgid "Post Date"
 msgstr ""
 
@@ -702,10 +702,6 @@ msgstr ""
 msgid "Debug Mode"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:131 ../lib/pz-linkcard-settings.php:241 ../lib/pz-linkcard-settings.php:785
-msgid "Survey Mode"
-msgstr ""
-
 #: ../lib/pz-linkcard-cacheman.php:132 ../lib/pz-linkcard-settings.php:242
 msgid "Admin Mode"
 msgstr ""
@@ -927,27 +923,27 @@ msgstr ""
 msgid "Blocked by robots.txt."
 msgstr ""
 
-#: ../lib/pz-linkcard-modal.php:4
+#: ../lib/views/pz-linkcard-visual-editor.php:4
 msgid "×"
 msgstr ""
 
-#: ../lib/pz-linkcard-modal.php:8
+#: ../lib/views/pz-linkcard-visual-editor.php:8
 msgid "Input URL"
 msgstr ""
 
-#: ../lib/pz-linkcard-modal.php:15 ../pz-linkcard.php:3592
+#: ../lib/views/pz-linkcard-visual-editor.php:15 ../pz-linkcard.php:3592
 msgid "Modified Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-modal.php:17 ../pz-linkcard.php:3586
+#: ../lib/views/pz-linkcard-visual-editor.php:17 ../pz-linkcard.php:3586
 msgid "Enter a URL or search keyword"
 msgstr ""
 
-#: ../lib/pz-linkcard-modal.php:18 ../pz-linkcard.php:3590
+#: ../lib/views/pz-linkcard-visual-editor.php:18 ../pz-linkcard.php:3590
 msgid "Search results"
 msgstr ""
 
-#: ../lib/pz-linkcard-modal.php:20
+#: ../lib/views/pz-linkcard-visual-editor.php:20
 msgid "Insert Linkcard"
 msgstr ""
 
@@ -2341,14 +2337,6 @@ msgstr ""
 msgid "Delete all click data? This action cannot be undone."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-etc.php:120
-msgid "Survey Settings"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-etc.php:123
-msgid "Log URL"
-msgstr ""
-
 #: ../lib/pz-linkcard-settings-etc.php:127
 msgid "File Count"
 msgstr ""
@@ -2359,10 +2347,6 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-etc.php:128
 msgid "Used"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-etc.php:133
-msgid "Log Directory"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-initialize.php:4 ../lib/pz-linkcard-settings.php:844
@@ -2386,7 +2370,7 @@ msgid "Reset the \"Settings\" to the initial value."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-initialize.php:23
-msgid "Do not initialize \"Survey Mode\" and \"Administrator Mode\"."
+msgid "Do not initialize \"Administrator Mode\"."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-initialize.php:29
@@ -3128,20 +3112,6 @@ msgstr ""
 msgid "Deleted %s image cache files."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings.php:481
-msgid "The log directory is not configured or does not exist."
-msgstr ""
-
-#: ../lib/pz-linkcard-settings.php:483
-#, php-format
-msgid "Deleted %1$s log files. Failed to delete %2$s log files."
-msgstr ""
-
-#: ../lib/pz-linkcard-settings.php:485
-#, php-format
-msgid "Deleted %s log files."
-msgstr ""
-
 #: ../lib/pz-linkcard-settings.php:501
 msgid "Failed to reset the error condition."
 msgstr ""
@@ -3276,10 +3246,6 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings.php:776 ../lib/pz-linkcard-settings.php:780
 msgid "Displays normally hidden items to find and fix defects."
-msgstr ""
-
-#: ../lib/pz-linkcard-settings.php:782 ../lib/pz-linkcard-settings.php:786
-msgid "Collect logs. May slow down operation."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings.php:788 ../lib/pz-linkcard-settings.php:792

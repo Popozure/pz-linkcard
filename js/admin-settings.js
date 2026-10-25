@@ -210,7 +210,7 @@
 	function updateInfobarModeVisibility(infobar) {
 		const fileMenu = infobar.querySelector(".pz-infobar-filemenu");
 		const switchLink = infobar.querySelector(".pz-infobar-switch");
-		const modes = Array.from(infobar.querySelectorAll(".pz-infobar-env-debug, .pz-infobar-env-survey, .pz-infobar-env-admin"));
+		const modes = Array.from(infobar.querySelectorAll(".pz-infobar-env-debug, .pz-infobar-env-admin"));
 		if (!fileMenu || !switchLink) return;
 
 		infobar.classList.remove("pz-infobar-hide-modes");

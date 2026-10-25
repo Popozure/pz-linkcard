@@ -116,25 +116,4 @@
 		</tr>
 	</table>
 
-	<div class="pz-debug-only">
-		<h2><?php echo	__('Survey Settings', 'pz-linkcard' ); ?></h2>
-		<table class="form-table">
-			<tr class="pz-debug-only">
-				<th scope="row"><?php esc_html_e('Log URL', 'pz-linkcard' ); ?></th>
-				<td>
-					<p><input name="" type="url" title="<?php echo PZLKC_URL_DEBUG; ?>" class="pz-click-all-select" value="<?php echo PZLKC_URL_DEBUG; ?>" size="120" readonly="readonly" /></p>
-					<p><?php esc_html_e('Schemes (http and https) are omitted.', 'pz-linkcard' ); ?></p>
-					<p><?php echo esc_html__('File Count', 'pz-linkcard' ).esc_html__(': ', 'pz-linkcard' ).'<span class="pz-monospace">'.esc_html(number_format_i18n(pz_GetDirFileCount(PZLKC_DIR_DEBUG ) ) ).'</span>'; ?></p>
-					<p><?php $size = pz_GetDirSize(PZLKC_DIR_DEBUG ); echo __('Used', 'pz-linkcard' ).__(': ', 'pz-linkcard' ).'<span class="pz-monospace">'.pz_GetSizeStringSi($size).' ('.pz_GetStringBytes($size).')'; ?></span></p>
-					<p><button type="submit" name="action" value="clear-log" class="pz-button-sure" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Delete All', 'pz-linkcard' ); ?></button></p>
-				</td>
-			</tr>
-			<tr class="pz-debug-only">
-				<th scope="row"><?php esc_html_e('Log Directory', 'pz-linkcard' ); ?></th>
-				<td>
-					<p><input name="" type="text" title="<?php echo	PZLKC_DIR_DEBUG; ?>" class="pz-click-all-select" value="<?php echo PZLKC_DIR_DEBUG; ?>" size="120" readonly="readonly" /></p>
-				</td>
-			</tr>
-		</table>
-	</div>
 </div>

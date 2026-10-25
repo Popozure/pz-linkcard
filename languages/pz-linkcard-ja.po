@@ -328,7 +328,7 @@ msgstr "内部リンク情報"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:200
 #: ../lib/pz-linkcard-cacheman-list.php:95
-#: ../lib/pz-linkcard-cacheman-list.php:438 ../lib/pz-linkcard-modal.php:15
+#: ../lib/pz-linkcard-cacheman-list.php:438 ../lib/views/pz-linkcard-visual-editor.php:15
 #: ../lib/pz-linkcard-settings-display.php:32 ../pz-linkcard.php:3591
 msgid "Post Date"
 msgstr "投稿日"
@@ -800,11 +800,6 @@ msgstr "履歴"
 msgid "Debug Mode"
 msgstr "デバッグ モード"
 
-#: ../lib/pz-linkcard-cacheman.php:131 ../lib/pz-linkcard-settings.php:241
-#: ../lib/pz-linkcard-settings.php:785
-msgid "Survey Mode"
-msgstr "調査モード"
-
 #: ../lib/pz-linkcard-cacheman.php:132 ../lib/pz-linkcard-settings.php:242
 msgid "Admin Mode"
 msgstr "管理者モード"
@@ -1088,27 +1083,27 @@ msgstr "無効なURLです"
 msgid "Blocked by robots.txt."
 msgstr "robots.txtにより取得が禁止されています。"
 
-#: ../lib/pz-linkcard-modal.php:4
+#: ../lib/views/pz-linkcard-visual-editor.php:4
 msgid "×"
 msgstr "×"
 
-#: ../lib/pz-linkcard-modal.php:8
+#: ../lib/views/pz-linkcard-visual-editor.php:8
 msgid "Input URL"
 msgstr "リンクカードを作成するURLを入力してください"
 
-#: ../lib/pz-linkcard-modal.php:15 ../pz-linkcard.php:3592
+#: ../lib/views/pz-linkcard-visual-editor.php:15 ../pz-linkcard.php:3592
 msgid "Modified Date"
 msgstr "更新日"
 
-#: ../lib/pz-linkcard-modal.php:17 ../pz-linkcard.php:3586
+#: ../lib/views/pz-linkcard-visual-editor.php:17 ../pz-linkcard.php:3586
 msgid "Enter a URL or search keyword"
 msgstr "URLまたは検索キーワードを入力"
 
-#: ../lib/pz-linkcard-modal.php:18 ../pz-linkcard.php:3590
+#: ../lib/views/pz-linkcard-visual-editor.php:18 ../pz-linkcard.php:3590
 msgid "Search results"
 msgstr "記事タイトルの検索結果"
 
-#: ../lib/pz-linkcard-modal.php:20
+#: ../lib/views/pz-linkcard-visual-editor.php:20
 msgid "Insert Linkcard"
 msgstr "リンクカードのショートコードを挿入する"
 
@@ -2661,14 +2656,6 @@ msgstr "クリック情報"
 msgid "Delete all click data? This action cannot be undone."
 msgstr "クリック情報を全て削除しますか？ この操作は取り消せません。"
 
-#: ../lib/pz-linkcard-settings-etc.php:120
-msgid "Survey Settings"
-msgstr "調査モードの設定"
-
-#: ../lib/pz-linkcard-settings-etc.php:123
-msgid "Log URL"
-msgstr "ログ格納ディレクトリURL"
-
 #: ../lib/pz-linkcard-settings-etc.php:127
 msgid "File Count"
 msgstr "ファイル数"
@@ -2681,10 +2668,6 @@ msgstr "："
 #: ../lib/pz-linkcard-settings-etc.php:128
 msgid "Used"
 msgstr "使用中"
-
-#: ../lib/pz-linkcard-settings-etc.php:133
-msgid "Log Directory"
-msgstr "ログ格納ディレクトリ"
 
 #: ../lib/pz-linkcard-settings-initialize.php:4
 #: ../lib/pz-linkcard-settings.php:844
@@ -2712,8 +2695,8 @@ msgid "Reset the \"Settings\" to the initial value."
 msgstr "すべての設定を初期状態に戻します。"
 
 #: ../lib/pz-linkcard-settings-initialize.php:23
-msgid "Do not initialize \"Survey Mode\" and \"Administrator Mode\"."
-msgstr "初期化時に調査モードと管理者モードを解除しません。"
+msgid "Do not initialize \"Administrator Mode\"."
+msgstr "初期化時に管理者モードを解除しません。"
 
 #: ../lib/pz-linkcard-settings-initialize.php:29
 msgid "Reboot This Plugin"
@@ -3476,22 +3459,6 @@ msgstr "画像キャッシュを%1$s件削除しました。%2$s件の削除に�
 msgid "Deleted %s image cache files."
 msgstr "画像キャッシュを%s件削除しました。"
 
-#: ../lib/pz-linkcard-settings.php:481
-msgid "The log directory is not configured or does not exist."
-msgstr "ログ格納ディレクトリが設定されていないか、存在しません。"
-
-#: ../lib/pz-linkcard-settings.php:483
-#, php-format
-msgid "Deleted %1$s log files. Failed to delete %2$s log files."
-msgstr ""
-"%1$s個のログファイルを削除しました。%2$s個のログファイルを削除できませんでし"
-"た。"
-
-#: ../lib/pz-linkcard-settings.php:485
-#, php-format
-msgid "Deleted %s log files."
-msgstr "%s個のログファイルを削除しました。"
-
 #: ../lib/pz-linkcard-settings.php:501
 msgid "Failed to reset the error condition."
 msgstr "エラー状態を解除します。"
@@ -3632,10 +3599,6 @@ msgstr "モード"
 #: ../lib/pz-linkcard-settings.php:776 ../lib/pz-linkcard-settings.php:780
 msgid "Displays normally hidden items to find and fix defects."
 msgstr "不具合を発見するために、通常は隠されている項目を表示する。"
-
-#: ../lib/pz-linkcard-settings.php:782 ../lib/pz-linkcard-settings.php:786
-msgid "Collect logs. May slow down operation."
-msgstr "ログを収集します。動作が遅くなる可能性があります。"
 
 #: ../lib/pz-linkcard-settings.php:788 ../lib/pz-linkcard-settings.php:792
 msgid "Unlock special settings."

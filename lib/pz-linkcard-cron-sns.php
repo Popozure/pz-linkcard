@@ -27,8 +27,5 @@
 			$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->sns_nexttime ) ) ).PHP_EOL;
 			$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;Hatena Bookmark=%1$s was returned. The next check date and time=%2$s was set.', 'pz-linkcard' ), $hatena_count, date('Y-m-d H:i', intval($result['sns_nexttime'] ) ) );
 			$log		.=	$message.PHP_EOL;
-			if	($this->options['survey-mode'] ) {
-				$this->pz_OutputLOG(__FUNCTION__, $message );
-			}
 		}
 	}

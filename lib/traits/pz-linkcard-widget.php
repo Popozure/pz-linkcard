@@ -198,7 +198,7 @@ trait Pz_LinkCard_Widget {
 		<div class="pz-dashboard-widget-actions">
 			<span class="pz-dashboard-widget-action"><span class="dashicons dashicons-archive" aria-hidden="true"></span><a href="<?php echo esc_url(add_query_arg('return_url', $dashboard_return_url, $this->cacheman_url ) ); ?>"><?php esc_html_e('Manager', 'pz-linkcard' ); ?></a></span>
 			<span class="pz-dashboard-widget-action"><span class="dashicons dashicons-admin-generic" aria-hidden="true"></span><a href="<?php echo esc_url(add_query_arg('return_url', $dashboard_return_url, $this->settings_url ) ); ?>"><?php esc_html_e('Settings', 'pz-linkcard' ); ?></a></span>
-			<a class="pz-dashboard-widget-credit" href="https://popozure.info/pz-linkcard">popozure.info</a>
+			<a class="pz-dashboard-widget-credit" href="https://popozure.info/pz-linkcard" target="_blank" rel="noopener">popozure.info</a>
 		</div>
 		<?php
 	}

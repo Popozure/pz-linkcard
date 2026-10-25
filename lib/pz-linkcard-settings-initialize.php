@@ -20,7 +20,7 @@
 					<label>
 						<input type="hidden"   name="properties[initialize-exception]" value="" />
 						<input type="checkbox" name="properties[initialize-exception]" value="1" <?php checked($this->options['initialize-exception'] ); ?> />
-						<?php esc_html_e('Do not initialize "Survey Mode" and "Administrator Mode".', 'pz-linkcard' ); ?>
+						<?php esc_html_e('Do not initialize "Administrator Mode".', 'pz-linkcard' ); ?>
 					</label>
 				</div>
 			</td>

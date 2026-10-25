@@ -117,7 +117,7 @@
 			element.style.display = debugCheckbox?.checked ? '' : 'none';
 		});
 		if (debugCheckbox && !debugCheckbox.checked) {
-			['survey-mode', 'admin-mode'].forEach(mode => {
+			['admin-mode'].forEach(mode => {
 				const checkbox = document.querySelector(`input[type=checkbox][name="properties[${mode}]"]`);
 				if (!checkbox) return;
 				checkbox.checked = false;

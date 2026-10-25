@@ -35,6 +35,12 @@ foreach ((array) $pending_rows as $pending_row ) {
 	$result = $this->pz_GetRemote($data );
 	if (is_array($result ) && !empty($result['url'] ) ) {
 		$this->pz_SetCache($result );
+		if (!empty($result['thumbnail'] ) && in_array((string) ($this->options['ex-thumbnail'] ?? '' ), array('1', '13' ), true ) ) {
+			$this->pz_GetImage($result['thumbnail'] );
+		}
+		if (!empty($result['favicon'] ) && in_array((string) ($this->options['ex-siteicon'] ?? '' ), array('1', '13' ), true ) ) {
+			$this->pz_GetImage($result['favicon'] );
+		}
 	}
 }
 

@@ -126,9 +126,7 @@
 
 	// プラグイン名・バージョン・環境表示
 	$debug_mode	= isset($this->options['debug-mode'] ) ? intval($this->options['debug-mode'] ) : 0;
-	$survey_mode	= isset($this->options['survey-mode'] ) ? intval($this->options['survey-mode'] ) : 0;
 	$html_mode		=	($debug_mode			?	'<span class="pz-infobar-env pz-infobar-env-debug">'.__('Debug Mode', 'pz-linkcard' ).'</span>'				:	'' ).
-			($survey_mode	?	'<span class="pz-infobar-env pz-infobar-env-survey">'.__('Survey Mode', 'pz-linkcard' ).'</span>'	:	'' ).
 			($admin_mode	?	'<span class="pz-infobar-env pz-infobar-env-admin">'.__('Admin Mode', 'pz-linkcard' ).'</span>'	:	'' ).
 			($develop_mode	==	1	?	'<span class="pz-infobar-env pz-infobar-env-develop">'.__('Development Environment', 'pz-linkcard' ).'</span>'	:	'' ).
 			($develop_mode	==	2	?	'<span class="pz-infobar-env pz-infobar-env-product">'.__('Production Environment', 'pz-linkcard' ).'</span>'	:	'' );

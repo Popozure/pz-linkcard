@@ -34,7 +34,7 @@ if (!array_key_exists('regist_time', $data ) || is_null($data['regist_time'] ) |
 $html = $this->pz_GetHTML(array(
 	'url'			=> $data['url'],
 	'pz-card-data'	=> $data,
-) );
+), $url_info );
 wp_send_json_success(array(
 	'ready'	=> true,
 	'html'	=> $html,

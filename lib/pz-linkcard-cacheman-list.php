@@ -42,6 +42,10 @@
 
 	// 抽出条件
 	$cond				=	(string) $keyword;
+	if (preg_match('/^[0-9]+$/D', trim($cond ) ) ) {
+		$number = trim($cond );
+		$cond = '('.$number.' id:'.$number.' post:'.$number.')';
+	}
 	$filter_unregistered	=	false;
 
 	switch	($filter ) {

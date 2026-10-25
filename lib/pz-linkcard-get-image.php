@@ -29,11 +29,6 @@
 		file_put_contents($file_path, '' );
 	};
 
-	if	($this->pz_ShouldBlockLocalAddress($thumbnail_url ) ) {
-		$create_null_file();
-		return	null;
-	}
-
 	if	(!$force ) {
 		if	(file_exists($file_path ) ) {
 			if	(filesize($file_path ) < 12 ) {
@@ -45,6 +40,11 @@
 				return	$file_url;
 			}
 		}
+	}
+
+	if	($this->pz_ShouldBlockLocalAddress($thumbnail_url ) ) {
+		$create_null_file();
+		return	null;
 	}
 
 	// ここから画像取得処理

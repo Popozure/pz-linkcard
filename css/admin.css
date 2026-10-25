@@ -247,7 +247,6 @@ body.folded #pz-infobar {
 }
 
 .pz-infobar-env-debug { background: #087f9c; }
-.pz-infobar-env-survey { background: #7353a6; }
 .pz-infobar-env-admin { background: #b04b7d; }
 .pz-infobar-env-develop { background: #07866f; }
 .pz-infobar-env-product { background: #d84d69; }
@@ -4387,7 +4386,6 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 	}
 
 	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-debug,
-	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-survey,
 	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-admin {
 		display: none;
 	}

@@ -13,9 +13,6 @@
 	// 「内部リンクの設定を参照」
 	define('LIST_INTERNAL',	array(''	=>	__('Use the same setting as Internal Link', 'pz-linkcard' ), ) );
 
-	// 「枠線の幅」
-	define('LIST_PX',		array('1px' => __('1px', 'pz-linkcard' ), '2px' => __('2px', 'pz-linkcard' ), '3px' => __('3px', 'pz-linkcard' ), '4px' => __('4px', 'pz-linkcard' ), '5px' => __('5px', 'pz-linkcard' ), '6px' => __('6px', 'pz-linkcard' ), '7px' => __('7px', 'pz-linkcard' ), '8px' => __('8px', 'pz-linkcard' ), '9px' => __('9px', 'pz-linkcard' ), '10px' => __('10px', 'pz-linkcard' ), '11px' => __('11px', 'pz-linkcard' ), '12px' => __('12px', 'pz-linkcard' ), '13px' => __('13px', 'pz-linkcard' ), '14px' => __('14px', 'pz-linkcard' ), '15px' => __('15px', 'pz-linkcard' ), '16px' => __('16px', 'pz-linkcard' ), '17px' => __('17px', 'pz-linkcard' ), '18px' => __('18px', 'pz-linkcard' ), '19px' => __('19px', 'pz-linkcard' ), '20px' => __('20px', 'pz-linkcard' ), '21px' => __('21px', 'pz-linkcard' ), '22px' => __('22px', 'pz-linkcard' ), '23px' => __('23px', 'pz-linkcard' ), '24px' => __('24px', 'pz-linkcard' ), '25px' => __('25px', 'pz-linkcard' ), '26px' => __('26px', 'pz-linkcard' ), '27px' => __('27px', 'pz-linkcard' ), '28px' => __('28px', 'pz-linkcard' ), '29px' => __('29px', 'pz-linkcard' ), '30px' => __('30px', 'pz-linkcard' ), '31px' => __('31px', 'pz-linkcard' ), '32px' => __('32px', 'pz-linkcard' ), '33px' => __('33px', 'pz-linkcard' ), '34px' => __('34px', 'pz-linkcard' ), '35px' => __('35px', 'pz-linkcard' ), '36px' => __('36px', 'pz-linkcard' ), '37px' => __('37px', 'pz-linkcard' ), '38px' => __('38px', 'pz-linkcard' ), '39px' => __('39px', 'pz-linkcard' ), '40px' => __('40px', 'pz-linkcard' ), '41px' => __('41px', 'pz-linkcard' ), '42px' => __('42px', 'pz-linkcard' ), '43px' => __('43px', 'pz-linkcard' ), '44px' => __('44px', 'pz-linkcard' ), '45px' => __('45px', 'pz-linkcard' ), '46px' => __('46px', 'pz-linkcard' ), '47px' => __('47px', 'pz-linkcard' ), '48px' => __('48px', 'pz-linkcard' ), '49px' => __('49px', 'pz-linkcard' ), '50px' => __('50px', 'pz-linkcard' ), '51px' => __('51px', 'pz-linkcard' ), '52px' => __('52px', 'pz-linkcard' ), '53px' => __('53px', 'pz-linkcard' ), '54px' => __('54px', 'pz-linkcard' ), '55px' => __('55px', 'pz-linkcard' ), '56px' => __('56px', 'pz-linkcard' ), '57px' => __('57px', 'pz-linkcard' ), '58px' => __('58px', 'pz-linkcard' ), '59px' => __('59px', 'pz-linkcard' ), '60px' => __('60px', 'pz-linkcard' ), '61px' => __('61px', 'pz-linkcard' ), '62px' => __('62px', 'pz-linkcard' ), '63px' => __('63px', 'pz-linkcard' ), '64px' => __('64px', 'pz-linkcard' ), ) );
-	
 	// 「余白」の書式
 	define('LIST_MARGIN',	array(
 		''				=>		__('Not defined',		'pz-linkcard' ),
@@ -31,22 +28,6 @@
 		'48px'			=>		__('48px',				'pz-linkcard' ),
 		'56px'			=>		__('56px',				'pz-linkcard' ),
 		'64px'			=>		__('64px',				'pz-linkcard' ),
-	) );
-
-	// 「角丸め」の書式
-	define('LIST_RADIUS',	array(
-		''				=>		__('None',				'pz-linkcard' ),
-		'2px'			=>		__('2px',				'pz-linkcard' ),
-		'4px'			=>		__('4px',				'pz-linkcard' ),
-		'6px'			=>		__('6px',				'pz-linkcard' ),
-		'8px'			=>		__('8px',				'pz-linkcard' ),
-		'12px'			=>		__('12px',				'pz-linkcard' ),
-		'16px'			=>		__('16px',				'pz-linkcard' ),
-		'20px'			=>		__('20px',				'pz-linkcard' ),
-		'24px'			=>		__('24px',				'pz-linkcard' ),
-		'32px'			=>		__('32px',				'pz-linkcard' ),
-		'64px'			=>		__('64px',				'pz-linkcard' ),
-		'50%'			=>		__('50%',				'pz-linkcard' ),
 	) );
 
 	// 「枠線」の書式
@@ -116,7 +97,6 @@
 
 	// デバグモード・管理モード
 	$debug_mode			=	isset($this->options['debug-mode'] )		?	intval($this->options['debug-mode'] )		:	0 ;
-	$survey_mode		=	isset($this->options['survey-mode'] )		?	intval($this->options['survey-mode'] )		:	0 ;
 	$admin_mode			=	isset($this->options['admin-mode'] )		?	intval($this->options['admin-mode'] )		:	0 ;
 	$develop_mode		=	isset($this->options['develop-mode'] )		?	intval($this->options['develop-mode'] )		:	0 ;
 	$menu_error			=	isset($this->options['error-mode'] )		?	intval($this->options['error-mode'] )		:	0 ;
@@ -138,7 +118,6 @@
 
 		// 管理者モードの解除
 		if	(!$prop['debug-mode'] ) {
-			$prop['survey-mode']			=	0;
 			$prop['admin-mode']				=	0;
 		}
 		if	(!$prop['admin-mode'] ) {
@@ -148,7 +127,6 @@
 
 	// 画面入力値で修正
 	$debug_mode			=	isset($prop['debug-mode'] )					?	intval($prop['debug-mode'] )				:	$debug_mode ;
-	$survey_mode		=	isset($prop['survey-mode'] )				?	intval($prop['survey-mode'] )				:	$survey_mode ;
 	$admin_mode			=	isset($prop['admin-mode'] )					?	intval($prop['admin-mode'] )				:	$admin_mode ;
 	$develop_mode		=	isset($prop['develop-mode'] )				?	intval($prop['develop-mode'] )				:	$develop_mode ;
 	$menu_error			=	isset($prop['error-mode'] )					?	intval($prop['error-mode'] )				:	$menu_error ;
@@ -156,7 +134,6 @@
 	$menu_initialize	=	isset($prop['flg-initialize'] )				?	intval($prop['flg-initialize'] )			:	$menu_initialize ;
 	$inhibit			=	isset($prop['flg-inhibit'] )				?	intval($prop['flg-inhibit'] )				:	$inhibit ;
 	if	(!$debug_mode ) {
-		$survey_mode	=	0;
 		$admin_mode	=	0;
 	}
 
@@ -238,7 +215,6 @@
 
 	// プラグイン名・バージョン・環境表示
 	$html_mode		=	($debug_mode			?	'<span class="pz-infobar-env pz-infobar-env-debug">'.	__('Debug Mode', 'pz-linkcard' ).'</span>'				:	'' ).
-						($survey_mode			?	'<span class="pz-infobar-env pz-infobar-env-survey">'.	__('Survey Mode', 'pz-linkcard' ).'</span>'				:	'' ).
 						($admin_mode			?	'<span class="pz-infobar-env pz-infobar-env-admin">'.	__('Admin Mode', 'pz-linkcard' ).'</span>'				:	'' ).
 						($develop_mode	==	1	?	'<span class="pz-infobar-env pz-infobar-env-develop">'.	__('Development Environment', 'pz-linkcard' ).'</span>'	:	'' ).
 						($develop_mode	==	2	?	'<span class="pz-infobar-env pz-infobar-env-product">'.	__('Production Environment', 'pz-linkcard' ).'</span>'	:	'' );
@@ -263,7 +239,6 @@
 	$temp_param		=
 		array(
 			'debug-mode'		=>		intval($debug_mode ),
-			'survey-mode'		=>		intval($survey_mode ),
 			'admin-mode'		=>		intval($admin_mode ),
 			'develop-mode'		=>		intval($develop_mode ),
 			'multi-mode'		=>		intval($menu_multi ),
@@ -289,8 +264,6 @@
 	// 定義漏れチェック
 	if	( ($this->options['admin-mode'] ) && ($prop ) && ($action !== 'init-plugin' ) ) {
 		$default_check_exceptions	=	array(
-			'debug-dir',
-			'debug-url',
 			'thumbnail-dir',
 			'thumbnail-url',
 			'blockquote',
@@ -384,7 +357,7 @@
 			// 保存済みの値ではなく、実行時に画面で選択されている状態を優先する
 			$this->options['initialize-exception']	=	!empty($prop['initialize-exception'] ) ? 1 : 0;
 			if	($this->options['initialize-exception'] ) {
-				foreach	(array('debug-mode', 'survey-mode', 'admin-mode' ) as $mode_name ) {
+				foreach	(array('debug-mode', 'admin-mode' ) as $mode_name ) {
 					$this->options[$mode_name]	=	!empty($prop[$mode_name] ) ? 1 : 0;
 				}
 			}
@@ -395,7 +368,6 @@
 			if	($result ) {
 				// 表示オプションも初期化後の値で直ちに描画する
 				$debug_mode		=	intval($this->options['debug-mode'] );
-				$survey_mode	=	intval($this->options['survey-mode'] );
 				$admin_mode		=	intval($this->options['admin-mode'] );
 				$develop_mode	=	intval($this->options['develop-mode'] );
 				$menu_error		=	intval($this->options['error-mode'] );
@@ -473,17 +445,6 @@
 				$html_notice	.= '<div class="notice notice-success is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %s image cache files.', 'pz-linkcard' ), esc_html(number_format_i18n($delete_result['deleted'] ) ) ).'</strong></p></div>';
 			}
 			$flg_style	= false;
-			break;
-
-		case	'clear-log':
-			$delete_result	= $this->pz_DeleteUploadDirectoryFiles(PZLKC_DIR_DEBUG, 'log' );
-			if	(!$delete_result['valid'] ) {
-				$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('The log directory is not configured or does not exist.', 'pz-linkcard' ).'</strong></p></div>';
-			} elseif ($delete_result['failed'] > 0 ) {
-				$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %1$s log files. Failed to delete %2$s log files.', 'pz-linkcard' ), esc_html(number_format_i18n($delete_result['deleted'] ) ), esc_html(number_format_i18n($delete_result['failed'] ) ) ).'</strong></p></div>';
-			} else {
-				$html_notice .= '<div class="notice notice-success is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %s log files.', 'pz-linkcard' ), esc_html(number_format_i18n($delete_result['deleted'] ) ) ).'</strong></p></div>';
-			}
 			break;
 
 		case	'clear-error':
@@ -811,12 +772,6 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 						<input type="checkbox" name="properties[debug-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($this->options['debug-mode'] ); ?> />
 						<span class="pz-screen-option-name"><?php esc_html_e('Debug Mode', 'pz-linkcard' ); ?></span>
 						<span class="pz-screen-option-description"><?php echo esc_html(__('Displays normally hidden items to find and fix defects.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?></span>
-					</label>
-					<label class="pz-settings-debug-dependent"<?php echo $debug_mode ? '' : ' style="display: none;"'; ?> title="<?php echo esc_attr(__('Collect logs. May slow down operation.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?>">
-						<input type="hidden" name="properties[survey-mode]" value="" form="pz-settings-form" />
-						<input type="checkbox" name="properties[survey-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($survey_mode ); ?> />
-						<span class="pz-screen-option-name"><?php esc_html_e('Survey Mode', 'pz-linkcard' ); ?></span>
-						<span class="pz-screen-option-description"><?php echo esc_html(__('Collect logs. May slow down operation.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?></span>
 					</label>
 					<label class="pz-settings-debug-dependent"<?php echo $debug_mode ? '' : ' style="display: none;"'; ?> title="<?php echo esc_attr(__('Unlock special settings.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?>">
 						<input type="hidden" name="properties[admin-mode]" value="" form="pz-settings-form" />
