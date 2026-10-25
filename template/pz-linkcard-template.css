@@ -84,6 +84,7 @@
 	word-break: break-all;
 	white-space: normal;
 	overflow: hidden;
+	box-sizing: content-box;
 
 	/*CONTENT-PADDING*/
 	/*CONTENT-INSET*/

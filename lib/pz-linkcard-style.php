@@ -44,6 +44,7 @@
 				$file_text	=	str_replace('/*NONE-EXCERPT*/',			'display: none !important;', $file_text );
 				break;
 			case 'floating':
+				$file_text = str_replace(array('/*EX-BORDER*/', '/*IN-BORDER*/'), 'border: none !important;', $file_text );
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; display: flow-root; margin: 12px; padding: 12px; border: none; box-shadow: none; overflow: visible; }';
 				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; inset: -12px 12px 12px -12px; pointer-events: none; z-index: 0; }';
 				foreach (array('ex', 'in') as $t) {
@@ -64,6 +65,7 @@
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'floating2':
+				$file_text = str_replace(array('/*EX-BORDER*/', '/*IN-BORDER*/'), 'border: none !important;', $file_text );
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; display: flow-root; margin: 12px; padding: 12px; border: none; box-shadow: none; overflow: visible; }';
 				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; inset: -12px 12px 12px -12px; pointer-events: none; z-index: 0; }';
 				foreach (array('ex', 'in') as $t) {
@@ -221,7 +223,7 @@
 				$file_text = str_replace('/*EX-BORDER*/', 'border: none;', $file_text );
 				$file_text = str_replace('/*IN-BORDER*/', 'border: none;', $file_text );
 				$file_text = str_replace('/*CONTENT-MARGIN*/', 'margin: 8px 0;', $file_text );
-				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; }';
+				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; padding: 0; border: 0; background: transparent; box-shadow: none; }';
 				$css .= '.lkc-card { margin: 12px; padding: 8px; border: 1px solid #b8c0cc; border-radius: 10px; background: linear-gradient(#f8fafc, #e8edf3); box-shadow: 0 3px 10px rgba(0,0,0,.22); }';
 				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 2; }';
 				$css .= '.lkc-info { position: relative; margin: -8px -8px 8px; padding: 5px 8px 5px 44px; border-radius: 9px 9px 0 0; background: linear-gradient(#eaf3ff, #c9dcf5); color: #1d3557; font-size: 11px; line-height: 16px; }';
@@ -277,10 +279,15 @@
 			case 'browser': // Browser
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; }';
 				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 2; }';
-				$css .= '.lkc-card { position: relative; margin: 12px; padding: 8px; overflow: hidden; border: 1px solid #c7cdd4; border-radius: 10px; background: #eef1f5; box-shadow: 0 4px 12px rgba(60,64,67,.28); }';
+				$css .= '.lkc-card { position: relative; margin: 0; padding: 8px; overflow: hidden; border: 0; border-radius: 0; background: #eef1f5; box-shadow: 0 4px 12px rgba(60,64,67,.28); }';
 				$css .= '.lkc-info { position: relative; display: flex !important; width: min(220px, calc(100% - 28px)); min-height: 30px; margin: -2px 0 0 4px; padding: 5px 30px 5px 10px; align-items: center; gap: 6px; border-radius: 8px 8px 0 0; background: #fff; color: #3c4043; box-sizing: border-box; }';
 				$css .= '.lkc-info::after { content: "×"; position: absolute; top: 50%; right: 9px; color: #5f6368; font-size: 14px; line-height: 1; transform: translateY(-50%); }';
 				$css .= '.lkc-content { position: relative; margin: 0 -8px -8px; padding: 42px 8px 8px; background: #fff; }';
+				foreach (array('ex' => 'external', 'in' => 'internal' ) as $prefix => $type ) {
+					$bg = !empty($prop[$prefix.'-bg-enabled'] ) ? (sanitize_hex_color($prop[$prefix.'-bg-color'] ?? '') ?: 'transparent') : 'transparent';
+					$radius = max(0, intval($prop[$prefix.'-border-radius'] ?? 0 ) );
+					$css .= '.lkc-'.$type.'-wrap .lkc-card { background: '.$bg.'; border-radius: '.$radius.'px; }';
+				}
 				$css .= '.lkc-content::before { content: "←   →   ↻"; position: absolute; top: 0; right: 0; left: 0; height: 34px; padding: 8px 12px; border-top: 1px solid #d5d9dd; border-bottom: 1px solid #d5d9dd; background: #f8f9fa; color: #5f6368; font-size: 14px; line-height: 17px; letter-spacing: 2px; box-sizing: border-box; }';
 				$css .= '.lkc-content::after { content: "●"; position: absolute; top: 5px; right: 12px; left: 68px; height: 24px; padding: 4px 10px; overflow: hidden; border: 1px solid #dfe1e5; border-radius: 14px; background: #fff; color: #5f6368; font-size: 9px; line-height: 14px; box-sizing: border-box; pointer-events: none; }';
 				$css .= '.lkc-content .lkc-url { position: absolute; z-index: 1; top: 8px; right: 22px; left: 92px; margin: 0; padding: 0; overflow: hidden; background: transparent; color: #3c4043; font-size: 11px; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; }';

@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
     const dashboard = document.querySelector(".pz-dashboard");
     if (!dashboard) return;
 
@@ -1286,7 +1286,7 @@
         const applyConfiguredLinkBoxHover = (node, prefix) => {
             if (!node) return;
 			const specialFormat = value("special-format");
-			const isFloatingLinkBox = ["Floating", "Floating2", "fbd"].includes(specialFormat);
+			const isFloatingLinkBox = ["floating", "floating2", "fbd"].includes(specialFormat);
 			const isAccentLinkBox = specialFormat === "accent";
 
             if (checked(`${prefix}-hover-transform-enabled`)) {
@@ -1484,7 +1484,7 @@
             const isLinkBox = prefix === "ex" || prefix === "in";
             const specialFormat = value("special-format");
             const isSimpleLinkBox = specialFormat === "smp" && isLinkBox;
-			const isFloatingLinkBox = isLinkBox && ["Floating", "Floating2", "fbd"].includes(specialFormat);
+			const isFloatingLinkBox = isLinkBox && ["floating", "floating2", "fbd"].includes(specialFormat);
 			const isAccentLinkBox = isLinkBox && specialFormat === "accent";
             const stitchPreset = isLinkBox ? stitchPresets[specialFormat]?.[prefix] : null;
             const ingressPreset = isLinkBox ? ingressPresets[specialFormat]?.[prefix] : null;
@@ -1641,7 +1641,7 @@
             if (specialFormat === "JIN") {
                 applyHeadlinePreset();
             }
-            if (["fancy", "glass", "metal", "mac", "browser", "ref", "ct1", "ct2", "ct3", "ct4", "tac", "Floating", "Floating2", "fbd"].includes(specialFormat)) {
+            if (["fancy", "glass", "metal", "mac", "browser", "ref", "ct1", "ct2", "ct3", "ct4", "tac", "floating", "floating2", "fbd"].includes(specialFormat)) {
                 win.querySelectorAll("[data-pz-preview-heading]").forEach(heading => {
                     heading.style.zIndex = ["glass", "metal"].includes(specialFormat)
                         ? "6"
@@ -1650,14 +1650,19 @@
             }
             if (specialFormat === "browser") {
                 win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
+                    const prefix = card.dataset.pzPreviewCard;
                     const cardBody = card.querySelector(".lkc-card");
                     const info = card.querySelector("[data-pz-preview-info], .lkc-info");
                     const content = card.querySelector("[data-pz-preview-content], .lkc-content");
                     const domain = card.querySelector(".lkc-domain");
                     if (cardBody) {
+                        cardBody.style.margin = "0";
                         cardBody.style.position = "relative";
                         cardBody.style.overflow = "hidden";
-                        cardBody.style.background = "#eef1f5";
+                        cardBody.style.borderRadius = `${Math.max(0, intValue(`${prefix}-border-radius`, 0))}px`;
+                        cardBody.style.background = checked(`${prefix}-bg-enabled`)
+                            ? (value(`${prefix}-bg-color`) || "transparent")
+                            : "transparent";
                     }
                     if (info) {
                         info.style.setProperty("display", "flex", "important");
@@ -1742,7 +1747,7 @@
                 resetCardOrder(card);
                 resetStyle(card, ["marginTop", "marginBottom", "paddingLeft", "paddingRight"]);
                 resetStyle(wrap, ["display", "position", "maxWidth", "width", "height", "margin", "padding", "transform", "background", "backgroundColor", "backgroundImage", "backgroundBlendMode", "backdropFilter", "webkitBackdropFilter", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "overflow", "transition"]);
-                resetStyle(cardBody, ["position", "overflow", "marginTop", "marginBottom", "marginLeft", "marginRight", "padding", "border", "background", "backgroundColor", "boxShadow", "transform"]);
+                resetStyle(cardBody, ["position", "overflow", "marginTop", "marginBottom", "marginLeft", "marginRight", "padding", "border", "borderRadius", "background", "backgroundColor", "boxShadow", "transform"]);
                 resetStyle(content, ["position", "height", "margin", "padding", "boxShadow", "background", "backgroundColor", "borderTop", "borderBottom", "borderRadius"]);
                 resetStyle(info, ["display", "position", "width", "minHeight", "margin", "padding", "color", "background", "backgroundColor", "alignItems", "gap", "borderRadius", "boxSizing"]);
                 resetStyle(thumbnail, ["display", "float", "width", "margin", "transform", "background", "backgroundColor", "backgroundImage", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "transition"]);
@@ -1816,13 +1821,13 @@
                             cardBody.style.setProperty("padding-left", "24px", "important");
                             cardBody.style.setProperty("background-color", "transparent", "important");
                         }
-                    } else if (["Floating", "Floating2", "fbd"].includes(specialFormat)) {
+                    } else if (["floating", "floating2", "fbd"].includes(specialFormat)) {
                         if (wrap) {
                             wrap.style.position = "relative";
                             wrap.style.display = "flow-root";
                             wrap.style.margin = "12px";
                             wrap.style.padding = "12px";
-                            wrap.style.border = "none";
+                            wrap.style.setProperty("border", "none", "important");
                             wrap.style.borderRadius = `${intValue(`${prefix}-border-radius`, 0)}px`;
                             wrap.style.boxShadow = "none";
                             wrap.style.overflow = "visible";
@@ -1834,7 +1839,7 @@
                             cardBody.style.boxShadow = "none";
                             cardBody.style.position = "relative";
                             cardBody.style.zIndex = "1";
-							if (specialFormat === "Floating2") {
+							if (specialFormat === "floating2") {
 								cardBody.style.transform = "translate(-12px, -12px)";
 							}
                         }
