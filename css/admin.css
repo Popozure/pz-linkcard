@@ -734,6 +734,18 @@ body.folded #pz-infobar {
 	color: #4a1f1f;
 }
 
+.pz-click-data-actions {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin: 1em 0;
+}
+
+.pz-click-data-actions > .pz-destructive-action {
+	margin: 0;
+}
+
 .pz-image-cache-delete,
 .pz-destructive-action {
 	display: flex;

@@ -328,7 +328,7 @@ msgstr "内部リンク情報"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:200
 #: ../lib/pz-linkcard-cacheman-list.php:95
-#: ../lib/pz-linkcard-cacheman-list.php:438 ../lib/views/pz-linkcard-visual-editor.php:15
+#: ../lib/pz-linkcard-cacheman-list.php:438 ../lib/traits/pz-linkcard-editor-visual.php:15
 #: ../lib/pz-linkcard-settings-display.php:32 ../pz-linkcard.php:3591
 msgid "Post Date"
 msgstr "投稿日"
@@ -1083,27 +1083,27 @@ msgstr "無効なURLです"
 msgid "Blocked by robots.txt."
 msgstr "robots.txtにより取得が禁止されています。"
 
-#: ../lib/views/pz-linkcard-visual-editor.php:4
+#: ../lib/traits/pz-linkcard-editor-visual.php:4
 msgid "×"
 msgstr "×"
 
-#: ../lib/views/pz-linkcard-visual-editor.php:8
+#: ../lib/traits/pz-linkcard-editor-visual.php:8
 msgid "Input URL"
 msgstr "リンクカードを作成するURLを入力してください"
 
-#: ../lib/views/pz-linkcard-visual-editor.php:15 ../pz-linkcard.php:3592
+#: ../lib/traits/pz-linkcard-editor-visual.php:15 ../pz-linkcard.php:3592
 msgid "Modified Date"
 msgstr "更新日"
 
-#: ../lib/views/pz-linkcard-visual-editor.php:17 ../pz-linkcard.php:3586
+#: ../lib/traits/pz-linkcard-editor-visual.php:17 ../pz-linkcard.php:3586
 msgid "Enter a URL or search keyword"
 msgstr "URLまたは検索キーワードを入力"
 
-#: ../lib/views/pz-linkcard-visual-editor.php:18 ../pz-linkcard.php:3590
+#: ../lib/traits/pz-linkcard-editor-visual.php:18 ../pz-linkcard.php:3590
 msgid "Search results"
 msgstr "記事タイトルの検索結果"
 
-#: ../lib/views/pz-linkcard-visual-editor.php:20
+#: ../lib/traits/pz-linkcard-editor-visual.php:20
 msgid "Insert Linkcard"
 msgstr "リンクカードのショートコードを挿入する"
 
@@ -1507,10 +1507,6 @@ msgstr "アクセント"
 #: ../lib/pz-linkcard-settings-basic.php:29
 msgid "Headline"
 msgstr "見出し"
-
-#: ../lib/pz-linkcard-settings-basic.php:30
-msgid "Fancy"
-msgstr "ファンシー"
 
 #: ../lib/pz-linkcard-settings-basic.php:31
 msgid "Glass"
@@ -3942,6 +3938,59 @@ msgstr "投稿が見つかりませんでした。"
 #: ../pz-linkcard.php:4256 ../pz-linkcard.php:4259
 msgid "You do not have permission to preview this post."
 msgstr "リンクカードを閲覧する権限がありません。"
+
+
+#: ../lib/pz-linkcard-settings-etc.php
+msgid "Delete Invalid Records"
+msgstr "無効なレコードの削除"
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Failed to delete invalid click records."
+msgstr "無効なクリック情報を削除できませんでした。"
+
+#: ../lib/pz-linkcard-settings.php
+#, php-format
+msgid "Deleted %s invalid click records."
+msgstr "無効なクリック情報を%s件削除しました。"
+
+
+#: ../lib/pz-linkcard-settings-etc.php:116
+msgid "Delete invalid click records? This action cannot be undone."
+msgstr "無効なクリック情報を削除しますか？この操作は取り消せません。"
+
+
+#: ../lib/pz-linkcard-settings-admin.php:94 ../lib/pz-linkcard-settings-admin.php:103
+msgid "Does not exist"
+msgstr "存在しません"
+
+
+#: ../lib/pz-linkcard-settings-admin.php:94 ../lib/pz-linkcard-settings-admin.php:103
+msgid "&#x2714;&#xFE0F;Exists"
+msgstr "&#x2714;&#xFE0F;存在します"
+
+#: ../lib/pz-linkcard-settings-admin.php:94 ../lib/pz-linkcard-settings-admin.php:103
+msgid "&#x2718;&#xFE0F;Does not exist"
+msgstr "&#x2718;&#xFE0F;存在しません"
+
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "Falling hearts"
+msgstr "ハートが降ってくる"
+
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "Falling stars"
+msgstr "星が降ってくる"
+
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "Falling snow"
+msgstr "雪が降ってくる"
+
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "3D Tracking"
+msgstr "3D追跡"
 
 #~ msgid "Compact Help"
 #~ msgstr "ﾍﾙﾌﾟ"

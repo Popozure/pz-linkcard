@@ -83,7 +83,7 @@ trait Pz_LinkCard_Cache {
 		$data['thumbnail']			=	isset($data['thumbnail'] )		? $data['thumbnail']		: null;			// リンク先：サムネイルURL
 		$data['favicon']			=	isset($data['favicon'] )		? $data['favicon']			: null;			// リンク先：サイトアイコンURL
 		$has_charset				=	array_key_exists('charset', $data ) && !is_null($data['charset'] );
-		$data['charset']			=	isset($data['charset'] )		? $data['charset']			: 'Unknown';	// リンク先：文字コード
+		$data['charset']			=	$this->pz_NormalizeCharsetName(isset($data['charset'] ) ? $data['charset'] : 'Unknown' );	// リンク先：文字コード
 		foreach	(array('regist_result', 'update_result', 'alive_result' ) as $result_key ) {
 			if	(!array_key_exists($result_key, $data ) || $data[$result_key] === '' || is_null($data[$result_key] ) || intval($data[$result_key] ) < 0 ) {
 				$data[$result_key]	= null;

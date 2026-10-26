@@ -12,6 +12,7 @@
 	initInfobarPosition();
 	initTargetHighlightLinks();
 	initAdminScreenSwitchAnimation();
+    initCachemanScrollMemory();
 	window.addEventListener("load", () => {
 		// Let admin-tabs.js finish restoring the active tab before jumping to
 		// a setting linked from another admin screen. Keep this independent of
@@ -97,7 +98,6 @@
         initCharacterCounts();
         initSettingsSaveShortcut();
         initSettingsScrollMemory();
-        initCachemanScrollMemory();
         initCachemanEditorShortcuts();
         initSettingsTabs();
         initCachemanUsedPostRefresh();
@@ -1398,7 +1398,11 @@
         if (!clickLog) {
             const savedScroll = parseInt(scrollNow.value, 10) || 0;
             if (savedScroll > 0) {
-                window.requestAnimationFrame(() => window.scrollTo(0, savedScroll));
+                // Restore before images finish loading, without a smooth-scroll delay.
+                window.requestAnimationFrame(() => {
+                    window.scrollTo({ top: savedScroll, left: 0, behavior: "instant" });
+                    document.documentElement.classList.remove("pz-cacheman-restoring");
+                });
             }
             form.addEventListener("submit", () => {
                 scrollNow.value = String(Math.max(0, Math.round(window.scrollY || window.pageYOffset || 0)));

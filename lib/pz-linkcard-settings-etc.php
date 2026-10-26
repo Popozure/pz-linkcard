@@ -111,7 +111,10 @@
 				<p><input type="text" class="pz-click-all-select" value="<?php echo esc_attr($this->db_click ); ?>" size="48" readonly="readonly"></p>
 				<p><?php echo esc_html(sprintf(__('Records: %s', 'pz-linkcard' ), number_format_i18n($click_table_size['count'] ) ) ); ?></p>
 				<p><?php echo esc_html(sprintf(__('Total Size: %1$s (%2$s bytes), Index: %3$s (%4$s bytes), Data: %5$s (%6$s bytes)', 'pz-linkcard' ), size_format($click_table_size['total'], 2 ), number_format_i18n($click_table_size['total'] ), size_format($click_table_size['index'], 2 ), number_format_i18n($click_table_size['index'] ), size_format($click_table_size['data'], 2 ), number_format_i18n($click_table_size['data'] ) ) ); ?></p>
-				<p class="pz-destructive-action"><button type="submit" name="action" value="delete-all-click-table-rows" class="pz-button-sure pz-db-clear" disabled="disabled" onclick="return confirm('<?php echo esc_js(__('Delete all click data? This action cannot be undone.', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Delete All', 'pz-linkcard' ); ?></button><label><input id="pz-confirm-delete-click-table" class="pz-db-clear-enabled" type="checkbox" name="confirm-delete-click-table" value="1"> <?php esc_html_e('I understand that this data cannot be restored and authorize its deletion.', 'pz-linkcard' ); ?></label></p>
+				<div class="pz-click-data-actions">
+					<p class="pz-destructive-action"><button type="submit" name="action" value="delete-all-click-table-rows" class="pz-button-sure pz-db-clear" disabled="disabled" onclick="return confirm('<?php echo esc_js(__('Delete all click data? This action cannot be undone.', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Delete All', 'pz-linkcard' ); ?></button><label><input id="pz-confirm-delete-click-table" class="pz-db-clear-enabled" type="checkbox" name="confirm-delete-click-table" value="1"> <?php esc_html_e('I understand that this data cannot be restored and authorize its deletion.', 'pz-linkcard' ); ?></label></p>
+					<button type="submit" name="action" value="delete-invalid-click-records" class="button" onclick="return confirm('<?php echo esc_js(__('Delete invalid click records? This action cannot be undone.', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Delete Invalid Records', 'pz-linkcard' ); ?></button>
+				</div>
 			</td>
 		</tr>
 	</table>

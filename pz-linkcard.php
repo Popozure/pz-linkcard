@@ -16,6 +16,8 @@ require_once __DIR__.'/lib/traits/pz-linkcard-widget.php';
 require_once __DIR__.'/lib/traits/pz-linkcard-cache.php';
 require_once __DIR__.'/lib/traits/pz-linkcard-options.php';
 require_once __DIR__.'/lib/traits/pz-linkcard-get-html.php';
+require_once __DIR__.'/lib/traits/pz-linkcard-editor-block.php';
+require_once __DIR__.'/lib/traits/pz-linkcard-editor-visual.php';
 
 class class_pz_linkcard {
 
@@ -23,6 +25,8 @@ class class_pz_linkcard {
 	use Pz_LinkCard_Cache;
 	use Pz_LinkCard_Options;
 	use Pz_LinkCard_Get_HTML;
+	use Pz_LinkCard_Editor_Block;
+	use Pz_LinkCard_Editor_Visual;
 
 	// 設定値
 	private		const	DEFAULTS	=
@@ -1414,6 +1418,59 @@ class class_pz_linkcard {
 	}
 
 	// 外部リンク・記事情報取得
+	private	function	pz_NormalizeCharsetName($charset ) {
+		$charset	=	trim((string) $charset );
+		if	($charset === '' ) {
+			return	'';
+		}
+		$key	=	strtolower($charset );
+		$key	=	preg_replace('/[^a-z0-9]+/', '', $key );
+		$aliases	=	array(
+			'utf8'			=>		'UTF-8',
+			'utf'			=>		'UTF-8',
+			'csutf8'		=>		'UTF-8',
+			'utf-8'			=>		'UTF-8',
+			'utf-16'		=>		'UTF-16',
+			'usascii'		=>		'ASCII',
+			'ascii'			=>		'ASCII',
+			'ansix341968'	=>		'ASCII',
+			'shiftjis'		=>		'Shift_JIS',
+			'shiftjisx0213'	=>		'Shift_JIS',
+			'sjis'			=>		'Shift_JIS',
+			'csshiftjis'	=>		'Shift_JIS',
+			'sjiswin'		=>		'Windows-31J',
+			'windows31j'	=>		'Windows-31J',
+			'windows932'	=>		'Windows-31J',
+			'cp932'			=>		'Windows-31J',
+			'mskanji'		=>		'Windows-31J',
+			'eucjp'			=>		'EUC-JP',
+			'eucjpwin'		=>		'EUC-JP',
+			'eucjpms'		=>		'EUC-JP',
+			'ujis'			=>		'EUC-JP',
+			'xeucjp'		=>		'EUC-JP',
+			'cseucpkdfmtjapanese'=>	'EUC-JP',
+			'jis'			=>		'ISO-2022-JP',
+			'iso2022jp'		=>		'ISO-2022-JP',
+			'csiso2022jp'	=>		'ISO-2022-JP',
+		);
+		if	(isset($aliases[$key] ) ) {
+			return	$aliases[$key];
+		}
+		if	(preg_match('/utf.*8/', $key ) ) {
+			return	'UTF-8';
+		}
+		if	(preg_match('/(?:shift|sjis|932|mskanji)/', $key ) ) {
+			return	'SJIS-win';
+		}
+		if	(preg_match('/euc.*jp|ujis/', $key ) ) {
+			return	'eucJP-win';
+		}
+		if	(preg_match('/iso2022.*jp|jis/', $key ) ) {
+			return	'JIS';
+		}
+		return	$charset;
+	}
+
 	private	function	pz_GetRemote($data, $headers_only = false ) {
 
 		return	require('lib/pz-linkcard-get-remote.php' );
@@ -2075,6 +2132,9 @@ class class_pz_linkcard {
 			wp_enqueue_script	('pz-linkcard-admin-tabs',		plugins_url('js/admin-tabs.js', __FILE__ ),	array(),	$admin_tabs_version, true );
 			wp_enqueue_script	('pz-linkcard-admin-search',	plugins_url('js/admin-search.js', __FILE__ ), array('pz-linkcard-admin-js' ), $admin_search_version, true );
 			wp_enqueue_script	('pz-linkcard-preview',			plugins_url('js/pz-linkcard-preview.js', __FILE__ ),	array(),	$preview_js_version, true );
+			$this->enqueue_star_field_script(true );
+			$this->enqueue_snowfall_script(true );
+			$this->enqueue_pointer_tracking_script(true );
 			wp_localize_script	('pz-linkcard-preview',			'pzLinkCardPreview',	array(
 					'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 					'nonce'			=>	wp_create_nonce('pz_lkc_preview_render' ),
@@ -2117,175 +2177,51 @@ class class_pz_linkcard {
 		return	$classes;
 	}
 
-	// Pz-LinkCard挿入ダイアログを表示する投稿編集画面か
-	private	function	is_editor_modal_screen($hook = null ) {
-		if	(empty($this->options['flg-edit-insert'] ) && empty($this->options['flg-edit-preview'] ) ) {
-			return	false;
-		}
-		if	($hook && !in_array($hook, array('post.php', 'post-new.php' ), true ) ) {
-			return	false;
-		}
-		if	(!function_exists('get_current_screen' ) ) {
-			return	false;
-		}
-
-		$screen	=	get_current_screen();
-		if	(!$screen || $screen->base !== 'post' ) {
-			return	false;
-		}
-
-		$post_type	=	$screen->post_type;
-		if	(!$post_type && isset($_GET['post'] ) ) {
-			$post_type	=	get_post_type((int)$_GET['post'] );
-		}
-		if	(!$post_type && isset($_GET['post_type'] ) ) {
-			$post_type	=	sanitize_key(wp_unslash($_GET['post_type'] ) );
-		}
-		if	(!$post_type ) {
-			$post_type	=	'post';
-		}
-
-		return	post_type_supports($post_type, 'editor' );
-	}
-
-	// ブロック登録
-	public	function	action_register_block() {
-		if	(!function_exists('register_block_type' ) ) {
-			return;
-		}
-		if	((string)($this->options['flg-edit-block'] ?? '') !== '1' ) {
-			return;
-		}
-
-		$shortcodes	=	array();
-		foreach	(array('code1', 'code2', 'code3' ) as $key ) {
-			$code	=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options[$key] ?? '' );
-			if	($code ) {
-				$shortcodes[]	=	$code;
-			}
-		}
-		if	(!$shortcodes ) {
-			$shortcodes[]	=	self::pz_GetDefaultOption('code1' );
-		}
-		$shortcodes		=	array_values(array_unique($shortcodes ) );
-		$editor_script	=	'pz-linkcard-block-editor';
-		wp_register_script(
-			$editor_script,
-			$this->plugin_dir_url.'js/block-editor.js',
-			array('wp-blocks', 'wp-block-editor', 'wp-editor', 'wp-components', 'wp-element', 'wp-i18n', 'wp-data', 'wp-hooks', 'wp-compose', 'wp-server-side-render' ),
-			PZLKC_PLUGIN_VERSION,
-			true
-		);
-		wp_localize_script($editor_script, 'pz_lkc_block_icon', array(
-			'blockName'		=>	'pz-linkcard/linkcard',
-			'iconUrl'		=>	$this->plugin_dir_url.'img/icon_lkc_block.svg',
-			'previewUrl'	=>	$this->plugin_dir_url.'img/pz-lkc_block_preview.png',
-			'shortcode'		=>	$shortcodes[0],
-			'shortcodes'	=>	$shortcodes,
-			'title'			=>	'Pz-LinkCard',
-			'placeholder'	=>	__('Enter a URL or search keyword', 'pz-linkcard' ),
-			'description'	=>	__('Create a Pz-LinkCard shortcode.', 'pz-linkcard' ),
-			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
-			'searchNonce'	=>	wp_create_nonce('pz_lkc_mce_post_search' ),
-			'searchResults'	=>	__('Search results', 'pz-linkcard' ),
-			'postDate'		=>	__('Post Date', 'pz-linkcard' ),
-			'modifiedDate'	=>	__('Modified Date', 'pz-linkcard' ),
-		) );
-
-		$block_args	=	array(
-			'title'				=>	'Pz-LinkCard',
-			'description'		=>	__('Create a Pz-LinkCard shortcode.', 'pz-linkcard' ),
-			'category'			=>	'widgets',
-			'icon'				=>	'admin-links',
-			'supports'			=>	array(
-				'inserter'		=>	false,
-			),
-			'attributes'		=>	array(
-				'url'			=>	array(
-					'type'		=>	'string',
-					'default'	=>	'',
-				),
-				'shortcode'		=>	array(
-					'type'		=>	'string',
-					'default'	=>	'',
-				),
-			),
-			'render_callback'	=>	array($this, 'render_block_linkcard' ),
-		);
-		$block_args['editor_script']	=	$editor_script;
-		register_block_type('pz-linkcard/linkcard', $block_args );
-	}
-
-	// Pz-LinkCard ブロック描画
-	public	function	render_block_linkcard($attributes, $content = '' ) {
-		$url	=	esc_url_raw($attributes['url'] ?? '' );
-		if	(!$url ) {
-			return	'<div class="linkcard"><div class="lkc-internal-wrap"><div class="lkc-info">'.esc_html(self::PLUGIN_NAME).'</div><div class="lkc-excerpt">'.esc_html__('No URL was specified.', 'pz-linkcard' ).'</div></div></div>';
-		}
-		$shortcode	=	preg_replace('/[^a-zA-Z0-9]/', '', $attributes['shortcode'] ?? '' );
-		$available_shortcodes	=	array();
-		foreach	(array('code1', 'code2', 'code3' ) as $key ) {
-			$code	=	preg_replace('/[^a-zA-Z0-9]/', '', $this->options[$key] ?? '' );
-			if	($code ) {
-				$available_shortcodes[]	=	$code;
-			}
-		}
-		if	(!$available_shortcodes ) {
-			$available_shortcodes[]	=	self::pz_GetDefaultOption('code1' );
-		}
-		if	(!$shortcode || !in_array($shortcode, $available_shortcodes, true ) ) {
-			$shortcode	=	$available_shortcodes[0];
-		}
-
-		$atts	=	array();
-		$atts['url']	=	$url;
-		if	(!empty($attributes['title'] ) ) {
-			$atts['title']	=	sanitize_text_field($attributes['title'] );
-		}
-		if	(!empty($attributes['content'] ) ) {
-			$atts['content']	=	sanitize_textarea_field($attributes['content'] );
-		}
-		return	$this->shortcode($atts, null, $shortcode );
-	}
-
-	// ブロックエディタ用スクリプト
-	public	function	action_enqueue_block_editor_assets() {
-
-		wp_enqueue_style('pz-linkcard-block-editor', plugins_url('css/admin.css', __FILE__ ), array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/admin.css' ) );
-		$this->enqueue_block_card_styles();
-	}
-
-	// ブロックエディタ本文用スタイルシート
-	public	function	action_enqueue_block_assets() {
-		if	(!is_admin() ) {
-			return;
-		}
-
-		$this->enqueue_block_card_styles();
-	}
-
-	// ブロックエディタ内プレビュー用カードスタイル
-	private	function	enqueue_block_card_styles() {
-		$css_version	=	PZLKC_PLUGIN_VERSION.'.'.$this->options['css-count'];
-		$pending_loader_css	= '.pz-lkc-pending .lkc-external-wrap{position:relative}.pz-lkc-pending-loader{position:absolute;z-index:10;top:50%;left:50%;display:flex;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:4px;background:rgba(0,0,0,.45);align-items:center;justify-content:center;pointer-events:none}.pz-lkc-pending-loader::after{content:"";width:50px;aspect-ratio:1;border-radius:50%;background:radial-gradient(farthest-side,#fff 94%,#0000) top/8px 8px no-repeat,conic-gradient(#0000 30%,#fff);mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);-webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);animation:pz-lkc-pending-loader-spin 1s infinite linear}@keyframes pz-lkc-pending-loader-spin{100%{transform:rotate(1turn)}}';
-		if	($this->options['flg-compress'] ) {
-			wp_enqueue_style	('pz-linkcard-block-card-css',	PZLKC_URL_STYLE.'style.min.css',	array(),	$css_version );
-		} else {
-			wp_enqueue_style	('pz-linkcard-block-card-css',	PZLKC_URL_STYLE.'style.css',		array(),	$css_version );
-		}
-		wp_add_inline_style('pz-linkcard-block-card-css', $pending_loader_css );
-		if	($this->options['css-add-url'] ) {
-			wp_enqueue_style	('pz-linkcard-block-card-css-add',	$this->options['css-add-url'],	array(),	$css_version );
-		}
-		$this->enqueue_excerpt_fit_script();
-	}
-
 	private	function	enqueue_excerpt_fit_script() {
 		wp_enqueue_script	(
 			'pz-linkcard-excerpt-fit',
 			plugin_dir_url(__FILE__).'js/excerpt-fit.js',
 			array(),
 			PZLKC_PLUGIN_VERSION,
+			true
+		);
+	}
+
+	private function enqueue_star_field_script($preview = false ) {
+		if (!$preview && !in_array($this->options['special-format'] ?? '', array('falling-stars', 'falling-hearts' ), true ) ) {
+			return;
+		}
+		wp_enqueue_script(
+			'pz-linkcard-star-field',
+			$this->plugin_dir_url.'js/star-field.js',
+			array(),
+			PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/star-field.js' ),
+			true
+		);
+	}
+
+	private function enqueue_snowfall_script($preview = false ) {
+		if (!$preview && ($this->options['special-format'] ?? '') !== 'falling-snow' ) {
+			return;
+		}
+		wp_enqueue_script(
+			'pz-linkcard-snowfall',
+			$this->plugin_dir_url.'js/snowfall.js',
+			array(),
+			PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/snowfall.js' ),
+			true
+		);
+	}
+
+	private function enqueue_pointer_tracking_script($preview = false ) {
+		if (!$preview && ($this->options['special-format'] ?? '') !== 'tracking' ) {
+			return;
+		}
+		wp_enqueue_script(
+			'pz-linkcard-pointer-tracking',
+			$this->plugin_dir_url.'js/pointer-tracking.js',
+			array(),
+			PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/pointer-tracking.js' ),
 			true
 		);
 	}
@@ -2305,6 +2241,9 @@ class class_pz_linkcard {
 			wp_enqueue_style	('pz-linkcard-css-add',		$this->options['css-add-url'],			array(),	$css_version );
 		}
 		$this->enqueue_excerpt_fit_script();
+		$this->enqueue_star_field_script();
+		$this->enqueue_snowfall_script();
+		$this->enqueue_pointer_tracking_script();
 		if (self::AJAX_GET_ENABLED ) {
 			$ajax_get_script = 'pz-linkcard-ajax-get';
 			$ajax_get_path = $this->plugin_dir_path.'js/pz-linkcard-ajax-get.js';
@@ -2416,22 +2355,6 @@ class class_pz_linkcard {
 	//	}
 	}
 
-	// 管理画面時の設定（フッター）
-	public	function	action_admin_print_footer_scripts() {
-
-		// テキスト エディタ用のクイックタグ
-		if	($this->options['flg-edit-qtag'] ) {
-			if	(wp_script_is('quicktags' ) ) {
-				echo '<script>QTags.addButton(\'pz-lkc\',\''.esc_js(__('Linkcard', 'pz-linkcard' ) ).'\',\'['.esc_js($this->options['code1'] ).' url="\',\'"]\',\'\',\''.esc_js(__('Make Linkcard', 'pz-linkcard' ) ).'\' );</script>';
-			}
-		}
-		// ビジュアル エディタ用の挿入ダイアログ
-		if	(!$this->is_editor_modal_screen() ) {
-			return;
-		}
-		require_once('lib/views/pz-linkcard-visual-editor.php' );
-	}
-
 	// プラグインロード後（プラガブル関数用）
 	public	function	action_plugins_loaded() {
 	}
@@ -2529,17 +2452,6 @@ class class_pz_linkcard {
 		return	require(__DIR__.'/lib/ajax/pz-linkcard-ajax-refresh-thumbnail.php' );
 	}
 
-	// ビジュアルエディターのリンクカード挿入ダイアログから記事タイトルを検索
-	public	function	action_ajax_pz_lkc_mce_post_search() {
-		return	require(__DIR__.'/lib/ajax/pz-linkcard-ajax-mce-post-search.php' );
-	}
-
-	// ビジュアルエディター内のリンクカードプレビュー
-	// クリックカウント
-	public	function	action_ajax_pz_lkc_mce_render_card() {
-		return	require(__DIR__.'/lib/ajax/pz-linkcard-ajax-mce-render-card.php' );
-	}
-
 	public	function	action_ajax_pz_lkc_click_count() {
 
 		return	require(__DIR__.'/lib/ajax/pz-linkcard-ajax-click-count.php' );
@@ -2551,25 +2463,6 @@ class class_pz_linkcard {
 		$links['manager']	=	'<a href="'.$this->cacheman_url.'">'.__('Manager' , 'pz-linkcard' ).'</a>';
 		$links['settings']	=	'<a href="'.$this->settings_url.'">'.__('Settings', 'pz-linkcard' ).'</a>';
 		return	$links;
-	}
-
-	// 管理画面時のスタイルシート、スクリプト設定
-	public	function	filter_mce_external_plugins($plugins ) {
-
-		if	($this->options['flg-edit-insert'] || $this->options['flg-edit-preview'] ) {
-			$mce_script	=	$this->plugin_dir_path.'js/mce-button.js';
-			$plugins[ "pz_linkcard_tinymce" ]	=	add_query_arg('ver', file_exists($mce_script ) ? filemtime($mce_script ) : PZLKC_PLUGIN_VERSION, $this->plugin_dir_url.'js/mce-button.js' );
-		}
-		return	$plugins;
-	}
-
-	// 管理画面時のスタイルシート、スクリプト設定
-	public	function	filter_mce_buttons($buttons ) {
-
-		if	($this->options['flg-edit-insert'] ) {
-			$buttons[]							=	'pz_linkcard_insert_shortcode';
-		}
-		return	$buttons;
 	}
 
 	// クリックログ整理の次回実行を、サイトのタイムゾーンの午前4時に予約

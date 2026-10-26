@@ -265,7 +265,7 @@ msgid "Internal Link Data"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:200 ../lib/pz-linkcard-cacheman-list.php:95 ../lib/pz-linkcard-cacheman-list.php:438
-#: ../lib/views/pz-linkcard-visual-editor.php:15 ../lib/pz-linkcard-settings-display.php:32 ../pz-linkcard.php:3591
+#: ../lib/traits/pz-linkcard-editor-visual.php:15 ../lib/pz-linkcard-settings-display.php:32 ../pz-linkcard.php:3591
 msgid "Post Date"
 msgstr ""
 
@@ -923,27 +923,27 @@ msgstr ""
 msgid "Blocked by robots.txt."
 msgstr ""
 
-#: ../lib/views/pz-linkcard-visual-editor.php:4
+#: ../lib/traits/pz-linkcard-editor-visual.php:4
 msgid "×"
 msgstr ""
 
-#: ../lib/views/pz-linkcard-visual-editor.php:8
+#: ../lib/traits/pz-linkcard-editor-visual.php:8
 msgid "Input URL"
 msgstr ""
 
-#: ../lib/views/pz-linkcard-visual-editor.php:15 ../pz-linkcard.php:3592
+#: ../lib/traits/pz-linkcard-editor-visual.php:15 ../pz-linkcard.php:3592
 msgid "Modified Date"
 msgstr ""
 
-#: ../lib/views/pz-linkcard-visual-editor.php:17 ../pz-linkcard.php:3586
+#: ../lib/traits/pz-linkcard-editor-visual.php:17 ../pz-linkcard.php:3586
 msgid "Enter a URL or search keyword"
 msgstr ""
 
-#: ../lib/views/pz-linkcard-visual-editor.php:18 ../pz-linkcard.php:3590
+#: ../lib/traits/pz-linkcard-editor-visual.php:18 ../pz-linkcard.php:3590
 msgid "Search results"
 msgstr ""
 
-#: ../lib/views/pz-linkcard-visual-editor.php:20
+#: ../lib/traits/pz-linkcard-editor-visual.php:20
 msgid "Insert Linkcard"
 msgstr ""
 
@@ -1306,10 +1306,6 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:29
 msgid "Headline"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-basic.php:30
-msgid "Fancy"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php:31
@@ -3585,4 +3581,49 @@ msgstr ""
 
 #: ../pz-linkcard.php:4256 ../pz-linkcard.php:4259
 msgid "You do not have permission to preview this post."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-etc.php
+msgid "Delete Invalid Records"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php
+msgid "Failed to delete invalid click records."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php
+#, php-format
+msgid "Deleted %s invalid click records."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-etc.php:116
+msgid "Delete invalid click records? This action cannot be undone."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-admin.php:94 ../lib/pz-linkcard-settings-admin.php:103
+msgid "Does not exist"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-admin.php:94 ../lib/pz-linkcard-settings-admin.php:103
+msgid "&#x2714;&#xFE0F;Exists"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-admin.php:94 ../lib/pz-linkcard-settings-admin.php:103
+msgid "&#x2718;&#xFE0F;Does not exist"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "Falling hearts"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "Falling stars"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "Falling snow"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "3D Tracking"
 msgstr ""

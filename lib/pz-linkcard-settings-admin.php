@@ -1,8 +1,8 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	global $wpdb;
-	$card_table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_card)) === $this->db_card);
-	$click_table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_click)) === $this->db_click);
+	$card_table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($this->db_card ))) === $this->db_card);
+	$click_table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($this->db_click ))) === $this->db_click);
 
 	switch	($action) {
 	case	'run-'.self::CRON_CHECK:
@@ -85,13 +85,9 @@
 			<td><span class="pz-monospace"><?php echo esc_html(PZLKC_PLUGIN_VERSION ); ?></span></td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Option Name', 'pz-linkcard' ); ?></th>
-			<td><span class="pz-monospace"><?php echo esc_html(self::OPTION_NAME ); ?></span></td>
-		</tr>
-		<tr>
 			<th scope="row" rowspan="2"><?php esc_html_e('Link-Card', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span> (<?php echo $card_table_exists ? __('✔️Exists', 'pz-linkcard' ) : __('❌Does not exist', 'pz-linkcard' ); ?>)</td>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span> (<?php echo $card_table_exists ? esc_html__('&#x2714;&#xFE0F;Exists', 'pz-linkcard' ) : esc_html__('&#x2718;&#xFE0F;Does not exist', 'pz-linkcard' ); ?>)</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>
@@ -100,11 +96,15 @@
 		<tr>
 			<th scope="row" rowspan="2"><?php esc_html_e('Count Information', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><span class="pz-monospace"><?php echo esc_html($this->db_click ); ?></span> (<?php echo $click_table_exists ? __('✔️Exists', 'pz-linkcard' ) : __('❌Does not exist', 'pz-linkcard' ); ?>)</td>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_click ); ?></span> (<?php echo $click_table_exists ? esc_html__('&#x2714;&#xFE0F;Exists', 'pz-linkcard' ) : esc_html__('&#x2718;&#xFE0F;Does not exist', 'pz-linkcard' ); ?>)</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>
 			<td><span class="pz-monospace"><?php echo esc_html($prop['db-click-version'] ); ?></span></td>
+		</tr>
+		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('Option Name', 'pz-linkcard' ); ?></th>
+			<td><span class="pz-monospace"><?php echo esc_html(self::OPTION_NAME ); ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row" colspan="2"><?php esc_html_e('Size of the options', 'pz-linkcard' ); ?></th>

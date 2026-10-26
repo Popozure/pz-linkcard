@@ -239,11 +239,13 @@
             $http_body	=	mb_convert_encoding($http_body, $this->charset, $charset );
         }
         if	(preg_match('/charset\s*=\s*[\'"]*([A-Za-z0-9\-_]*)/si', $http_body, $m ) ) {
-            $charset	=	strtolower($m[1] );
+            $charset	=	$m[1];
         }
     }
 
     // Charset判定出来ていたら
+    $charset = $this->pz_NormalizeCharsetName($charset );
+
     if	($charset ) {
         // HEADタグ（METAタグ解析）
         $html_head		=	null;

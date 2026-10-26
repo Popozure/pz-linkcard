@@ -183,6 +183,10 @@
 	}
 
 	// 画面描画
+	if	($scroll_now > 0 && $action !== 'click-log' ) {
+		echo	'<style>html.pz-cacheman-restoring .pz-cacheman{visibility:hidden}</style>';
+		echo	'<script>document.documentElement.classList.add("pz-cacheman-restoring");</script>';
+	}
 	echo	'<div id="pz-overlay-proc" style="display: none;"><div class="pz-loader"></div></div>';
 	echo	'<div class="pz-dashboard'.$page_class.' wrap">';
 	echo	$html_style;

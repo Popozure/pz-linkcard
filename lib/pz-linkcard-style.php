@@ -26,10 +26,171 @@
 				$file_text	=	str_replace('/*EX-BG-IMAGE*/',			'background-image: linear-gradient(#78f 0%, #78f 10%, #fff 30%);', $file_text );
 				$file_text	=	str_replace('/*IN-BG-IMAGE*/',			'background-image: linear-gradient(#ca4 0%, #ca4 10%, #fff 30%);', $file_text );
 				break;
+			case 'falling-hearts': // Falling hearts uses the Normal card styles.
+			case 'falling-stars':
+			case 'falling-snow':
+			case 'tracking':
 			case 'hbc': // プリセット: はてなブログカード風
 				$file_text	=	str_replace('/*EX-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: 1px solid rgba(0,0,0,0.1);', $file_text );
 				$file_text	=	str_replace('/*SHADOW*/',				'box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);', $file_text );
+				if ($prop['special-format'] === 'tracking' ) {
+					$tracking_selectors = '.lkc-external-wrap, .lkc-external-wrap:hover, .lkc-internal-wrap, .lkc-internal-wrap:hover';
+					$css = $tracking_selectors.' { --pz-lkc-tracking-enabled: 1; transform: perspective(900px) rotateX(var(--pz-lkc-tracking-x, 0deg)) rotateY(var(--pz-lkc-tracking-y, 0deg)) !important; transform-origin: center center; transition: transform .12s ease-out, box-shadow .2s ease, background-color .2s ease, border-color .2s ease, opacity .2s ease !important; }';
+					$css .= '.lkc-external-wrap.pz-lkc-tracking-active, .lkc-internal-wrap.pz-lkc-tracking-active { will-change: transform; }';
+					$css .= '@media (prefers-reduced-motion: reduce) { '.$tracking_selectors.' { transform: none !important; transition: none !important; } }';
+					$file_text = str_replace('/*OPTION*/', $css, $file_text );
+				}
+				if (in_array($prop['special-format'], array('falling-hearts', 'falling-stars', 'falling-snow' ), true ) ) {
+					$falling_shape_path = $prop['special-format'] === 'falling-stars'
+						? 'M12 1 15.4 8.2 23 9.3 17.5 14.7 18.8 22.5 12 18.8 5.2 22.5 6.5 14.7 1 9.3 8.6 8.2Z'
+						: 'M12 21 3 12C-4 4 7-2 12 5 17-2 28 4 21 12Z';
+					$falling_shapes_svg = '';
+					$falling_animation = $prop['special-format'] === 'falling-stars' ? 'pz-lkc-stars-fall' : 'pz-lkc-shapes-fall';
+					$falling_background_size = '160px 200px';
+					$falling_duration = '9s';
+					if ($prop['special-format'] === 'falling-hearts' ) {
+						$heart_layout_seed = 7919;
+						$next_heart_random = function() use (&$heart_layout_seed ) {
+							$heart_layout_seed = ($heart_layout_seed * 251 + 19 ) % 65521;
+							return $heart_layout_seed / 65521;
+						};
+						$falling_hearts = array();
+						$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="600" viewBox="0 0 640 600"><defs><path id="shape" d="'.$falling_shape_path.'"/></defs><g fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round">';
+						// Keep the existing density in a larger tile, without repeating horizontal rows.
+						for ($heart_index = 0; $heart_index < 36; $heart_index++ ) {
+							for ($heart_attempt = 0; $heart_attempt < 80; $heart_attempt++ ) {
+								$heart_x = round(16 + $next_heart_random() * 584, 2 );
+								$heart_y = round(16 + $next_heart_random() * 544, 2 );
+								$heart_clear = true;
+								foreach ($falling_hearts as $heart ) {
+									$heart_dx = abs($heart_x - $heart[0] );
+									$heart_dy = abs($heart_y - $heart[1] );
+									$heart_dx = min($heart_dx, 640 - $heart_dx );
+									$heart_dy = min($heart_dy, 600 - $heart_dy );
+									if ($heart_dx * $heart_dx + $heart_dy * $heart_dy < 44 * 44 ) {
+										$heart_clear = false;
+										break;
+									}
+								}
+								if ($heart_clear ) break;
+							}
+							$falling_hearts[] = array($heart_x, $heart_y );
+							$heart_scale = round(.65 + $next_heart_random() * .4, 3 );
+							$heart_rotation = round(-35 + $next_heart_random() * 70, 2 );
+							$heart_horizontal_offsets = array(0 );
+							$heart_vertical_offsets = array(0 );
+							if ($heart_x < 40 ) $heart_horizontal_offsets[] = 640;
+							if ($heart_x > 584 ) $heart_horizontal_offsets[] = -640;
+							if ($heart_y < 24 ) $heart_vertical_offsets[] = 600;
+							if ($heart_y > 552 ) $heart_vertical_offsets[] = -600;
+							// Wrap hearts across image edges without cutting them off.
+							foreach ($heart_horizontal_offsets as $heart_horizontal_offset ) {
+								foreach ($heart_vertical_offsets as $heart_vertical_offset ) {
+									$falling_shapes_svg .= '<g transform="translate('.($heart_x + $heart_horizontal_offset ).' '.($heart_y + $heart_vertical_offset ).')"><use href="#shape" transform="rotate('.$heart_rotation.' 12 12) scale('.$heart_scale.')"/></g>';
+								}
+							}
+						}
+						$falling_shapes_svg .= '</g></svg>';
+						$falling_animation = 'pz-lkc-hearts-fall-y';
+						$heart_horizontal_duration = round(27 * 640 * sqrt(3 ) / 600, 6 );
+						$falling_background_size = '640px 600px';
+						$falling_duration = '27s';
+					}
+					if ($prop['special-format'] === 'falling-stars' ) {
+						$trail_lifetime = 3;
+						$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="600" viewBox="0 0 480 600"><style>@keyframes pz-lkc-star-spin{to{transform:rotate(-360deg)}}.star-core,.star-tail{transform-origin:12px 12px;animation:pz-lkc-star-spin 4.8s linear infinite}@keyframes pz-lkc-star-particle{0%{transform:translate(var(--trail-origin-x),var(--trail-origin-y)) scale(var(--trail-scale));opacity:var(--trail-opacity)}70%{opacity:var(--trail-opacity)}100%{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:0}}.star-particle{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:var(--trail-opacity);animation:pz-lkc-star-particle '.$trail_lifetime.'s linear infinite}@media(prefers-reduced-motion:reduce){.star-core,.star-tail,.star-particle{animation:none!important}}</style><defs><path id="shape" d="'.$falling_shape_path.'"/>';
+						$falling_star_templates = array(
+							array(16, 14, 1, 6, -1 ), array(442, 124, .7, 8, -3 ), array(90, 52, .85, 7, -2 ),
+							array(132, 90, .9, 6.5, -.5 ), array(323, 8, .75, 7.5, -5 ),
+							array(203, 134, .8, 8.5, -2.5 ), array(292, 178, .55, 9.5, -6 ),
+						);
+						$star_layout_seed = 2719;
+						$next_star_random = function() use (&$star_layout_seed ) {
+							$star_layout_seed = ($star_layout_seed * 251 + 19 ) % 65521;
+							return $star_layout_seed / 65521;
+						};
+						$falling_stars = array();
+						$falling_star_count = (int) round(count($falling_star_templates ) * 3 * .49 );
+						for ($layout_index = 0; $layout_index < $falling_star_count; $layout_index++ ) {
+							$star = $falling_star_templates[$layout_index % count($falling_star_templates )];
+							// Separate the diagonal paths, then scatter positions along them in a taller tile.
+							$star_route = ($layout_index + .5 + ($next_star_random() - .5 ) * .4 ) * 480 / $falling_star_count;
+							$star[1] = round(16 + $next_star_random() * 552, 2 );
+							$star[0] = round(fmod($star_route - .8 * $star[1] - 21.6 * $star[2] + 480, 480 ), 2 );
+							$star[4] = round(-$next_star_random() * $star[3], 2 );
+							$falling_stars[] = $star;
+						}
+						$trail_particle_count = 8;
+						foreach ($falling_stars as $star_index => $star ) {
+							// Give each star a distinct, repeatable tail without changing patterns on preview refresh.
+							$trail_seed = 1069 + $star_index * 997;
+							$next_trail_random = function() use (&$trail_seed ) {
+								$trail_seed = ($trail_seed * 251 + 19 ) % 65521;
+								return $trail_seed / 65521;
+							};
+							$falling_shapes_svg .= '<g id="trail-'.$star_index.'" fill="white">';
+							for ($trail_index = 0; $trail_index < $trail_particle_count; $trail_index++ ) {
+								$trail_distance = 20 + $next_trail_random() * 110;
+								$trail_angle = deg2rad(-51.34 + ($next_trail_random() - .5 ) * 70 );
+								$trail_fade = ($trail_distance - 20 ) / 110;
+								$trail_distance *= $trail_lifetime / 5;
+								$trail_scale = round((.20 + $next_trail_random() * .36 ) * 1.5, 3 );
+								$trail_origin_x = round(20 + ($next_trail_random() - .5 ) * 12 - 12 * $trail_scale, 3 );
+								$trail_origin_y = round(2 + ($next_trail_random() - .5 ) * 12 - 12 * $trail_scale, 3 );
+								// Offset the falling tile so each emitted particle drifts up and right on screen.
+								$trail_x = round($trail_origin_x + 480 / 27 * $trail_lifetime / $star[2] + cos($trail_angle ) * $trail_distance, 2 );
+								$trail_y = round($trail_origin_y - 600 / 27 * $trail_lifetime / $star[2] + sin($trail_angle ) * $trail_distance, 2 );
+								$trail_opacity = round(.88 - $trail_fade * .65, 2 );
+								$trail_spin_duration = round(2.8 + $next_trail_random() * 1.92, 2 );
+								$trail_spin_delay = round(-$next_trail_random() * 8, 2 );
+								$trail_emission_delay = round(-($trail_index + $next_trail_random() ) * $trail_lifetime / $trail_particle_count, 3 );
+								$falling_shapes_svg .= '<g class="star-particle" style="--trail-origin-x:'.$trail_origin_x.'px;--trail-origin-y:'.$trail_origin_y.'px;--trail-x:'.$trail_x.'px;--trail-y:'.$trail_y.'px;--trail-scale:'.$trail_scale.';--trail-opacity:'.$trail_opacity.';animation-delay:'.$trail_emission_delay.'s"><g class="star-tail" style="animation-duration:'.$trail_spin_duration.'s;animation-delay:'.$trail_spin_delay.'s"><use href="#shape"/></g></g>';
+							}
+							$falling_shapes_svg .= '</g>';
+						}
+						$falling_shapes_svg .= '</defs>';
+						foreach ($falling_stars as $star_index => $star ) {
+							// Wrap stars and their tails across the repeating tile edges.
+							foreach (array(-480, 0, 480 ) as $horizontal_offset ) {
+								foreach (array(0, 600 ) as $vertical_offset ) {
+									$falling_shapes_svg .= '<g transform="translate('.($star[0] + $horizontal_offset ).' '.($star[1] + $vertical_offset ).') scale('.$star[2].')"><use href="#trail-'.$star_index.'"/><g class="star-core" style="animation-duration:'.round($star[3] * .8, 2 ).'s;animation-delay:'.$star[4].'s"><use href="#shape" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></g></g>';
+								}
+							}
+						}
+						$falling_shapes_svg .= '</svg>';
+						$falling_background_size = '480px 600px';
+						$falling_duration = '27s';
+					}
+					if ($prop['special-format'] === 'falling-snow' ) {
+						$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="200" viewBox="0 0 160 200"><style>@keyframes sway{from{transform:translateX(-9px)}to{transform:translateX(9px)}}circle{animation-name:sway;animation-timing-function:ease-in-out;animation-iteration-count:infinite;animation-direction:alternate}@media(prefers-reduced-motion:reduce){circle{animation:none!important}}</style><g fill="white"><circle cx="18" cy="16" r="2" style="animation-duration:3.2s;animation-delay:-1s"/><circle cx="108" cy="76" r="1.5" style="animation-duration:4.7s;animation-delay:-3s;animation-direction:alternate-reverse"/><circle cx="54" cy="144" r="2.5" style="animation-duration:3.9s;animation-delay:-2.4s"/><circle cx="136" cy="182" r="2" style="animation-duration:5.3s;animation-delay:-.7s;animation-direction:alternate-reverse"/><circle cx="76" cy="38" r="1.5" style="animation-duration:2.8s;animation-delay:-1.8s;animation-direction:alternate-reverse"/><circle cx="24" cy="102" r="1.5" style="animation-duration:4.3s;animation-delay:-3.7s"/><circle cx="124" cy="130" r="2" style="animation-duration:3.6s;animation-delay:-2.1s"/></g></svg>';
+					}
+					$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; isolation: isolate; }';
+					$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit; background-image: url("data:image/svg+xml,'.rawurlencode($falling_shapes_svg ).'"); background-repeat: repeat; background-size: '.$falling_background_size.'; pointer-events: none; animation: '.$falling_animation.' '.$falling_duration.' linear infinite; }';
+					if ($prop['special-format'] === 'falling-snow' ) {
+						$css .= '.lkc-external-wrap, .lkc-internal-wrap { --pz-lkc-snow-enabled: 1; }';
+						$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { background-image: var(--pz-lkc-snow-image, url("data:image/svg+xml,'.rawurlencode($falling_shapes_svg ).'")); animation-delay: var(--pz-lkc-snow-delay, 0s); }';
+					}
+					if ($prop['special-format'] === 'falling-stars' ) {
+						$css .= '.lkc-external-wrap, .lkc-internal-wrap { --pz-lkc-stars-enabled: 1; }';
+						$css .= '.lkc-external-wrap.pz-lkc-stars-field-ready::before, .lkc-internal-wrap.pz-lkc-stars-field-ready::before { animation: none; background-position: calc(var(--pz-lkc-star-field-x, 0px) - var(--pz-lkc-stars-left, 0px)) calc(var(--pz-lkc-star-field-y, 0px) - var(--pz-lkc-stars-top, 0px)); }';
+					} elseif ($prop['special-format'] === 'falling-hearts' ) {
+						$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { animation: pz-lkc-hearts-fall-x '.$heart_horizontal_duration.'s linear infinite, pz-lkc-hearts-fall-y 27s linear infinite; }';
+						$css .= '.lkc-external-wrap, .lkc-internal-wrap { --pz-lkc-hearts-enabled: 1; }';
+						$css .= '.lkc-external-wrap.pz-lkc-stars-field-ready::before, .lkc-internal-wrap.pz-lkc-stars-field-ready::before { animation: none; background-position: calc(var(--pz-lkc-heart-field-x, 0px) - var(--pz-lkc-stars-left, 0px)) calc(var(--pz-lkc-heart-field-y, 0px) - var(--pz-lkc-stars-top, 0px)); }';
+					}
+					$css .= '.lkc-external-wrap .lkc-card, .lkc-internal-wrap .lkc-card { position: relative; z-index: 1; } .lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 2; }';
+					$css .= '@keyframes pz-lkc-shapes-fall { from { background-position: 0 0; } to { background-position: 0 200px; } }';
+					$css .= '@keyframes pz-lkc-hearts-fall-x { from { background-position-x: 0; } to { background-position-x: -640px; } } @keyframes pz-lkc-hearts-fall-y { from { background-position-y: 0; } to { background-position-y: 600px; } }';
+					$css .= '@keyframes pz-lkc-stars-fall { from { background-position: 0 0; } to { background-position: -480px 600px; } }';
+					if ($prop['special-format'] === 'falling-snow' ) {
+						$css .= '.lkc-external-wrap::after, .lkc-internal-wrap::after { content: ""; position: absolute; right: 0; bottom: 0; left: 0; z-index: 0; height: var(--pz-lkc-snow-bank-height, 16px); border-bottom-left-radius: inherit; border-bottom-right-radius: inherit; background: var(--pz-lkc-snow-bank, radial-gradient(ellipse 24% 100% at 12% 100%, #fff 96%, transparent 100%), radial-gradient(ellipse 28% 75% at 43% 100%, #fff 96%, transparent 100%), radial-gradient(ellipse 25% 95% at 74% 100%, #fff 96%, transparent 100%), radial-gradient(ellipse 20% 65% at 100% 100%, #fff 96%, transparent 100%)); transform-origin: center bottom; pointer-events: none; animation: pz-lkc-snow-accumulate var(--pz-lkc-snow-bank-duration, 40s) linear var(--pz-lkc-snow-bank-delay, 0s) both; }';
+						$css .= '@keyframes pz-lkc-snow-accumulate { 0% { transform: scaleY(0); opacity: 0; } 10% { transform: scaleY(.1); opacity: .75; } 100% { transform: scaleY(1); opacity: .95; } }';
+						$css .= '@media (prefers-reduced-motion: reduce) { .lkc-external-wrap::after, .lkc-internal-wrap::after { animation: none; transform: scaleY(1); opacity: .95; } }';
+					}
+					$css .= '@media (prefers-reduced-motion: reduce) { .lkc-external-wrap::before, .lkc-internal-wrap::before { animation: none; } }';
+					$file_text = str_replace('/*OPTION*/', $css, $file_text );
+				}
 				break;
 			case 'smp': // プリセット: シンプル
 				$file_text	=	str_replace('/*EX-BG-COLOR*/',			'', $file_text );
@@ -243,22 +404,11 @@
 				$css .= '.lkc-external-wrap, .lkc-internal-wrap { position: relative; overflow: visible; background-image: radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14)); background-size: 100% 100%; box-shadow: 0 8px 24px rgba(31,56,85,.18), inset 0 1px rgba(255,255,255,.62); backdrop-filter: blur(2px) saturate(125%); -webkit-backdrop-filter: blur(2px) saturate(125%); }';
 				$css .= '.lkc-card { position: relative; overflow: hidden; } .lkc-card, .lkc-content, .lkc-info { background-color: transparent !important; background-image: none !important; }';
 				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 6; }';
-				$css .= '.lkc-external-wrap .lkc-card::after, .lkc-internal-wrap .lkc-card::after { content: ""; position: absolute; z-index: 5; top: -30%; left: -70%; width: 36%; height: 160%; transform: rotate(20deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.72), transparent); opacity: 0; pointer-events: none; transition: left .55s ease, opacity .2s ease; }';
-				$css .= '.lkc-external-wrap:hover .lkc-card::after, .lkc-internal-wrap:hover .lkc-card::after { left: 135%; opacity: 1; }';
+				$css .= '.lkc-external-wrap::after, .lkc-internal-wrap::after { content: ""; position: absolute; z-index: 5; inset: 0; border-radius: inherit; background: linear-gradient(110deg, transparent 44%, rgba(255,255,255,.72) 50%, transparent 56%) 100% 0 / 300% 100% no-repeat; opacity: 0; pointer-events: none; transition: background-position .55s ease, opacity .2s ease; }';
+				$css .= '.lkc-external-wrap:hover::after, .lkc-internal-wrap:hover::after { background-position: 0 0; opacity: 1; }';
 				$css .= '.lkc-title { text-shadow: 0 1px rgba(255,255,255,.7); }';
 				$css .= '.lkc-info, .lkc-title, .lkc-url, .lkc-url-info, .lkc-date, .lkc-excerpt { text-shadow: 4px 4px 5px #00000088 !important; }';
 				$css .= '.lkc-info { background: rgba(255,255,255,.28); }';
-				$file_text = str_replace('/*OPTION*/', $css, $file_text );
-				break;
-			case 'fancy': // Fancy
-				$file_text = str_replace('/*CONTENT-MARGIN*/', 'margin: 8px 0;', $file_text );
-				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; }';
-				$css .= '.lkc-card { margin: 12px; padding: 8px; border: 1px solid rgba(255,255,255,.65); background: linear-gradient(135deg, rgba(255,255,255,.62), rgba(220,235,255,.28)); box-shadow: 0 8px 24px rgba(31,56,85,.25), inset 0 1px rgba(255,255,255,.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }';
-				$css .= '.lkc-external-wrap, .lkc-external-wrap .lkc-card { border-radius: '.intval($prop['ex-border-radius'] ?? 0 ).'px; }';
-				$css .= '.lkc-internal-wrap, .lkc-internal-wrap .lkc-card { border-radius: '.intval($prop['in-border-radius'] ?? 0 ).'px; }';
-				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 2; }';
-				$css .= '.lkc-info { margin: -8px -8px 8px; padding: 5px 8px; border-radius: 13px 13px 0 0; background: rgba(255,255,255,.35); }';
-				$css .= '.lkc-thumbnail { margin: 0 8px !important; }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'metal': // Metal
@@ -271,8 +421,8 @@
 				$css .= '.lkc-external-wrap, .lkc-internal-wrap { position: relative; overflow: visible; }';
 				$css .= '.lkc-card { position: relative; overflow: hidden; }';
 				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 6; }';
-				$css .= '.lkc-external-wrap .lkc-card::after, .lkc-internal-wrap .lkc-card::after { content: ""; position: absolute; z-index: 5; top: -30%; left: -70%; width: 32%; height: 160%; transform: rotate(20deg); background: linear-gradient(90deg, transparent, rgba(255,255,255,.6), transparent); opacity: 0; pointer-events: none; transition: left .55s ease, opacity .2s ease; }';
-				$css .= '.lkc-external-wrap:hover .lkc-card::after, .lkc-internal-wrap:hover .lkc-card::after { left: 135%; opacity: 1; }';
+				$css .= '.lkc-external-wrap::after, .lkc-internal-wrap::after { content: ""; position: absolute; z-index: 5; inset: 0; border-radius: inherit; background: linear-gradient(110deg, transparent 44%, rgba(255,255,255,.6) 50%, transparent 56%) 100% 0 / 300% 100% no-repeat; opacity: 0; pointer-events: none; transition: background-position .55s ease, opacity .2s ease; }';
+				$css .= '.lkc-external-wrap:hover::after, .lkc-internal-wrap:hover::after { background-position: 0 0; opacity: 1; }';
 				$css .= '.lkc-title { color: #111820; font-weight: 700; text-shadow: 0 1px rgba(255,255,255,.7); } .lkc-url, .lkc-url-info { color: #164f7a; }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;

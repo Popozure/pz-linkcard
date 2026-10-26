@@ -101,8 +101,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 image: "repeating-linear-gradient(45deg, rgba(224, 174, 194, 0.35), rgba(224, 174, 194, 0.35) 20px, transparent 0, transparent 40px), repeating-linear-gradient(315deg, rgba(224, 174, 194, 0.35), rgba(224, 174, 194, 0.35) 20px, transparent 0, transparent 40px)",
             },
         };
+        const backgroundStorageKey = `${storageKey}-background:${window.location.pathname}`;
         const applyPreviewBackground = name => {
-            const background = previewBackgrounds[name] || previewBackgrounds.white;
+            if (!Object.prototype.hasOwnProperty.call(previewBackgrounds, name)) name = "white";
+            const background = previewBackgrounds[name];
             win.style.backgroundColor = background.background;
             win.style.backgroundImage = background.image;
             win.style.backgroundPosition = background.position || "";
@@ -116,10 +118,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 e.preventDefault();
                 e.stopPropagation();
                 applyPreviewBackground(button.dataset.pzPreviewBackground);
+                try {
+                    window.localStorage.setItem(backgroundStorageKey, button.dataset.pzPreviewBackground);
+                } catch {
+                    // Keep the palette usable when browser storage is unavailable.
+                }
                 button.blur();
             });
         });
-        applyPreviewBackground("white");
+        let savedBackground = "white";
+        try {
+            savedBackground = window.localStorage.getItem(backgroundStorageKey) || "white";
+        } catch {
+            // Use the default background when browser storage is unavailable.
+        }
+        applyPreviewBackground(savedBackground);
 
         const preventPreviewLink = e => {
             if (!e.target?.closest?.(".pz-settings-preview-window a")) return;
@@ -1294,7 +1307,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const transformY = intValue(`${prefix}-hover-transform-y`, 0);
                 const transformRotate = intValue(`${prefix}-hover-transform-rotate`, 0);
                 const transformScale = intValue(`${prefix}-hover-transform-scale`, 100);
-                node.style.setProperty("transform", `translate(${transformX}px, ${transformY}px) rotate(${transformRotate}deg) scale(${transformScale / 100})`, "important");
+                if (specialFormat !== "tracking") {
+                    node.style.setProperty("transform", `translate(${transformX}px, ${transformY}px) rotate(${transformRotate}deg) scale(${transformScale / 100})`, "important");
+                }
                 node.style.setProperty("opacity", String(Math.max(0, Math.min(100, intValue(`${prefix}-hover-opacity`, 100))) / 100), "important");
             }
             if (checked(`${prefix}-hover-bg-enabled`) && !isAccentLinkBox) {
@@ -1321,7 +1336,7 @@ document.addEventListener("DOMContentLoaded", () => {
             applyConfiguredBoxShadow(node, prefix, true);
 
             const transition = parseFloat(value(`${prefix}-hover-transition`));
-            if (Number.isFinite(transition) && transition > 0) {
+            if (specialFormat !== "tracking" && Number.isFinite(transition) && transition > 0) {
                 node.style.setProperty("transition", `all ${transition}s ease`, "important");
             }
         };
@@ -1357,7 +1372,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 ex: { background: "#bcddff", outline: "#aabbee" },
                 in: { background: "#f8d0d0", outline: "#e8a8a8" },
             },
-			sFR: {
+			"stitch-free": {
 				ex: {
 					get background() { return value("ex-bg-color") || "transparent"; },
 					get outline() { return value("ex-border-color") || "transparent"; },
@@ -1468,6 +1483,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 node.style.boxShadow = `${hoverShadowInset}${intValue(`${prefix}-hover-shadow-x`, 8)}px ${intValue(`${prefix}-hover-shadow-y`, 8)}px ${intValue(`${prefix}-hover-shadow-blur`, 8)}px ${intValue(`${prefix}-hover-shadow-spread`, 0)}px ${hoverShadowColor}`;
             }
         };
+        const applyGlassBackground = (node, prefix) => {
+            const color = value(`${prefix}-bg-color`) || (prefix === "in" ? "#fff4d9" : "#dbeeff");
+            const hex = color.replace("#", "");
+            const rgb = hex.length === 3 ? hex.split("").map(ch => parseInt(ch + ch, 16)) : [parseInt(hex.slice(0, 2), 16), parseInt(hex.slice(2, 4), 16), parseInt(hex.slice(4, 6), 16)];
+            node.style.backgroundColor = `rgba(${rgb.join(",")},.5)`;
+            node.style.backgroundImage = "radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14))";
+        };
         const applyPartBox = (card, selector, prefix) => {
             const node = card.querySelector(selector);
             if (!node) return;
@@ -1499,6 +1521,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     node.style.backgroundImage = bgImage;
                 }
             }
+            if (isLinkBox && specialFormat === "glass") applyGlassBackground(node, prefix);
             if (checked(`${prefix}-border-enabled`)) {
                 const borderColor = value(`${prefix}-border-color`);
                 const borderStyle = value(`${prefix}-border-style`) || "solid";
@@ -1641,7 +1664,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (specialFormat === "JIN") {
                 applyHeadlinePreset();
             }
-            if (["fancy", "glass", "metal", "mac", "browser", "ref", "ct1", "ct2", "ct3", "ct4", "tac", "floating", "floating2", "fbd"].includes(specialFormat)) {
+            if (["glass", "metal", "mac", "browser", "ref", "ct1", "ct2", "ct3", "ct4", "tac", "floating", "floating2", "fbd"].includes(specialFormat)) {
                 win.querySelectorAll("[data-pz-preview-heading]").forEach(heading => {
                     heading.style.zIndex = ["glass", "metal"].includes(specialFormat)
                         ? "6"
@@ -1796,16 +1819,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         wrap.style.backgroundBlendMode = "multiply";
                         wrap.style.boxShadow = "0 2px 5px rgba(0,0,0,.25)";
                     } else if (specialFormat === "glass") {
-                        const glassColor = value(`${prefix}-bg-color`) || "#ffffff";
-                        const glassHex = glassColor.replace("#", "");
-                        const glassRgb = glassHex.length === 3 ? glassHex.split("").map(ch => parseInt(ch + ch, 16)) : [parseInt(glassHex.slice(0, 2), 16), parseInt(glassHex.slice(2, 4), 16), parseInt(glassHex.slice(4, 6), 16)];
-                        wrap.style.backgroundColor = `rgba(${glassRgb.join(",")},.5)`;
+                        applyGlassBackground(wrap, prefix);
                         [cardBody, content, info].forEach(node => {
                             if (!node) return;
                             node.style.setProperty("background-color", "transparent", "important");
                             node.style.setProperty("background-image", "none", "important");
                         });
-                        wrap.style.backgroundImage = "radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14))";
                         wrap.style.backdropFilter = "blur(2px) saturate(125%)";
                         wrap.style.webkitBackdropFilter = "blur(2px) saturate(125%)";
                         wrap.style.boxShadow = "0 8px 24px rgba(31,56,85,.18)";

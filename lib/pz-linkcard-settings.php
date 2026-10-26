@@ -416,6 +416,17 @@
 			$flg_style	= false;
 			break;
 
+		case	'delete-invalid-click-records':
+			global	$wpdb;
+			$deleted_count = $wpdb->query("DELETE click_log FROM $this->db_click AS click_log WHERE NOT EXISTS (SELECT 1 FROM $this->db_card AS card WHERE card.url_key = click_log.url_key)" );
+			if	(false === $deleted_count ) {
+				$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Failed to delete invalid click records.', 'pz-linkcard' ).'</strong></p></div>';
+			} else {
+				$html_notice .= '<div class="notice notice-success is-dismissible"><p><strong>'.sprintf(esc_html__('Deleted %s invalid click records.', 'pz-linkcard' ), esc_html(number_format_i18n($deleted_count ) ) ).'</strong></p></div>';
+			}
+			$flg_style = false;
+			break;
+
 		case	'delete-all-click-table-rows':
 			if	(empty($_POST['confirm-delete-click-table'] ) ) {
 				$html_notice	.= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Please confirm that deleted click data cannot be restored.', 'pz-linkcard' ).'</strong></p></div>';
