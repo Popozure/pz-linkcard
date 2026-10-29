@@ -5,6 +5,44 @@
 		array( 'name' => 'in',	'type' => 'internal',	'title' => __('Internal Link Settings',		'pz-linkcard' )	),
 	);
 	$default_definitions	=	self::pz_GetOptionDefinitions();
+	$card_info_items = array(
+		'' => __('None', 'pz-linkcard' ),
+		'i' => __('Site Icon', 'pz-linkcard' ),
+		'n' => __('Site Name', 'pz-linkcard' ),
+		'd' => __('Domain', 'pz-linkcard' ),
+		'c' => __('Category', 'pz-linkcard' ),
+		's' => __('SNS Count', 'pz-linkcard' ),
+		'a' => __('Added Text', 'pz-linkcard' ),
+		'u' => __('URL', 'pz-linkcard' ),
+		't' => __('Title', 'pz-linkcard' ),
+		'p' => __('Post Date', 'pz-linkcard' ),
+		'q' => __('Post Date (Right-aligned)', 'pz-linkcard' ),
+	);
+	$card_content_items = array(
+		'' => __('None', 'pz-linkcard' ),
+		't' => __('Title', 'pz-linkcard' ),
+		'e' => __('Excerpt', 'pz-linkcard' ),
+		'u' => __('URL', 'pz-linkcard' ),
+		'p' => __('Post Date', 'pz-linkcard' ),
+		'q' => __('Post Date (Right-aligned)', 'pz-linkcard' ),
+		'c' => __('Category', 'pz-linkcard' ),
+		's' => __('SNS Count', 'pz-linkcard' ),
+		'n' => __('Site Name', 'pz-linkcard' ),
+		'i' => __('Site Information', 'pz-linkcard' ),
+	);
+	$echo_card_item_selects = function($prefix, $section, $items ) use ($prop ) {
+		echo '<div class="pz-card-item-order">';
+		for ($index = 1; $index <= 5; $index++ ) {
+			$item_name = $prefix.'-'.$section.'-type-'.$index;
+			$item_value = $prop[$item_name] ?? '';
+			echo '<label><span>'.esc_html($index ).'</span><select name="properties['.esc_attr($item_name ).']">';
+			foreach ($items as $value => $label ) {
+				echo '<option value="'.esc_attr($value ).'"'.selected((string) $item_value, (string) $value, false ).'>'.esc_html($label ).'</option>';
+			}
+			echo '</select></label>';
+		}
+		echo '</div>';
+	};
 	foreach ($title_list as $t) {
 		echo	'<div class="pz-page'.$pz_page_active('pz-'.$t['type'] ).'" id="pz-'.$t['type'].'">';
 		echo	'<div class="pz-submit-float">';
@@ -197,24 +235,94 @@
 
 		echo			'</table>';
 
-		echo	'<h3>'.__('Link Card', 'pz-linkcard' ).'</h3>';
-		echo	'<table class="form-table">';
+		// サイト情報の設定
+		$item_header		=	__('Site Information',	'pz-linkcard' );
+		echo			'<h3>'.$item_header.'</h3>';
+		echo			'<table class="form-table">';
 
-		// リンクカードの外観設定
+		echo '<tr><th scope="row">'.esc_html__('Display Items', 'pz-linkcard' ).'</th><td>';
+		$echo_card_item_selects($t['name'], 'info', $card_info_items );
+		echo '</td></tr>';
 
-		// 通常時の外観
-		$echo_card_appearance($t, $prop );
-		echo			'</table>';
+		// サイト名の後ろに表示するテキスト
+		$item_title			=	__('Text',	'pz-linkcard' );
+		$item_notice		=	__('Enter a string to display after the site name.', 'pz-linkcard' );
+		$item_class			=	'regular-text';
+		$item_name			=	$t['name'].'-added-text';
+		$item_value			=	esc_attr($prop[$item_name] );
+		$item_list		=	array(
+			__('External site',			'pz-linkcard' ),
+			__('This site',				'pz-linkcard' ),
+			__('This page',				'pz-linkcard' ),
+		);
+		echo			'<tr><th scope="row">'.$item_title.'</th><td>';
+		echo			'<label><input type="text" name="properties['.esc_attr($item_name ).']" value="'.esc_attr($item_value ).'" class="'.esc_attr($item_class ).'" list="datalist-'.esc_attr($item_name ).'" /></label>';
+		echo			'<datalist id="datalist-'.esc_attr($item_name ).'">';
+		foreach			($item_list			as	$value ) {
+			echo		'<option value="'.esc_attr($value ).'">'.esc_attr($value ).'</option>';
+		}
+		echo			'</datalist>';
+		if				($item_notice ) {
+			echo		'<p>'.$item_notice.'</p>';
+		}
+		echo			'</td></tr>';
 
-		echo	'<h3>'.__('On Hover', 'pz-linkcard' ).'</h3>';
-		echo	'<p><button type="button" class="button pz-copy-card-to-hover" data-pz-card-prefix="'.esc_attr($t['name'] ).'">'.__('Copy Settings from Link Card', 'pz-linkcard' ).'</button></p>';
-		echo	'<table class="form-table">';
-		$echo_card_appearance($t, $prop, '-hover' );
-		echo			'</table>';
+		// サイトアイコンの取得方法
+		$item_title	=			__('How to get Site-Icon', 'pz-linkcard' );
+		$item_name			=	$t['name'].'-siteicon';
+		$item_notice		=	'';
+		if	(array_key_exists($item_name, $default_definitions ) ) {
+			$s_name			=	'name="properties['.$item_name.']"';
+			$item_class		=	'';
+			$s_switch		=	'';
+			$item_value		=	esc_attr($prop[$item_name] );
+			$item_value_list	=
+				array(
+					''		=>	__('None',					'pz-linkcard' ),
+					'1'		=>	__('Direct',				'pz-linkcard' ),
+					'13'	=>	__('Direct > Use WebAPI',	'pz-linkcard' ),
+					'3'		=>	__('Use WebAPI',			'pz-linkcard' ),
+				);
+			$s_option		=	'';
+		} else {
+			$s_name			=	'';
+			$item_class		=	'';
+			$s_switch		=	'disabled="disabled"';
+			$item_value		=	'';
+			$item_value_list	=	LIST_INTERNAL;
+		}
+		foreach		($item_value_list		as	$value	=>	$description ) {
+			$s_option	.=	'<option value="'.$value.'" '.($item_value == $value ? 'selected="selected"' : '' ).'>'.$description.'</option>';
+		}
+		echo	sprintf($temp_select,   $item_title, $s_name, $item_class, $s_switch, $s_option, $item_notice );
+
+		// サイトアイコンの代替テキスト
+		$item_title	=		__('Alternative text', 'pz-linkcard' );
+		$item_name		=		$t['name'].'-siteicon-alt';
+		$s_len		=		'';
+		$item_class	=		'regular-text';
+		$item_notice		=		'';
+		if	(array_key_exists($item_name, $default_definitions ) ) {
+			$s_name		=	'name="properties['.$item_name.']"';
+			$item_value	=	esc_attr($prop[$item_name] );
+			$s_switch	=	'';
+		} else {
+			$s_name		=	'';
+			$item_value	=	__('Use the same setting as Internal Link', 'pz-linkcard' );;
+			$s_switch	=	'disabled="disabled"';
+		}
+		echo	sprintf($temp_text, $item_title, $s_name, $item_value, $s_len, $item_class, $s_switch, $item_notice );
+
+		echo	'</table>';
+
 		// 記事内容の設定
 		$item_title		=	__('Article Content',	'pz-linkcard' );
 		echo			'<h3>'.$item_title.'</h3>';
 		echo			'<table class="form-table pz-card-article-content-table">';
+
+		echo '<tr><th scope="row">'.esc_html__('Display Items', 'pz-linkcard' ).'</th><td>';
+		$echo_card_item_selects($t['name'], 'content', $card_content_items );
+		echo '</td></tr>';
 
 		// 記事内容の取得方法
 		$item_title	=		__('Get Contents', 'pz-linkcard' );
@@ -345,6 +453,20 @@
 		}
 		echo	'</table>';
 
+		echo	'<h3>'.__('Link Card', 'pz-linkcard' ).'</h3>';
+		echo	'<table class="form-table">';
+
+		// リンクカードの外観設定
+
+		// 通常時の外観
+		$echo_card_appearance($t, $prop );
+		echo			'</table>';
+
+		echo	'<h3>'.__('On Hover', 'pz-linkcard' ).'</h3>';
+		echo	'<p><button type="button" class="button pz-copy-card-to-hover" data-pz-card-prefix="'.esc_attr($t['name'] ).'">'.__('Copy Settings from Link Card', 'pz-linkcard' ).'</button></p>';
+		echo	'<table class="form-table">';
+		$echo_card_appearance($t, $prop, '-hover' );
+		echo			'</table>';
 		// 見出しの設定
 		$item_title		=	__('Heading',	'pz-linkcard' );
 		echo			'<h3>'.$item_title.'</h3>';
@@ -409,82 +531,6 @@
 		echo			'</td></tr>';
 		$echo_part_appearance($t, $prop, 'more' );
 		echo			'</table>';
-
-		// サイト情報の設定
-		$item_header		=	__('Site Information',	'pz-linkcard' );
-		echo			'<h3>'.$item_header.'</h3>';
-		echo			'<table class="form-table">';
-
-		// サイト名の後ろに表示するテキスト
-		$item_title			=	__('Text',	'pz-linkcard' );
-		$item_notice		=	__('Enter a string to display after the site name.', 'pz-linkcard' );
-		$item_class			=	'regular-text';
-		$item_name			=	$t['name'].'-added-text';
-		$item_value			=	esc_attr($prop[$item_name] );
-		$item_list		=	array(
-			__('External site',			'pz-linkcard' ),
-			__('This site',				'pz-linkcard' ),
-			__('This page',				'pz-linkcard' ),
-		);
-		echo			'<tr><th scope="row">'.$item_title.'</th><td>';
-		echo			'<label><input type="text" name="properties['.esc_attr($item_name ).']" value="'.esc_attr($item_value ).'" class="'.esc_attr($item_class ).'" list="datalist-'.esc_attr($item_name ).'" /></label>';
-		echo			'<datalist id="datalist-'.esc_attr($item_name ).'">';
-		foreach			($item_list			as	$value ) {
-			echo		'<option value="'.esc_attr($value ).'">'.esc_attr($value ).'</option>';
-		}
-		echo			'</datalist>';
-		if				($item_notice ) {
-			echo		'<p>'.$item_notice.'</p>';
-		}
-		echo			'</td></tr>';
-
-		// サイトアイコンの取得方法
-		$item_title	=			__('How to get Site-Icon', 'pz-linkcard' );
-		$item_name			=	$t['name'].'-siteicon';
-		$item_notice		=	'';
-		if	(array_key_exists($item_name, $default_definitions ) ) {
-			$s_name			=	'name="properties['.$item_name.']"';
-			$item_class		=	'';
-			$s_switch		=	'';
-			$item_value		=	esc_attr($prop[$item_name] );
-			$item_value_list	=
-				array(
-					''		=>	__('None',					'pz-linkcard' ),
-					'1'		=>	__('Direct',				'pz-linkcard' ),
-					'13'	=>	__('Direct > Use WebAPI',	'pz-linkcard' ),
-					'3'		=>	__('Use WebAPI',			'pz-linkcard' ),
-				);
-			$s_option		=	'';
-		} else {
-			$s_name			=	'';
-			$item_class		=	'';
-			$s_switch		=	'disabled="disabled"';
-			$item_value		=	'';
-			$item_value_list	=	LIST_INTERNAL;
-		}
-		foreach		($item_value_list		as	$value	=>	$description ) {
-			$s_option	.=	'<option value="'.$value.'" '.($item_value == $value ? 'selected="selected"' : '' ).'>'.$description.'</option>';
-		}
-		echo	sprintf($temp_select,   $item_title, $s_name, $item_class, $s_switch, $s_option, $item_notice );
-
-		// サイトアイコンの代替テキスト
-		$item_title	=		__('Alternative text', 'pz-linkcard' );
-		$item_name		=		$t['name'].'-siteicon-alt';
-		$s_len		=		'';
-		$item_class	=		'regular-text';
-		$item_notice		=		'';
-		if	(array_key_exists($item_name, $default_definitions ) ) {
-			$s_name		=	'name="properties['.$item_name.']"';
-			$item_value	=	esc_attr($prop[$item_name] );
-			$s_switch	=	'';
-		} else {
-			$s_name		=	'';
-			$item_value	=	__('Use the same setting as Internal Link', 'pz-linkcard' );;
-			$s_switch	=	'disabled="disabled"';
-		}
-		echo	sprintf($temp_text, $item_title, $s_name, $item_value, $s_len, $item_class, $s_switch, $item_notice );
-
-		echo	'</table>';
 
 		// サムネイルの設定
 		echo	'<h3>'.__('Thumbnail', 'pz-linkcard' ).'</h3>';

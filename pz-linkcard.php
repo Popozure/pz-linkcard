@@ -152,17 +152,27 @@ class class_pz_linkcard {
 			'added-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'added-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 
-			'cat-color'							=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff',		'reset-format'	=>	true, ],
+			'cat-color'							=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#000000',		'reset-format'	=>	true, ],
 			'cat-outline-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'cat-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffcc88',		'reset-format'	=>	true, ],
-			'cat-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'cat-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	24,				'reset-format'	=>	true, ],
+			'cat-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	9,				'reset-format'	=>	true, ],
+			'cat-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	6,				'reset-format'	=>	true, ],
 			'cat-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'cat-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'cat-underline'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'cat-hover'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 
-			'ex-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
+			'ex-target'							=>	['type'	=>	'numeric',			'null'	=>	true,	'default'	=>	2,			'reset-format'	=>	true, ],
+			'ex-info-type-1'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'i',		'reset-format'	=>	true, ],
+			'ex-info-type-2'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'n',		'reset-format'	=>	true, ],
+			'ex-info-type-3'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'a',		'reset-format'	=>	true, ],
+			'ex-info-type-4'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	's',		'reset-format'	=>	true, ],
+			'ex-info-type-5'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
+			'ex-content-type-1'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	't',		'reset-format'	=>	true, ],
+			'ex-content-type-2'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'u',		'reset-format'	=>	true, ],
+			'ex-content-type-3'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'e',		'reset-format'	=>	true, ],
+			'ex-content-type-4'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'p',		'reset-format'	=>	true, ],
+			'ex-content-type-5'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
 			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'ex-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
 			'ex-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
@@ -192,7 +202,7 @@ class class_pz_linkcard {
 			'ex-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
 			'ex-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
 			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff88',	'reset-format'	=>	true, ],
+			'ex-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#eef8ff',	'reset-format'	=>	true, ],
 			'ex-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'ex-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'ex-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#114488',		'reset-format'	=>	true, ],
@@ -274,7 +284,17 @@ class class_pz_linkcard {
 			'ex-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
 			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 
-			'in-target'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'in-target'							=>	['type'	=>	'numeric',			'null'	=>	true,	'default'	=>	null,		'reset-format'	=>	true, ],
+			'in-info-type-1'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'i',		'reset-format'	=>	true, ],
+			'in-info-type-2'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'n',		'reset-format'	=>	true, ],
+			'in-info-type-3'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'a',		'reset-format'	=>	true, ],
+			'in-info-type-4'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	's',		'reset-format'	=>	true, ],
+			'in-info-type-5'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
+			'in-content-type-1'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'c',		'reset-format'	=>	true, ],
+			'in-content-type-2'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	't',		'reset-format'	=>	true, ],
+			'in-content-type-3'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'p',		'reset-format'	=>	true, ],
+			'in-content-type-4'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'e',		'reset-format'	=>	true, ],
+			'in-content-type-5'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
 			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'in-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
 			'in-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
@@ -282,7 +302,7 @@ class class_pz_linkcard {
 			'in-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
 			'in-opacity'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
 			'in-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf0',		'reset-format'	=>	true, ],
+			'in-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fff8dd',		'reset-format'	=>	true, ],
 			'in-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'in-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
 			'in-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888',		'reset-format'	=>	true, ],
@@ -304,7 +324,7 @@ class class_pz_linkcard {
 			'in-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
 			'in-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
 			'in-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf088',	'reset-format'	=>	true, ],
+			'in-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf0',		'reset-format'	=>	true, ],
 			'in-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'in-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
 			'in-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888',		'reset-format'	=>	true, ],
@@ -460,6 +480,8 @@ class class_pz_linkcard {
 
 			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
 			'alive-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
+			'get-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	50, ],
+			'get-period-delay'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	30, ],
 			'sns-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
 			'sns-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
 
@@ -663,14 +685,17 @@ class class_pz_linkcard {
 
 		// 共通アクション（実行順）
 		add_action('init', [$this, 'action_register_block' ] );
+		if (did_action('wp_loaded' ) && !doing_action('wp_loaded' ) ) {
+			$this->action_register_cron_schedules();
+		} else {
+			add_action('wp_loaded', [$this, 'action_register_cron_schedules' ], PHP_INT_MAX );
+		}
+
+		// WP-CRONの各処理
 		add_action(self::CRON_ALIVE, [$this, 'schedule_hook_alive' ] );
 		add_action(self::CRON_CHECK, [$this, 'schedule_hook_check' ] );
 		add_action(self::CRON_CLICK_CLEANUP, [$this, 'schedule_hook_click_cleanup' ] );
 		add_action(self::CRON_GET, [$this, 'schedule_hook_get' ] );
-
-		// WP-CRONスケジュール登録
-		$this->pz_SyncCronSchedules();
-		$this->pz_ScheduleClickLogCleanup();
 
 		// 管理画面のとき
 		if	(is_admin() ) {
@@ -685,11 +710,13 @@ class class_pz_linkcard {
 
 			// 管理画面用アクション
 			add_action		('init',									[$this, 'action_init' ],						10, 1 );	// プラグイン初期化
-			add_filter		('admin_body_class',						[$this, 'filter_admin_body_class'] );
-			add_action		('upgrader_process_complete',				[$this, 'action_upgrader_process_complete' ],	10, 2 );	// アップデートしたときの処理
-			add_action		('admin_post_pz_export_file',				[$this, 'action_export_file' ],					10, 1 );	// エクスポート処理
 			add_action		('enqueue_block_editor_assets',				[$this, 'action_enqueue_block_editor_assets' ],	10, 1 );	// ブロックエディタ用スクリプト
 			add_action		('enqueue_block_assets',					[$this, 'action_enqueue_block_assets' ],		10, 1 );	// ブロックエディタ本文
+			add_filter		('admin_body_class',						[$this, 'filter_admin_body_class'] );
+
+			// エクスポート・更新処理用アクション
+			add_action		('admin_post_pz_export_file',				[$this, 'action_export_file' ],					10, 1 );	// エクスポート処理
+			add_action		('upgrader_process_complete',				[$this, 'action_upgrader_process_complete' ],	10, 2 );	// アップデートしたときの処理
 
 			// カード設定画面用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_clear_error_mode',			[$this, 'action_ajax_pz_lkc_error_mode_clear'] );
@@ -705,6 +732,9 @@ class class_pz_linkcard {
 			add_action		('wp_ajax_pz_lkc_mce_post_search',			[$this, 'action_ajax_pz_lkc_mce_post_search'] );
 			add_action		('wp_ajax_pz_lkc_mce_render_card',			[$this, 'action_ajax_pz_lkc_mce_render_card'] );
 		} else {
+			// 通常表示用アクション
+			add_action('wp_enqueue_scripts', [$this, 'action_wp_enqueue_scripts' ] );
+
 			// 通常表示用フィルター
 			if	($this->options['auto-atag'] || $this->options['auto-url'] ) {										// 自動置き換え
 				add_filter('the_content', [$this, 'auto_replace' ] );
@@ -720,9 +750,6 @@ class class_pz_linkcard {
 					add_shortcode($code, [$this, 'shortcode' ] );
 				}
 			}
-
-			// 通常表示用アクション
-			add_action('wp_enqueue_scripts', [$this, 'action_wp_enqueue_scripts' ] );
 		}
 
 		// 投稿表示側でも使用するAjaxアクション
@@ -1274,7 +1301,12 @@ class class_pz_linkcard {
 	private	function	pz_RenewSNSCount($data ) {
 
 		// ソーシャルカウントを表示しない設定の場合は終了
-		if	(!$this->options['sns-position'] ) {
+		if	(!in_array('s', array_merge(
+			$this->pz_GetCardItemOrder('ex', 'info' ),
+			$this->pz_GetCardItemOrder('ex', 'content' ),
+			$this->pz_GetCardItemOrder('in', 'info' ),
+			$this->pz_GetCardItemOrder('in', 'content' )
+		), true ) ) {
 			return	null;
 		}
 		if	(!isset($data ) || !is_array($data ) ) {
@@ -1941,13 +1973,13 @@ class class_pz_linkcard {
 		add_action		('admin_menu',									array($this, 'action_admin_menu' ) );						// 設定メニュー
 		add_action		('admin_menu',									array($this, 'action_sort_pz_submenus' ), PHP_INT_MAX );	// [Pz] サブメニューの並べ替え
 		add_action		('wp_dashboard_setup',							array($this, 'action_wp_dashboard_setup' ) );				// ダッシュボードウィジェット
-		add_action		('admin_footer-index.php',						array($this, 'action_dashboard_widget_focus' ) );			// ダッシュボードウィジェットへ移動
 		add_action		('admin_enqueue_scripts',						array($this, 'action_admin_enqueue_scripts' ) );			// 設定メニュー用スクリプト
 		add_action		('admin_print_styles',							array($this, 'action_admin_print_styles' ) );				// スタイルシートの追加
 		add_action		('admin_print_scripts',							array($this, 'action_admin_print_scripts' ) );				// スクリプトの追加
+		add_action		('wp_before_admin_bar_render',					array($this, 'action_wp_before_admin_bar_render' ), 11 );	// 管理バー
 		add_action		('admin_notices',								array($this, 'action_admin_notices' ) );					// 注意書き
 		add_action		('admin_print_footer_scripts',					array($this, 'action_admin_print_footer_scripts' ) );		// テキストエディタ用クイックタグ
-		add_action		('wp_before_admin_bar_render',					array($this, 'action_wp_before_admin_bar_render' ), 11 );	// 管理バー
+		add_action		('admin_footer-index.php',						array($this, 'action_dashboard_widget_focus' ) );			// ダッシュボードウィジェットへ移動
 	}
 
 	// 管理画面のサブメニュー追加
@@ -2144,6 +2176,7 @@ class class_pz_linkcard {
 					'labels'		=>	array(
 						'restorePreview'		=>	__('Preview', 'pz-linkcard' ),
 						'restorePreviewAria'	=>	__('Preview', 'pz-linkcard' ),
+						'openPreview'			=>	__('Open preview', 'pz-linkcard' ),
 						'dockPreviewBottom'		=>	__('Dock preview bottom', 'pz-linkcard' ),
 						'dockPreviewRight'		=>	__('Dock preview right', 'pz-linkcard' ),
 						'windowPreview'			=>	__('Window preview', 'pz-linkcard' ),
@@ -2588,7 +2621,16 @@ class class_pz_linkcard {
 		return		$log;
 	}
 
-	private	function	pz_SyncCronSchedules() {
+	// 他のプラグインやテーマのスケジュール登録が終わってから同期する
+	public function action_register_cron_schedules() {
+		$this->pz_SyncCronSchedules(true );
+		$this->pz_ScheduleClickLogCleanup();
+	}
+
+	private	function	pz_SyncCronSchedules($allow_during_wp_loaded = false ) {
+		if (!did_action('wp_loaded' ) || (!$allow_during_wp_loaded && doing_action('wp_loaded' ) ) ) {
+			return;
+		}
 		$cron_schedules		=	wp_get_schedules();
 		$sns_period			=	isset($this->options['sns-period'] ) ? (string) $this->options['sns-period'] : '';
 		$alive_period		=	isset($this->options['alive-period'] ) ? (string) $this->options['alive-period'] : '';

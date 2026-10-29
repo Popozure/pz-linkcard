@@ -2,6 +2,8 @@
 <?php
 	// DBの宣言
 	global	$wpdb;
+	require_once(__DIR__.'/pz-linkcard-file-datetime.php' );
+	$datetime_columns = array_flip(pz_lkc_csv_datetime_columns() );
 
 	// DBの列名取得
 	$col_name	=	$wpdb->get_col("DESC $this->db_name" );
@@ -73,15 +75,28 @@
 		$read_count++;
 		if (count($record ) == $item_count) {
 			$import	= 	array();
+			$invalid_datetime = false;
 			foreach ($csv_header as $key => $value ) {
 				if (isset($skip_key[$value] ) ) {
 					continue;
 				}
-				$import[$value]	= 	$record[$key];
+				if (in_array($value, array('post_id', 'post_date', 'post_modified', 'no_failure', 'click_count' ), true ) && $record[$key] === '' ) {
+					$import[$value] = null;
+				} else {
+					$import[$value]	= 	isset($datetime_columns[$value] ) ? pz_lkc_csv_datetime_import($value, $record[$key] ) : $record[$key];
+				}
+				if (isset($datetime_columns[$value] ) && $import[$value] === false ) {
+					$invalid_datetime = true;
+					break;
+				}
+			}
+			if ($invalid_datetime ) {
+				$skip_count++;
+				continue;
 			}
 
 			// DB更新
-			$result			=	$this->pz_SetCache($import );
+			$result			=	$this->pz_SetCache($import, true );
 			if	(!isset($result['url'] ) || $result['url'] <> $import['url'] ) {
 				$skip_count++;
 			} else {

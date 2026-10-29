@@ -423,6 +423,8 @@
 	}
 
 	// プラグインバージョンの更新
+	$previous_plugin_version = $this->options['plugin-version'];
+	$previous_css_count = $this->options['css-count'];
 	$plugin_version_changed	=	($this->options['plugin-version']	<>	PZLKC_PLUGIN_VERSION );
 	if		($plugin_version_changed ) {
 		$this->options['plugin-version']	=	PZLKC_PLUGIN_VERSION;
@@ -430,7 +432,12 @@
 	}
 
 	// DBテーブル作成・更新＆メンテナンス
-	require_once ('pz-linkcard-activate-db.php');
+	if ((require 'pz-linkcard-activate-db.php') === false ) {
+		$this->options['plugin-version'] = $previous_plugin_version;
+		$this->options['css-count'] = $previous_css_count;
+		$this->activate_now = false;
+		return false;
+	}
 	require_once ('pz-linkcard-activate-db-click.php');
 
 	// テンプレート側でMCEプラグイン一覧を上書きする場合があるため、実行優先度を下げる

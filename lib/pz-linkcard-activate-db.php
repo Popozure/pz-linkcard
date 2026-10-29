@@ -29,11 +29,11 @@
 				charset			VARCHAR(30)								DEFAULT NULL,
 				thumbnail		VARCHAR(2000)							DEFAULT NULL,
 				favicon			VARCHAR(2000)							DEFAULT NULL,
-				post_id			BIGINT			UNSIGNED				DEFAULT 0,
-				post_date		BIGINT			UNSIGNED				DEFAULT 0,
-				post_modified	BIGINT			UNSIGNED				DEFAULT 0,
-				no_failure		INT				UNSIGNED				DEFAULT 0,
-				click_count		BIGINT			UNSIGNED				DEFAULT 0,
+				post_id			BIGINT			UNSIGNED				DEFAULT NULL,
+				post_date		BIGINT			UNSIGNED				DEFAULT NULL,
+				post_modified	BIGINT			UNSIGNED				DEFAULT NULL,
+				no_failure		INT				UNSIGNED				DEFAULT NULL,
+				click_count		BIGINT			UNSIGNED				DEFAULT NULL,
 				alive_result	INT										DEFAULT NULL,
 				alive_time		BIGINT			UNSIGNED				DEFAULT 0,
 				alive_nexttime	BIGINT			UNSIGNED				DEFAULT 0,
@@ -66,58 +66,25 @@
 
 	// DBテーブルの存在確認
 	$db_card_exists	=	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_card ) ) === $this->db_card );
-	if	($db_card_exists ) {
-		if	($this->options['db-version']	==	$db_version	) {		// 前回使用したSQLと変更が無ければ抜ける
-//			return;
+	if ($db_card_exists && ($this->options['db-version'] ?? null) !== $db_version ) {
+		require_once(__DIR__.'/pz-linkcard-db-rebuild.php' );
+		if (!pz_lkc_rebuild_card_table($wpdb, $this->db_card, $sql ) ) {
+			error_log('Pz-LinkCard: card table rebuild failed; the original table was retained.');
+			return false;
 		}
-
-		// 旧仕様のバイナリハッシュは派生データなので、文字列型へ安全に作り直す
-		$column_url_key	=	$wpdb->get_row("SHOW COLUMNS FROM $this->db_card LIKE 'url_key'", ARRAY_A );
-		if	(isset($column_url_key['Type'] ) && preg_match('/^(?:var)?binary\b/i', $column_url_key['Type'] ) ) {
-			$index_url_key	=	$wpdb->get_var("SHOW INDEX FROM $this->db_card WHERE Key_name = 'url_key'" );
-			if	($index_url_key ) {
-				$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key" );
-			}
-			$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN url_key" );
-		}
-
-		// Remove obsolete modification flags.
-		foreach	(array('mod_title', 'mod_excerpt' ) as $obsolete_column ) {
-			$column_exists	=	$wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM $this->db_card LIKE %s", $obsolete_column ) );
-			if	($column_exists ) {
-				$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN `$obsolete_column`" );
-			}
-		}
-
-		// 同じURLは最も古いIDへ統合し、クリック数とクリックログを引き継ぐ
-		$result_datas	=	(array) $wpdb->get_results("SELECT id,url,click_count FROM $this->db_card WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC" );
-		$kept_ids		=	array();
-		$db_click_exists	=	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_click ) ) === $this->db_click );
-		foreach	($result_datas as $data ) {
-			$url	=	(string) $data->url;
-			if	(!array_key_exists($url, $kept_ids ) ) {
-				$kept_ids[$url]	=	intval($data->id );
-				continue;
-			}
-
-			$keep_id	=	$kept_ids[$url];
-			$delete_id	=	intval($data->id );
-			if	($db_click_exists ) {
-				$keep_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $keep_id));
-				$delete_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $delete_id));
-				if ($keep_key && $delete_key) {
-					$wpdb->update($this->db_click, array('url_key' => $keep_key), array('url_key' => $delete_key), array('%s'), array('%s'));
-				}
-			}
-			if	(intval($data->click_count ) !== 0 ) {
-				$wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + %d WHERE id = %d", intval($data->click_count ), $keep_id ) );
-			}
-			$wpdb->delete($this->db_card, array('id' => $delete_id ), array('%d' ) );
-		}
+		$this->request_cache = array();
+	} elseif (!$db_card_exists ) {
+		dbDelta($sql, true );
+		if ($wpdb->last_error ) return false;
 	}
 
-	// DBテーブル作成・更新
-	$result		=	dbDelta($sql, true );
+	// dbDelta does not change existing numeric defaults to NULL.
+	foreach (array('post_id' => 'BIGINT', 'post_date' => 'BIGINT', 'post_modified' => 'BIGINT', 'no_failure' => 'INT', 'click_count' => 'BIGINT' ) as $column_name => $column_type ) {
+		$column = $wpdb->get_row($wpdb->prepare("SHOW COLUMNS FROM $this->db_card LIKE %s", $column_name ), ARRAY_A );
+		if ($column && ($column['Default'] !== null || strtoupper($column['Null'] ) !== 'YES') ) {
+			$wpdb->query("ALTER TABLE $this->db_card MODIFY `$column_name` $column_type UNSIGNED NULL DEFAULT NULL" );
+		}
+	}
 
 	// 旧定義の NOT NULL DEFAULT 0 を外し、取得待ちをNULLで保存できるようにする
 	$regist_time_column = $wpdb->get_row("SHOW COLUMNS FROM $this->db_card LIKE 'regist_time'", ARRAY_A );

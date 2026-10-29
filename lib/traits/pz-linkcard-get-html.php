@@ -29,6 +29,9 @@ trait Pz_LinkCard_Get_HTML {
 		$domain_url		=	$url_info['domain_url'];	// ドメインURL
 		$is_external	=	$url_info['is_external'];	// 外部リンク
 		$is_internal	=	$url_info['is_internal'];	// 内部リンク
+		$item_prefix	=	$is_internal ? 'in' : 'ex';
+		$info_items		=	$this->pz_GetCardItemOrder($item_prefix, 'info' );
+		$content_items	=	$this->pz_GetCardItemOrder($item_prefix, 'content' );
 
 		// モバイルかPCかのクラス名を追加
 		$class_id		=	'linkcard';
@@ -148,7 +151,7 @@ trait Pz_LinkCard_Get_HTML {
 		}
 
 		// 表示用サイト名
-		if	(($this->options['flg-use-sitename'] ) && ($site_name ) ) {
+		if	($site_name ) {
 			$disp_sitename		=	$site_name;
 		} else {
 			$disp_sitename		=	$domain_name;
@@ -185,19 +188,15 @@ trait Pz_LinkCard_Get_HTML {
 		$title			=	esc_html($temp );
 		$html_title		=	'<div class="lkc-title">'.$title.'</div>';
 
-		// 抜粋文整形（抜粋文非表示の場合、空欄にする）
-		if	(!$this->options['display-excerpt'] ) {
-			$excerpt	=	'';
-		} else {
-			$temp		=	$excerpt;											// 抜粋文
-			$temp		=	strip_tags($temp );									// HTMLタグ除去
-			$temp		=	str_replace(array("\r", "\n"), '', $temp );			// 改行を除去
-			$temp		=	preg_replace('/<!--more-->.+/is', '', $temp );		// moreタグ以降削除
-			$temp		=	preg_replace('/\[[^]]*\]/', '', $temp );			// ショートコードすべて除去
-			$temp	=	mb_strimwidth($temp, 0, 500 , '...' );
-			$temp		=	esc_html($temp );									// HTMLエスケープ
-			$excerpt	=	$temp;
-		}
+		// 抜粋文整形（表示の有無は表示項目で指定）
+		$temp		=	$excerpt;											// 抜粋文
+		$temp		=	strip_tags($temp );									// HTMLタグ除去
+		$temp		=	str_replace(array("\r", "\n"), '', $temp );			// 改行を除去
+		$temp		=	preg_replace('/<!--more-->.+/is', '', $temp );		// moreタグ以降削除
+		$temp		=	preg_replace('/\[[^]]*\]/', '', $temp );			// ショートコードすべて除去
+		$temp		=	mb_strimwidth($temp, 0, 500 , '...' );
+		$temp		=	esc_html($temp );									// HTMLエスケープ
+		$excerpt	=	$temp;
 		if	($excerpt ) {
 			$html_excerpt		=	'<div class="lkc-excerpt">'.$excerpt.'</div>';
 		} else {
@@ -220,7 +219,8 @@ trait Pz_LinkCard_Get_HTML {
 				}
 			}
 			if	($this->amp === 1 ) {
-				$html_tag		=	'<div class="lkc-external amp"><table border="1" cellspacing="0" cellpadding="4"><tr><td>'.$excerpt.'<br><a href="'.esc_url($url ).'"'.$target.$rel.'>'.$title.'</a>&nbsp;-&nbsp;'.esc_html($site_name ).'</td></tr></table></div>';
+				$amp_excerpt = in_array('e', $content_items, true ) ? $excerpt : '';
+				$html_tag		=	'<div class="lkc-external amp"><table border="1" cellspacing="0" cellpadding="4"><tr><td>'.$amp_excerpt.'<br><a href="'.esc_url($url ).'"'.$target.$rel.'>'.$title.'</a>&nbsp;-&nbsp;'.esc_html($site_name ).'</td></tr></table></div>';
 				return	$html_tag;		// タグを出力して終了
 			}
 		}
@@ -247,7 +247,7 @@ trait Pz_LinkCard_Get_HTML {
 		}
 
 		// サムネイル取得
-		if	($this->options['thumbnail-position'] && empty($atts['pz-pending'] ) ) {
+		if	(($this->options['thumbnail-position'] || $is_preview ) && empty($atts['pz-pending'] ) ) {
 			if	($sw_thumbnail == 1 || $sw_thumbnail == 13 ) {						// 直接取得
 				if	($is_external && !$is_preview ) {
 					$thumbnail_url	=	$this->pz_GetImage($thumbnail_url );		// 外部サイトのサムネイルをキャッシュ
@@ -277,7 +277,8 @@ trait Pz_LinkCard_Get_HTML {
 		}
 
 		// サイトアイコン取得
-		if	(($this->options['info-position'] || $is_preview ) && empty($atts['pz-pending'] ) ) {
+		$needs_info = $this->options['info-position'] || in_array('i', $content_items, true );
+		if	(($is_preview || ($needs_info && in_array('i', $info_items, true ) ) ) && empty($atts['pz-pending'] ) ) {
 			if	($sw_siteicon == 1 || $sw_siteicon == 13 ) {							// 直接取得
 				if	($is_internal ) {
 					$siteicon_url	=	get_site_icon_url(16 );						// 自サイトのサイトアイコン
@@ -344,9 +345,8 @@ trait Pz_LinkCard_Get_HTML {
 
 		// ソーシャルカウントの表示
 		$sns				=	null;
-		$html_sns_title		=	null;
-		$html_sns_info		=	null;
-		if	($this->options['sns-position'] ) {
+		$html_sns			=	'';
+		if	($is_preview || in_array('s', $content_items, true ) || ($needs_info && in_array('s', $info_items, true ) ) ) {
 			$url_noscheme	=	preg_replace('/^https?:\/\//i', '', $url );	// スキームと「//」を外す
 			// カード全体をリンクにするときもSNSボタンをクリック可能にする
 			if	($this->options['flg-linkall'] ) {
@@ -380,12 +380,11 @@ trait Pz_LinkCard_Get_HTML {
 				}
 			}
 			if	($sns ) {
-				if	($this->options['sns-position'] == 1 ) {
-					$html_sns_title	=	'<div class="lkc-share">'.$sns.'</div>';
-				} else {
-					$html_sns_info	=	'<div class="lkc-share">'.$sns.'</div>';
-				}
+				$html_sns	=	'<div class="lkc-share">'.$sns.'</div>';
 			}
+		}
+		if ($is_preview && !$html_sns ) {
+			$html_sns = '<div class="lkc-share"></div>';
 		}
 
 		// サムネイル
@@ -395,30 +394,21 @@ trait Pz_LinkCard_Get_HTML {
 
 		// 表示用のURL
 		$disp_url = '';
-		if ($this->options['display-url'] || ($this->options['special-format'] ?? null ) === 'browser' ) {
+		if ($is_preview || in_array('u', $info_items, true ) || in_array('u', $content_items, true ) || ($this->options['special-format'] ?? null ) === 'browser' ) {
 			$disp_url		=	esc_html($this->pz_DecodeURL($url, true ) );
 		}
 
 		// リンク先URL
-		$html_url1			=	null;
-		$html_url2			=	null;
-		switch	($this->options['display-url'] ) {
-		case	1:
-			$html_url1	=	'<div class="lkc-url" title="'.esc_attr($url ).'">'.$html_a_op.$html_st_op.$disp_url.$html_st_cl.$html_a_cl.'</div>';
-			break;
-		case	2:
-			$html_url2	=	'&nbsp;<div class="lkc-url-info">'.	$html_a_op.$html_st_op.$disp_url.$html_st_cl.$html_a_cl.'</div>';
-			break;
-		}
+		$html_url1	=	'<div class="lkc-url" title="'.esc_attr($url ).'">'.$html_a_op.$html_st_op.$disp_url.$html_st_cl.$html_a_cl.'</div>';
+		$html_url2	=	'<div class="lkc-url-info">'.$html_a_op.$html_st_op.$disp_url.$html_st_cl.$html_a_cl.'</div>';
 
 		// 投稿日
-		$html_date	=	null;
-		$display_date_mode	=	$this->options['display-date'] ?: ($is_preview ? 1 : 0);
-		if	($is_internal && $display_date_mode ) {
-			$html_url1	=	null;
-			$html_url2	=	null;
-			$post_date_timestamp		=	is_numeric($post_date ) ? intval($post_date ) : strtotime($post_date );
-			$post_modified_timestamp	=	is_numeric($post_modified ) ? intval($post_modified ) : strtotime($post_modified );
+		$html_date	=	'';
+		$display_date_mode	=	$this->options['display-date'] ?: 1;
+		$post_date_timestamp		=	is_numeric($post_date ) ? intval($post_date ) : strtotime($post_date );
+		$post_modified_timestamp	=	is_numeric($post_modified ) ? intval($post_modified ) : strtotime($post_modified );
+		$post_modified_timestamp	=	$post_modified_timestamp ?: $post_date_timestamp;
+		if	($post_date_timestamp > 0 ) {
 			switch		($display_date_mode ) {
 			case	1:
 				$html_date	=	'<div class="lkc-date">'.__('&#x1f552;&#xfe0f;', 'pz-linkcard' ).$this->pz_date(PZLKC_DATE_FORMAT, $post_date_timestamp ).'</div>';
@@ -439,6 +429,7 @@ trait Pz_LinkCard_Get_HTML {
 				break;
 			}
 		}
+		$html_date_r = str_replace('class="lkc-date"', 'class="lkc-date lkc-date-r"', $html_date );
 
 		// 見出し情報
 		if (($this->options['special-format'] ?? null) === 'browser' ) {
@@ -463,33 +454,106 @@ trait Pz_LinkCard_Get_HTML {
 		}
 
 		// サイト情報
-		if	($added_text ) {
+		if	($added_text || $is_preview ) {
 			$html_added	=	'<div class="lkc-added">'.$added_text.'</div>';
 		} else {
 			$html_added	=	null;
 		}
 
-		$html_domain	=	'<div class="lkc-domain"'.$title_sitename.'>'.$disp_sitename.'</div>';
-		$html_info		=	'<div class="lkc-info"'.($is_preview ? ' data-pz-preview-info' : '').'>'.$html_a_op.$html_siteicon.$html_domain.$html_added.$html_a_cl.$html_sns_info.$html_url2.'</div>';
+		$preview_site_name = $is_preview ? ' data-pz-preview-site-name="'.esc_attr($site_name ).'" data-pz-preview-domain-name="'.esc_attr($domain_name ).'"' : '';
+		$html_domain	=	'<div class="lkc-domain"'.$title_sitename.$preview_site_name.'>'.$disp_sitename.'</div>';
+		$html_domain_name = '<div class="lkc-domain lkc-domain-name"'.($is_preview ? ' data-pz-preview-domain' : '').'>'.esc_html($domain_name ).'</div>';
 
-		// HTMLタグ作成
-		switch	($this->options['info-position'] ) {
-		case	1:		// 上側
-			$html_tag	=	$html_wrap_op.$html_a_op_all.$html_heading.'<div class="lkc-card">'.$html_info.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear"></div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
-			break;
-		case	2:		// 下側
-			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.$html_info.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
-			break;
-		case	3:		// タイトルの上側
-			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
-			break;
-		default:
-			$html_tag	=	$html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.($is_preview ? $html_info : '').'<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.$html_a_op.$html_thumbnail.$html_title.$html_a_cl.$html_sns_title.$html_url1.$html_date.$html_excerpt.$html_moretag.'</div>'.'<div class="clear">'.'</div>'.'</div>'.$html_a_cl_all.$html_wrap_cl;
+		// 内部リンクのカテゴリー（表示するときだけ取得）
+		$html_cat_list = '';
+		if ($is_preview ) {
+			$html_cat_list = '<div class="lkc-cat-list"><span class="lkc-cat">'.esc_html__('Category', 'pz-linkcard' ).'</span></div>';
+		} elseif ($is_internal && (in_array('c', $content_items, true ) || ($needs_info && in_array('c', $info_items, true ) ) ) ) {
+			$link_post_id = absint($data['post_id'] ?? 0 );
+			$categories = $link_post_id ? get_the_category($link_post_id ) : array();
+			foreach ($categories as $category ) {
+				$category_url = get_category_link($category->term_id );
+				if (!is_wp_error($category_url ) ) {
+					$html_cat_list .= '<object><a class="lkc-cat no_icon" href="'.esc_url($category_url ).'" rel="noopener">'.esc_html($category->name ).'</a></object>';
+				}
+			}
+			if ($html_cat_list ) {
+				$html_cat_list = '<div class="lkc-cat-list">'.$html_cat_list.'</div>';
+			}
+		}
+
+		$link_item = function($html ) use ($html_a_op, $html_a_cl ) {
+			return $html ? $html_a_op.$html.$html_a_cl : '';
+		};
+		$info_parts = array(
+			'i' => $link_item($html_siteicon ),
+			'n' => $link_item($html_domain ),
+			'd' => $link_item($html_domain_name ),
+			'c' => $html_cat_list,
+			's' => $html_sns,
+			'a' => $link_item($html_added ),
+			'u' => $html_url2,
+			't' => $link_item($html_title ),
+			'p' => $html_date,
+			'q' => $html_date_r,
+		);
+		$html_info_inner = '';
+		foreach ($info_items as $item ) {
+			$html_info_inner .= $info_parts[$item] ?? '';
+		}
+		$html_info = ($html_info_inner || $is_preview ) ? '<div class="lkc-info"'.($is_preview ? ' data-pz-preview-info data-pz-preview-main-info' : '').'>'.$html_info_inner.'</div>' : '';
+		$html_embedded_info = ($html_info_inner || $is_preview ) ? '<div class="lkc-info lkc-info-embedded"'.($is_preview ? ' data-pz-preview-embedded-info' : '').'>'.$html_info_inner.'</div>' : '';
+		$content_parts = array(
+			't' => $link_item($html_title ),
+			'e' => $html_excerpt,
+			'u' => $html_url1,
+			'p' => $html_date,
+			'q' => $html_date_r,
+			'c' => $html_cat_list ? '<div class="lkc-line">'.$html_cat_list.'</div>' : '',
+			's' => $html_sns ? '<div class="lkc-line">'.$html_sns.'</div>' : '',
+			'n' => $link_item(str_replace('class="lkc-domain"', 'class="lkc-domain lkc-site-name"', $html_domain ) ),
+			'i' => $html_embedded_info,
+		);
+
+		// 選択した5項目をその順番で配置（サムネイルと「続き」は順序の対象外）
+		$info_position = intval($this->options['info-position'] );
+		$html_contents = '';
+		$info_inserted = false;
+		foreach ($content_items as $item ) {
+			if ($info_position === 3 && $item === 't' && !$info_inserted ) {
+				$html_contents .= $html_info;
+				$info_inserted = true;
+			}
+			$html_contents .= $content_parts[$item] ?? '';
+		}
+		if ($info_position === 3 && !$info_inserted ) {
+			$html_contents = $html_info.$html_contents;
+		}
+		if (($this->options['special-format'] ?? null ) === 'browser' && !in_array('u', $content_items, true ) ) {
+			$html_contents .= $html_url1;
+		}
+		$html_thumbnail_link = $link_item($html_thumbnail );
+		$html_content = '<div class="lkc-content"'.($is_preview ? ' data-pz-preview-content' : '').'>'.($this->options['thumbnail-position'] ? $html_thumbnail_link : '').$html_contents.$html_moretag.'</div>';
+		if ($info_position === 1 ) {
+			$html_tag = $html_wrap_op.$html_a_op_all.$html_heading.'<div class="lkc-card">'.$html_info.$html_content.'<div class="clear"></div></div>'.$html_a_cl_all.$html_wrap_cl;
+		} else {
+			$html_top_info = $is_preview && $info_position === 0 ? $html_info : '';
+			$html_bottom_info = $info_position === 2 ? $html_info : '';
+			$html_tag = $html_wrap_op.$html_heading.$html_a_op_all.'<div class="lkc-card">'.$html_top_info.$html_content.$html_bottom_info.'<div class="clear"></div></div>'.$html_a_cl_all.$html_wrap_cl;
+		}
+
+		// プレビューで未選択の部品も再表示できるように保持する
+		$html_preview_templates = '';
+		if ($is_preview ) {
+			$content_parts['thumbnail'] = $html_thumbnail_link;
+			$content_parts['more'] = $html_moretag;
+			foreach (array('info' => $info_parts, 'content' => $content_parts ) as $section => $parts ) {
+				foreach ($parts as $item => $html ) {
+					$html_preview_templates .= '<template data-pz-preview-section="'.esc_attr($section ).'" data-pz-preview-item="'.esc_attr($item ).'">'.$html.'</template>';
+				}
+			}
 		}
 		$enclose_tag	=	isset($this->options['enclose-tag'] ) ? strtolower($this->options['enclose-tag'] ) : (!empty($this->options['blockquote'] ) ? 'blockquote' : 'div');
-		if (intval($this->options['info-position'] ?? 0 ) === 3 && $html_info && strpos($html_tag, 'lkc-info' ) === false ) {
-			$html_tag = str_replace($html_title, $html_info.$html_title, $html_tag);
-		}
 		if	(!in_array($enclose_tag, array('div', 'blockquote', 'figure', 'article', 'section', 'nav', 'aside' ), true ) ) {
 			$enclose_tag	=	'div';
 		}
@@ -506,7 +570,7 @@ trait Pz_LinkCard_Get_HTML {
 				$html_quickmenu_icon	=	'<span class="pz-lkc-quickmenu-indicator dashicons dashicons-ellipsis" aria-hidden="true"></span>';
 			}
 		}
-		$html_tag		=	'<'.$enclose_tag.' class="'.esc_attr($class_id ).'"'.$html_data_id.(!empty($atts['pz-pending'] ) ? ' data-pz-lkc-pending="1"' : '').($is_preview && !empty($atts['preview-card'] ) ? ' data-pz-preview-card="'.esc_attr($atts['preview-card'] ).'"' : '').'>'.$html_tag.$html_quickmenu_icon.'</'.$enclose_tag.'>';
+		$html_tag		=	'<'.$enclose_tag.' class="'.esc_attr($class_id ).'"'.$html_data_id.(!empty($atts['pz-pending'] ) ? ' data-pz-lkc-pending="1"' : '').($is_preview && !empty($atts['preview-card'] ) ? ' data-pz-preview-card="'.esc_attr($atts['preview-card'] ).'"' : '').'>'.$html_tag.$html_quickmenu_icon.$html_preview_templates.'</'.$enclose_tag.'>';
 
 		return	$html_tag;
 	}

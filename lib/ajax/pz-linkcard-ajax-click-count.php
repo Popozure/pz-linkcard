@@ -61,7 +61,7 @@ defined('ABSPATH' ) || wp_die;
 		}
 	}
 
-	$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %d;", $lkc_id ) );
+	$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = COALESCE(click_count, 0) + 1 WHERE id = %d;", $lkc_id ) );
 	if	($updated && $click_log_enabled ) {
 		$logged		=	$wpdb->insert(
 			$this->db_click,

@@ -890,6 +890,34 @@ msgstr ""
 msgid "Import Successful."
 msgstr ""
 
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Import took %s seconds."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Skipped record details"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Record %s"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Invalid date and time."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "URL is missing."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "The URL changed during normalization; the record may have been saved."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Could not save the record; the responsible field could not be identified."
+msgstr ""
+
 #: ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183 ../lib/pz-linkcard-file-import.php:98
 #: ../lib/pz-linkcard-file-import.php:100
 msgid "Read:"
@@ -3180,6 +3208,14 @@ msgstr ""
 msgid "Close preview"
 msgstr ""
 
+#: ../pz-linkcard.php:2179
+msgid "Open preview"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings.php:824
+msgid "Show or hide preview"
+msgstr ""
+
 #: ../lib/pz-linkcard-settings.php:643
 msgid "White background"
 msgstr ""
@@ -3626,4 +3662,64 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php
 msgid "3D Tracking"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php
+msgid "Display Items"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php
+msgid "Site Icon"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-card.php
+msgid "Post Date (Right-aligned)"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php
+msgid "Date to display"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Article Content Retrieval"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "As needed"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Wait time for the same domain"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Set the interval between consecutive article content requests to the same domain."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "5 seconds"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "10 seconds"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "30 seconds"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "1 minute"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "5 minutes"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "10 minutes"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "30 minutes"
 msgstr ""

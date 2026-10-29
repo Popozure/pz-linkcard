@@ -1,6 +1,8 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
+	$import_start_time = microtime(true );
 	check_admin_referer('pz-cacheman' );
+	require_once(__DIR__.'/pz-linkcard-file-datetime.php' );
 
 	// DBの宣言
 	global	$wpdb;
@@ -85,6 +87,7 @@
 	$read_count		=	0;
 	$skip_count		=	0;
 	$success_count	=	0;
+	$skip_details	=	array();
 
 	// アップロードされたファイルの存在チェック
 	if	($upload_error !== UPLOAD_ERR_OK || !$temp_path || !is_uploaded_file($temp_path ) ) {
@@ -155,7 +158,25 @@
 		}
 		foreach	($date_columns as $date_column ) {
 			if	(array_key_exists($date_column, $import ) ) {
-				$import[$date_column]	=	$normalize_timestamp($import[$date_column] );
+				$value = trim((string) $import[$date_column] );
+				if ($value === '' && in_array($date_column, array('post_date', 'post_modified' ), true ) ) {
+					$import[$date_column] = null;
+				} elseif ($value === '' || ctype_digit($value ) || preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/', $value ) ) {
+					$converted = pz_lkc_csv_datetime_import($date_column, $value );
+					if ($converted === false ) {
+						$skip_count++;
+						$skip_details[] = array('record' => $read_count, 'field' => $date_column, 'reason' => __('Invalid date and time.', 'pz-linkcard' ) );
+						continue 2;
+					}
+					$import[$date_column] = $converted;
+				} else {
+					$import[$date_column] = $normalize_timestamp($value );
+				}
+			}
+		}
+		foreach (array('post_id', 'no_failure', 'click_count' ) as $nullable_column ) {
+			if (array_key_exists($nullable_column, $import ) && $import[$nullable_column] === '' ) {
+				$import[$nullable_column] = null;
 			}
 		}
 		$import	=	array_intersect_key($import, $col_key );
@@ -163,23 +184,40 @@
 
 		if	(empty($import['url'] ) ) {
 			$skip_count++;
+			$skip_details[] = array('record' => $read_count, 'field' => 'url', 'reason' => __('URL is missing.', 'pz-linkcard' ) );
 			continue;
 		}
 
 		// DB更新
-		$result			=	$this->pz_SetCache($import );
+		$result			=	$this->pz_SetCache($import, true );
 		if	(!isset($result['url'] ) || $result['url'] <> $import['url'] ) {
 			$skip_count++;
+			if (isset($result['url'] ) ) {
+				$skip_details[] = array('record' => $read_count, 'field' => 'url', 'reason' => __('The URL changed during normalization; the record may have been saved.', 'pz-linkcard' ) );
+			} else {
+				$reason = __('Could not save the record; the responsible field could not be identified.', 'pz-linkcard' );
+				if (!empty($wpdb->last_error ) ) $reason .= ' '.$wpdb->last_error;
+				$skip_details[] = array('record' => $read_count, 'field' => '', 'reason' => $reason );
+			}
 		} else {
 			$success_count++;
 		}
 	}
 	// ファイルを閉じる
 	fclose($handle );
+	$import_duration = sprintf(__('Import took %s seconds.', 'pz-linkcard' ), number_format_i18n(microtime(true ) - $import_start_time, 2 ) );
 
 	if	($success_count ) {
-		echo	'<div class="notice notice-success is-dismissible"><p><strong>'.__('Import Successful.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Read:', 'pz-linkcard' ).$read_count.' '.__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-success is-dismissible"><p><strong>'.__('Import Successful.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Read:', 'pz-linkcard' ).$read_count.' '.__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong> &hellip;'.esc_html($import_duration ).'</p></div>';
 	} else {
-		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import Failure.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Read:', 'pz-linkcard' ).$read_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import Failure.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Read:', 'pz-linkcard' ).$read_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong> &hellip;'.esc_html($import_duration ).'</p></div>';
+	}
+	if ($skip_details ) {
+		echo '<div class="notice notice-warning"><p><strong>'.esc_html__('Skipped record details', 'pz-linkcard' ).'</strong></p><ul>';
+		foreach ($skip_details as $detail ) {
+			$record_label = sprintf(__('Record %s', 'pz-linkcard' ), number_format_i18n($detail['record'] ) );
+			echo '<li>'.esc_html($record_label ).($detail['field'] !== '' ? ' &mdash; <code>'.esc_html($detail['field'] ).'</code>' : '').': '.esc_html($detail['reason'] ).'</li>';
+		}
+		echo '</ul></div>';
 	}
 	echo	'<p><a href="'.esc_url($this->cacheman_url ).'" class="pz-man-return-button button">'.esc_html__('Return to Cache Manager', 'pz-linkcard' ).'</a></p>';

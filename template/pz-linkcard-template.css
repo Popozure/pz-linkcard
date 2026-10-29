@@ -188,6 +188,45 @@
 .lkc-date:hover {
 	/*DATE-HOVER*/
 }
+.lkc-date-r {
+	margin-left: auto;
+	text-align: right;
+}
+.lkc-info .lkc-date-r {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+.lkc-line {
+	display: block;
+}
+.lkc-cat-list {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 2px;
+}
+.lkc-cat {
+	display: inline-block;
+	padding: 0 3px;
+	border: 1px solid currentColor;
+	border-radius: 3px;
+	color: inherit;
+	font-size: inherit;
+
+	/*CAT-COLOR*/
+	/*CAT-OUTLINE-COLOR*/
+	/*CAT-BG-COLOR*/
+	/*CAT-SIZE*/
+	/*CAT-HEIGHT*/
+	/*CAT-MAXLINE*/
+	/*CAT-TRIM*/
+	/*CAT-BOLD*/
+	/*CAT-ITALIC*/
+	/*CAT-UNDERLINE*/
+	/*CAT-ELLIPSIS*/
+}
+.lkc-cat:hover {
+	/*CAT-HOVER*/
+}
 .lkc-external-wrap .lkc-heading {
 	/*EX-HEADING*/
 	/*EX-HEADING-BASE-BORDER*/

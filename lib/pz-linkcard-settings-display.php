@@ -17,18 +17,12 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" rowspan="4" colspan="2"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="2" colspan="2"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
 			<td>
-				<?php pz_Option($prop, 'display-url', __('Position to display URL', 'pz-linkcard' ), array(
-								''		=>		__('None', 'pz-linkcard' ),
-								'1'		=>		__('Under Title', 'pz-linkcard' ),
-								'2'		=>		__('Behind site info', 'pz-linkcard' ), ) ); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php pz_Option($prop, 'display-date', __('For internal links, display date instead of URL.', 'pz-linkcard' ), array(
-								''		=>		__('Off', 'pz-linkcard' ),
+				<?php
+					$date_prop = $prop;
+					$date_prop['display-date'] = $prop['display-date'] ?: 1;
+					pz_Option($date_prop, 'display-date', __('Date to display', 'pz-linkcard' ), array(
 								'1'		=>		__('Post Date', 'pz-linkcard' ),
 								'2'		=>		__('Update Date', 'pz-linkcard' ),
 								'3'		=>		__('Post Date and Update Date', 'pz-linkcard' ), ) ); ?>
@@ -37,11 +31,6 @@
 		<tr>
 			<td>
 				<?php pz_Checkbox($prop, 'separator', __('Separator Line', 'pz-linkcard' ) ); ?>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<?php pz_Checkbox($prop, 'display-excerpt', __('Show Excerpt', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
 		<tr>
@@ -54,17 +43,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" rowspan="3"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>
-			<th scope="row"><?php esc_html_e('Position', 'pz-linkcard' ); ?></th>
-			<td>
-				<select name="properties[sns-position]">
-					<option value=""  <?php selected($prop['sns-position'] == ''  ); ?>><?php esc_html_e('None',				'pz-linkcard' ); ?></option>
-					<option value="1" <?php selected($prop['sns-position'] == '1' ); ?>><?php esc_html_e('Under Title',			'pz-linkcard' ); ?></option>
-					<option value="2" <?php selected($prop['sns-position'] == '2' ); ?>><?php esc_html_e('Behind site info',	'pz-linkcard' ); ?></option>
-				</select>
-			</td>
-		</tr>
-		<tr>
+			<th scope="row" rowspan="2"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Display', 'pz-linkcard' ); ?></th>
 			<td>
 				<ul>

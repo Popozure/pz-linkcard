@@ -884,62 +884,71 @@
         range.style.setProperty("--pz-range-bg", `linear-gradient(to right, #0073aa 0%, #0073aa ${pct}%, #d7d7d7 ${pct}%, #d7d7d7 100%)`);
     }
 
-    function copyCardSettingsToHover(e) {
+    async function copyCardSettingsToHover(e) {
         const prefix = e.currentTarget?.dataset?.pzCardPrefix;
         if (!prefix) return;
 
-        const findNamedControl = name => {
-            const controls = Array.from(document.querySelectorAll(`[name="${name}"]`));
-            return controls.find(control => control.type !== "hidden") || controls[0] || null;
-        };
+        showProcessingOverlay(0);
+        try {
+            await new Promise(resolve => {
+                window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
+            });
 
-        [
-            "transform-enabled",
-            "transform-x",
-            "transform-y",
-            "transform-rotate",
-            "transform-scale",
-            "opacity",
-            "bg-enabled",
-            "bg-color",
-            "bg-image",
-            "border-enabled",
-            "border-color",
-            "border-style",
-            "border-width",
-            "border-radius",
-            "shadow-enabled",
-            "shadow-color",
-            "shadow-x",
-            "shadow-y",
-            "shadow-blur",
-            "shadow-spread",
-            "shadow-inset",
-            "transition"
-        ].forEach(suffix => {
-            const fromName = `properties[${prefix}-${suffix}]`;
-            const toName = `properties[${prefix}-hover-${suffix}]`;
-            const from = findNamedControl(fromName);
-            const to = findNamedControl(toName);
-            if (!from || !to) return;
+            const findNamedControl = name => {
+                const controls = Array.from(document.querySelectorAll(`[name="${name}"]`));
+                return controls.find(control => control.type !== "hidden") || controls[0] || null;
+            };
 
-            if (to.type === "checkbox") {
-                to.checked = from.checked;
-                if (/-enabled\]$/.test(to.name || "")) {
-                    updateCardEnabledSwitch({ target: to });
+            [
+                "transform-enabled",
+                "transform-x",
+                "transform-y",
+                "transform-rotate",
+                "transform-scale",
+                "opacity",
+                "bg-enabled",
+                "bg-color",
+                "bg-image",
+                "border-enabled",
+                "border-color",
+                "border-style",
+                "border-width",
+                "border-radius",
+                "shadow-enabled",
+                "shadow-color",
+                "shadow-x",
+                "shadow-y",
+                "shadow-blur",
+                "shadow-spread",
+                "shadow-inset",
+                "transition"
+            ].forEach(suffix => {
+                const fromName = `properties[${prefix}-${suffix}]`;
+                const toName = `properties[${prefix}-hover-${suffix}]`;
+                const from = findNamedControl(fromName);
+                const to = findNamedControl(toName);
+                if (!from || !to) return;
+
+                if (to.type === "checkbox") {
+                    to.checked = from.checked;
+                    if (/-enabled\]$/.test(to.name || "")) {
+                        updateCardEnabledSwitch({ target: to });
+                    }
+                } else {
+                    to.value = from.value;
                 }
-            } else {
-                to.value = from.value;
-            }
-            to.dispatchEvent(new Event("input", { bubbles: true }));
-            to.dispatchEvent(new Event("change", { bubbles: true }));
+                to.dispatchEvent(new Event("input", { bubbles: true }));
+                to.dispatchEvent(new Event("change", { bubbles: true }));
 
-            const range = document.querySelector(`.pz-card-range[data-target="${toName}"]`);
-            if (range) {
-                range.value = to.value;
-                updateCardRangeFill(range);
-            }
-        });
+                const range = document.querySelector(`.pz-card-range[data-target="${toName}"]`);
+                if (range) {
+                    range.value = to.value;
+                    updateCardRangeFill(range);
+                }
+            });
+        } finally {
+            hideProcessingOverlay();
+        }
     }
 
     async function copyLinkSettings(e) {
@@ -2469,6 +2478,7 @@
                 open = nextOpen;
 
                 if (open) {
+					if (scrollOnOpen) document.querySelector(".pz-settings-screen-tabs")?.classList.add("pz-settings-tabs-front");
 					if (scrollOnOpen) window.scrollTo(0, 0);
                     panel.hidden = false;
                     window.requestAnimationFrame(() => {
@@ -2488,6 +2498,12 @@
                 e.preventDefault();
                 setOpen(!open);
             });
+
+            if (scrollOnOpen) {
+                document.querySelector(".pz-settings-preview-window")?.addEventListener("pointerdown", event => {
+                    if (event.button === 0 && open) setOpen(false);
+                }, true);
+            }
 
             document.addEventListener("click", e => {
                 if (open && !root.contains(e.target)) setOpen(false);
@@ -2512,6 +2528,11 @@
 		const panel = document.querySelector("#pz-settings-screen-options-panel");
 		const helpToggle = document.querySelector(".pz-settings-screen-tabs .pz-page-help-toggle");
 		if (!root || !toggle || !panel) return;
+		const screenTabs = document.querySelector(".pz-settings-screen-tabs");
+		const preview = document.querySelector(".pz-settings-preview-window");
+		const bringPreviewToFront = () => screenTabs?.classList.remove("pz-settings-tabs-front");
+		preview?.addEventListener("pointerdown", bringPreviewToFront, true);
+		preview?.addEventListener("click", bringPreviewToFront, true);
 
 		let open = !panel.hidden;
 		let hideTimer = null;
@@ -2520,6 +2541,7 @@
 			open = nextOpen;
 
 			if (open) {
+				screenTabs?.classList.add("pz-settings-tabs-front");
 				window.scrollTo(0, 0);
 				panel.hidden = false;
 				window.requestAnimationFrame(() => {
@@ -2540,6 +2562,10 @@
 			if (!open && helpToggle?.getAttribute("aria-expanded") === "true") helpToggle.click();
 			setOpen(!open);
 		});
+
+		preview?.addEventListener("pointerdown", event => {
+			if (event.button === 0 && open) setOpen(false);
+		}, true);
 
 		helpToggle?.addEventListener("click", () => {
 			if (open) setOpen(false);

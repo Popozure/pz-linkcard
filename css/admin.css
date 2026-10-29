@@ -1608,6 +1608,10 @@ input.pz-admin-only[type="submit"],
 	position: relative;
 }
 
+.pz-settings #pz-infobar {
+	z-index: 10012;
+}
+
 .pz-page-help {
 	position: absolute;
 	z-index: 2;
@@ -1621,6 +1625,10 @@ input.pz-admin-only[type="submit"],
 
 .pz-settings .pz-settings-screen-tabs {
 	z-index: 6;
+}
+
+.pz-settings .pz-settings-screen-tabs.pz-settings-tabs-front {
+	z-index: 10011;
 }
 
 .pz-settings-screen-tabs .pz-page-help {
@@ -3137,6 +3145,24 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 }
 
 
+.pz-card-item-order {
+	display: flex;
+	gap: 8px 14px;
+	flex-wrap: wrap;
+}
+
+.pz-card-item-order > label {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	max-width: 100%;
+}
+
+.pz-card-item-order select {
+	max-width: 100%;
+}
+
 .pz-card-prop-row {
 	display: flex;
 	align-items: flex-start;
@@ -4187,6 +4213,36 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 	outline: none;
 }
 
+.pz-settings-preview-button.pz-preview-dock-right-icon::before,
+.pz-settings-preview-button.pz-preview-dock-bottom-icon::before,
+.pz-settings-preview-button.pz-preview-window-icon::before,
+.pz-settings-preview-button.pz-preview-close-icon::before {
+	content: "";
+	width: 14px;
+	height: 14px;
+	background-color: currentColor;
+}
+
+.pz-settings-preview-button.pz-preview-dock-right-icon::before {
+	-webkit-mask: url("../img/preview-dock-right.svg") center / contain no-repeat;
+	mask: url("../img/preview-dock-right.svg") center / contain no-repeat;
+}
+
+.pz-settings-preview-button.pz-preview-dock-bottom-icon::before {
+	-webkit-mask: url("../img/preview-dock-bottom.svg") center / contain no-repeat;
+	mask: url("../img/preview-dock-bottom.svg") center / contain no-repeat;
+}
+
+.pz-settings-preview-button.pz-preview-window-icon::before {
+	-webkit-mask: url("../img/preview-window.svg") center / contain no-repeat;
+	mask: url("../img/preview-window.svg") center / contain no-repeat;
+}
+
+.pz-settings-preview-button.pz-preview-close-icon::before {
+	-webkit-mask: url("../img/preview-close.svg") center / contain no-repeat;
+	mask: url("../img/preview-close.svg") center / contain no-repeat;
+}
+
 .pz-settings-preview-window.pz-settings-preview-dragging {
 	opacity: 0.6;
 }
@@ -4347,6 +4403,14 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 
 .pz-settings-preview-item .pz-preview-linkcard {
 	margin: 0;
+}
+
+/* Do not animate temporary styles while rebuilding the settings preview. */
+.pz-settings-preview-window.pz-settings-preview-updating [data-pz-preview-card],
+.pz-settings-preview-window.pz-settings-preview-updating [data-pz-preview-card] *,
+.pz-settings-preview-window.pz-settings-preview-updating [data-pz-preview-card] *::before,
+.pz-settings-preview-window.pz-settings-preview-updating [data-pz-preview-card] *::after {
+	transition: none !important;
 }
 
 .pz-settings-preview-two-cards-control {

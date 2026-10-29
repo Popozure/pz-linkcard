@@ -198,6 +198,28 @@
 			<th scope="row"><?php esc_html_e('Items per Run', 'pz-linkcard' ); ?></th>
 			<td><?php pz_echo_schedule_select('alive-period-num', $prop['alive-period-num'], LIST_PERIOD_NUMBER ); ?></td>
 		</tr>
+		<tr>
+			<th rowspan="3"><?php esc_html_e('Article Content Retrieval', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
+			<td><?php esc_html_e('As needed', 'pz-linkcard' ); ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Items per Run', 'pz-linkcard' ); ?></th>
+			<td><?php pz_echo_schedule_select('get-period-num', $prop['get-period-num'], LIST_PERIOD_NUMBER ); ?></td>
+		</tr>
+		<tr>
+			<th scope="row"><?php esc_html_e('Wait time for the same domain', 'pz-linkcard' ); ?></th>
+			<td><?php pz_echo_schedule_select('get-period-delay', $prop['get-period-delay'], array(
+				'0' => __('None', 'pz-linkcard' ),
+				'5' => __('5 seconds', 'pz-linkcard' ),
+				'10' => __('10 seconds', 'pz-linkcard' ),
+				'30' => __('30 seconds', 'pz-linkcard' ),
+				'60' => __('1 minute', 'pz-linkcard' ),
+				'300' => __('5 minutes', 'pz-linkcard' ),
+				'600' => __('10 minutes', 'pz-linkcard' ),
+				'1800' => __('30 minutes', 'pz-linkcard' ),
+			) ); ?> <span class="description"><?php esc_html_e('Set the interval between consecutive article content requests to the same domain.', 'pz-linkcard' ); ?></span></td>
+		</tr>
 	</table>
 	<?php submit_button(); ?>
 

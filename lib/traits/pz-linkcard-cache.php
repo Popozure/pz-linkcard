@@ -43,7 +43,7 @@ trait Pz_LinkCard_Cache {
 	}
 
 	// キャッシュデータを保存
-	private	function	pz_SetCache($data ) {
+	private	function	pz_SetCache($data, $preserve_import_timestamps = false ) {
 
 		// 項目が空っぽ
 		if	(!isset($data ) || !is_array($data ) ) {
@@ -64,6 +64,11 @@ trait Pz_LinkCard_Cache {
 		// URL戻す
 		$data['url']			=	$url;
 		$data['url_key']		=	md5($url );
+		global $wp_rewrite;
+		if (is_object($wp_rewrite ) ) {
+			$post_id = url_to_postid($url );
+			$data['post_id'] = $post_id ? intval($post_id ) : null;
+		}
 
 		// ID
 		if	(isset($data['id'] ) && !$data['id'] ) {
@@ -91,10 +96,10 @@ trait Pz_LinkCard_Cache {
 				$data[$result_key]	= intval($data[$result_key] );
 			}
 		}
-		$data['no_failure']			=	isset($data['no_failure'] )		? $data['no_failure']		: 0 ;			// 結果コードがエラーでも成功と見なす
+		$data['no_failure']			=	$data['no_failure'] ?? null;			// 結果コードがエラーでも成功と見なす
 
 		// 登録時情報
-		if ((!isset($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) && $has_charset ) {
+		if ((!$preserve_import_timestamps || !array_key_exists('regist_time', $data ) ) && (!isset($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) && $has_charset ) {
 			$data['regist_title']	=	$data['title'];
 			$data['regist_excerpt']	=	$data['excerpt'];
 			$data['regist_charset']	=	$data['charset'];
@@ -112,7 +117,7 @@ trait Pz_LinkCard_Cache {
 		}
 
 		// 生存確認
-		if	(!isset($data['alive_time'] ) || !$data['alive_time'] ) {
+		if	((!$preserve_import_timestamps || !array_key_exists('alive_time', $data ) ) && (!isset($data['alive_time'] ) || !$data['alive_time'] ) ) {
 			$data['alive_result']	=	$data['update_result'];
 			$data['alive_time']		=	$this->now;
 			$data['alive_nexttime']	=	$this->now + WEEK_IN_SECONDS * 4 + rand(0, DAY_IN_SECONDS );
@@ -149,7 +154,9 @@ trait Pz_LinkCard_Cache {
 		}
 
 		// 最終更新日時
-		$data['update_time']		=	$this->now;
+		if (!$preserve_import_timestamps || !array_key_exists('update_time', $data ) ) {
+			$data['update_time']	= $this->now;
+		}
 
 		// DB更新キー取得
 		if	(!$is_pending && (!isset($data['id'] ) || !$data['id']) ) {

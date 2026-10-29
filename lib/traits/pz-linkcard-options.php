@@ -40,6 +40,13 @@ trait Pz_LinkCard_Options {
 				}
 			}
 		}
+		if (array_key_exists('get-domain-delay', $this->options ) ) {
+			if (!array_key_exists('get-period-delay', $this->options ) ) {
+				$this->options['get-period-delay'] = $this->options['get-domain-delay'];
+			}
+			unset($this->options['get-domain-delay'] );
+		}
+		$this->options	=	$this->pz_MigrateCardItemOrder($this->options );
 		$this->options	=	array_merge(self::pz_GetDefaultOptions(), $this->options );
 		$legacy_flg_agent	=	array_key_exists('flg-agent', $this->options ) ? $this->options['flg-agent'] : null;
 		$this->options['user-agent']	=	$this->pz_GetUserAgentSelection($this->options['user-agent'], $legacy_flg_agent );
@@ -47,6 +54,63 @@ trait Pz_LinkCard_Options {
 		unset($this->options['flg-agent'] );
 
 		return	true;
+	}
+
+	private function pz_MigrateCardItemOrder($options ) {
+		$legacy = array_merge(self::pz_GetDefaultOptions(), $options );
+		foreach (array('ex', 'in' ) as $prefix ) {
+			$date_has_priority = $prefix === 'in' && intval($legacy['display-date'] ) > 0;
+			foreach (array('info', 'content' ) as $section ) {
+				$key_prefix = $prefix.'-'.$section.'-type-';
+				$has_order = false;
+				for ($index = 1; $index <= 5; $index++ ) {
+					if (array_key_exists($key_prefix.$index, $options ) ) {
+						$has_order = true;
+						break;
+					}
+				}
+				if ($has_order ) {
+					for ($index = 1; $index <= 5; $index++ ) {
+						if (!array_key_exists($key_prefix.$index, $options ) ) {
+							$options[$key_prefix.$index] = '';
+						}
+					}
+					continue;
+				}
+				if ($section === 'info' ) {
+					$items = array('i', !empty($legacy['flg-use-sitename'] ) ? 'n' : 'd', 'a' );
+					if (intval($legacy['sns-position'] ) === 2 ) $items[] = 's';
+					if (intval($legacy['display-url'] ) === 2 && !$date_has_priority ) $items[] = 'u';
+				} else {
+					$items = array('t' );
+					if (intval($legacy['sns-position'] ) === 1 ) $items[] = 's';
+					if (intval($legacy['display-url'] ) === 1 && !$date_has_priority ) $items[] = 'u';
+					if ($date_has_priority ) $items[] = 'p';
+					if (!empty($legacy['display-excerpt'] ) ) $items[] = 'e';
+				}
+				$items = array_pad(array_slice($items, 0, 5 ), 5, '' );
+				for ($index = 1; $index <= 5; $index++ ) {
+					$options[$key_prefix.$index] = $items[$index - 1];
+				}
+			}
+		}
+		return $options;
+	}
+
+	private function pz_GetCardItemOrder($prefix, $section ) {
+		$allowed = $section === 'info'
+			? array('', 'i', 'n', 'd', 'c', 's', 'a', 'u', 't', 'p', 'q' )
+			: array('', 't', 'e', 'u', 'p', 'q', 'c', 's', 'n', 'i' );
+		if (!in_array($prefix, array('ex', 'in' ), true ) || !in_array($section, array('info', 'content' ), true ) ) {
+			return array_fill(0, 5, '' );
+		}
+		$order = array();
+		for ($index = 1; $index <= 5; $index++ ) {
+			$key = $prefix.'-'.$section.'-type-'.$index;
+			$value = array_key_exists($key, $this->options ) ? $this->options[$key] : self::pz_GetDefaultOption($key );
+			$order[] = is_string($value ) && in_array($value, $allowed, true ) ? $value : '';
+		}
+		return $order;
 	}
 
 	// 設定を更新する

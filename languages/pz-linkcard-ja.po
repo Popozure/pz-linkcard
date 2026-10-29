@@ -1044,6 +1044,34 @@ msgstr "インポートファイルが読み込めませんでした。"
 msgid "Import Successful."
 msgstr "インポートが成功しました。"
 
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Import took %s seconds."
+msgstr "インポートに%s秒かかりました"
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Skipped record details"
+msgstr "スキップされたデータの詳細"
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Record %s"
+msgstr "%s件目"
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Invalid date and time."
+msgstr "日時が正しくありません。"
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "URL is missing."
+msgstr "URLがありません。"
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "The URL changed during normalization; the record may have been saved."
+msgstr "URLの正規化により値が変わりました。データは保存されている場合があります。"
+
+#: ../lib/pz-linkcard-file-import-csv.php
+msgid "Could not save the record; the responsible field could not be identified."
+msgstr "データを保存できませんでした。原因の項目は特定できませんでした。"
+
 #: ../lib/pz-linkcard-file-import-csv.php:181
 #: ../lib/pz-linkcard-file-import-csv.php:183
 #: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100
@@ -3532,6 +3560,14 @@ msgstr "プレビューを右端にドッキング"
 msgid "Close preview"
 msgstr "プレビューを閉じる"
 
+#: ../pz-linkcard.php:2179
+msgid "Open preview"
+msgstr "プレビューを開く"
+
+#: ../lib/pz-linkcard-settings.php:824
+msgid "Show or hide preview"
+msgstr "プレビューを開く・閉じる"
+
 #: ../lib/pz-linkcard-settings.php:643
 msgid "White background"
 msgstr "白"
@@ -3992,6 +4028,66 @@ msgstr "雪が降ってくる"
 msgid "3D Tracking"
 msgstr "3D追跡"
 
+#: ../lib/pz-linkcard-settings-card.php
+msgid "Display Items"
+msgstr "表示項目"
+
+#: ../lib/pz-linkcard-settings-card.php
+msgid "Site Icon"
+msgstr "サイトアイコン"
+
+#: ../lib/pz-linkcard-settings-card.php
+msgid "Post Date (Right-aligned)"
+msgstr "投稿日（右寄せ）"
+
+#: ../lib/pz-linkcard-settings-display.php
+msgid "Date to display"
+msgstr "表示する日付"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Article Content Retrieval"
+msgstr "記事内容取得"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "As needed"
+msgstr "随時"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Wait time for the same domain"
+msgstr "同じドメイン名の待機時間"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Set the interval between consecutive article content requests to the same domain."
+msgstr "同じドメインの記事内容を続けて取得する際の間隔を指定します。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "5 seconds"
+msgstr "5秒"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "10 seconds"
+msgstr "10秒"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "30 seconds"
+msgstr "30秒"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "1 minute"
+msgstr "1分"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "5 minutes"
+msgstr "5分"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "10 minutes"
+msgstr "10分"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "30 minutes"
+msgstr "30分"
+
 #~ msgid "Compact Help"
 #~ msgstr "ﾍﾙﾌﾟ"
 
@@ -4374,9 +4470,6 @@ msgstr "3D追跡"
 
 #~ msgid "Text after the Site Name."
 #~ msgstr "付加情報のテキスト"
-
-#~ msgid "Site Icon"
-#~ msgstr "サイトアイコン"
 
 #~ msgid "Site Icon Alt Text"
 #~ msgstr "サイトアイコンの代替テキスト"

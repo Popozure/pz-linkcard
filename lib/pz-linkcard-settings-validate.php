@@ -9,6 +9,9 @@
 		$type					=	$definition['type'];
 		$allow_null				=	!empty($definition['null'] );
 
+		if ($temp_value === null && in_array($type, array('card_info_item', 'card_content_item' ), true ) ) {
+			$temp_value = '';
+		}
 		if	($temp_value === null ) {
 			$this->options[$key]	=	$allow_null ? null : ($definition['default'] ?? '' );
 			unset($test_item[$key] );
@@ -16,6 +19,14 @@
 		}
 
 		switch	($type ) {
+		case 'card_info_item':
+		case 'card_content_item':
+			$allowed = $type === 'card_info_item'
+				? array('', 'i', 'n', 'd', 'c', 's', 'a', 'u', 't', 'p', 'q' )
+				: array('', 't', 'e', 'u', 'p', 'q', 'c', 's', 'n', 'i' );
+			$this->options[$key] = is_string($temp_value ) && in_array($temp_value, $allowed, true ) ? $temp_value : '';
+			break;
+
 		case	'version':
 		case	'string':
 			$this->options[$key]	=	strval($temp_value );
@@ -57,6 +68,12 @@
 				break;
 			}
 			$temp_value				=	intval($temp_value );
+			if ($key === 'get-period-num' && !in_array($temp_value, array(1, 5, 10, 20, 50 ), true ) ) {
+				$temp_value = $definition['default'];
+			}
+			if ($key === 'get-period-delay' && !in_array($temp_value, array(0, 5, 10, 30, 60, 300, 600, 1800 ), true ) ) {
+				$temp_value = $definition['default'];
+			}
 			if	(preg_match('/-(blur|spread)$/', $key ) ) {
 				$temp_value			=	max(0, $temp_value );
 			}

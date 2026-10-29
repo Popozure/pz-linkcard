@@ -638,9 +638,9 @@
 							'<div class="pz-settings-preview-handle" data-pz-preview-handle>'.
 							'<span id="pz-settings-preview-title" class="pz-settings-preview-title">'.esc_html__('Preview', 'pz-linkcard' ).'</span>'.
 							'<span class="pz-settings-preview-controls">'.
-							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview bottom', 'pz-linkcard' ).'">_</button>'.
-							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode-secondary data-no-overlay="1" aria-label="'.esc_attr__('Dock preview right', 'pz-linkcard' ).'">∣</button>'.
-							'<button type="button" class="pz-settings-preview-button" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'">×</button>'.
+							'<button type="button" class="pz-settings-preview-button pz-preview-dock-bottom-icon" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview bottom', 'pz-linkcard' ).'"></button>'.
+							'<button type="button" class="pz-settings-preview-button pz-preview-dock-right-icon" data-pz-preview-mode-secondary data-no-overlay="1" aria-label="'.esc_attr__('Dock preview right', 'pz-linkcard' ).'"></button>'.
+							'<button type="button" class="pz-settings-preview-button pz-preview-close-icon" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'" title="'.esc_attr(__('Close preview', 'pz-linkcard' ).' Alt+V' ).'"></button>'.
 							'</span>'.
 							'</div>'.
 							'<div class="pz-settings-preview-body">'.
@@ -821,6 +821,7 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 					<div><dt><kbd>Ctrl</kbd>+<kbd>S</kbd> / <kbd>Alt</kbd>+<kbd>S</kbd></dt><dd><?php esc_html_e('Save Changes'); ?></dd></div>
 					<div><dt><kbd>Ctrl</kbd>+<kbd>←</kbd> / <kbd>Ctrl</kbd>+<kbd>→</kbd></dt><dd><?php esc_html_e('Switch tabs', 'pz-linkcard' ); ?></dd></div>
 					<div><dt><kbd>Shift</kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd> / <kbd><?php esc_html_e('Right click', 'pz-linkcard' ); ?></kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd></dt><dd><?php esc_html_e('Increase or decrease values, or select the previous or next option', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Alt</kbd>+<kbd>V</kbd></dt><dd><?php esc_html_e('Show or hide preview', 'pz-linkcard' ); ?></dd></div>
 				</dl>
 			</div>
 		</div>
