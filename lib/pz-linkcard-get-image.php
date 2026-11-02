@@ -1,7 +1,8 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 
-	if	(!isset($thumbnail_url ) || !$thumbnail_url || $thumbnail_url == 'https://s0.wp.com/i/blank.jpg' ) {
+	$thumbnail_url = $this->pz_EncodeImageURL($thumbnail_url ?? null );
+	if	(!$thumbnail_url || $thumbnail_url == 'https://s0.wp.com/i/blank.jpg' ) {
 		return	null;
 	}
 
@@ -24,7 +25,6 @@
 	$file_extension	=	$use_webp ? '.webp' : '.jpg';
 	$file_path		=	$file_dir.$file_name.$file_extension;
 	$file_url		=	$file_dir_url.$file_name.$file_extension;
-	$is_ico_url		=	(bool) preg_match('/\.ico(?:[?#].*)?$/i', $thumbnail_url );
 	$create_null_file	=	function() use ($file_path ) {
 		file_put_contents($file_path, '' );
 	};
@@ -48,7 +48,7 @@
 	}
 
 	// ここから画像取得処理
-	$thumbnail_url	=	$this->pz_EncodeURL($thumbnail_url, true );
+	$thumbnail_url	=	$this->pz_EncodeImageURL($thumbnail_url );
 	$rget_args							=	array();
 	$rget_args['timeout']				=	10;
 	$redirect_limit						=	$this->options['flg-redir'] ? 8 : 0;
@@ -80,9 +80,9 @@
 		}
 		$location	=	trim($location );
 		if	(!preg_match('/^https?:\/\//i', $location ) ) {
-			$location	=	$this->pz_RelToURL($base_url, $location );
+			$location	=	WP_Http::make_absolute_url($location, $base_url );
 		}
-		return	$this->pz_EncodeURL($location, true );
+		return	$this->pz_EncodeImageURL($location );
 	};
 	$trace_redirect_url	=	function($start_url ) use ($rget_args, $get_response_url, $get_location_url, $redirect_limit ) {
 		$current_url	=	$start_url;
@@ -105,7 +105,7 @@
 
 			$response_url	=	$get_response_url($response );
 			if	($response_url && $response_url !== $current_url ) {
-				$current_url	=	$this->pz_EncodeURL($response_url, true );
+				$current_url	=	$this->pz_EncodeImageURL($response_url );
 				if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
 					return	$current_url;
 				}
@@ -129,7 +129,7 @@
 	if	($redirect_limit > 0 ) {
 		$last_url	=	$trace_redirect_url($thumbnail_url );
 		if	($last_url ) {
-			$thumbnail_url	=	$this->pz_EncodeURL($last_url, true );
+			$thumbnail_url	=	$this->pz_EncodeImageURL($last_url );
 		}
 	}
 	if	($this->pz_ShouldBlockLocalAddress($thumbnail_url ) ) {
@@ -227,10 +227,8 @@
 		return	'BM'.pack('VvvV', $file_size, 0, 0, $file_offset ).$bitmap_data;
 	};
 
-	$content_type	=	wp_remote_retrieve_header($rget_data, 'content-type' );
-	$content_type	=	is_array($content_type ) ? reset($content_type ) : $content_type;
-	$content_type	=	strtolower((string) $content_type );
-	$is_ico			=	$is_ico_url || preg_match('/(?:^|[; ])image\/(?:x-icon|vnd\.microsoft\.icon|ico)(?:[; ]|$)/i', $content_type ) || strncmp($body, "\x00\x00\x01\x00", 4 ) === 0;
+	// Some .ico URLs serve PNG directly; only unpack actual ICO containers.
+	$is_ico			=	strncmp($body, "\x00\x00\x01\x00", 4 ) === 0;
 	if	($is_ico ) {
 		$ico_body	=	$ico_image_body($body );
 		if	($ico_body !== null ) {

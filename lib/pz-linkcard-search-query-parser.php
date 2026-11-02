@@ -4,6 +4,7 @@ defined('ABSPATH' ) || exit;
 final class pz_LinkCard_Search_Query_Parser {
 
 	private	$wpdb;
+	private $search_now;
 
 	private	$keys = array(
 		'id'				=>	array('column' => 'id',				'type' => 'number' ),
@@ -12,6 +13,8 @@ final class pz_LinkCard_Search_Query_Parser {
 		'charset'			=>	array('column' => 'charset',		'type' => 'text' ),
 		'regist'			=>	array('column' => 'regist_time',	'type' => 'date' ),
 		'update'			=>	array('column' => 'update_time',	'type' => 'date' ),
+		'sns_nexttime' => array('column' => 'sns_nexttime', 'type' => 'date'),
+		'alive_nexttime' => array('column' => 'alive_nexttime', 'type' => 'date'),
 		'result'			=>	array('column' => 'update_result',	'type' => 'number' ),
 		'regist_result'		=>	array('column' => 'regist_result',	'type' => 'number' ),
 		'update_result'		=>	array('column' => 'update_result',	'type' => 'number' ),
@@ -35,6 +38,8 @@ final class pz_LinkCard_Search_Query_Parser {
 	}
 
 	public	function	parse($query ) {
+		// Match the local timestamps stored by the plugin and used by its cron jobs.
+		$this->search_now = current_time('timestamp', false);
 		$tokens					=	$this->tokenize((string) $query );
 		$default_positive_sql	=	array();
 		$default_positive_params	=	array();
@@ -463,6 +468,9 @@ final class pz_LinkCard_Search_Query_Parser {
 	}
 
 	private	function	parse_date($value, $edge ) {
+		if (strcasecmp($value, 'now') === 0) {
+			return $this->search_now;
+		}
 		if	(!preg_match('/^([0-9]{4})([-\/])([0-9]{1,2})\2([0-9]{1,2})$/', $value, $matches ) ) {
 			return	null;
 		}

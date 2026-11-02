@@ -573,15 +573,6 @@
 		if	(file_exists($preview_css_file ) ) {
 			$preview_css	=	file_get_contents($preview_css_file );
 		}
-		$preview_image	=	esc_url($this->plugin_dir_url.'img/logo_pz-linkcard.png' );
-		$preview_external_siteicon	=	esc_url($this->plugin_dir_url.'img/icon_popozure.ico' );
-		$preview_internal_siteicon	=	get_site_icon_url(16 );
-		if	(!$preview_internal_siteicon ) {
-			$preview_internal_siteicon	=	$this->plugin_dir_url.'img/siteicon_dummy.png';
-		}
-		$preview_internal_siteicon	=	esc_url($preview_internal_siteicon );
-		$preview_today	=	current_datetime();
-		$preview_yesterday	=	$preview_today->modify('-1 day' );
 		$preview_mode	=	$this->options['preview-mode'] ?? 'icon';
 		$preview_class	=	'';
 		$preview_style	=	'';
@@ -609,38 +600,15 @@
 				}
 			}
 		}
-		$make_preview_card	=	function($prefix, $url, $site_name, $title, $excerpt) use ($preview_image, $preview_external_siteicon, $preview_internal_siteicon, $preview_today, $preview_yesterday) {
-			return	$this->pz_GetHTML(array(
-				'url'			=>	$url,
-				'title'			=>	$title,
-				'excerpt'		=>	$excerpt,
-				'preview-card'	=>	$prefix,
-				'preview-data'	=>	array(
-					'url'				=>	$url,
-					'site_name'			=>	$site_name,
-					'title'				=>	$title,
-					'excerpt'			=>	$excerpt,
-					'thumbnail'			=>	$preview_image,
-					'favicon'			=>	$prefix === 'ex' ? $preview_external_siteicon : $preview_internal_siteicon,
-					'sns_twitter'		=>	1234,
-					'sns_facebook'		=>	1234,
-					'sns_hatena'		=>	1234,
-					'post_date'			=>	$preview_yesterday->format('Y-m-d H:i:s' ),
-					'post_modified'		=>	$preview_today->format('Y-m-d H:i:s' ),
-					'update_result'		=>	200,
-					'alive_result'		=>	200,
-					'no_failure'		=>	true,
-				),
-			) );
-		};
+
 		$html_preview	=	'<style id="pz-linkcard-preview-css" type="text/css">'.$preview_css.'</style>'.
 							'<section class="pz-settings-preview-window'.$preview_class.'"'.($preview_style ? ' style="'.esc_attr($preview_style ).'"' : '' ).' role="dialog" aria-labelledby="pz-settings-preview-title">'.
 							'<div class="pz-settings-preview-handle" data-pz-preview-handle>'.
 							'<span id="pz-settings-preview-title" class="pz-settings-preview-title">'.esc_html__('Preview', 'pz-linkcard' ).'</span>'.
 							'<span class="pz-settings-preview-controls">'.
-							'<button type="button" class="pz-settings-preview-button pz-preview-dock-bottom-icon" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview bottom', 'pz-linkcard' ).'"></button>'.
-							'<button type="button" class="pz-settings-preview-button pz-preview-dock-right-icon" data-pz-preview-mode-secondary data-no-overlay="1" aria-label="'.esc_attr__('Dock preview right', 'pz-linkcard' ).'"></button>'.
-							'<button type="button" class="pz-settings-preview-button pz-preview-close-icon" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'" title="'.esc_attr(__('Close preview', 'pz-linkcard' ).' Alt+V' ).'"></button>'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview bottom', 'pz-linkcard' ).'"><img src="'.esc_url($this->plugin_dir_url.'img/preview-dock-bottom.svg' ).'" width="16" height="16" alt="" /></button>'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode-secondary data-no-overlay="1" aria-label="'.esc_attr__('Dock preview right', 'pz-linkcard' ).'"><img src="'.esc_url($this->plugin_dir_url.'img/preview-dock-right.svg' ).'" width="16" height="16" alt="" /></button>'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'"><img src="'.esc_url($this->plugin_dir_url.'img/preview-close.svg' ).'" width="16" height="16" alt="" /></button>'.
 							'</span>'.
 							'</div>'.
 							'<div class="pz-settings-preview-body">'.
@@ -656,10 +624,10 @@
 							'<button type="button" class="pz-settings-preview-background pz-settings-preview-background-crosshatch" data-pz-preview-background="crosshatch" aria-label="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'" title="'.esc_attr__('Crosshatch pattern background', 'pz-linkcard' ).'"></button>'.
 							'</div>'.
 							'<div class="pz-settings-preview-list">'.
-							'<div class="pz-settings-preview-item">'.$make_preview_card('ex', 'https://popozure.info/pz-linkcard-preview', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
-							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$make_preview_card('ex', 'https://popozure.info/pz-linkcard-preview-2', __('External Link Preview', 'pz-linkcard' ), __('External Link Preview', 'pz-linkcard' ), __('This is a sample of an external link card.', 'pz-linkcard' ) ).'</div>'.
-							'<div class="pz-settings-preview-item">'.$make_preview_card('in', home_url('/pz-linkcard-preview/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
-							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$make_preview_card('in', home_url('/pz-linkcard-preview-2/' ), get_bloginfo('name' ), __('Internal Link Preview', 'pz-linkcard' ), __('This is a sample of an internal link card.', 'pz-linkcard' ) ).'</div>'.
+							'<div class="pz-settings-preview-item">'.$this->pz_GetSettingsPreviewCard('ex', 1).'</div>'.
+							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$this->pz_GetSettingsPreviewCard('ex', 2).'</div>'.
+							'<div class="pz-settings-preview-item">'.$this->pz_GetSettingsPreviewCard('in', 1).'</div>'.
+							'<div class="pz-settings-preview-item pz-settings-preview-extra">'.$this->pz_GetSettingsPreviewCard('in', 2).'</div>'.
 							'</div>'.
 							'<label class="pz-settings-preview-two-cards-control"><input type="checkbox" data-pz-preview-two-cards data-no-overlay="1" /> '.esc_html__('Show two cards for each type', 'pz-linkcard' ).'</label>'.
 							'</div>'.
@@ -821,7 +789,7 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 					<div><dt><kbd>Ctrl</kbd>+<kbd>S</kbd> / <kbd>Alt</kbd>+<kbd>S</kbd></dt><dd><?php esc_html_e('Save Changes'); ?></dd></div>
 					<div><dt><kbd>Ctrl</kbd>+<kbd>←</kbd> / <kbd>Ctrl</kbd>+<kbd>→</kbd></dt><dd><?php esc_html_e('Switch tabs', 'pz-linkcard' ); ?></dd></div>
 					<div><dt><kbd>Shift</kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd> / <kbd><?php esc_html_e('Right click', 'pz-linkcard' ); ?></kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd></dt><dd><?php esc_html_e('Increase or decrease values, or select the previous or next option', 'pz-linkcard' ); ?></dd></div>
-					<div><dt><kbd>Alt</kbd>+<kbd>V</kbd></dt><dd><?php esc_html_e('Show or hide preview', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Alt</kbd>+<kbd>V</kbd></dt><dd><?php esc_html_e('Toggle preview', 'pz-linkcard' ); ?></dd></div>
 				</dl>
 			</div>
 		</div>

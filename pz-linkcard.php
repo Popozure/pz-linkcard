@@ -4,7 +4,7 @@
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
 Description:	Displays links in card format.
-Version:		2.6.4
+Version:		2.6.5
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -31,489 +31,492 @@ class class_pz_linkcard {
 	// 設定値
 	private		const	DEFAULTS	=
 		array(
-			'special-format'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'saved-date'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
+			'debug-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'admin-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
 
-			'margin-top'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px',			'reset-format'	=>	true, ],
-			'margin-left'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px',			'reset-format'	=>	true, ],
-			'card-top'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px',			'reset-format'	=>	true, ],
-			'info-position'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'flg-use-sitename'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'card-left'							=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px',			'reset-format'	=>	true, ],
-			'thumbnail-position'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'thumbnail-width'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'thumbnail-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'width'								=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	500,			'reset-format'	=>	true, ],
-			'width-unit'						=>	['type'	=>	'unit',			'null'	=>	true,	'default'	=>	'px',			'reset-format'	=>	true, ],
-			'content-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	104,			'reset-format'	=>	true, ],
-			'card-right'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px',			'reset-format'	=>	true, ],
-			'card-bottom'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'8px',			'reset-format'	=>	true, ],
-			'margin-right'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px',			'reset-format'	=>	true, ],
-			'centering'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'margin-bottom'						=>	['type'	=>	'pixel',		'null'	=>	true,	'default'	=>	'16px',			'reset-format'	=>	true, ],
-			'enclose-tag'						=>	['type'	=>	'html_tag',		'null'	=>	false,	'default'	=>	'div',			'reset-format'	=>	true, ],
-			'flg-linkall'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'flg-anti-select'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'flg-resize'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
+			'error-postid'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'error-url'							=>	['type'	=>	'url',					'null'	=>	true,	'default'	=>	null,			],
+			'error-time'						=>	['type'	=>	'timestamp',			'null'	=>	true,	'default'	=>	null,			],
 
-			'flg-style-reset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'flg-style-important'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'display-url'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'display-date'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'separator'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'display-excerpt'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'content-inset'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'unlink-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#dd3333',		'reset-format'	=>	true, ],
-			'sns-position'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'sns-tw'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'sns-tw-x'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'sns-fb'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'sns-hb'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
+			'special-format'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 
-			'title-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#111111',		'reset-format'	=>	true, ],
-			'title-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'title-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'title-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	18,				'reset-format'	=>	true, ],
-			'title-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	23,				'reset-format'	=>	true, ],
-			'title-maxline'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'title-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'title-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'title-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'title-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
+			'margin-top'						=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'16px',					'reset-format'	=>	true,	],
+			'margin-left'						=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'16px',					'reset-format'	=>	true,	],
+			'card-top'							=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'8px',					'reset-format'	=>	true,	],
+			'info-position'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'flg-use-sitename'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'card-left'							=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'8px',					'reset-format'	=>	true,	],
+			'thumbnail-position'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'thumbnail-width'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'thumbnail-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'width'								=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	500,					'reset-format'	=>	true,	],
+			'width-unit'						=>	['type'	=>	'unit',					'null'	=>	true,	'default'	=>	'px',					'reset-format'	=>	true,	],
+			'content-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	104,					'reset-format'	=>	true,	],
+			'card-right'						=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'8px',					'reset-format'	=>	true,	],
+			'card-bottom'						=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'8px',					'reset-format'	=>	true,	],
+			'margin-right'						=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'16px',					'reset-format'	=>	true,	],
+			'centering'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'margin-bottom'						=>	['type'	=>	'pixel',				'null'	=>	true,	'default'	=>	'16px',					'reset-format'	=>	true,	],
+			'enclose-tag'						=>	['type'	=>	'html_tag',				'null'	=>	false,	'default'	=>	'div',					'reset-format'	=>	true,	],
+			'flg-linkall'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'flg-anti-select'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'flg-resize'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
 
-			'excerpt-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444',		'reset-format'	=>	true, ],
-			'excerpt-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'excerpt-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'excerpt-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	11,				'reset-format'	=>	true, ],
-			'excerpt-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	18,				'reset-format'	=>	true, ],
-			'excerpt-maxline'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	3,				'reset-format'	=>	true, ],
-			'excerpt-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'excerpt-italic'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'excerpt-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'excerpt-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'flg-style-reset'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'flg-style-important'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'date-pattern'						=>	['type'	=>	'string',				'null'	=>	false,	'default'	=>	'p',					'reset-format'	=>	true,	],
+			'date-format'						=>	['type'	=>	'string',				'null'	=>	false,	'default'	=>	'Y-m-d',				'reset-format'	=>	true,	],
+			'date-format-custom'				=>	['type'	=>	'string',				'null'	=>	false,	'default'	=>	'Y年n月j日',			'reset-format'	=>	true,	],
+			'date-icon-post'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'&#x1F4C5;&#xFE0F;',	'reset-format'	=>	true,	],
+			'date-icon-update'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'&#x1F504;&#xFE0F;',	'reset-format'	=>	true,	],
+			'separator'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'content-inset'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'unlink-border-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#dd3333',				'reset-format'	=>	true,	],
+			'sns-tw'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'sns-tw-x'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'sns-fb'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'sns-hb'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'sns-qiita'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
 
-			'url-color'							=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#4466ff',		'reset-format'	=>	true, ],
-			'url-outline-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'url-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'url-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'url-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	17,				'reset-format'	=>	true, ],
-			'url-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'url-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'url-underline'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'url-hover'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
+			'title-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#111111',				'reset-format'	=>	true,	],
+			'title-outline-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'title-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'title-size'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	18,						'reset-format'	=>	true,	],
+			'title-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	23,						'reset-format'	=>	true,	],
+			'title-maxline'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'title-bold'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'title-italic'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'title-underline'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'title-hover'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'excerpt-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#444444',				'reset-format'	=>	true,	],
+			'excerpt-outline-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'excerpt-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'excerpt-size'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	11,						'reset-format'	=>	true,	],
+			'excerpt-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	18,						'reset-format'	=>	true,	],
+			'excerpt-maxline'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	3,						'reset-format'	=>	true,	],
+			'excerpt-bold'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'excerpt-italic'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'excerpt-underline'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'excerpt-hover'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'url-color'							=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#4466ff',				'reset-format'	=>	true,	],
+			'url-outline-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'url-bg-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'url-size'							=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'url-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	17,						'reset-format'	=>	true,	],
+			'url-bold'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'url-italic'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'url-underline'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'url-hover'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'date-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#444444',				'reset-format'	=>	true,	],
+			'date-outline-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'date-bg-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'date-size'							=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	11,						'reset-format'	=>	true,	],
+			'date-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	16,						'reset-format'	=>	true,	],
+			'date-bold'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'date-italic'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'date-underline'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'date-hover'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'heading-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ffffff',				'reset-format'	=>	true,	],
+			'heading-outline-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'heading-size'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'heading-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	16,						'reset-format'	=>	true,	],
+			'heading-bold'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'heading-italic'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'heading-underline'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'heading-hover'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'more-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ffffff',				'reset-format'	=>	true,	],
+			'more-outline-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'more-size'							=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'more-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	24,						'reset-format'	=>	true,	],
+			'more-bold'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'more-italic'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'more-underline'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'more-hover'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'info-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#222222',				'reset-format'	=>	true,	],
+			'info-outline-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'info-bg-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'info-size'							=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'info-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	16,						'reset-format'	=>	true,	],
+			'info-bold'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'info-italic'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'info-underline'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'info-hover'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'added-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ffffff',				'reset-format'	=>	true,	],
+			'added-outline-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'added-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#365cd9',				'reset-format'	=>	true,	],
+			'added-size'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	9,						'reset-format'	=>	true,	],
+			'added-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	10,						'reset-format'	=>	true,	],
+			'added-bold'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'added-italic'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'added-underline'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'added-hover'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'cat-color'							=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#222222',				'reset-format'	=>	true,	],
+			'cat-outline-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'cat-bg-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ffcc88',				'reset-format'	=>	true,	],
+			'cat-size'							=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	9,						'reset-format'	=>	true,	],
+			'cat-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	9,						'reset-format'	=>	true,	],
+			'cat-bold'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'cat-italic'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'cat-underline'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'cat-hover'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 
-			'date-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#444444',		'reset-format'	=>	true, ],
-			'date-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'date-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'date-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	11,				'reset-format'	=>	true, ],
-			'date-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	16,				'reset-format'	=>	true, ],
-			'date-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'date-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'date-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'date-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'ex-target'							=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'ex-info-type-1'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'i',					'reset-format'	=>	true,	],
+			'ex-info-type-2'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'n',					'reset-format'	=>	true,	],
+			'ex-info-type-3'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'a',					'reset-format'	=>	true,	],
+			'ex-info-type-4'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	's',					'reset-format'	=>	true,	],
+			'ex-info-type-5'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'q',					'reset-format'	=>	true,	],
+			'ex-added-text'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-siteicon'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	3,						'reset-format'	=>	true,	],
+			'ex-siteicon-alt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-content-type-1'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	't',					'reset-format'	=>	true,	],
+			'ex-content-type-2'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'u',					'reset-format'	=>	true,	],
+			'ex-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'e',					'reset-format'	=>	true,	],
+			'ex-content-type-4'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'ex-content-type-5'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'ex-get-from'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'ex-transform-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-transform-x'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-transform-y'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-transform-rotate'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-transform-scale'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'ex-opacity'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'ex-bg-enabled'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-bg-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ddeeff',				'reset-format'	=>	true,	],
+			'ex-bg-image'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-border-enabled'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-border-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#114488',				'reset-format'	=>	true,	],
+			'ex-border-style'					=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'ex-border-width'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'ex-border-radius'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'ex-shadow-enabled'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-shadow-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#00336644',			'reset-format'	=>	true,	],
+			'ex-shadow-x'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-shadow-y'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-shadow-blur'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-shadow-spread'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-shadow-inset'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-transition'						=>	['type'	=>	'float',				'null'	=>	true,	'default'	=>	0.5,					'reset-format'	=>	true,	],
+			'ex-hover-transform-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-hover-transform-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	-4,						'reset-format'	=>	true,	],
+			'ex-hover-transform-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	-4,						'reset-format'	=>	true,	],
+			'ex-hover-transform-rotate'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-hover-transform-scale'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'ex-hover-opacity'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-hover-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ddeeff88',			'reset-format'	=>	true,	],
+			'ex-hover-bg-image'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-hover-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-hover-border-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#114488',				'reset-format'	=>	true,	],
+			'ex-hover-border-style'				=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'ex-hover-border-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'ex-hover-border-radius'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'ex-hover-shadow-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-hover-shadow-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#00336644',			'reset-format'	=>	true,	],
+			'ex-hover-shadow-x'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'ex-hover-shadow-y'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'ex-hover-shadow-blur'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-hover-shadow-spread'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-hover-shadow-inset'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-hover-transition'				=>	['type'	=>	'float',				'null'	=>	true,	'default'	=>	0.2,					'reset-format'	=>	true,	],
+			'ex-heading-text'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-heading-transform-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-heading-transform-x'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-heading-transform-y'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-heading-transform-rotate'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-heading-transform-scale'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'ex-heading-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-heading-bg-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#003366',				'reset-format'	=>	true,	],
+			'ex-heading-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-heading-border-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#003366',				'reset-format'	=>	true,	],
+			'ex-heading-border-style'			=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'ex-heading-border-width'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-heading-border-radius'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'ex-heading-shadow-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-heading-shadow-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#00336688',			'reset-format'	=>	true,	],
+			'ex-heading-shadow-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-heading-shadow-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-heading-shadow-blur'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-heading-shadow-spread'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-heading-shadow-inset'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-more-text'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-more-transform-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-more-transform-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-more-transform-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-more-transform-rotate'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-more-transform-scale'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'ex-more-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-more-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#446688',				'reset-format'	=>	true,	],
+			'ex-more-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-more-border-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#446688',				'reset-format'	=>	true,	],
+			'ex-more-border-style'				=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'ex-more-border-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-more-border-radius'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'ex-more-shadow-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-more-shadow-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#44668888',			'reset-format'	=>	true,	],
+			'ex-more-shadow-x'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'ex-more-shadow-y'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'ex-more-shadow-blur'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-more-shadow-spread'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-more-shadow-inset'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-thumbnail'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	13,						'reset-format'	=>	true,	],
+			'ex-thumbnail-size'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'thumbnail',			'reset-format'	=>	true,	],
+			'ex-thumbnail-alt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-thumbnail-transform-enabled'	=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-thumbnail-transform-x'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-thumbnail-transform-y'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-thumbnail-transform-scale'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ffffff',				'reset-format'	=>	true,	],
+			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-thumbnail-border-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#888888',				'reset-format'	=>	true,	],
+			'ex-thumbnail-border-style'			=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'ex-thumbnail-border-width'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'ex-thumbnail-border-radius'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'ex-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'ex-thumbnail-shadow-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#aaaacc',				'reset-format'	=>	true,	],
+			'ex-thumbnail-shadow-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-thumbnail-shadow-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'ex-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 
-			'heading-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff',		'reset-format'	=>	true, ],
-			'heading-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-//			'heading-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'heading-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'heading-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	16,				'reset-format'	=>	true, ],
-			'heading-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'heading-italic'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'heading-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'heading-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'in-target'							=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-info-type-1'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'i',					'reset-format'	=>	true,	],
+			'in-info-type-2'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'n',					'reset-format'	=>	true,	],
+			'in-info-type-3'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'a',					'reset-format'	=>	true,	],
+			'in-info-type-4'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	's',					'reset-format'	=>	true,	],
+			'in-info-type-5'					=>	['type'	=>	'card_info_item',		'null'	=>	false,	'default'	=>	'q',					'reset-format'	=>	true,	],
+			'in-added-text'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-siteicon'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-siteicon-alt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-content-type-1'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'c',					'reset-format'	=>	true,	],
+			'in-content-type-2'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	't',					'reset-format'	=>	true,	],
+			'in-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'e',					'reset-format'	=>	true,	],
+			'in-content-type-4'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'in-content-type-5'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'in-get-from'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-field-title'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-field-excerpt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-get-url'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-transform-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-transform-x'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-transform-y'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-transform-rotate'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-transform-scale'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'in-opacity'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'in-bg-enabled'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-bg-color'						=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#fffaf0',				'reset-format'	=>	true,	],
+			'in-bg-image'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-border-enabled'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-border-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#998888',				'reset-format'	=>	true,	],
+			'in-border-style'					=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'in-border-width'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'in-border-radius'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'in-shadow-enabled'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-shadow-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#66330044',			'reset-format'	=>	true,	],
+			'in-shadow-x'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-shadow-y'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-shadow-blur'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-shadow-spread'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-shadow-inset'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-transition'						=>	['type'	=>	'float',				'null'	=>	true,	'default'	=>	0.5,					'reset-format'	=>	true,	],
+			'in-hover-transform-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-hover-transform-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	-4,						'reset-format'	=>	true,	],
+			'in-hover-transform-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	-4,						'reset-format'	=>	true,	],
+			'in-hover-transform-rotate'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-hover-transform-scale'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'in-hover-opacity'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'in-hover-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-hover-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#fffaf088',			'reset-format'	=>	true,	],
+			'in-hover-bg-image'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-hover-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-hover-border-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#998888',				'reset-format'	=>	true,	],
+			'in-hover-border-style'				=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'in-hover-border-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
+			'in-hover-border-radius'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'in-hover-shadow-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-hover-shadow-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#66330044',			'reset-format'	=>	true,	],
+			'in-hover-shadow-x'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'in-hover-shadow-y'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	12,						'reset-format'	=>	true,	],
+			'in-hover-shadow-blur'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-hover-shadow-spread'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-hover-shadow-inset'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-hover-transition'				=>	['type'	=>	'float',				'null'	=>	true,	'default'	=>	0.2,					'reset-format'	=>	true,	],
+			'in-heading-text'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-heading-transform-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-heading-transform-x'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-heading-transform-y'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-heading-transform-rotate'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-heading-transform-scale'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'in-heading-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-heading-bg-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#998888',				'reset-format'	=>	true,	],
+			'in-heading-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-heading-border-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#998888',				'reset-format'	=>	true,	],
+			'in-heading-border-style'			=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'in-heading-border-width'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-heading-border-radius'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'in-heading-shadow-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-heading-shadow-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#aaaacc',				'reset-format'	=>	true,	],
+			'in-heading-shadow-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-heading-shadow-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-heading-shadow-blur'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-heading-shadow-spread'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-heading-shadow-inset'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-more-text'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-more-transform-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-more-transform-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-more-transform-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-more-transform-rotate'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-more-transform-scale'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'in-more-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-more-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#8c8c70',				'reset-format'	=>	true,	],
+			'in-more-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-more-border-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#8c8c70',				'reset-format'	=>	true,	],
+			'in-more-border-style'				=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'in-more-border-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-more-border-radius'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'in-more-shadow-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-more-shadow-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#66330088',			'reset-format'	=>	true,	],
+			'in-more-shadow-x'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'in-more-shadow-y'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'in-more-shadow-blur'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-more-shadow-spread'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-more-shadow-inset'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-thumbnail'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-thumbnail-size'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'thumbnail',			'reset-format'	=>	true,	],
+			'in-thumbnail-alt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-thumbnail-transform-enabled'	=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-thumbnail-transform-x'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-thumbnail-transform-y'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-thumbnail-transform-scale'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
+			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-thumbnail-bg-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ffffff',				'reset-format'	=>	true,	],
+			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-thumbnail-border-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#888888',				'reset-format'	=>	true,	],
+			'in-thumbnail-border-style'			=>	['type'	=>	'border',				'null'	=>	true,	'default'	=>	'solid',				'reset-format'	=>	true,	],
+			'in-thumbnail-border-width'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
+			'in-thumbnail-border-radius'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	4,						'reset-format'	=>	true,	],
+			'in-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
+			'in-thumbnail-shadow-color'			=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#aaaacc',				'reset-format'	=>	true,	],
+			'in-thumbnail-shadow-x'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-thumbnail-shadow-y'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	8,						'reset-format'	=>	true,	],
+			'in-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
+			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 
-			'more-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff',		'reset-format'	=>	true, ],
-			'more-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-//			'more-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null, ],
-			'more-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'more-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	24,				'reset-format'	=>	true, ],
-			'more-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'more-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'more-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'more-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'flg-nofollow'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					],
+			'flg-noopener'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'flg-referer'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'flg-relative-url'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'flg-unlink'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'flg-sslverify'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'flg-robots'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					],
+			'flg-local-check'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'flg-redir'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'user-agent'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'pzlkc',				],
+			'user-agent-text'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					],
+			'flg-click-count'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
+			'flg-click-log'					 	=>  ['type' => 'flag', 					'null'	=>	true,	'default'	=>	null, 		 			],
+			'flg-alive-count'				 	=>  ['type' => 'flag',	 				'null'	=>	true,	'default'	=>	null, 		 			],
 
-			'info-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#222222',		'reset-format'	=>	true, ],
-			'info-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'info-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'info-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'info-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	16,				'reset-format'	=>	true, ],
-			'info-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'info-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'info-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'info-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'auto-atag'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'auto-url'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'flg-do-shortcode'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'auto-external'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'exclude-url'						=>	['type'	=>	'textarea',				'null'	=>	true,	'default'	=>	null,			],
+			'flg-edit-block'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-edit-insert'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-edit-preview'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'flg-edit-qtag'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'code1'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	'blogcard',		],
+			'use-inline'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'flg-clear-excerpt'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'code2'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	null,			],
+			'code3'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	null,			],
 
-			'added-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff',		'reset-format'	=>	true, ],
-			'added-outline-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'added-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#365cd9',		'reset-format'	=>	true, ],
-			'added-size'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	9,				'reset-format'	=>	true, ],
-			'added-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	10,				'reset-format'	=>	true, ],
-			'added-bold'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'added-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'added-underline'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'added-hover'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'multi-myid'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
+			'multi-count'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
 
-			'cat-color'							=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#000000',		'reset-format'	=>	true, ],
-			'cat-outline-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'cat-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffcc88',		'reset-format'	=>	true, ],
-			'cat-size'							=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	9,				'reset-format'	=>	true, ],
-			'cat-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	6,				'reset-format'	=>	true, ],
-			'cat-bold'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'cat-italic'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'cat-underline'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'cat-hover'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'trail-slash'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'class-pc'							=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
+			'class-mobile'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
+			'mce-priority'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'flg-compress'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'date-format-man'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'Y\<\b\r\>m/d\<\b\r\>H:i',	],
+			'flg-inhibit'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-preview'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'preview-mode'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'icon',			],
+			'preview-restore-mode'				=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
+			'preview-left'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'preview-top'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'preview-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'preview-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'preview-docked-height'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'preview-right-docked-width'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'window-left'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'window-top'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'window-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'window-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'docked-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'docked-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'last-bottom-docked-height'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'right-docked-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'preview-two-cards'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'flg-quickmenu'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-amp-url'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'error-mode-hide'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'flg-public-only'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-ogp'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-amazon'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-twitter'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-jmty'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-note'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-qiita'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-yahoo-auc'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-special-microsoft'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'sns-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',		],
+			'sns-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,				],
+			'alive-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',		],
+			'alive-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,				],
+			'get-period-num' => ['type' => 'numeric', 'null' => false, 'default' => 50],
+			'cron-site-interval'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	30,				],
+			'click-cleanup-hour'				=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	4,				],
+			'click-cleanup-minute'				=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
+			'click-cleanup-day-0'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
+			'click-cleanup-day-1'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
+			'click-cleanup-day-2'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
+			'click-cleanup-day-3'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
+			'click-cleanup-day-4'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
+			'click-cleanup-day-5'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
+			'click-cleanup-day-6'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'click-log-retention'			 	=>  ['type'	=> 'string', 				'null'	=>	false,	'default'	=>	'3m', 		 	],
+			'flg-adminbar'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'multi-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'flg-initialize'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'develop-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
 
-			'ex-target'							=>	['type'	=>	'numeric',			'null'	=>	true,	'default'	=>	2,			'reset-format'	=>	true, ],
-			'ex-info-type-1'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'i',		'reset-format'	=>	true, ],
-			'ex-info-type-2'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'n',		'reset-format'	=>	true, ],
-			'ex-info-type-3'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'a',		'reset-format'	=>	true, ],
-			'ex-info-type-4'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	's',		'reset-format'	=>	true, ],
-			'ex-info-type-5'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
-			'ex-content-type-1'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	't',		'reset-format'	=>	true, ],
-			'ex-content-type-2'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'u',		'reset-format'	=>	true, ],
-			'ex-content-type-3'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'e',		'reset-format'	=>	true, ],
-			'ex-content-type-4'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'p',		'reset-format'	=>	true, ],
-			'ex-content-type-5'					=>	['type' => 'card_content_item',	'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
-			'ex-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'ex-opacity'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'ex-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ddeeff',		'reset-format'	=>	true, ],
-			'ex-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#114488',		'reset-format'	=>	true, ],
-			'ex-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'ex-border-width'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'ex-border-radius'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'ex-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#00336644',	'reset-format'	=>	true, ],
-			'ex-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.5,			'reset-format'	=>	true, ],
-			'ex-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4,				'reset-format'	=>	true, ],
-			'ex-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4,				'reset-format'	=>	true, ],
-			'ex-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'ex-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#eef8ff',	'reset-format'	=>	true, ],
-			'ex-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#114488',		'reset-format'	=>	true, ],
-			'ex-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'ex-hover-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'ex-hover-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'ex-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#00336644',	'reset-format'	=>	true, ],
-			'ex-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'ex-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'ex-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2,			'reset-format'	=>	true, ],
-			'ex-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'ex-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'ex-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#003366',		'reset-format'	=>	true, ],
-			'ex-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#003366',		'reset-format'	=>	true, ],
-			'ex-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'ex-heading-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-heading-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'ex-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#00336688',	'reset-format'	=>	true, ],
-			'ex-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'ex-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#446688',		'reset-format'	=>	true, ],
-			'ex-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#446688',		'reset-format'	=>	true, ],
-			'ex-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'ex-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-more-border-radius'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'ex-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#44668888',	'reset-format'	=>	true, ],
-			'ex-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'ex-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'ex-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-siteicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3,				'reset-format'	=>	true, ],
-			'ex-siteicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	13,				'reset-format'	=>	true, ],
-			'ex-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail',	'reset-format'	=>	true, ],
-			'ex-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'ex-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff',		'reset-format'	=>	true, ],
-			'ex-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888',		'reset-format'	=>	true, ],
-			'ex-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'ex-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'ex-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'ex-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'ex-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc',		'reset-format'	=>	true, ],
-			'ex-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'ex-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'ex-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'css-add-url'						=>	['type'	=>	'url',					'null'	=>	true,	'default'	=>	null,			],
+			'css-add'							=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
+			'css-count'							=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
+			'siteicon-api'						=>	['type'	=>	'url_template',			'null'	=>	true,	'default'	=>	'https://www.google.com/s2/favicons?domain=%DOMAIN%',	],
+			'thumbnail-api'						=>	['type'	=>	'url_template',			'null'	=>	true,	'default'	=>	'https://s.wordpress.com/mshots/v1/%URL%?w=200',		],
 
-			'in-target'							=>	['type'	=>	'numeric',			'null'	=>	true,	'default'	=>	null,		'reset-format'	=>	true, ],
-			'in-info-type-1'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'i',		'reset-format'	=>	true, ],
-			'in-info-type-2'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'n',		'reset-format'	=>	true, ],
-			'in-info-type-3'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'a',		'reset-format'	=>	true, ],
-			'in-info-type-4'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	's',		'reset-format'	=>	true, ],
-			'in-info-type-5'					=>	['type' => 'card_info_item',	'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
-			'in-content-type-1'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'c',		'reset-format'	=>	true, ],
-			'in-content-type-2'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	't',		'reset-format'	=>	true, ],
-			'in-content-type-3'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'p',		'reset-format'	=>	true, ],
-			'in-content-type-4'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'e',		'reset-format'	=>	true, ],
-			'in-content-type-5'					=>	['type' => 'card_content_item', 'null'	=>	false,	'default'	=>	'',			'reset-format'	=>	true, ],
-			'in-transform-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-transform-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-transform-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-transform-rotate'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-transform-scale'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'in-opacity'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'in-bg-enabled'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-bg-color'						=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fff8dd',		'reset-format'	=>	true, ],
-			'in-bg-image'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-border-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-border-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888',		'reset-format'	=>	true, ],
-			'in-border-style'					=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'in-border-width'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'in-border-radius'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'in-shadow-enabled'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-shadow-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#66330044',	'reset-format'	=>	true, ],
-			'in-shadow-x'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-shadow-y'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-shadow-blur'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-shadow-spread'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-shadow-inset'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-transition'						=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.5,			'reset-format'	=>	true, ],
-			'in-hover-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-hover-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4,				'reset-format'	=>	true, ],
-			'in-hover-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	-4,				'reset-format'	=>	true, ],
-			'in-hover-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-hover-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'in-hover-opacity'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'in-hover-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-hover-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#fffaf0',		'reset-format'	=>	true, ],
-			'in-hover-bg-image'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-hover-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-hover-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888',		'reset-format'	=>	true, ],
-			'in-hover-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'in-hover-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	2,				'reset-format'	=>	true, ],
-			'in-hover-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'in-hover-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-hover-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#66330044',	'reset-format'	=>	true, ],
-			'in-hover-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'in-hover-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	12,				'reset-format'	=>	true, ],
-			'in-hover-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-hover-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-hover-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-hover-transition'				=>	['type'	=>	'float',		'null'	=>	true,	'default'	=>	0.2,			'reset-format'	=>	true, ],
-			'in-get-from'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-field-title'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-field-excerpt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-get-url'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-heading-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-heading-transform-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-heading-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-heading-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-heading-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-heading-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'in-heading-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-heading-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888',		'reset-format'	=>	true, ],
-			'in-heading-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-heading-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#998888',		'reset-format'	=>	true, ],
-			'in-heading-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'in-heading-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-heading-border-radius'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'in-heading-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-heading-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc',		'reset-format'	=>	true, ],
-			'in-heading-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-heading-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-heading-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-heading-shadow-spread'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-heading-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-more-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-more-transform-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-more-transform-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-more-transform-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-more-transform-rotate'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-more-transform-scale'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'in-more-bg-enabled'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-more-bg-color'					=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#8c8c70',		'reset-format'	=>	true, ],
-			'in-more-border-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-more-border-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#8c8c70',		'reset-format'	=>	true, ],
-			'in-more-border-style'				=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'in-more-border-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-more-border-radius'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'in-more-shadow-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-more-shadow-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#66330088',	'reset-format'	=>	true, ],
-			'in-more-shadow-x'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'in-more-shadow-y'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'in-more-shadow-blur'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-more-shadow-spread'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-more-shadow-inset'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-added-text'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-siteicon'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	3,				'reset-format'	=>	true, ],
-			'in-siteicon-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-thumbnail'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-thumbnail-size'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'thumbnail',	'reset-format'	=>	true, ],
-			'in-thumbnail-alt'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-thumbnail-transform-enabled' 	=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-thumbnail-transform-x'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-thumbnail-transform-y'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-thumbnail-transform-rotate'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-thumbnail-transform-scale'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	100,			'reset-format'	=>	true, ],
-			'in-thumbnail-bg-enabled'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-thumbnail-bg-color'				=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#ffffff',		'reset-format'	=>	true, ],
-			'in-thumbnail-border-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-thumbnail-border-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#888888',		'reset-format'	=>	true, ],
-			'in-thumbnail-border-style'			=>	['type'	=>	'border',		'null'	=>	true,	'default'	=>	'solid',		'reset-format'	=>	true, ],
-			'in-thumbnail-border-width'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	1,				'reset-format'	=>	true, ],
-			'in-thumbnail-border-radius'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	4,				'reset-format'	=>	true, ],
-			'in-thumbnail-shadow-enabled'		=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
-			'in-thumbnail-shadow-color'			=>	['type'	=>	'color',		'null'	=>	true,	'default'	=>	'#aaaacc',		'reset-format'	=>	true, ],
-			'in-thumbnail-shadow-x'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-thumbnail-shadow-y'				=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-thumbnail-shadow-blur'			=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	8,				'reset-format'	=>	true, ],
-			'in-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0,				'reset-format'	=>	true, ],
-			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null,			'reset-format'	=>	true, ],
+			'initialize-exception'				=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	0,				],
+			'flg-delete-settings'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-delete-image'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'flg-delete-db'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
 
-			'flg-nofollow'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-noopener'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-referer'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-relative-url'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-unlink'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-sslverify'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-robots'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-local-check'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-redir'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'user-agent'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'pzlkc', ],
-			'user-agent-text'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-click-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-click-log'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'click-log-retention'				=>	['type'	=>	'string',		'null'	=>	false,	'default'	=>	'3m', ],
-			'flg-alive-count'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
+			'plugin-version'					=>	['type'	=>	'version',				'null'	=>	true,	'default'	=>	null,			],
+			'db-version'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
+			'db-click-version'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
+			'saved-date'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
+			'debug-nocache'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'error-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'error-hide'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
 
-			'auto-atag'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'auto-url'							=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-do-shortcode'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'auto-external'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'exclude-url'						=>	['type'	=>	'textarea',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-edit-block'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-edit-insert'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-edit-preview'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-edit-qtag'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-clear-excerpt'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'code1'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	'blogcard', ],
-			'use-inline'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'code2'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
-			'code3'								=>	['type'	=>	'code',			'null'	=>	true,	'default'	=>	null, ],
-
-			'multi-myid'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'multi-count'						=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-
-			'trail-slash'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'class-pc'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'class-mobile'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'mce-priority'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'flg-compress'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'date-format-man'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'Y\<\b\r\>m/d\<\b\r\>H:i', ],
-			'flg-inhibit'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-preview'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'preview-mode'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	'icon', ],
-			'preview-restore-mode'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-left'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-top'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-height'					=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-docked-height'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-right-docked-width'		=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'window-left'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'window-top'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'window-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'window-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'docked-width'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'docked-height'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'last-bottom-docked-height'			=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'right-docked-width'				=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'preview-two-cards'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-quickmenu'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-amp-url'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-public-only'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-
-			'flg-special-amazon'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-special-twitter'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-special-jmty'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-special-yahoo-auc'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-special-microsoft'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-
-			'alive-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
-			'alive-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
-			'get-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	50, ],
-			'get-period-delay'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	30, ],
-			'sns-period'						=>	['type'	=>	'schedule',		'null'	=>	false,	'default'	=>	'hourly', ],
-			'sns-period-num'					=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	5, ],
-
-			'flg-adminbar'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'debug-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'admin-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'multi-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'flg-initialize'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'develop-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-
-			'css-add-url'						=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
-			'css-add'							=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'css-count'							=>	['type'	=>	'numeric',		'null'	=>	false,	'default'	=>	0, ],
-			'siteicon-api'						=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://www.google.com/s2/favicons?domain=%DOMAIN%', ],
-			'thumbnail-api'						=>	['type'	=>	'url_template',	'null'	=>	true,	'default'	=>	'https://s.wordpress.com/mshots/v1/%URL%?w=200', ],
-
-			'initialize-exception'				=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	0, ],
-			'flg-delete-settings'				=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-delete-image'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-			'flg-delete-db'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	1, ],
-
-			'plugin-version'					=>	['type'	=>	'version',		'null'	=>	false,	'default'	=>	null, ],
-			'db-version'						=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'db-click-version'					=>	['type'	=>	'string',		'null'	=>	true,	'default'	=>	null, ],
-			'debug-nocache'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-
-			'error-mode'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'error-mode-hide'					=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
-			'error-postid'						=>	['type'	=>	'numeric',		'null'	=>	true,	'default'	=>	null, ],
-			'error-url'							=>	['type'	=>	'url',			'null'	=>	true,	'default'	=>	null, ],
-			'error-time'						=>	['type'	=>	'timestamp',	'null'	=>	true,	'default'	=>	null, ],
-			'error-hide'						=>	['type'	=>	'flag',			'null'	=>	true,	'default'	=>	null, ],
 		);
 
 	// 定数・プラグイン情報
@@ -610,18 +613,18 @@ class class_pz_linkcard {
 			'TextDomain'		=>	'Text Domain',
 		);
 		$plugin_info			=	get_file_data(__FILE__, $default_headers );
-		define('PZLKC_PLUGIN_VERSION',	$plugin_info['Version'] );									// バージョン
+		define('PZLKC_PLUGIN_VERSION',	$plugin_info['Version'] );							// バージョン
 
 		// 定数
 
 		define('PZLKC_DIR_UPLOAD',			wp_upload_dir()['basedir']. '/'.self::PLUGIN_SLUG.'/' );	// アップロード ディレクトリのパス
 		define('PZLKC_URL_UPLOAD',			preg_replace('/(http|https):(\/\/.*)/', '$2', wp_upload_dir()['baseurl'] ).'/'.self::PLUGIN_SLUG.'/' );		// アップロード ディレクトリのURL
 
-		define('PZLKC_DIR_STYLE',			PZLKC_DIR_UPLOAD.'style/' );							// CSSディレクトリのパス
-		define('PZLKC_URL_STYLE',			PZLKC_URL_UPLOAD.'style/' );							// CSSディレクトリのURL
+		define('PZLKC_DIR_STYLE',			PZLKC_DIR_UPLOAD.'style/' );					// CSSディレクトリのパス
+		define('PZLKC_URL_STYLE',			PZLKC_URL_UPLOAD.'style/' );					// CSSディレクトリのURL
 
-		define('PZLKC_DIR_CACHE',			PZLKC_DIR_UPLOAD.'cache/' );							// 画像キャッシュのパス
-		define('PZLKC_URL_CACHE',			PZLKC_URL_UPLOAD.'cache/' );							// 画像キャッシュのURL
+		define('PZLKC_DIR_CACHE',			PZLKC_DIR_UPLOAD.'cache/' );					// 画像キャッシュのパス
+		define('PZLKC_URL_CACHE',			PZLKC_URL_UPLOAD.'cache/' );					// 画像キャッシュのURL
 
 
 		define('PZLKC_DATE_FORMAT',			get_option('date_format' ) );
@@ -651,7 +654,9 @@ class class_pz_linkcard {
 		// ログ出力
 
 		// バージョンが違う場合、初期処理を実行する
-		if	($this->options['plugin-version']	<>	PZLKC_PLUGIN_VERSION ) {
+		if	($this->options['plugin-version'] <> PZLKC_PLUGIN_VERSION
+			|| ($this->options['db-version'] ?? '') !== md5($this->pz_GetCardTableSQL())
+			|| !array_key_exists('sns-qiita', (array) get_option(self::OPTION_NAME ) ) ) {
 			$this->hook_activate();															// プラグインの再起動
 		}
 
@@ -685,17 +690,15 @@ class class_pz_linkcard {
 
 		// 共通アクション（実行順）
 		add_action('init', [$this, 'action_register_block' ] );
-		if (did_action('wp_loaded' ) && !doing_action('wp_loaded' ) ) {
-			$this->action_register_cron_schedules();
-		} else {
-			add_action('wp_loaded', [$this, 'action_register_cron_schedules' ], PHP_INT_MAX );
-		}
-
-		// WP-CRONの各処理
 		add_action(self::CRON_ALIVE, [$this, 'schedule_hook_alive' ] );
 		add_action(self::CRON_CHECK, [$this, 'schedule_hook_check' ] );
 		add_action(self::CRON_CLICK_CLEANUP, [$this, 'schedule_hook_click_cleanup' ] );
 		add_action(self::CRON_GET, [$this, 'schedule_hook_get' ] );
+		add_action('pz_linkcard_alive_retry', [$this, 'schedule_hook_alive']);
+
+		// WP-CRONスケジュール登録
+		$this->pz_SyncCronSchedules();
+		$this->pz_ScheduleClickLogCleanup();
 
 		// 管理画面のとき
 		if	(is_admin() ) {
@@ -710,13 +713,11 @@ class class_pz_linkcard {
 
 			// 管理画面用アクション
 			add_action		('init',									[$this, 'action_init' ],						10, 1 );	// プラグイン初期化
+			add_filter		('admin_body_class',						[$this, 'filter_admin_body_class'] );
+			add_action		('upgrader_process_complete',				[$this, 'action_upgrader_process_complete' ],	10, 2 );	// アップデートしたときの処理
+			add_action		('admin_post_pz_export_file',				[$this, 'action_export_file' ],					10, 1 );	// エクスポート処理
 			add_action		('enqueue_block_editor_assets',				[$this, 'action_enqueue_block_editor_assets' ],	10, 1 );	// ブロックエディタ用スクリプト
 			add_action		('enqueue_block_assets',					[$this, 'action_enqueue_block_assets' ],		10, 1 );	// ブロックエディタ本文
-			add_filter		('admin_body_class',						[$this, 'filter_admin_body_class'] );
-
-			// エクスポート・更新処理用アクション
-			add_action		('admin_post_pz_export_file',				[$this, 'action_export_file' ],					10, 1 );	// エクスポート処理
-			add_action		('upgrader_process_complete',				[$this, 'action_upgrader_process_complete' ],	10, 2 );	// アップデートしたときの処理
 
 			// カード設定画面用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_clear_error_mode',			[$this, 'action_ajax_pz_lkc_error_mode_clear'] );
@@ -726,15 +727,12 @@ class class_pz_linkcard {
 			// カード管理画面用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
 			add_action		('wp_ajax_pz_lkc_find_used_posts',			[$this, 'action_ajax_pz_lkc_find_used_posts'] );
-			add_action		('wp_ajax_pz_lkc_cacheman_pending',		[$this, 'action_ajax_pz_lkc_cacheman_pending'] );
+			add_action		('wp_ajax_pz_lkc_cacheman_pending',			[$this, 'action_ajax_pz_lkc_cacheman_pending'] );
 
 			// ビジュアルエディター用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_mce_post_search',			[$this, 'action_ajax_pz_lkc_mce_post_search'] );
 			add_action		('wp_ajax_pz_lkc_mce_render_card',			[$this, 'action_ajax_pz_lkc_mce_render_card'] );
 		} else {
-			// 通常表示用アクション
-			add_action('wp_enqueue_scripts', [$this, 'action_wp_enqueue_scripts' ] );
-
 			// 通常表示用フィルター
 			if	($this->options['auto-atag'] || $this->options['auto-url'] ) {										// 自動置き換え
 				add_filter('the_content', [$this, 'auto_replace' ] );
@@ -750,6 +748,9 @@ class class_pz_linkcard {
 					add_shortcode($code, [$this, 'shortcode' ] );
 				}
 			}
+
+			// 通常表示用アクション
+			add_action('wp_enqueue_scripts', [$this, 'action_wp_enqueue_scripts' ] );
 		}
 
 		// 投稿表示側でも使用するAjaxアクション
@@ -1037,14 +1038,14 @@ class class_pz_linkcard {
 		} elseif (!empty($url_info['is_external'] ) ) {
 			if (!$data_id && !$force ) {
 				$data = $this->pz_SetCache(array(
-					'url'			=> $url,
-					'title'			=> '',
-					'charset'		=> null,
-					'regist_title'	=> null,
-					'regist_excerpt'	=> null,
-					'regist_charset'	=> null,
-					'regist_result'	=> null,
-					'regist_time'	=> null,
+					'url'				=>	$url,
+					'title'				=>	'',
+					'charset'			=>	null,
+					'regist_title'		=>	null,
+					'regist_excerpt'	=>	null,
+					'regist_charset'	=>	null,
+					'regist_result'		=>	null,
+					'regist_time'		=>	null,
 				) );
 				$data = is_array($data ) ? $data : array('url' => $url );
 				$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
@@ -1105,6 +1106,19 @@ class class_pz_linkcard {
 
 		// エンコードしたURLを返却
 		return		$url;
+	}
+
+	// Keep existing percent escapes in image paths and nested query URLs.
+	private function pz_EncodeImageURL($url = null ) {
+		if (!is_string($url ) ) {
+			return null;
+		}
+		$url = html_entity_decode(trim($url ), ENT_QUOTES | ENT_HTML5, 'UTF-8' );
+		$url = esc_url_raw($url, array('http', 'https' ) );
+		if (!$url || !preg_match('~^https?://~i', $url ) ) {
+			return null;
+		}
+		return $this->pz_EncodeURL($url, false );
 	}
 
 	// URLのデコード（表示用URL作成）
@@ -1205,79 +1219,78 @@ class class_pz_linkcard {
 	}
 
 	// 相対パスをURLにする
-	private	function	pz_RelToURL($base_url = null, $rel_path = null ) {
-
-		if	(!$base_url || !$rel_path ) {
-			return	$rel_path;
+	private function pz_RelToURL($base_url = null, $rel_path = null) {
+		if (!$base_url || $rel_path === null) {
+			return $rel_path;
 		}
 
-		// ベースURLをパース
-		$base_url	=	$this->Pz_SanitizeURL($base_url );					// 念のためサニタイズ
-		$info_base	=	$this->Pz_GetURLInfo($base_url );
-		$info_rel	=	$this->Pz_GetURLInfo($rel_path );
-		$base_domain_url	=	$info_base['domain_url'];
-		if	(!empty($info_base['port'] ) ) {
-			$base_domain_url	.=	':'.$info_base['port'];
-		}
-
-		// 絶対パスだった場合（スキームあり）
-		if	($info_rel['scheme'] ) {
-			$return_url	=	$rel_path;
-			return			$return_url;
-		}
-
-		// 絶対パスだった場合（スキーム省略）
-		if	(substr($rel_path, 0, 2 )	==	'//' ) {
-			$return_url	=	$info_base['scheme'].':'.$rel_path;
-			return			$return_url;
-		}
-
-		// ルート指定
-		if	(substr($rel_path, 0, 1 )	==	'/' ) {
-			$return_url	=	$base_domain_url.$rel_path;
-			return			$return_url;
-		}
-
-		// ベースURLのディレクトリを基準に相対パスを解決
-		$base_path	=	$info_base['path'] ?? '/';
-		if	(!$base_path ) {
-			$base_path	=	'/';
-		}
-		if	(substr($base_path, -1 ) <> '/' ) {
-			$base_path	=	preg_replace('/\/[^\/]*$/', '/', $base_path );
-		}
-		$rel_query		=	'';
-		$rel_fragment	=	'';
-		$rel_path_only	=	$rel_path;
-		$fragment_pos	=	strpos($rel_path_only, '#' );
-		if	($fragment_pos !== false ) {
-			$rel_fragment	=	substr($rel_path_only, $fragment_pos );
-			$rel_path_only	=	substr($rel_path_only, 0, $fragment_pos );
-		}
-		$query_pos		=	strpos($rel_path_only, '?' );
-		if	($query_pos !== false ) {
-			$rel_query		=	substr($rel_path_only, $query_pos );
-			$rel_path_only	=	substr($rel_path_only, 0, $query_pos );
-		}
-		if	($rel_path_only === '' ) {
-			$target_path	=	$info_base['path'] ?? '/';
+		// Preserve empty query/fragment components and the original base path.
+		$parse = static function($url) {
+			preg_match('~\A(?:([^:/?#]+):)?(?://([^/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?\z~s', $url, $parts, PREG_UNMATCHED_AS_NULL);
+			return array(
+				'scheme' => $parts[1], 'authority' => $parts[2],
+				'path' => $parts[3], 'query' => $parts[4], 'fragment' => $parts[5],
+			);
+		};
+		// RFC 3986 section 5.2.4: remove dot segments without collapsing slashes.
+		$remove_dot_segments = static function($path) {
+			$output = '';
+			while ($path !== '') {
+				if (strpos($path, '../') === 0) {
+					$path = substr($path, 3);
+				} elseif (strpos($path, './') === 0) {
+					$path = substr($path, 2);
+				} elseif (strpos($path, '/./') === 0 || $path === '/.') {
+					$path = '/'.substr($path, 3);
+				} elseif (strpos($path, '/../') === 0 || $path === '/..') {
+					$path = '/'.substr($path, 4);
+					$output = preg_replace('~/[^/]*$~', '', $output);
+				} elseif ($path === '.' || $path === '..') {
+					$path = '';
+				} else {
+					$next = strpos($path, '/', $path[0] === '/' ? 1 : 0);
+					if ($next === false) {
+						$output .= $path;
+						$path = '';
+					} else {
+						$output .= substr($path, 0, $next);
+						$path = substr($path, $next);
+					}
+				}
+			}
+			return $output;
+		};
+		$base = $parse((string) $base_url);
+		$target = $parse((string) $rel_path);
+		if ($target['scheme'] !== null) {
+			$target['path'] = $remove_dot_segments($target['path']);
 		} else {
-			$target_path	=	$base_path.$rel_path_only;
-		}
-		$path_parts		=	explode('/', $target_path );
-		$resolved_parts	=	array();
-		foreach	($path_parts as $path_part ) {
-			if	($path_part === '' || $path_part === '.' ) {
-				continue;
+			$target['scheme'] = $base['scheme'];
+			if ($target['authority'] !== null) {
+				$target['path'] = $remove_dot_segments($target['path']);
+			} else {
+				$target['authority'] = $base['authority'];
+				if ($target['path'] === '') {
+					$target['path'] = $base['path'];
+					if ($target['query'] === null) {
+						$target['query'] = $base['query'];
+					}
+				} else {
+					if ($target['path'][0] !== '/') {
+						$last_slash = strrpos($base['path'], '/');
+						$directory = $base['authority'] !== null && $base['path'] === ''
+							? '/' : ($last_slash === false ? '' : substr($base['path'], 0, $last_slash + 1));
+						$target['path'] = $directory.$target['path'];
+					}
+					$target['path'] = $remove_dot_segments($target['path']);
+				}
 			}
-			if	($path_part === '..' ) {
-				array_pop($resolved_parts );
-				continue;
-			}
-			$resolved_parts[]	=	$path_part;
 		}
-		$return_url		=	$base_domain_url.'/'.implode('/', $resolved_parts ).$rel_query.$rel_fragment;
-		return				$return_url;
+		return ($target['scheme'] !== null ? $target['scheme'].':' : '')
+			.($target['authority'] !== null ? '//'.$target['authority'] : '')
+			.$target['path']
+			.($target['query'] !== null ? '?'.$target['query'] : '')
+			.($target['fragment'] !== null ? '#'.$target['fragment'] : '');
 	}
 
 	// 日本語URLをHTMLエンコードする
@@ -1300,15 +1313,6 @@ class class_pz_linkcard {
 	// ソーシャルカウント取得
 	private	function	pz_RenewSNSCount($data ) {
 
-		// ソーシャルカウントを表示しない設定の場合は終了
-		if	(!in_array('s', array_merge(
-			$this->pz_GetCardItemOrder('ex', 'info' ),
-			$this->pz_GetCardItemOrder('ex', 'content' ),
-			$this->pz_GetCardItemOrder('in', 'info' ),
-			$this->pz_GetCardItemOrder('in', 'content' )
-		), true ) ) {
-			return	null;
-		}
 		if	(!isset($data ) || !is_array($data ) ) {
 			return	null;
 		}
@@ -1321,7 +1325,12 @@ class class_pz_linkcard {
 		// ソーシャルカウント
 		$sns_renew	= false;
 		$update_cnt	= false;
+		$sns_counts_before = array();
+		foreach (array('sns_twitter', 'sns_facebook', 'sns_hatena', 'sns_qiita_likes', 'sns_qiita_stock') as $sns_key) {
+			$sns_counts_before[$sns_key] = $data[$sns_key] ?? null;
+		}
 		$hatena_response_count	= null;
+		$qiita_response_count = null;
 
 		// タイムオーバー
 		$opt	=	array('timeout' => 30 );
@@ -1373,20 +1382,57 @@ class class_pz_linkcard {
 			if	($sns_renew || is_null($count_before ) ) {
 				$result	=	wp_safe_remote_get('http://api.b.st-hatena.com/entry.count?url=' .$url_raw, $opt );
 				if	(isset($result ) && !is_wp_error($result ) && $result['response']['code'] == 200 ) {
-					$count	=	intval($result['body'] );
-					$hatena_response_count	=	$count;
-					if	(is_null($count_before ) || $count > $count_before ) {
-						$data['sns_hatena']	=	$count;
-						$update_cnt	=	$count > intval($count_before );
+					$count_body = trim((string) $result['body']);
+					if (ctype_digit($count_body)) {
+						$count = intval($count_body);
+						$hatena_response_count = $count;
+						$data['sns_hatena'] = $count;
+						$update_cnt = $update_cnt || $count > intval($count_before);
 					}
 				}
 			}
 		}
 
-		// 登録してから一週間までは毎日、それ以降は週一回更新（取得が固まらないようにランダム時間付与）
+		// Qiita likes and stocks (public article URLs only).
+		$qiita_url = wp_parse_url($data['url'] );
+		if (!empty($this->options['sns-qiita'] ) && strtolower($qiita_url['host'] ?? '') === 'qiita.com'
+			&& preg_match('~^/[^/]+/items/([0-9a-f]{20})/?$~i', $qiita_url['path'] ?? '', $qiita_match ) ) {
+			$count_before = $data['sns_qiita_likes'] ?? null;
+			$stock_before = $data['sns_qiita_stock'] ?? null;
+			if ($sns_renew || is_null($count_before ) || is_null($stock_before) ) {
+				$result = wp_safe_remote_get('https://qiita.com/api/v2/items/'.strtolower($qiita_match[1] ), $opt );
+				if (!is_wp_error($result ) && wp_remote_retrieve_response_code($result ) === 200 ) {
+					$json = json_decode(wp_remote_retrieve_body($result ), true );
+					if (isset($json['likes_count'] ) && is_int($json['likes_count'] ) && $json['likes_count'] >= 0 ) {
+						$qiita_response_count = $json['likes_count'];
+						$data['sns_qiita_likes'] = $qiita_response_count;
+						$update_cnt = $update_cnt || $qiita_response_count > intval($count_before );
+					}
+					if (isset($json['stocks_count']) && is_int($json['stocks_count']) && $json['stocks_count'] >= 0) {
+						$data['sns_qiita_stock'] = $json['stocks_count'];
+					}
+				}
+			}
+		}
+
+		// 取得済みのSNSカウントが変化した場合は24時間後、それ以外は登録日からの経過日で決める。
+		$sns_count_changed = false;
+		foreach ($sns_counts_before as $sns_key => $count_before) {
+			if ($count_before !== null && $count_before !== '' && isset($data[$sns_key])
+				&& intval($count_before) !== intval($data[$sns_key])) {
+				$sns_count_changed = true;
+				break;
+			}
+		}
 		$data['sns_time']			=	$this->now;
-		if	($update_cnt ) {
+		$registration_time			=	intval($data['regist_time'] ?? 0);
+		$registration_age			=	$registration_time > 0 ? max(0, $this->now - $registration_time) : 0;
+		if ($sns_count_changed) {
 			$data['sns_nexttime']	=	$this->now + DAY_IN_SECONDS;
+		} elseif ($registration_age <= WEEK_IN_SECONDS) {
+			$data['sns_nexttime']	=	$this->now + DAY_IN_SECONDS;
+		} elseif ($registration_age <=	MONTH_IN_SECONDS) {
+			$data['sns_nexttime']	=	$this->now + WEEK_IN_SECONDS;
 		} else {
 			$data['sns_nexttime']	=	$this->now + MONTH_IN_SECONDS;
 		}
@@ -1403,16 +1449,19 @@ class class_pz_linkcard {
 		$result	=	$wpdb->update(
 			$this->db_card,
 			array(
-				'sns_hatena'	=>	$data['sns_hatena'],
-				'sns_time'		=>	$data['sns_time'],
-				'sns_nexttime'	=>	$data['sns_nexttime'],
-				'update_time'	=>	$data['update_time'],
+				'sns_hatena'		=>	$data['sns_hatena'],
+				'sns_qiita_likes'			=>	$data['sns_qiita_likes'],
+				'sns_qiita_stock'	=>	$data['sns_qiita_stock'] ?? null,
+				'sns_time'			=>	$data['sns_time'],
+				'sns_nexttime'		=>	$data['sns_nexttime'],
+				'update_time'		=>	$data['update_time'],
 			),
 			array('id' => intval($data['id'] ) ),
-			array('%d', '%d', '%d', '%d' ),
+			array('%d', '%d', '%d', '%d', '%d', '%d' ),
 			array('%d' )
 		);
-		$this->request_cache	=	array();
+		$this->request_cache			=	array();
+		$data['sns_qiita_response']		=	$qiita_response_count;
 		$data['sns_hatena_response']	=	$hatena_response_count;
 		$data['sns_count_increased']	=	$update_cnt;
 
@@ -1956,6 +2005,7 @@ class class_pz_linkcard {
 	public	function	hook_deactivate() {
 
 		wp_clear_scheduled_hook(self::CRON_ALIVE );		// WP-CRONスケジュール停止（リンク先存在チェック）
+		wp_clear_scheduled_hook('pz_linkcard_alive_retry');
 		wp_clear_scheduled_hook(self::CRON_CHECK );		// WP-CRONスケジュール停止（SNSカウント取得）
 		wp_clear_scheduled_hook(self::CRON_CLICK_CLEANUP );	// WP-CRONスケジュール停止（クリックログ整理）
 		wp_clear_scheduled_hook(self::CRON_GET );
@@ -1973,13 +2023,13 @@ class class_pz_linkcard {
 		add_action		('admin_menu',									array($this, 'action_admin_menu' ) );						// 設定メニュー
 		add_action		('admin_menu',									array($this, 'action_sort_pz_submenus' ), PHP_INT_MAX );	// [Pz] サブメニューの並べ替え
 		add_action		('wp_dashboard_setup',							array($this, 'action_wp_dashboard_setup' ) );				// ダッシュボードウィジェット
+		add_action		('admin_footer-index.php',						array($this, 'action_dashboard_widget_focus' ) );			// ダッシュボードウィジェットへ移動
 		add_action		('admin_enqueue_scripts',						array($this, 'action_admin_enqueue_scripts' ) );			// 設定メニュー用スクリプト
 		add_action		('admin_print_styles',							array($this, 'action_admin_print_styles' ) );				// スタイルシートの追加
 		add_action		('admin_print_scripts',							array($this, 'action_admin_print_scripts' ) );				// スクリプトの追加
-		add_action		('wp_before_admin_bar_render',					array($this, 'action_wp_before_admin_bar_render' ), 11 );	// 管理バー
 		add_action		('admin_notices',								array($this, 'action_admin_notices' ) );					// 注意書き
 		add_action		('admin_print_footer_scripts',					array($this, 'action_admin_print_footer_scripts' ) );		// テキストエディタ用クイックタグ
-		add_action		('admin_footer-index.php',						array($this, 'action_dashboard_widget_focus' ) );			// ダッシュボードウィジェットへ移動
+		add_action		('wp_before_admin_bar_render',					array($this, 'action_wp_before_admin_bar_render' ), 11 );	// 管理バー
 	}
 
 	// 管理画面のサブメニュー追加
@@ -2126,6 +2176,8 @@ class class_pz_linkcard {
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 			'settingsUrl'	=>	$this->settings_url,
 			'cachemanUrl'	=>	$this->cacheman_url,
+			'selectedItem'	=>	__('%s item selected', 'pz-linkcard' ),
+			'selectedItems'	=>	__('%s items selected', 'pz-linkcard' ),
 			'noticeNonce'	=>	wp_create_nonce('pz_lkc_clear_error_mode' ),
 			'cachemanColumnsNonce'	=>	wp_create_nonce('pz_lkc_cacheman_columns' ),
 			'findUsedPostsNonce'	=>	wp_create_nonce('pz_lkc_find_used_posts' ),
@@ -2155,6 +2207,10 @@ class class_pz_linkcard {
 		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			wp_enqueue_media();
 		}
+		if ($hook === 'tools_page_'.self::CACHEMAN_PAGE) {
+			$layout_js_version = PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-cacheman-layout.js');
+			wp_enqueue_script('pz-linkcard-cacheman-layout', $this->plugin_dir_url.'js/admin-cacheman-layout.js', array('jquery-ui-sortable'), $layout_js_version, true);
+		}
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			$admin_tabs_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-tabs.js' );
 			$admin_search_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-search.js' );
@@ -2176,12 +2232,13 @@ class class_pz_linkcard {
 					'labels'		=>	array(
 						'restorePreview'		=>	__('Preview', 'pz-linkcard' ),
 						'restorePreviewAria'	=>	__('Preview', 'pz-linkcard' ),
-						'openPreview'			=>	__('Open preview', 'pz-linkcard' ),
 						'dockPreviewBottom'		=>	__('Dock preview bottom', 'pz-linkcard' ),
 						'dockPreviewRight'		=>	__('Dock preview right', 'pz-linkcard' ),
 						'windowPreview'			=>	__('Window preview', 'pz-linkcard' ),
 						'referenced'			=>	__('Referenced', 'pz-linkcard' ),
 						'youMayAlsoLike'		=>	__('You may also like', 'pz-linkcard' ),
+						'qiitaLikes'			=>	sprintf(__('%d likes', 'pz-linkcard' ), 1234 ),
+						'qiitaStocks'			=>	sprintf(__('%d stocks', 'pz-linkcard' ), 1234 ),
 						'previewPostDate'		=>	wp_date(PZLKC_DATE_FORMAT, $preview_yesterday->getTimestamp(), wp_timezone() ),
 						'previewModifiedDate'	=>	wp_date(PZLKC_DATE_FORMAT, $preview_today->getTimestamp(), wp_timezone() ),
 					),
@@ -2428,9 +2485,11 @@ class class_pz_linkcard {
 		}
 
 		global $wp_admin_bar;
+		echo '<style>#wpadminbar #wp-admin-bar-pz-lkc .ab-icon:before { color: inherit; }</style>';
 		$wp_admin_bar->add_menu(array('id' => 'pz-lkc',									'title' => $this->pz_GetAdminBarIconSvg().esc_html__('Pz Card', 'pz-linkcard' ),				'href' => '#' ) );
-		$wp_admin_bar->add_menu(array('id' => 'pz-settings',	'parent' => 'pz-lkc',	'title' => __('Pz-LinkCard Manager',	'pz-linkcard' ),	'href' => $this->cacheman_url,	'meta' => array('target' => '_parent' ) ) );
-		$wp_admin_bar->add_menu(array('id' => 'pz-cacheman',	'parent' => 'pz-lkc',	'title' => __('Pz-LinkCard Settings',	'pz-linkcard' ),	'href' => $this->settings_url,	'meta' => array('target' => '_parent' ) ) );
+		$wp_admin_bar->add_menu(array('id' => 'pz-settings',	'parent' => 'pz-lkc',	'title' => '<span class="ab-icon dashicons dashicons-archive" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Card Manager', 'pz-linkcard'),	'href' => $this->cacheman_url,	'meta' => array('target' => '_parent' ) ) );
+		$wp_admin_bar->add_menu(array('id' => 'pz-logman',		'parent' => 'pz-lkc',	'title' => '<span class="ab-icon dashicons dashicons-chart-bar" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Log Manager', 'pz-linkcard'),	'href' => add_query_arg('action', 'click-log', $this->cacheman_url),	'meta' => array('target' => '_parent' ) ) );
+		$wp_admin_bar->add_menu(array('id' => 'pz-cacheman',	'parent' => 'pz-lkc',	'title' => '<span class="ab-icon dashicons dashicons-admin-generic" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Settings', 'pz-linkcard'),	'href' => $this->settings_url,	'meta' => array('target' => '_parent' ) ) );
 	}
 
 	// 現在のリクエストで送信された設定値を優先して返す
@@ -2498,17 +2557,33 @@ class class_pz_linkcard {
 		return	$links;
 	}
 
-	// クリックログ整理の次回実行を、サイトのタイムゾーンの午前4時に予約
-	private	function	pz_ScheduleClickLogCleanup() {
-		if	(wp_next_scheduled(self::CRON_CLICK_CLEANUP ) ) {
-			return;
+	// Schedule click-log cleanup on the selected weekdays in the site timezone.
+	private function pz_ScheduleClickLogCleanup() {
+		$hour = min(23, max(0, intval($this->options['click-cleanup-hour'] ?? 4)));
+		$minute = min(59, max(0, intval($this->options['click-cleanup-minute'] ?? 0)));
+		$days = array();
+		for ($day = 0; $day < 7; $day++) {
+			if (!array_key_exists('click-cleanup-day-'.$day, $this->options) || !empty($this->options['click-cleanup-day-'.$day])) {
+				$days[] = $day;
+			}
 		}
-		$now	= new DateTimeImmutable('now', wp_timezone() );
-		$next	= $now->setTime(4, 0, 0 );
-		if	($next <= $now ) {
-			$next	= $next->modify('+1 day' );
+		$scheduled = wp_next_scheduled(self::CRON_CLICK_CLEANUP);
+		if ($scheduled) {
+			$scheduled_date = (new DateTimeImmutable('@'.$scheduled))->setTimezone(wp_timezone());
+			if (in_array(intval($scheduled_date->format('w')), $days, true)
+				&& $scheduled_date->format('H:i') === sprintf('%02d:%02d', $hour, $minute)) {
+				return;
+			}
+			wp_clear_scheduled_hook(self::CRON_CLICK_CLEANUP);
 		}
-		wp_schedule_single_event($next->getTimestamp(), self::CRON_CLICK_CLEANUP );
+		$now = new DateTimeImmutable('now', wp_timezone());
+		for ($offset = 0; $offset <= 7; $offset++) {
+			$next = $now->modify('+'.$offset.' days')->setTime($hour, $minute, 0);
+			if ($next > $now && in_array(intval($next->format('w')), $days, true)) {
+				wp_schedule_single_event($next->getTimestamp(), self::CRON_CLICK_CLEANUP);
+				return;
+			}
+		}
 	}
 
 	// 保存期間から期限日時を求める（存在しない月末日は対象月の末日に丸める）
@@ -2621,16 +2696,7 @@ class class_pz_linkcard {
 		return		$log;
 	}
 
-	// 他のプラグインやテーマのスケジュール登録が終わってから同期する
-	public function action_register_cron_schedules() {
-		$this->pz_SyncCronSchedules(true );
-		$this->pz_ScheduleClickLogCleanup();
-	}
-
-	private	function	pz_SyncCronSchedules($allow_during_wp_loaded = false ) {
-		if (!did_action('wp_loaded' ) || (!$allow_during_wp_loaded && doing_action('wp_loaded' ) ) ) {
-			return;
-		}
+	private	function	pz_SyncCronSchedules() {
 		$cron_schedules		=	wp_get_schedules();
 		$sns_period			=	isset($this->options['sns-period'] ) ? (string) $this->options['sns-period'] : '';
 		$alive_period		=	isset($this->options['alive-period'] ) ? (string) $this->options['alive-period'] : '';
@@ -2648,6 +2714,7 @@ class class_pz_linkcard {
 
 		if	(!$alive_period ) {
 			wp_clear_scheduled_hook(self::CRON_ALIVE );
+			wp_clear_scheduled_hook('pz_linkcard_alive_retry');
 		} elseif	(wp_get_schedule(self::CRON_ALIVE ) !== $alive_period ) {
 			wp_clear_scheduled_hook(self::CRON_ALIVE );
 			wp_schedule_event(time() + $alive_first_delay, $alive_period, self::CRON_ALIVE );

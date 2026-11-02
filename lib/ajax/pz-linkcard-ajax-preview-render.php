@@ -54,8 +54,13 @@ defined('ABSPATH' ) || wp_die;
 
 	$css_file	=	PZLKC_DIR_STYLE.'preview.css';
 	$css		=	file_exists($css_file ) ? file_get_contents($css_file ) : '';
+	$cards = array();
+	foreach (array('ex', 'in') as $prefix) {
+		for ($i = 1; $i <= 2; $i++) $cards[] = $this->pz_GetSettingsPreviewCard($prefix, $i);
+	}
 	$this->options	=	$original_options;
 
 	wp_send_json_success(array(
 		'css'	=>	$css,
+		'cards' => $cards,
 	) );

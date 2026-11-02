@@ -322,9 +322,9 @@ msgstr "サイト名称"
 msgid "Domain"
 msgstr "ドメイン"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:197
-msgid "Internal Link Data"
-msgstr "内部リンク情報"
+#: ../lib/pz-linkcard-cacheman-edit.php:207
+msgid "Post Data"
+msgstr "投稿情報"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:200
 #: ../lib/pz-linkcard-cacheman-list.php:95
@@ -333,7 +333,6 @@ msgstr "内部リンク情報"
 msgid "Post Date"
 msgstr "投稿日"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:201
 #: ../lib/pz-linkcard-cacheman-list.php:96
 msgid "Post Modified Date"
 msgstr "投稿更新日"
@@ -365,7 +364,7 @@ msgstr "登録時の文字セット"
 #: ../lib/pz-linkcard-cacheman-list.php:100
 #: ../lib/pz-linkcard-cacheman-list.php:318
 msgid "Registered Date"
-msgstr "登録日時"
+msgstr "登録日"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:214
 msgid "Registered Result Code"
@@ -397,8 +396,9 @@ msgstr "クリック件数"
 #: ../lib/pz-linkcard-cacheman-list.php:101
 #: ../lib/pz-linkcard-cacheman-list.php:319
 #: ../lib/pz-linkcard-settings-display.php:33
+#: ../lib/pz-linkcard-cacheman-edit.php:211
 msgid "Update Date"
-msgstr "更新日時"
+msgstr "更新日"
 
 #: ../lib/pz-linkcard-cacheman-edit.php:242
 msgid "Thumbnail Image"
@@ -561,6 +561,14 @@ msgstr "検索"
 #: ../lib/pz-linkcard-settings.php:771
 msgid "Screen Options"
 msgstr "表示オプション"
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Screen elements"
+msgstr "画面上の要素"
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Reset positions"
+msgstr "初期位置に戻す"
 
 #: ../lib/pz-linkcard-cacheman-list.php:266
 msgid "Columns"
@@ -948,7 +956,7 @@ msgstr "未定義の処理を選択しました"
 #: ../lib/pz-linkcard-cron-alive.php:40
 #, php-format
 msgid "[SKIP] URL=%s"
-msgstr "[SKIP] URL=%s"
+msgstr "[スキップ] URL=%s"
 
 #: ../lib/pz-linkcard-cron-alive.php:41 ../lib/pz-linkcard-cron-alive.php:52
 #: ../lib/pz-linkcard-cron-sns.php:27
@@ -1043,34 +1051,6 @@ msgstr "インポートファイルが読み込めませんでした。"
 #: ../lib/pz-linkcard-file-import.php:98
 msgid "Import Successful."
 msgstr "インポートが成功しました。"
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Import took %s seconds."
-msgstr "インポートに%s秒かかりました"
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Skipped record details"
-msgstr "スキップされたデータの詳細"
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Record %s"
-msgstr "%s件目"
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Invalid date and time."
-msgstr "日時が正しくありません。"
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "URL is missing."
-msgstr "URLがありません。"
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "The URL changed during normalization; the record may have been saved."
-msgstr "URLの正規化により値が変わりました。データは保存されている場合があります。"
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Could not save the record; the responsible field could not be identified."
-msgstr "データを保存できませんでした。原因の項目は特定できませんでした。"
 
 #: ../lib/pz-linkcard-file-import-csv.php:181
 #: ../lib/pz-linkcard-file-import-csv.php:183
@@ -1440,7 +1420,7 @@ msgstr "タイトルと開始日時を取得する"
 
 #: ../lib/pz-linkcard-settings-advanced.php:167
 msgid "Microsoft"
-msgstr ""
+msgstr "Microsoft"
 
 #: ../lib/pz-linkcard-settings-advanced.php:173
 #: ../lib/pz-linkcard-settings-check.php:94
@@ -2223,7 +2203,7 @@ msgstr "画像スタイルのリセット"
 #: ../lib/pz-linkcard-settings-display.php:10
 msgid ""
 "When unnecessary frame is displayed on the image, you can improve it by case"
-msgstr "画像がずれて表示されるときに改善される可能性が有ります（推奨）"
+msgstr "画像がずれて表示されるときに改善される可能性が有ります"
 
 #: ../lib/pz-linkcard-settings-display.php:14
 msgid "Important Style"
@@ -2260,7 +2240,7 @@ msgstr "オフ"
 
 #: ../lib/pz-linkcard-settings-display.php:34
 msgid "Post Date and Update Date"
-msgstr "投稿日時と更新日時"
+msgstr "投稿日と更新日"
 
 #: ../lib/pz-linkcard-settings-display.php:39
 msgid "Separator Line"
@@ -3560,14 +3540,6 @@ msgstr "プレビューを右端にドッキング"
 msgid "Close preview"
 msgstr "プレビューを閉じる"
 
-#: ../pz-linkcard.php:2179
-msgid "Open preview"
-msgstr "プレビューを開く"
-
-#: ../lib/pz-linkcard-settings.php:824
-msgid "Show or hide preview"
-msgstr "プレビューを開く・閉じる"
-
 #: ../lib/pz-linkcard-settings.php:643
 msgid "White background"
 msgstr "白"
@@ -3730,7 +3702,7 @@ msgstr "一番上へスクロールさせる"
 
 #: ../lib/pz-linkcard-settings.php:884
 msgid "^<br>Top"
-msgstr "^<br>Top"
+msgstr "^<br>先頭"
 
 #: ../pz-linkcard.php:905
 msgid "-"
@@ -4027,66 +3999,6 @@ msgstr "雪が降ってくる"
 #: ../lib/pz-linkcard-settings-basic.php
 msgid "3D Tracking"
 msgstr "3D追跡"
-
-#: ../lib/pz-linkcard-settings-card.php
-msgid "Display Items"
-msgstr "表示項目"
-
-#: ../lib/pz-linkcard-settings-card.php
-msgid "Site Icon"
-msgstr "サイトアイコン"
-
-#: ../lib/pz-linkcard-settings-card.php
-msgid "Post Date (Right-aligned)"
-msgstr "投稿日（右寄せ）"
-
-#: ../lib/pz-linkcard-settings-display.php
-msgid "Date to display"
-msgstr "表示する日付"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "Article Content Retrieval"
-msgstr "記事内容取得"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "As needed"
-msgstr "随時"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "Wait time for the same domain"
-msgstr "同じドメイン名の待機時間"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "Set the interval between consecutive article content requests to the same domain."
-msgstr "同じドメインの記事内容を続けて取得する際の間隔を指定します。"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "5 seconds"
-msgstr "5秒"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "10 seconds"
-msgstr "10秒"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "30 seconds"
-msgstr "30秒"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "1 minute"
-msgstr "1分"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "5 minutes"
-msgstr "5分"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "10 minutes"
-msgstr "10分"
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "30 minutes"
-msgstr "30分"
 
 #~ msgid "Compact Help"
 #~ msgstr "ﾍﾙﾌﾟ"
@@ -4470,6 +4382,10 @@ msgstr "30分"
 
 #~ msgid "Text after the Site Name."
 #~ msgstr "付加情報のテキスト"
+
+#: lib/traits/pz-linkcard-options.php:19
+msgid "Site Icon"
+msgstr "サイトアイコン"
 
 #~ msgid "Site Icon Alt Text"
 #~ msgstr "サイトアイコンの代替テキスト"
@@ -5027,3 +4943,354 @@ msgstr "30分"
 
 #~ msgid "After the invalidation of the plug-in , please activate again"
 #~ msgstr "→プラグインの無効化を行った後、再度有効化してください"
+
+#: ../lib/traits/pz-linkcard-cache.php:54
+msgid "The cache data is invalid."
+msgstr "キャッシュデータが不正です。"
+
+#: ../lib/traits/pz-linkcard-cache.php:58
+#: ../lib/pz-linkcard-file-import-csv.php:172
+msgid "The URL is empty."
+msgstr "URLが空です。"
+
+#: ../lib/traits/pz-linkcard-cache.php:67
+msgid "The URL could not be normalized."
+msgstr "URLを正規化できませんでした。"
+
+#: ../lib/traits/pz-linkcard-cache.php:236
+#: ../lib/traits/pz-linkcard-cache.php:247
+#, php-format
+msgid "Database error: %s"
+msgstr "DBエラー: %s"
+
+#: ../lib/traits/pz-linkcard-cache.php:237
+#: ../lib/pz-linkcard-file-import-csv.php:187
+#: ../lib/pz-linkcard-file-import.php:90
+msgid "The cache record could not be saved."
+msgstr "キャッシュデータを保存できませんでした。"
+
+#: ../lib/traits/pz-linkcard-cache.php:248
+msgid "The saved cache record could not be retrieved."
+msgstr "保存後のキャッシュデータを取得できませんでした。"
+
+#: ../lib/pz-linkcard-file-import-csv.php:168
+msgid "The CSV record is empty."
+msgstr "CSVのデータ行が空です。"
+
+#: ../lib/pz-linkcard-file-import-csv.php:170
+msgid "No URL column was found. Accepted column names: url, link_url, link, href."
+msgstr "URLの列が見つかりません。対応する列名: url, link_url, link, href。"
+
+#: ../lib/pz-linkcard-file-import.php:92
+msgid "No URL column was found."
+msgstr "URLの列が見つかりません。"
+
+#: ../lib/pz-linkcard-file-import-csv.php:175
+#: ../lib/pz-linkcard-file-import.php:103
+#, php-format
+msgid "CSV column count differs from the header (expected %1$d, found %2$d)."
+msgstr "CSVの列数がヘッダーと一致しません（ヘッダー: %1$d列、データ: %2$d列）。"
+
+#: ../lib/pz-linkcard-file-import-csv.php:186
+#: ../lib/pz-linkcard-file-import.php:89
+#, php-format
+msgid "The saved URL differs from the imported URL: %s"
+msgstr "保存後のURLがインポートしたURLと一致しません: %s"
+
+#: ../lib/pz-linkcard-file-import-result.php:9
+msgid "Skipped records"
+msgstr "スキップしたデータ"
+
+#: ../lib/pz-linkcard-file-import-result.php:12
+msgid "Data row (excluding header)"
+msgstr "データ行（ヘッダーを除く）"
+
+#: ../lib/pz-linkcard-file-import-result.php:14
+msgid "Reason"
+msgstr "原因"
+
+#: lib/pz-linkcard-settings.php:824
+msgid "Toggle preview"
+msgstr "プレビューの開閉"
+
+#: lib/traits/pz-linkcard-options.php lib/pz-linkcard-settings-card.php
+msgid "Display Items"
+msgstr "表示項目"
+
+#: lib/traits/pz-linkcard-options.php lib/pz-linkcard-settings-card.php
+msgid "Social Counts"
+msgstr "ソーシャルカウント"
+
+#: lib/traits/pz-linkcard-options.php lib/pz-linkcard-settings-card.php
+msgid "Site Classification"
+msgstr "サイト種別"
+
+#: lib/traits/pz-linkcard-options.php
+msgid "Date (right aligned)"
+msgstr "日付（右寄せ）"
+
+#: ../lib/pz-linkcard-cacheman-list.php:509
+msgid "Qiita"
+msgstr "Qiita"
+
+#: ../lib/pz-linkcard-cacheman-edit.php:322
+msgid "Qiita:"
+msgstr "Qiita:"
+
+#: ../lib/pz-linkcard-settings-display.php:101
+msgid "Qiita likes"
+msgstr "Qiitaのいいね数"
+
+#: ../lib/traits/pz-linkcard-get-html.php:414
+#, php-format
+msgid "%d like"
+msgstr "%d いいね"
+
+#: ../lib/traits/pz-linkcard-get-html.php:414
+#, php-format
+msgid "%d likes"
+msgstr "%d いいね"
+
+#: ../lib/pz-linkcard-cron-sns.php:30
+#, php-format
+msgid "Qiita likes=%s was returned."
+msgstr "Qiitaのいいね数=%sが返されました。"
+
+#: ../lib/pz-linkcard-settings-advanced.php:162
+msgid "Retrieve Post and Updated Dates"
+msgstr "投稿日・更新日時を取得する"
+
+#: ../lib/pz-linkcard-settings-advanced.php:155
+msgid "note.com"
+msgstr "note.com"
+
+#: ../lib/pz-linkcard-settings-advanced.php:155
+msgid "Retrieve Post Date"
+msgstr "投稿日を取得する"
+
+#: ../lib/pz-linkcard-settings-advanced.php:119
+msgid "OGP"
+msgstr "OGP"
+
+#: ../lib/pz-linkcard-settings-advanced.php:126
+msgid "Retrieve Post and Updated Dates."
+msgstr "投稿日・更新日を取得する。"
+
+#: ../lib/pz-linkcard-settings-advanced.php:149
+msgid "Retrieve Post Date and Profile Images."
+msgstr "投稿日とプロフィール画像を取得する。"
+
+#: ../lib/pz-linkcard-settings-display.php:22
+msgid "Dates to Display"
+msgstr "表示する日付"
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Post and Updated Dates"
+msgstr "投稿日・更新日"
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Post Date Icon"
+msgstr "投稿日アイコン"
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Updated Date Icon"
+msgstr "更新日アイコン"
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Broken Link Border"
+msgstr "リンク切れの枠線"
+
+#: ../lib/pz-linkcard-settings-display.php:33
+msgid "Date Format"
+msgstr "日付書式"
+
+#: ../lib/pz-linkcard-settings-display.php:33
+msgid "Custom Date Format"
+msgstr "自由入力の日付書式"
+
+#: ../lib/pz-linkcard-settings-display.php:44
+msgid "Icon"
+msgstr "アイコン"
+
+#: ../lib/pz-linkcard-settings-display.php:62
+msgid "Display a separator line between site information and article content"
+msgstr "サイト情報と記事内容の間に区切り線を表示する"
+
+#: ../lib/pz-linkcard-settings-display.php:10
+msgid "When unnecessary frame is displayed on the image, you can improve it by case."
+msgstr "画像に不要な枠が表示される場合、改善できることがあります。"
+
+#: ../lib/pz-linkcard-settings-admin.php:113
+#, php-format
+msgid "%s Byte"
+msgid_plural "%s Bytes"
+msgstr[0] "%s バイト"
+
+#: ../pz-linkcard.php:2142
+#, php-format
+msgid "%s item selected"
+msgstr "%s個の項目を選択"
+
+#: ../pz-linkcard.php:2142
+#, php-format
+msgid "%s items selected"
+msgstr "%s個の項目を選択"
+
+#: ../lib/pz-linkcard-cacheman-list.php:397
+msgid "Execute"
+msgstr "実施"
+
+#: ../lib/pz-linkcard-cacheman-list.php:397
+msgid "11 or more items are selected. This may take some time. Do you want to proceed?"
+msgstr "11件以上選択しています。時間がかかる可能性があります。実行しますか？"
+
+#: ../lib/pz-linkcard-cacheman-list.php:397
+msgid "Nothing is selected."
+msgstr "選択されていません。"
+
+#: ../lib/pz-linkcard-settings-display.php:8
+msgid "Stylesheet"
+msgstr "スタイルシート"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "Article Content Retrieval"
+msgstr "記事内容の取得"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "Access Interval per Site"
+msgstr "1サイトあたりのアクセス間隔"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "10 seconds"
+msgstr "10秒"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "30 seconds"
+msgstr "30秒"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "1 minute"
+msgstr "1分"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "3 minutes"
+msgstr "3分"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "5 minutes"
+msgstr "5分"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "10 minutes"
+msgstr "10分"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "30 minutes"
+msgstr "30分"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "1 hour"
+msgstr "1時間"
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "6 hours"
+msgstr "6時間"
+
+#: ../pz-linkcard.php:2449
+msgid "Card Manager"
+msgstr "カード管理"
+
+#: ../pz-linkcard.php:2449
+msgid "Log Manager"
+msgstr "ログ管理"
+
+#: ../lib/pz-linkcard-cacheman-edit.php:323
+msgid "Qiita stocks"
+msgstr "Qiitaのストック数"
+
+#: ../lib/pz-linkcard-cacheman-edit.php:87
+#, php-format
+msgid "%s: "
+msgstr "%s: "
+
+#: ../lib/pz-linkcard-cacheman-edit.php:87
+msgid "X"
+msgstr "𝕏"
+
+#: ../lib/pz-linkcard-cacheman-edit.php:103
+#, php-format
+msgid "Character count: %s"
+msgstr "文字数: %s"
+
+#: ../lib/pz-linkcard-cacheman-edit.php:104
+#, php-format
+msgid "Character count: %1$s / %2$s"
+msgstr "文字数: %1$s / %2$s"
+
+#: ../lib/pz-linkcard-cacheman-edit.php:104
+msgid "URLs can contain up to 65,535 bytes. Non-ASCII characters may use more than one byte."
+msgstr "URLは最大65,535バイトまで保存できます。日本語などは1文字が複数バイトになります。"
+
+#: ../lib/pz-linkcard-settings-display.php:111
+msgid "Qiita likes and stocks"
+msgstr "Qiitaのいいね数とストック数"
+
+#: ../lib/traits/pz-linkcard-get-html.php:414
+#, php-format
+msgid "%d stock"
+msgstr "%d ストック"
+
+#: ../lib/traits/pz-linkcard-get-html.php:414 ../pz-linkcard.php:2228
+#, php-format
+msgid "%d stocks"
+msgstr "%d ストック"
+
+#: ../lib/pz-linkcard-cacheman-edit.php:366
+msgid "facebook"
+msgstr "facebook"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Click Log Cleanup"
+msgstr "クリックログの整理"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Hour"
+msgstr "時"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Minute"
+msgstr "分"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+#, php-format
+msgid "The next run is scheduled for %s."
+msgstr "次回実行は %s です。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "No run is scheduled."
+msgstr "次回実行の予定はありません。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+#, php-format
+msgid "Currently, %s items are waiting to be processed."
+msgstr "現在、%s 件が処理待ちです。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "The settings are located on the “Advanced” tab."
+msgstr "「上級者向け」タブに設定項目があります。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Detailed click logs older than the retention period are deleted on the configured schedule. The cumulative click count is retained."
+msgstr "保存期間を過ぎたクリックログの明細は、設定したスケジュールで削除されます。累計クリック件数は保持されます。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "100 cards"
+msgstr "100件"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Unlimited"
+msgstr "無制限"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "As needed"
+msgstr "随時"

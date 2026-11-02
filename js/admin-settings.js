@@ -1,4 +1,4 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
 
 	const dashboard = document.querySelector(".pz-dashboard");
     if (!dashboard) return;
@@ -13,6 +13,8 @@
 	initTargetHighlightLinks();
 	initAdminScreenSwitchAnimation();
     initCachemanScrollMemory();
+    initCachemanDebugToggle();
+    initClickCleanupTime();
 	window.addEventListener("load", () => {
 		// Let admin-tabs.js finish restoring the active tab before jumping to
 		// a setting linked from another admin screen. Keep this independent of
@@ -104,6 +106,9 @@
         initCachemanPendingMonitor();
         initCachemanSearch();
         initCachemanPaginationKeys();
+        initCachemanCheckboxKeys();
+        initCachemanSelectedCount();
+        initCachemanBatchConfirm();
         initImageBox();
         initScreenOptions();
 		initSettingsScreenOptions();
@@ -143,7 +148,7 @@
         updateCardRangeFills();
 
         // Auto switch checks
-        document.querySelectorAll(".pz-sync-check,.pz-show,input[name='properties[centering]'],select[name='properties[thumbnail-position]'],select[name='properties[info-position]']").forEach(el =>
+        document.querySelectorAll(".pz-sync-check,.pz-show,input[name='properties[centering]'],select[name='properties[thumbnail-position]'],select[name='properties[info-position]'],select[name='properties[date-pattern]'],input[name='properties[date-format]']").forEach(el =>
             el.addEventListener("change", switchEnabled)
         );
 
@@ -353,6 +358,12 @@
 
 	function initTargetHighlightLinks() {
 		document.addEventListener("click", event => {
+			const settingLink = event.target.closest?.("a.pz-schedule-setting-link");
+			if (settingLink) {
+				event.preventDefault();
+				activateTargetHighlight(settingLink.hash, true);
+				return;
+			}
 			const link = event.target.closest?.('a[href*="#pz-error-reset-settings"]');
 			if (!link || !link.closest(".pz-lkc-error-mode-notice")) return;
 
@@ -361,8 +372,13 @@
 		});
 	}
 
-	function activateTargetHighlight(hash) {
+	function activateTargetHighlight(hash, fromClick = false) {
+		const scheduleTargets = ["#pz-click-cleanup-retention-settings", "#pz-alive-recurrence-settings", "#pz-sns-recurrence-settings"];
+		if (scheduleTargets.includes(hash) && !fromClick) return;
 		const targets = {
+			"#pz-sns-recurrence-settings": ["#pz-sns-recurrence-settings", "pz-schedule-target-highlight"],
+			"#pz-click-cleanup-retention-settings": ["#pz-click-cleanup-retention-settings", "pz-schedule-target-highlight"],
+			"#pz-alive-recurrence-settings": ["#pz-alive-recurrence-settings", "pz-schedule-target-highlight"],
 			"#pz-click-count-settings": ["#pz-click-log-settings", "pz-settings-target-highlight"],
 			"#pz-click-log-settings": ["#pz-click-log-settings", "pz-settings-target-highlight"],
 			"#pz-error-reset-settings": ["#pz-error-reset-settings", "pz-settings-error-target-highlight"],
@@ -551,6 +567,20 @@
     }
 
     // Admin setting helper
+    function initClickCleanupTime() {
+        const weekdays = document.querySelector(".pz-click-cleanup-weekdays");
+        if (!weekdays) return;
+        const days = Array.from(weekdays.querySelectorAll("input[type='checkbox']"));
+        const times = weekdays.parentElement.querySelectorAll("select[name='properties[click-cleanup-hour]'], select[name='properties[click-cleanup-minute]']");
+        const update = () => {
+            const disabled = !days.some(day => day.checked);
+            times.forEach(time => { time.disabled = disabled; });
+        };
+        weekdays.addEventListener("change", update);
+        weekdays.closest("form")?.addEventListener("reset", () => window.setTimeout(update, 0));
+        update();
+    }
+
     function switchEnabled() {
         const setDisabled = (selector, disabled, readonly=false, color=null) => {
             document.querySelectorAll(selector).forEach(el => {
@@ -565,6 +595,12 @@
 
         // Admin setting value
         const inGet = document.querySelector("select[name='properties[in-get-from]']")?.value;
+		const dateMode = document.querySelector("select[name='properties[date-pattern]']")?.value;
+		const dateFormat = document.querySelector("input[name='properties[date-format]']:checked")?.value;
+		setDisabled("input[name='properties[date-format]']", !dateMode);
+		setDisabled("input[name='properties[date-format-custom]']", !dateMode || dateFormat !== "custom");
+		setDisabled("select[name='properties[date-icon-post]']", dateMode !== "p" && dateMode !== "pu");
+		setDisabled("select[name='properties[date-icon-update]']", dateMode !== "u" && dateMode !== "pu");
         setDisabled("input[name='properties[in-field-title]']", inGet != "3");
         setDisabled("input[name='properties[in-field-excerpt]']", inGet != "3");
 
@@ -884,71 +920,62 @@
         range.style.setProperty("--pz-range-bg", `linear-gradient(to right, #0073aa 0%, #0073aa ${pct}%, #d7d7d7 ${pct}%, #d7d7d7 100%)`);
     }
 
-    async function copyCardSettingsToHover(e) {
+    function copyCardSettingsToHover(e) {
         const prefix = e.currentTarget?.dataset?.pzCardPrefix;
         if (!prefix) return;
 
-        showProcessingOverlay(0);
-        try {
-            await new Promise(resolve => {
-                window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
-            });
+        const findNamedControl = name => {
+            const controls = Array.from(document.querySelectorAll(`[name="${name}"]`));
+            return controls.find(control => control.type !== "hidden") || controls[0] || null;
+        };
 
-            const findNamedControl = name => {
-                const controls = Array.from(document.querySelectorAll(`[name="${name}"]`));
-                return controls.find(control => control.type !== "hidden") || controls[0] || null;
-            };
+        [
+            "transform-enabled",
+            "transform-x",
+            "transform-y",
+            "transform-rotate",
+            "transform-scale",
+            "opacity",
+            "bg-enabled",
+            "bg-color",
+            "bg-image",
+            "border-enabled",
+            "border-color",
+            "border-style",
+            "border-width",
+            "border-radius",
+            "shadow-enabled",
+            "shadow-color",
+            "shadow-x",
+            "shadow-y",
+            "shadow-blur",
+            "shadow-spread",
+            "shadow-inset",
+            "transition"
+        ].forEach(suffix => {
+            const fromName = `properties[${prefix}-${suffix}]`;
+            const toName = `properties[${prefix}-hover-${suffix}]`;
+            const from = findNamedControl(fromName);
+            const to = findNamedControl(toName);
+            if (!from || !to) return;
 
-            [
-                "transform-enabled",
-                "transform-x",
-                "transform-y",
-                "transform-rotate",
-                "transform-scale",
-                "opacity",
-                "bg-enabled",
-                "bg-color",
-                "bg-image",
-                "border-enabled",
-                "border-color",
-                "border-style",
-                "border-width",
-                "border-radius",
-                "shadow-enabled",
-                "shadow-color",
-                "shadow-x",
-                "shadow-y",
-                "shadow-blur",
-                "shadow-spread",
-                "shadow-inset",
-                "transition"
-            ].forEach(suffix => {
-                const fromName = `properties[${prefix}-${suffix}]`;
-                const toName = `properties[${prefix}-hover-${suffix}]`;
-                const from = findNamedControl(fromName);
-                const to = findNamedControl(toName);
-                if (!from || !to) return;
-
-                if (to.type === "checkbox") {
-                    to.checked = from.checked;
-                    if (/-enabled\]$/.test(to.name || "")) {
-                        updateCardEnabledSwitch({ target: to });
-                    }
-                } else {
-                    to.value = from.value;
+            if (to.type === "checkbox") {
+                to.checked = from.checked;
+                if (/-enabled\]$/.test(to.name || "")) {
+                    updateCardEnabledSwitch({ target: to });
                 }
-                to.dispatchEvent(new Event("input", { bubbles: true }));
-                to.dispatchEvent(new Event("change", { bubbles: true }));
+            } else {
+                to.value = from.value;
+            }
+            to.dispatchEvent(new Event("input", { bubbles: true }));
+            to.dispatchEvent(new Event("change", { bubbles: true }));
 
-                const range = document.querySelector(`.pz-card-range[data-target="${toName}"]`);
-                if (range) {
-                    range.value = to.value;
-                    updateCardRangeFill(range);
-                }
-            });
-        } finally {
-            hideProcessingOverlay();
-        }
+            const range = document.querySelector(`.pz-card-range[data-target="${toName}"]`);
+            if (range) {
+                range.value = to.value;
+                updateCardRangeFill(range);
+            }
+        });
     }
 
     async function copyLinkSettings(e) {
@@ -1219,14 +1246,25 @@
     }
 
     function initCharacterCounts() {
+        const encoder = new TextEncoder();
         document.querySelectorAll("[data-pz-character-count-for]").forEach(counter => {
             const target = document.getElementById(counter.dataset.pzCharacterCountFor || "");
             if (!target) return;
 
             const template = counter.dataset.pzCharacterCountTemplate || "%s characters";
-            const formatter = new Intl.NumberFormat(document.documentElement.lang || undefined);
+            const limit = Number(counter.dataset.pzCharacterCountLimit);
+            const byteLimit = Number(counter.dataset.pzCharacterCountByteLimit);
+            const formatter = new Intl.NumberFormat(document.documentElement.lang || undefined, { useGrouping: false });
             const update = () => {
-                counter.textContent = template.replace("%s", formatter.format(Array.from(target.value || "").length));
+                const value = (target.value || "").replace(/\r\n?/g, "\n");
+                const count = Array.from(value).length;
+                counter.textContent = template
+                    .replace(/%1\$s/g, formatter.format(count))
+                    .replace(/%2\$s/g, formatter.format(limit))
+                    .replace("%s", formatter.format(count));
+                const overLimit = (limit > 0 && count > limit)
+                    || (byteLimit > 0 && encoder.encode(value).length > byteLimit);
+                counter.classList.toggle("pz-character-count-over-limit", overLimit);
             };
 
             update();
@@ -1253,6 +1291,7 @@
 
             params.append(el.name, el.value);
         });
+        if (form.querySelector(".pz-man-cache-poststuff")) params.sort();
         return params.toString();
     }
 
@@ -2478,7 +2517,6 @@
                 open = nextOpen;
 
                 if (open) {
-					if (scrollOnOpen) document.querySelector(".pz-settings-screen-tabs")?.classList.add("pz-settings-tabs-front");
 					if (scrollOnOpen) window.scrollTo(0, 0);
                     panel.hidden = false;
                     window.requestAnimationFrame(() => {
@@ -2498,12 +2536,6 @@
                 e.preventDefault();
                 setOpen(!open);
             });
-
-            if (scrollOnOpen) {
-                document.querySelector(".pz-settings-preview-window")?.addEventListener("pointerdown", event => {
-                    if (event.button === 0 && open) setOpen(false);
-                }, true);
-            }
 
             document.addEventListener("click", e => {
                 if (open && !root.contains(e.target)) setOpen(false);
@@ -2528,11 +2560,6 @@
 		const panel = document.querySelector("#pz-settings-screen-options-panel");
 		const helpToggle = document.querySelector(".pz-settings-screen-tabs .pz-page-help-toggle");
 		if (!root || !toggle || !panel) return;
-		const screenTabs = document.querySelector(".pz-settings-screen-tabs");
-		const preview = document.querySelector(".pz-settings-preview-window");
-		const bringPreviewToFront = () => screenTabs?.classList.remove("pz-settings-tabs-front");
-		preview?.addEventListener("pointerdown", bringPreviewToFront, true);
-		preview?.addEventListener("click", bringPreviewToFront, true);
 
 		let open = !panel.hidden;
 		let hideTimer = null;
@@ -2541,7 +2568,6 @@
 			open = nextOpen;
 
 			if (open) {
-				screenTabs?.classList.add("pz-settings-tabs-front");
 				window.scrollTo(0, 0);
 				panel.hidden = false;
 				window.requestAnimationFrame(() => {
@@ -2562,10 +2588,6 @@
 			if (!open && helpToggle?.getAttribute("aria-expanded") === "true") helpToggle.click();
 			setOpen(!open);
 		});
-
-		preview?.addEventListener("pointerdown", event => {
-			if (event.button === 0 && open) setOpen(false);
-		}, true);
 
 		helpToggle?.addEventListener("click", () => {
 			if (open) setOpen(false);
@@ -2825,10 +2847,129 @@
             const button = e.target?.closest?.(".pz-filter-item");
             if (!button) return;
 
+            button.form?.querySelectorAll('[name="refine"]').forEach(control => { control.value = ""; });
             input.value = "";
             input.dispatchEvent(new Event("input", { bubbles: true }));
             input.dispatchEvent(new Event("change", { bubbles: true }));
         });
+    }
+
+    function initCachemanCheckboxKeys() {
+        const list = document.querySelector(".pz-man-cache-list");
+        if (!list) return;
+
+        document.addEventListener("keydown", e => {
+            if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey || !["Home", "End", "PageUp", "PageDown"].includes(e.key)) return;
+            const active = document.activeElement;
+            if (active && active !== document.body && active !== document.documentElement) return;
+
+            const checkboxes = Array.from(list.querySelectorAll('input[type="checkbox"]'))
+                .filter(checkbox => !checkbox.disabled && checkbox.getClientRects().length > 0);
+            const selectAll = checkboxes.findIndex(checkbox => checkbox.id === "cb-select-all-1");
+            const target = e.key === "Home" ? checkboxes[selectAll]
+                : e.key === "End" ? checkboxes.filter(checkbox => checkbox.name === "select_id[]").pop()
+                : selectAll < 0 ? null
+                : checkboxes[Math.max(0, Math.min(checkboxes.length - 1, selectAll + (e.key === "PageDown" ? 11 : -10)))];
+            if (!target || target.disabled || !target.getClientRects().length) return;
+            e.preventDefault();
+            target.focus();
+        });
+
+        list.addEventListener("keydown", e => {
+            if (e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
+            if (!e.target.matches('input[type="checkbox"]')) return;
+            if (e.key === "ContextMenu") {
+                const bulkAction = document.querySelector("#bulk-action-selector-top");
+                if (!bulkAction || bulkAction.disabled) return;
+                e.preventDefault();
+                bulkAction.focus();
+                if (typeof bulkAction.showPicker === "function") {
+                    bulkAction.showPicker();
+                }
+                return;
+            }
+            if (!["ArrowUp", "ArrowDown", "Home", "End", "PageUp", "PageDown"].includes(e.key)) return;
+
+            const checkboxes = Array.from(list.querySelectorAll('input[type="checkbox"]'))
+                .filter(checkbox => !checkbox.disabled && checkbox.getClientRects().length > 0);
+            const index = checkboxes.indexOf(e.target);
+            if (index < 0) return;
+
+            e.preventDefault();
+            const next = e.key === "Home" ? checkboxes.find(checkbox => checkbox.id === "cb-select-all-1")
+                : e.key === "End" ? checkboxes.filter(checkbox => checkbox.name === "select_id[]").pop()
+                : e.key === "PageUp" || e.key === "PageDown" ? checkboxes[Math.max(0, Math.min(checkboxes.length - 1, index + (e.key === "PageDown" ? 10 : -10)))]
+                : checkboxes[index + (e.key === "ArrowDown" ? 1 : -1)];
+            if (next) next.focus();
+        });
+    }
+
+    function initCachemanDebugToggle() {
+        const checkbox = document.getElementById("pz-man-cache-debug-mode");
+        const cacheman = checkbox?.closest(".pz-cacheman");
+        if (!checkbox || !cacheman) return;
+        const update = () => cacheman.classList.toggle("pz-man-cache-debug-hidden", !checkbox.checked);
+        checkbox.addEventListener("change", update);
+        window.addEventListener("pageshow", update);
+        update();
+    }
+
+    function initCachemanBatchConfirm() {
+        const button = document.querySelector('.pz-cacheman button[value="exec-batch"]');
+        if (!button?.form) return;
+        button.addEventListener("click", event => {
+            const form = button.form;
+            const action = form.querySelector('select[name="bulk_action"]');
+            const count = form.querySelectorAll('input[name="select_id[]"]:checked').length;
+            if (!action?.value || count === 0) {
+                event.preventDefault();
+                alert(button.dataset.emptyMessage);
+                const targets = [];
+                if (!action?.value && action) targets.push(action);
+                if (count === 0) targets.push(...form.querySelectorAll('.pz-man-cache-list input[type="checkbox"]'));
+                targets.forEach(control => {
+                    control.classList.remove("pz-man-selection-error");
+                    void control.offsetWidth;
+                    control.classList.add("pz-man-selection-error");
+                });
+                return;
+            }
+            if (!confirm(count >= 11 ? button.dataset.manyMessage : button.dataset.confirmMessage)) {
+                event.preventDefault();
+            }
+        });
+    }
+
+    function initCachemanSelectedCount() {
+        const list = document.querySelector(".pz-man-cache-list");
+        if (!list) return;
+        const counters = Array.from(document.querySelectorAll(".pz-man-pages .displaying-num, .pz-man-pages-bottom .displaying-num"), total => {
+            const counter = document.createElement("span");
+            counter.style.marginInlineStart = "1em";
+            counter.setAttribute("aria-live", "polite");
+            total.appendChild(counter);
+            return counter;
+        });
+        const update = () => {
+            const count = list.querySelectorAll('input[name="select_id[]"]:checked').length;
+            const label = count === 1 ? window.pzLinkCardAdmin?.selectedItem : window.pzLinkCardAdmin?.selectedItems;
+            const text = (label || (count === 1 ? "%s item selected" : "%s items selected")).replace("%s", count.toLocaleString(document.documentElement.lang || undefined));
+            counters.forEach(counter => {
+                counter.hidden = count === 0;
+                counter.textContent = count ? text : "";
+            });
+        };
+        let pending = false;
+        const schedule = event => {
+            if (event && !event.target.matches('input[type="checkbox"]')) return;
+            if (pending) return;
+            pending = true;
+            requestAnimationFrame(() => { pending = false; update(); });
+        };
+        list.addEventListener("click", schedule);
+        list.addEventListener("change", schedule);
+        window.addEventListener("pageshow", update);
+        update();
     }
 
     function initCachemanPaginationKeys() {

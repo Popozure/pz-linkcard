@@ -262,6 +262,45 @@
 			const loadPreviews = () => ed.getBody().querySelectorAll(".pz-lkc-mce-card").forEach(loadPreview);
 			ed.pzLoadPreview = loadPreview;
 
+			let pasteAsText = false;
+			ed.on("keydown", event => {
+				if ((event.ctrlKey || event.metaKey) && event.keyCode === 86) {
+					pasteAsText = event.shiftKey;
+				}
+			}, true);
+			ed.on("keyup blur", () => { pasteAsText = false; });
+
+			// Read the actual clipboard before TinyMCE/WordPress filters or embeds the URL.
+			ed.on("paste", event => {
+				const plainTextPaste = pasteAsText;
+				pasteAsText = false;
+				if (plainTextPaste) return;
+				const code = document.getElementById("pz-code")?.value || names[0];
+				if (!code || event.isDefaultPrevented() || !event.clipboardData) return;
+				const pastedUrl = event.clipboardData.getData("text/plain").trim();
+				if (!/^https?:\/\/[^\s<>"']+$/i.test(pastedUrl)) return;
+				try {
+					if (!new URL(pastedUrl).hostname) return;
+				} catch (error) { return; }
+				const safeUrl = pastedUrl.replace(/\[/g, "%5B").replace(/\]/g, "%5D");
+				const shortcode = `[${code} url="${safeUrl}"]`;
+				event.preventDefault();
+				// Let the paste plugin remove its temporary paste bin and restore the selection first.
+				setTimeout(() => {
+					if (ed.removed) return;
+					rememberScrollPosition(ed);
+					const markerId = "pz-lkc-caret-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+					ed.undoManager.transact(() => {
+						const content = previewEnabled ? cardHtml(shortcode) : "<p>" + escapeHtml(shortcode) + "</p>";
+						ed.insertContent(content + `<p><span id="${markerId}" data-mce-bogus="all">&#xfeff;</span><br data-mce-bogus="1"></p>`);
+					});
+					ed.nodeChanged();
+					ed.setDirty(true);
+					if (previewEnabled) loadPreviews();
+					focusInlineMarker(ed, markerId);
+				}, 0);
+			}, true);
+
 			ed.on("BeforeSetContent", event => {
 				if (previewEnabled && pattern) event.content = String(event.content || "").replace(pattern, cardHtml);
 			});

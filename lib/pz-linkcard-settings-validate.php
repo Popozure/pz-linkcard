@@ -9,9 +9,6 @@
 		$type					=	$definition['type'];
 		$allow_null				=	!empty($definition['null'] );
 
-		if ($temp_value === null && in_array($type, array('card_info_item', 'card_content_item' ), true ) ) {
-			$temp_value = '';
-		}
 		if	($temp_value === null ) {
 			$this->options[$key]	=	$allow_null ? null : ($definition['default'] ?? '' );
 			unset($test_item[$key] );
@@ -21,15 +18,16 @@
 		switch	($type ) {
 		case 'card_info_item':
 		case 'card_content_item':
-			$allowed = $type === 'card_info_item'
-				? array('', 'i', 'n', 'd', 'c', 's', 'a', 'u', 't', 'p', 'q' )
-				: array('', 't', 'e', 'u', 'p', 'q', 'c', 's', 'n', 'i' );
-			$this->options[$key] = is_string($temp_value ) && in_array($temp_value, $allowed, true ) ? $temp_value : '';
+			$group = $type === 'card_info_item' ? 'info' : 'content';
+			$this->options[$key] = is_string($temp_value) && array_key_exists($temp_value, self::pz_GetCardItemChoices($group)) ? $temp_value : $definition['default'];
 			break;
 
 		case	'version':
 		case	'string':
 			$this->options[$key]	=	strval($temp_value );
+			if ($key === 'date-pattern' && !in_array($this->options[$key], array('', 'p', 'u', 'pu'), true)) {
+				$this->options[$key] = $definition['default'];
+			}
 			if	($key === 'click-log-retention' && !in_array($this->options[$key], array('1w', '1m', '2m', '3m', '6m', '1y', '2y', '3y', '5y', 'forever' ), true ) ) {
 				$this->options[$key]	=	$definition['default'];
 			}
@@ -68,11 +66,17 @@
 				break;
 			}
 			$temp_value				=	intval($temp_value );
-			if ($key === 'get-period-num' && !in_array($temp_value, array(1, 5, 10, 20, 50 ), true ) ) {
-				$temp_value = $definition['default'];
+			if ($key === 'get-period-num' && !in_array($temp_value, array(0, 5, 10, 20, 50, 100), true)) {
+				$temp_value = 50;
 			}
-			if ($key === 'get-period-delay' && !in_array($temp_value, array(0, 5, 10, 30, 60, 300, 600, 1800 ), true ) ) {
-				$temp_value = $definition['default'];
+			if ($key === 'click-cleanup-hour') {
+				$temp_value = min(23, max(0, $temp_value));
+			}
+			if ($key === 'click-cleanup-minute') {
+				$temp_value = min(59, max(0, $temp_value));
+			}
+			if ($key === 'cron-site-interval' && !in_array($temp_value, array(10, 30, 60, 180, 300, 600, 1800, 3600, 21600), true)) {
+				$temp_value = 30;
 			}
 			if	(preg_match('/-(blur|spread)$/', $key ) ) {
 				$temp_value			=	max(0, $temp_value );

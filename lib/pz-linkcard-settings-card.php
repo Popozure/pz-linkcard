@@ -5,43 +5,19 @@
 		array( 'name' => 'in',	'type' => 'internal',	'title' => __('Internal Link Settings',		'pz-linkcard' )	),
 	);
 	$default_definitions	=	self::pz_GetOptionDefinitions();
-	$card_info_items = array(
-		'' => __('None', 'pz-linkcard' ),
-		'i' => __('Site Icon', 'pz-linkcard' ),
-		'n' => __('Site Name', 'pz-linkcard' ),
-		'd' => __('Domain', 'pz-linkcard' ),
-		'c' => __('Category', 'pz-linkcard' ),
-		's' => __('SNS Count', 'pz-linkcard' ),
-		'a' => __('Added Text', 'pz-linkcard' ),
-		'u' => __('URL', 'pz-linkcard' ),
-		't' => __('Title', 'pz-linkcard' ),
-		'p' => __('Post Date', 'pz-linkcard' ),
-		'q' => __('Post Date (Right-aligned)', 'pz-linkcard' ),
-	);
-	$card_content_items = array(
-		'' => __('None', 'pz-linkcard' ),
-		't' => __('Title', 'pz-linkcard' ),
-		'e' => __('Excerpt', 'pz-linkcard' ),
-		'u' => __('URL', 'pz-linkcard' ),
-		'p' => __('Post Date', 'pz-linkcard' ),
-		'q' => __('Post Date (Right-aligned)', 'pz-linkcard' ),
-		'c' => __('Category', 'pz-linkcard' ),
-		's' => __('SNS Count', 'pz-linkcard' ),
-		'n' => __('Site Name', 'pz-linkcard' ),
-		'i' => __('Site Information', 'pz-linkcard' ),
-	);
-	$echo_card_item_selects = function($prefix, $section, $items ) use ($prop ) {
-		echo '<div class="pz-card-item-order">';
-		for ($index = 1; $index <= 5; $index++ ) {
-			$item_name = $prefix.'-'.$section.'-type-'.$index;
-			$item_value = $prop[$item_name] ?? '';
-			echo '<label><span>'.esc_html($index ).'</span><select name="properties['.esc_attr($item_name ).']">';
-			foreach ($items as $value => $label ) {
-				echo '<option value="'.esc_attr($value ).'"'.selected((string) $item_value, (string) $value, false ).'>'.esc_html($label ).'</option>';
+	$render_card_items = function($prefix, $group) {
+		echo '<tr><th scope="row">'.esc_html__('Display Items', 'pz-linkcard').'</th><td><div class="pz-card-item-selects">';
+		$definitions = self::pz_GetOptionDefinitions();
+		for ($i = 1; $i <= 5; $i++) {
+			$name = $prefix.'-'.$group.'-type-'.$i;
+			$value = $this->options[$name] ?? $definitions[$name]['default'];
+			echo '<label><span>'.esc_html($i).'</span><select name="properties['.esc_attr($name).']">';
+			foreach (self::pz_GetCardItemChoices($group) as $key => $label) {
+				echo '<option value="'.esc_attr($key).'"'.selected($value, $key, false).'>'.esc_html($label).'</option>';
 			}
 			echo '</select></label>';
 		}
-		echo '</div>';
+		echo '</div></td></tr>';
 	};
 	foreach ($title_list as $t) {
 		echo	'<div class="pz-page'.$pz_page_active('pz-'.$t['type'] ).'" id="pz-'.$t['type'].'">';
@@ -239,10 +215,7 @@
 		$item_header		=	__('Site Information',	'pz-linkcard' );
 		echo			'<h3>'.$item_header.'</h3>';
 		echo			'<table class="form-table">';
-
-		echo '<tr><th scope="row">'.esc_html__('Display Items', 'pz-linkcard' ).'</th><td>';
-		$echo_card_item_selects($t['name'], 'info', $card_info_items );
-		echo '</td></tr>';
+		$render_card_items($t['name'], 'info');
 
 		// サイト名の後ろに表示するテキスト
 		$item_title			=	__('Text',	'pz-linkcard' );
@@ -319,10 +292,7 @@
 		$item_title		=	__('Article Content',	'pz-linkcard' );
 		echo			'<h3>'.$item_title.'</h3>';
 		echo			'<table class="form-table pz-card-article-content-table">';
-
-		echo '<tr><th scope="row">'.esc_html__('Display Items', 'pz-linkcard' ).'</th><td>';
-		$echo_card_item_selects($t['name'], 'content', $card_content_items );
-		echo '</td></tr>';
+		$render_card_items($t['name'], 'content');
 
 		// 記事内容の取得方法
 		$item_title	=		__('Get Contents', 'pz-linkcard' );

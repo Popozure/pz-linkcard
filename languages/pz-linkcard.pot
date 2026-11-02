@@ -260,8 +260,8 @@ msgstr ""
 msgid "Domain"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:197
-msgid "Internal Link Data"
+#: ../lib/pz-linkcard-cacheman-edit.php:207
+msgid "Post Data"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:200 ../lib/pz-linkcard-cacheman-list.php:95 ../lib/pz-linkcard-cacheman-list.php:438
@@ -269,7 +269,7 @@ msgstr ""
 msgid "Post Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:201 ../lib/pz-linkcard-cacheman-list.php:96
+#: ../lib/pz-linkcard-cacheman-list.php:96
 msgid "Post Modified Date"
 msgstr ""
 
@@ -321,6 +321,7 @@ msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:232 ../lib/pz-linkcard-cacheman-edit.php:275 ../lib/pz-linkcard-cacheman-list.php:101
 #: ../lib/pz-linkcard-cacheman-list.php:319 ../lib/pz-linkcard-settings-display.php:33
+#: ../lib/pz-linkcard-cacheman-edit.php:211
 msgid "Update Date"
 msgstr ""
 
@@ -334,6 +335,10 @@ msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:254
 msgid "Site Icon URL"
+msgstr ""
+
+#: lib/traits/pz-linkcard-options.php:19
+msgid "Site Icon"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-edit.php:256
@@ -473,6 +478,14 @@ msgstr ""
 #: ../lib/pz-linkcard-cacheman-list.php:261 ../lib/pz-linkcard-cacheman-list.php:262 ../lib/pz-linkcard-settings.php:770
 #: ../lib/pz-linkcard-settings.php:771
 msgid "Screen Options"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Screen elements"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Reset positions"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman-list.php:266
@@ -888,34 +901,6 @@ msgstr ""
 
 #: ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import.php:98
 msgid "Import Successful."
-msgstr ""
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Import took %s seconds."
-msgstr ""
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Skipped record details"
-msgstr ""
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Record %s"
-msgstr ""
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Invalid date and time."
-msgstr ""
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "URL is missing."
-msgstr ""
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "The URL changed during normalization; the record may have been saved."
-msgstr ""
-
-#: ../lib/pz-linkcard-file-import-csv.php
-msgid "Could not save the record; the responsible field could not be identified."
 msgstr ""
 
 #: ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183 ../lib/pz-linkcard-file-import.php:98
@@ -3208,14 +3193,6 @@ msgstr ""
 msgid "Close preview"
 msgstr ""
 
-#: ../pz-linkcard.php:2179
-msgid "Open preview"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings.php:824
-msgid "Show or hide preview"
-msgstr ""
-
 #: ../lib/pz-linkcard-settings.php:643
 msgid "White background"
 msgstr ""
@@ -3664,62 +3641,354 @@ msgstr ""
 msgid "3D Tracking"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-card.php
+#: ../lib/traits/pz-linkcard-cache.php:54
+msgid "The cache data is invalid."
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-cache.php:58
+#: ../lib/pz-linkcard-file-import-csv.php:172
+msgid "The URL is empty."
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-cache.php:67
+msgid "The URL could not be normalized."
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-cache.php:236
+#: ../lib/traits/pz-linkcard-cache.php:247
+#, php-format
+msgid "Database error: %s"
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-cache.php:237
+#: ../lib/pz-linkcard-file-import-csv.php:187
+#: ../lib/pz-linkcard-file-import.php:90
+msgid "The cache record could not be saved."
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-cache.php:248
+msgid "The saved cache record could not be retrieved."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php:168
+msgid "The CSV record is empty."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php:170
+msgid "No URL column was found. Accepted column names: url, link_url, link, href."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import.php:92
+msgid "No URL column was found."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php:175
+#: ../lib/pz-linkcard-file-import.php:103
+#, php-format
+msgid "CSV column count differs from the header (expected %1$d, found %2$d)."
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-csv.php:186
+#: ../lib/pz-linkcard-file-import.php:89
+#, php-format
+msgid "The saved URL differs from the imported URL: %s"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-result.php:9
+msgid "Skipped records"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-result.php:12
+msgid "Data row (excluding header)"
+msgstr ""
+
+#: ../lib/pz-linkcard-file-import-result.php:14
+msgid "Reason"
+msgstr ""
+
+#: lib/pz-linkcard-settings.php:824
+msgid "Toggle preview"
+msgstr ""
+
+#: lib/traits/pz-linkcard-options.php lib/pz-linkcard-settings-card.php
 msgid "Display Items"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-card.php
-msgid "Site Icon"
+#: lib/traits/pz-linkcard-options.php lib/pz-linkcard-settings-card.php
+msgid "Social Counts"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-card.php
-msgid "Post Date (Right-aligned)"
+#: lib/traits/pz-linkcard-options.php lib/pz-linkcard-settings-card.php
+msgid "Site Classification"
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-display.php
-msgid "Date to display"
+#: lib/traits/pz-linkcard-options.php
+msgid "Date (right aligned)"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php:509
+msgid "Qiita"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:322
+msgid "Qiita:"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:101
+msgid "Qiita likes"
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-get-html.php:414
+#, php-format
+msgid "%d like"
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-get-html.php:414
+#, php-format
+msgid "%d likes"
+msgstr ""
+
+#: ../lib/pz-linkcard-cron-sns.php:30
+#, php-format
+msgid "Qiita likes=%s was returned."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:162
+msgid "Retrieve Post and Updated Dates"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:155
+msgid "note.com"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:155
+msgid "Retrieve Post Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:119
+msgid "OGP"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:126
+msgid "Retrieve Post and Updated Dates."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:149
+msgid "Retrieve Post Date and Profile Images."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:22
+msgid "Dates to Display"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Post and Updated Dates"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Post Date Icon"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Updated Date Icon"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:20
+msgid "Broken Link Border"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:33
+msgid "Date Format"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:33
+msgid "Custom Date Format"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:44
+msgid "Icon"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:62
+msgid "Display a separator line between site information and article content"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:10
+msgid "When unnecessary frame is displayed on the image, you can improve it by case."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-admin.php:113
+#, php-format
+msgid "%s Byte"
+msgid_plural "%s Bytes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../pz-linkcard.php:2142
+#, php-format
+msgid "%s item selected"
+msgstr ""
+
+#: ../pz-linkcard.php:2142
+#, php-format
+msgid "%s items selected"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php:397
+msgid "Execute"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php:397
+msgid "11 or more items are selected. This may take some time. Do you want to proceed?"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-list.php:397
+msgid "Nothing is selected."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:8
+msgid "Stylesheet"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "Article Content Retrieval"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "Access Interval per Site"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "10 seconds"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "30 seconds"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "1 minute"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "3 minutes"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "5 minutes"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "10 minutes"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "30 minutes"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "1 hour"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:238
+msgid "6 hours"
+msgstr ""
+
+#: ../pz-linkcard.php:2449
+msgid "Card Manager"
+msgstr ""
+
+#: ../pz-linkcard.php:2449
+msgid "Log Manager"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:323
+msgid "Qiita stocks"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:87
+#, php-format
+msgid "%s: "
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:87
+msgid "X"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:103
+#, php-format
+msgid "Character count: %s"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:104
+#, php-format
+msgid "Character count: %1$s / %2$s"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:104
+msgid "URLs can contain up to 65,535 bytes. Non-ASCII characters may use more than one byte."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-display.php:111
+msgid "Qiita likes and stocks"
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-get-html.php:414
+#, php-format
+msgid "%d stock"
+msgstr ""
+
+#: ../lib/traits/pz-linkcard-get-html.php:414 ../pz-linkcard.php:2228
+#, php-format
+msgid "%d stocks"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php:366
+msgid "facebook"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php
-msgid "Article Content Retrieval"
+msgid "Click Log Cleanup"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Hour"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Minute"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+#, php-format
+msgid "The next run is scheduled for %s."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "No run is scheduled."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+#, php-format
+msgid "Currently, %s items are waiting to be processed."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "The settings are located on the “Advanced” tab."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Detailed click logs older than the retention period are deleted on the configured schedule. The cumulative click count is retained."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "100 cards"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Unlimited"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php
 msgid "As needed"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "Wait time for the same domain"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "Set the interval between consecutive article content requests to the same domain."
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "5 seconds"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "10 seconds"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "30 seconds"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "1 minute"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "5 minutes"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "10 minutes"
-msgstr ""
-
-#: ../lib/pz-linkcard-settings-advanced.php
-msgid "30 minutes"
 msgstr ""

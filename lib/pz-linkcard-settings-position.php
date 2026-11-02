@@ -43,9 +43,10 @@
 												array(
 													''		=>		__('None',				'pz-linkcard' ),
 													'1'		=>		__('Top Side',			'pz-linkcard' ),
-													'3'		=>		__('Above the Title',	'pz-linkcard' ),
 													'2'		=>		__('Bottom Side',		'pz-linkcard' ),
 											) );
+											echo	'&emsp;';
+											pz_Checkbox($prop, 'flg-use-sitename', __('Use Site Name', 'pz-linkcard' ) );
 										?>
 									</td>
 								</tr>

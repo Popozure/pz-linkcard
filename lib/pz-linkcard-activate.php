@@ -20,6 +20,22 @@
 	if	(is_array($stored_options ) && isset($stored_options['plugin-version'] ) ) {
 		$stored_version	=	$stored_options['plugin-version'];
 	}
+	$upgrade_from_264 = is_array($stored_options) && $stored_version
+		&& version_compare($stored_version, '2.6.4', '<=')
+		&& version_compare($stored_version, PZLKC_PLUGIN_VERSION, '<');
+	if ($upgrade_from_264) {
+		$hide_excerpt = array_key_exists('display-excerpt', $stored_options) && empty($stored_options['display-excerpt']);
+		$date_instead_of_url = intval($stored_options['display-date'] ?? 0) > 0;
+		foreach (array('ex', 'in') as $prefix) {
+			for ($index = 1; $index <= 5; $index++) {
+				$key = $prefix.'-content-type-'.$index;
+				$item = $this->options[$key] ?? '';
+				if (($hide_excerpt && $item === 'e') || ($prefix === 'in' && $date_instead_of_url && $item === 'u')) {
+					$this->options[$key] = '';
+				}
+			}
+		}
+	}
 
 	// 項目名称変更
 	$rename_key	=	array(
@@ -423,8 +439,6 @@
 	}
 
 	// プラグインバージョンの更新
-	$previous_plugin_version = $this->options['plugin-version'];
-	$previous_css_count = $this->options['css-count'];
 	$plugin_version_changed	=	($this->options['plugin-version']	<>	PZLKC_PLUGIN_VERSION );
 	if		($plugin_version_changed ) {
 		$this->options['plugin-version']	=	PZLKC_PLUGIN_VERSION;
@@ -432,13 +446,14 @@
 	}
 
 	// DBテーブル作成・更新＆メンテナンス
-	if ((require 'pz-linkcard-activate-db.php') === false ) {
-		$this->options['plugin-version'] = $previous_plugin_version;
-		$this->options['css-count'] = $previous_css_count;
+	if ((require 'pz-linkcard-activate-db.php') === false) {
 		$this->activate_now = false;
-		return false;
+		return;
 	}
-	require_once ('pz-linkcard-activate-db-click.php');
+	if ((require 'pz-linkcard-activate-db-click.php') === false) {
+		$this->activate_now = false;
+		return;
+	}
 
 	// テンプレート側でMCEプラグイン一覧を上書きする場合があるため、実行優先度を下げる
 	if	(empty($this->options['mce-priority'] ) && (get_template() == 'jin' ) ) {

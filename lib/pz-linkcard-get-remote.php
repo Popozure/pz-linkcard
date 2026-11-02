@@ -275,9 +275,23 @@
             }
         }
 
-        // Twitter（X）専用処理：プロフィールアイコン
+        // Twitter（X）専用処理：投稿日・プロフィールアイコン
         if	($this->options['flg-special-twitter'] ) {
             if	($is_twitter_access ) {
+				// Snowflake IDs encode milliseconds since the X epoch (2010-11-04).
+				$twitter_path = (string) wp_parse_url($url_access, PHP_URL_PATH );
+				if (PHP_INT_SIZE >= 8 && preg_match('~^/(?:[^/]+/status|i/(?:web/)?status)/([1-9][0-9]{10,18})(?:/(?:photo|video)/[0-9]+)?/?$~i', $twitter_path, $twitter_match ) ) {
+					$twitter_id_string = $twitter_match[1];
+					if (strlen($twitter_id_string ) < 19 || strcmp($twitter_id_string, (string) PHP_INT_MAX ) <= 0 ) {
+						$twitter_id = intval($twitter_id_string );
+						if ($twitter_id >= 29700859247 ) {
+							$twitter_timestamp = intdiv(($twitter_id >> 22 ) + 1288834974657, 1000 );
+							if ($twitter_timestamp <= $this->now ) {
+								$data['post_date'] = $twitter_timestamp;
+							}
+						}
+					}
+				}
                 $decoded_body = html_entity_decode($http_body, ENT_QUOTES | ENT_HTML5, $this->charset );
                 foreach (array('profile_image_url_https', 'profile_image_url' ) as $image_key ) {
                     if	(!preg_match('/["\']'.preg_quote($image_key, '/' ).'["\']\s*:\s*["\']([^"\']+)["\']/i', $decoded_body, $matches ) ) {
@@ -337,6 +351,75 @@
 			}
 		}
 
+		// note.com: retrieve the article publication date from JSON-LD.
+		if (!empty($this->options['flg-special-note'] ) && $http_code == 200
+			&& strtolower((string) wp_parse_url($url_access, PHP_URL_HOST ) ) === 'note.com'
+			&& preg_match('~^/[^/]+/n/n[0-9a-f]+/?$~i', (string) wp_parse_url($url_access, PHP_URL_PATH ) )
+			&& class_exists('DOMDocument' ) ) {
+			$previous_libxml_errors = libxml_use_internal_errors(true );
+			$document = new DOMDocument();
+			if ($document->loadHTML($http_body, LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_NONET ) ) {
+				$find_note_published = function($item ) use (&$find_note_published ) {
+					if (!is_array($item ) ) return 0;
+					if (array_intersect((array) ($item['@type'] ?? array() ), array('BlogPosting', 'Article', 'NewsArticle' ) ) ) {
+						$published = $item['datePublished'] ?? null;
+						if (is_string($published ) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})$/D', $published ) ) {
+							$parsed_date = date_parse($published );
+							if (!$parsed_date['error_count'] && !$parsed_date['warning_count'] ) {
+								return max(0, intval(strtotime($published ) ) );
+							}
+						}
+					}
+					$children = $item['@graph'] ?? (isset($item[0] ) ? $item : array() );
+					foreach (is_array($children ) ? $children : array() as $child ) {
+						$timestamp = $find_note_published($child );
+						if ($timestamp > 0 ) return $timestamp;
+					}
+					return 0;
+				};
+				foreach ($document->getElementsByTagName('script' ) as $script ) {
+					if (strtolower(trim($script->getAttribute('type' ) ) ) !== 'application/ld+json' ) continue;
+					$note_published = $find_note_published(json_decode($script->textContent, true ) );
+					if ($note_published > 0 ) {
+						$data['post_date'] = $note_published;
+						break;
+					}
+				}
+				unset($find_note_published );
+			}
+			libxml_clear_errors();
+			libxml_use_internal_errors($previous_libxml_errors );
+		}
+
+		// Qiita: retrieve dates, likes and stocks from the public item API.
+		$qiita_url = wp_parse_url($url_access );
+		if (!empty($this->options['flg-special-qiita'] ) && $http_code == 200
+			&& strtolower($qiita_url['host'] ?? '') === 'qiita.com'
+			&& preg_match('~^/[^/]+/items/([0-9a-f]{20})/?$~i', $qiita_url['path'] ?? '', $qiita_match ) ) {
+			$qiita_args = $rget_args;
+			$qiita_args['timeout'] = 30;
+			$qiita_response = wp_safe_remote_get('https://qiita.com/api/v2/items/'.strtolower($qiita_match[1] ), $qiita_args );
+			if (!is_wp_error($qiita_response ) && wp_remote_retrieve_response_code($qiita_response ) === 200 ) {
+				$qiita_item = json_decode(wp_remote_retrieve_body($qiita_response ), true );
+				foreach (array('likes_count' => 'sns_qiita_likes', 'stocks_count' => 'sns_qiita_stock' ) as $qiita_key => $count_key ) {
+					$qiita_count = $qiita_item[$qiita_key] ?? null;
+					if (is_int($qiita_count ) && $qiita_count >= 0 ) {
+						$data[$count_key] = $qiita_count;
+					}
+				}
+				foreach (array('created_at' => 'post_date', 'updated_at' => 'post_modified' ) as $qiita_key => $date_key ) {
+					$qiita_date = $qiita_item[$qiita_key] ?? null;
+					if (!is_string($qiita_date ) || !preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{2}:\d{2})$/D', $qiita_date ) ) {
+						continue;
+					}
+					$qiita_timestamp = strtotime($qiita_date );
+					if ($qiita_timestamp > 0 ) {
+						$data[$date_key] = $qiita_timestamp;
+					}
+				}
+			}
+		}
+
 		// Yahoo! Auctions: retrieve the auction title and listing start time.
 		if	(!empty($this->options['flg-special-yahoo-auc'] ) && $is_yahoo_auction_access ) {
 			$yahoo_auction_body	=	html_entity_decode($http_body, ENT_QUOTES | ENT_HTML5, $this->charset );
@@ -381,6 +464,25 @@
         $og_image		=	$tags['og:image']				??	'';
         $og_siteicon	=	null;
 
+		// Prefer dates already obtained by site-specific processing.
+		if (!empty($this->options['flg-special-ogp'] ) ) {
+			foreach (array('article:published_time' => 'post_date', 'article:modified_time' => 'post_modified' ) as $og_key => $date_key ) {
+				$current_date = $data[$date_key] ?? 0;
+				$current_timestamp = is_numeric($current_date ) ? intval($current_date ) : strtotime($current_date );
+				$og_time = $tags[$og_key] ?? '';
+				if ($current_timestamp > 0 || !is_string($og_time ) || $og_time === '' ) continue;
+				$og_time = html_entity_decode($og_time, ENT_QUOTES | ENT_HTML5, $this->charset );
+				$og_date = date_parse($og_time );
+				if (!$og_date['error_count'] && !$og_date['warning_count'] && $og_date['year'] !== false
+					&& $og_date['month'] !== false && $og_date['day'] !== false ) {
+					$og_timestamp = strtotime($og_time );
+					if ($og_timestamp > 0 ) {
+						$data[$date_key] = $og_timestamp;
+					}
+				}
+			}
+		}
+
         // Twitter card
         $tw_url			=	null;
         $tw_sitename	=	$tags['twitter:site']			??	'';
@@ -422,7 +524,7 @@
         if			($thumbnail_url	&& !preg_match('/^https*:\/\//i', $thumbnail_url, $m ) ) {
             $thumbnail_url	=	$this->pz_RelToURL($url_access, $thumbnail_url );
         }
-        $thumbnail_url		=	$this->pz_EncodeURL($thumbnail_url, true );
+        $thumbnail_url		=	$this->pz_EncodeImageURL($thumbnail_url );
 
         // サイト名
         if				(!$sitename ) {
@@ -444,7 +546,7 @@
         if			($siteicon_url && !preg_match('/^https*:\/\//i', $siteicon_url, $m ) ) {
             $siteicon_url	=	$this->pz_RelToURL($url, $siteicon_url );
         }
-        $siteicon_url		=	$this->pz_EncodeURL($siteicon_url, true );
+        $siteicon_url		=	$this->pz_EncodeImageURL($siteicon_url );
 
         // タイトル整形
         $title				=	mb_strimwidth($title, 0, 500, '...' );		// 500文字制限
@@ -484,6 +586,8 @@
     $data['sns_twitter']		=	$data['sns_twitter']	??	null;				// SNS：Twitter
     $data['sns_facebook']		=	$data['sns_facebook']	??	null;				// SNS：facebook
     $data['sns_hatena']			=	$data['sns_hatena']		??	null;				// SNS：はてなブックマーク
+    $data['sns_qiita_likes']			=	$data['sns_qiita_likes']		??	null;				// SNS: Qiita likes
+    $data['sns_qiita_stock']		=	$data['sns_qiita_stock']	??	null;				// SNS: Qiita stocks
     $data['sns_time']			=	$data['sns_time']		??	0;					// SNS：最終取得日時
     $data['sns_nexttime']		=	$data['sns_nexttime']	??	0;					// SNS：次回取得日時
     $data['use_post_id1']		=	$data['use_post_id1']	??	null;				// 呼ばれている記事

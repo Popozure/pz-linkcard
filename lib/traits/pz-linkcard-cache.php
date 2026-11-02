@@ -2,9 +2,44 @@
 defined('ABSPATH' ) || wp_die;
 
 trait Pz_LinkCard_Cache {
+	private function pz_GetCardTableSQL() {
+		global $wpdb;
+		return require __DIR__.'/../pz-linkcard-schema-card.php';
+	}
+
+	// Atomically share the last site access between both cron workers.
+	private function pz_ClaimCronSiteAccess($url, $domain = '') {
+		global $wpdb;
+		$host = wp_parse_url((string) $url, PHP_URL_HOST);
+		$site = strtolower(rtrim(trim(is_string($host) && $host !== '' ? $host : (string) $domain), '.'));
+		$key = 'pz_lkc_cron_site_'.md5($site !== '' ? $site : (string) $url);
+		$interval = intval($this->options['cron-site-interval'] ?? 30);
+		if (!in_array($interval, array(10, 30, 60, 180, 300, 600, 1800, 3600, 21600), true)) $interval = 30;
+		$now = time();
+		if (add_option($key, $now, '', false)) return 0;
+		$claimed = $wpdb->query($wpdb->prepare(
+			"UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND CAST(option_value AS UNSIGNED) <= %d",
+			(string) $now, $key, $now - $interval
+		));
+		if ($claimed === 1) {
+			wp_cache_delete($key, 'options');
+			return 0;
+		}
+		$last = intval($wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s", $key)));
+		return max($now + 1, $last + $interval);
+	}
+
+	private function pz_ScheduleCronRetry($hook, $timestamp) {
+		$next = wp_next_scheduled($hook);
+		if (!$next || $next > $timestamp) {
+			if ($next) wp_clear_scheduled_hook($hook);
+			wp_schedule_single_event(max(time() + 1, $timestamp), $hook);
+		}
+	}
 
 	// キャッシュデータを取得
-	private	function	pz_GetCache($data ) {
+	private	function	pz_GetCache($data, &$error = null ) {
+		$error	=	null;
 
 		if	(!isset($data ) || !is_array($data ) ) {
 			return	null;
@@ -29,9 +64,11 @@ trait Pz_LinkCard_Cache {
 			return	null;
 		}
 		if	($wpdb->last_error ) {			// DBエラーのとき、初期化する
+			$error	=	$wpdb->last_error;
 			$this->hook_activate();
 		}
 		if	(is_wp_error($data ) ) {
+			$error	=	$data->get_error_message();
 			return	null;
 		}
 		$data	=	(array) $data;
@@ -43,13 +80,16 @@ trait Pz_LinkCard_Cache {
 	}
 
 	// キャッシュデータを保存
-	private	function	pz_SetCache($data, $preserve_import_timestamps = false ) {
+	private	function	pz_SetCache($data, &$error = null ) {
+		$error	=	null;
 
 		// 項目が空っぽ
 		if	(!isset($data ) || !is_array($data ) ) {
+			$error	=	__('The cache data is invalid.', 'pz-linkcard' );
 			return	null;
 		}
 		if	(!isset($data['url'] ) || !$data['url'] ) {
+			$error	=	__('The URL is empty.', 'pz-linkcard' );
 			return	null;
 		}
 		$is_pending	=	array_key_exists('regist_time', $data ) && (is_null($data['regist_time'] ) || intval($data['regist_time'] ) === 0 )
@@ -57,18 +97,14 @@ trait Pz_LinkCard_Cache {
 
 		// リンク先URL
 		$url					=	$this->pz_EncodeURL($data['url'] ,true );
-		if	(!$url ) {
+		if	(!$url || !preg_match('{\Ahttps?://[a-z0-9]+}i', $url ) ) {
+			$error	=	__('The URL could not be normalized.', 'pz-linkcard' );
 			return	null;
 		}
 
 		// URL戻す
 		$data['url']			=	$url;
 		$data['url_key']		=	md5($url );
-		global $wp_rewrite;
-		if (is_object($wp_rewrite ) ) {
-			$post_id = url_to_postid($url );
-			$data['post_id'] = $post_id ? intval($post_id ) : null;
-		}
 
 		// ID
 		if	(isset($data['id'] ) && !$data['id'] ) {
@@ -96,10 +132,10 @@ trait Pz_LinkCard_Cache {
 				$data[$result_key]	= intval($data[$result_key] );
 			}
 		}
-		$data['no_failure']			=	$data['no_failure'] ?? null;			// 結果コードがエラーでも成功と見なす
+		$data['no_failure']			=	isset($data['no_failure'] )		? $data['no_failure']		: 0 ;			// 結果コードがエラーでも成功と見なす
 
 		// 登録時情報
-		if ((!$preserve_import_timestamps || !array_key_exists('regist_time', $data ) ) && (!isset($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) && $has_charset ) {
+		if ((!isset($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) && $has_charset ) {
 			$data['regist_title']	=	$data['title'];
 			$data['regist_excerpt']	=	$data['excerpt'];
 			$data['regist_charset']	=	$data['charset'];
@@ -117,14 +153,14 @@ trait Pz_LinkCard_Cache {
 		}
 
 		// 生存確認
-		if	((!$preserve_import_timestamps || !array_key_exists('alive_time', $data ) ) && (!isset($data['alive_time'] ) || !$data['alive_time'] ) ) {
+		if	(!isset($data['alive_time'] ) || !$data['alive_time'] ) {
 			$data['alive_result']	=	$data['update_result'];
 			$data['alive_time']		=	$this->now;
 			$data['alive_nexttime']	=	$this->now + WEEK_IN_SECONDS * 4 + rand(0, DAY_IN_SECONDS );
 		}
 
 		// SNS関連
-		foreach	(array('sns_twitter', 'sns_facebook', 'sns_hatena' ) as $sns_count_key ) {
+		foreach	(array('sns_twitter', 'sns_facebook', 'sns_hatena', 'sns_qiita_likes', 'sns_qiita_stock' ) as $sns_count_key ) {
 			$sns_count_value	= $data[$sns_count_key] ?? null;
 			$data[$sns_count_key]	= ($sns_count_value === null || $sns_count_value === '' || intval($sns_count_value ) < 0 )
 				? null
@@ -154,9 +190,7 @@ trait Pz_LinkCard_Cache {
 		}
 
 		// 最終更新日時
-		if (!$preserve_import_timestamps || !array_key_exists('update_time', $data ) ) {
-			$data['update_time']	= $this->now;
-		}
+		$data['update_time']		=	$this->now;
 
 		// DB更新キー取得
 		if	(!$is_pending && (!isset($data['id'] ) || !$data['id']) ) {
@@ -232,13 +266,22 @@ trait Pz_LinkCard_Cache {
 					$result =	$wpdb->insert($this->db_card, $data );
 					// DB挿入失敗の場合、諦める
 					if	($result === false ) {
+						$error	=	$wpdb->last_error
+							? sprintf(__('Database error: %s', 'pz-linkcard' ), $wpdb->last_error )
+							: __('The cache record could not be saved.', 'pz-linkcard' );
 						return	null;
 					}
 				}
 			}
 		}
 		$this->request_cache	=	array();
-		return	$this->pz_GetCache($data );
+		$saved	=	$this->pz_GetCache($data, $read_error );
+		if	(empty($saved['url'] ) ) {
+			$error	=	$read_error
+				? sprintf(__('Database error: %s', 'pz-linkcard' ), $read_error )
+				: __('The saved cache record could not be retrieved.', 'pz-linkcard' );
+		}
+		return	$saved;
 	}
 
 	// キャッシュデータを削除

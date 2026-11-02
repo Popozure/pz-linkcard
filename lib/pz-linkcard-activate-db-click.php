@@ -20,6 +20,13 @@
 				KEY click_time (click_time)
 			) ".$wpdb->get_charset_collate()." ;";
 
+	$existing_click_table = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_click)) === $this->db_click;
+	if ($existing_click_table && !empty($upgrade_from_264) && ($this->options['db-click-version'] ?? '') !== md5($sql, false)) {
+		$rebuild_table = require __DIR__.'/pz-linkcard-activate-db-rebuild.php';
+		if ($rebuild_table($this->db_click, $sql, $migration_card_backup ?? null) === false) {
+			return false;
+		}
+	}
 	dbDelta($sql, true );
 
 	// 旧バージョンのクリックテーブルが残っている場合は url_key へ変換する

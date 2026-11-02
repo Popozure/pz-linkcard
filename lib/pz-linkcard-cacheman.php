@@ -28,7 +28,9 @@
 	$param_refine	=	isset($_POST['refine'] )		?	esc_attr($_POST['refine'] )					:	null;
 	$keyword		=	isset($_POST['keyword'] ) && is_string($_POST['keyword'] )
 						?	trim(preg_replace('/[\r\n\t ]+/u', ' ', wp_check_invalid_utf8(wp_unslash($_POST['keyword'] ) ) ) )
-						:	null;
+						:	(isset($_GET['keyword']) && is_string($_GET['keyword'])
+							? trim(preg_replace('/[\r\n\t ]+/u', ' ', wp_check_invalid_utf8(wp_unslash($_GET['keyword']))))
+							: null);
 	$filter			=	isset($_POST['filter'] )		?	esc_attr($_POST['filter'] )					:	'all';
 	$header			=	isset($_POST['header'] )		?	esc_attr(strtolower($_POST['header'] ) )	:	null;
 	$orderby		=	isset($_POST['orderby'] )		?	sanitize_key(wp_unslash($_POST['orderby'] ) )	:
@@ -72,7 +74,14 @@
 		$action		=	'click-log';
 	}
 
-	if	(!isset($_POST['filter'] ) && isset($_GET['filter'] ) ) {
+	if (isset($_POST['filter-reset']) && is_string($_POST['filter-reset'])
+		&& in_array($_POST['filter-reset'], array('all', 'external', 'internal', 'modify', 'unlink', 'unregistered'), true)) {
+		$filter = $_POST['filter-reset'];
+		$keyword = '';
+		$param_refine = '';
+		$page_now = 1;
+	}
+	if	(!isset($_POST['filter'] ) && !isset($_POST['filter-reset']) && isset($_GET['filter'] ) ) {
 		$filter	= sanitize_key(wp_unslash($_GET['filter'] ) );
 	}
 
@@ -175,7 +184,7 @@
 	}
 
 	// モードによって表示させる
-	$html_style		.=	$debug_mode		==	0	?	'.pz-debug-only { display: none; } '	:	'';
+	$html_style		.=	$debug_mode		==	0	?	'.pz-cacheman .pz-debug-only { display: none !important; } '	:	'';
 	$html_style		.=	$admin_mode		==	0	?	'.pz-admin-only { display: none; } '	:	'';
 	$html_style		.=	$develop_mode	==	0	?	'.pz-develop-only { display: none; } '	:	'';
 	if	($html_style ) {
@@ -429,7 +438,9 @@
 	}
 
 	// 画面描画
-	echo	$html_notice;
+	if	(!$show_list ) {
+		echo	$html_notice;
+	}
 	echo	$html_input;
 	if	($content_file ) {
 		require ($content_file );

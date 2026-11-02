@@ -15,20 +15,68 @@ document.addEventListener("DOMContentLoaded", () => {
         const form = document.querySelector(".pz-settings form");
         const storageKey = "pz-linkcard-preview-state";
         const labels = (typeof pzLinkCardPreview !== "undefined" && pzLinkCardPreview.labels) || {};
+        const iconBase = closeButton?.querySelector("img")?.src;
+        const setButtonIcon = (button, filename) => {
+            if (!iconBase) return;
+            const icon = document.createElement("img");
+            icon.src = new URL(filename, iconBase).href;
+            icon.width = 16;
+            icon.height = 16;
+            icon.alt = "";
+            button.replaceChildren(icon);
+        };
         const restoreButton = document.createElement("button");
         restoreButton.type = "button";
         restoreButton.className = "pz-settings-preview-restore";
         restoreButton.textContent = labels.restorePreview || "□Preview";
         restoreButton.setAttribute("aria-label", labels.restorePreviewAria || "Show preview");
-        restoreButton.title = `${labels.openPreview || "Open preview"} Alt+V`;
+        const previewTooltip = `${labels.restorePreviewAria || "Preview"} Alt+V`;
+        restoreButton.title = previewTooltip;
+        if (closeButton) closeButton.title = previewTooltip;
         restoreButton.hidden = true;
         document.body.appendChild(restoreButton);
         let previewFadeTimer = null;
         let previewClosed = false;
+        let previewGeometryAnimation = null;
+        let openingIconRect = null;
+        const animateIconTransition = (iconRect, closing, finish = () => {}) => {
+            previewGeometryAnimation?.cancel();
+            previewGeometryAnimation = null;
+            const rect = win.getBoundingClientRect();
+            if (!iconRect || !rect.width || !rect.height || !win.animate
+                || window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+                finish();
+                return;
+            }
+            const iconFrame = {
+                transformOrigin: "0 0",
+                transform: `translate(${iconRect.left - rect.left}px, ${iconRect.top - rect.top}px) scale(${iconRect.width / rect.width}, ${iconRect.height / rect.height})`,
+                opacity: 0.15,
+            };
+            const windowFrame = { transformOrigin: "0 0", transform: "none", opacity: 1 };
+            const animation = win.animate(closing ? [windowFrame, iconFrame] : [iconFrame, windowFrame], {
+                duration: 220,
+                easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+            });
+            previewGeometryAnimation = animation;
+            animation.onfinish = () => {
+                if (previewGeometryAnimation !== animation) return;
+                previewGeometryAnimation = null;
+                finish();
+                schedulePreviewFit();
+            };
+        };
         const showPreviewWindow = () => {
             previewClosed = false;
+            previewGeometryAnimation?.cancel();
+            previewGeometryAnimation = null;
             window.clearTimeout(previewFadeTimer);
             win.style.display = "";
+            if (openingIconRect) {
+                win.classList.add("pz-settings-preview-ready");
+                animateIconTransition(openingIconRect, false);
+                openingIconRect = null;
+            }
             if (previewDocked) {
                 win.classList.add("pz-settings-preview-ready");
             }
@@ -44,6 +92,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         };
         const hideRestoreButton = () => {
+            if (!restoreButton.hidden) openingIconRect = restoreButton.getBoundingClientRect();
+            previewGeometryAnimation?.cancel();
+            previewGeometryAnimation = null;
             restoreButton.classList.remove("pz-settings-preview-restore-ready");
             window.setTimeout(() => {
                 if (!restoreButton.classList.contains("pz-settings-preview-restore-ready")) {
@@ -69,15 +120,23 @@ document.addEventListener("DOMContentLoaded", () => {
             previewFadeTimer = window.setTimeout(finish, 220);
         };
         const showIconPreview = () => {
+            const wasVisible = !previewClosed && win.style.display !== "none"
+                && win.classList.contains("pz-settings-preview-ready");
             previewClosed = true;
+            window.clearTimeout(previewFadeTimer);
+            showRestoreButton();
+            const finish = () => {
+                if (!previewClosed) return;
+                win.classList.remove("pz-settings-preview-ready", "pz-settings-preview-docked", "pz-settings-preview-docked-right");
+                win.style.display = "none";
+            };
+            if (wasVisible) {
+                animateIconTransition(restoreButton.getBoundingClientRect(), true, finish);
+            } else {
+                finish();
+            }
             setDockedScrollSpace(0);
             setRightDockedScrollSpace(0);
-            win.classList.remove("pz-settings-preview-ready", "pz-settings-preview-docked", "pz-settings-preview-docked-right");
-            window.clearTimeout(previewFadeTimer);
-            previewFadeTimer = window.setTimeout(() => {
-                if (!win.classList.contains("pz-settings-preview-ready")) win.style.display = "none";
-            }, 500);
-            showRestoreButton();
         };
 
         const previewBackgrounds = {
@@ -151,8 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let previewDockSide = null;
         let floatingPreviewRect = null;
         let lastBottomDockedHeight = null;
-        let lastRightHandleClick = { time: 0, x: 0, y: 0 };
-        let rightHandleDoubleClickHandled = false;
+        let lastHandleClick = null;
         const stateInput = name => form?.querySelector(`[data-pz-preview-state="${name}"]`) || null;
         const setStateInput = (name, value) => {
             const input = stateInput(name);
@@ -176,6 +234,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 : null;
             return readStateNumber(state, "right-docked-width") ?? legacyWidth ?? minPreviewWidth;
         };
+        const readBottomDockedHeight = state => {
+            return [lastBottomDockedHeight,
+                readStateNumber(state, "docked-height"),
+                readStateNumber(state, "last-bottom-docked-height"),
+                readStateNumber(state, "preview-docked-height"),
+            ].find(value => Number.isFinite(value) && value > 0) ?? minPreviewHeight;
+        };
         const readStoredState = () => {
             const state = {};
             form?.querySelectorAll("[data-pz-preview-state]").forEach(input => {
@@ -189,29 +254,35 @@ document.addEventListener("DOMContentLoaded", () => {
         const applyTwoCards = enabled => {
             const active = !!enabled;
             win.classList.toggle("pz-settings-preview-two-cards", active);
+            ["ex", "in"].forEach(prefix => {
+                win.querySelectorAll(`[data-pz-preview-card="${prefix}"]`).forEach((card, index) => {
+                    card.querySelectorAll('.lkc-title').forEach(title => {
+                    if (title.dataset.pzPreviewBaseTitle === undefined) {
+                        title.dataset.pzPreviewBaseTitle = title.textContent;
+                    }
+                    title.textContent = title.dataset.pzPreviewBaseTitle + (active ? ` (${index + 1})` : "");
+                    });
+                });
+            });
             if (twoCardsCheckbox) twoCardsCheckbox.checked = active;
             setStateInput("preview-two-cards", active ? "1" : "0");
         };
         const updateModeButton = () => {
             if (!modeButton || !secondaryModeButton) return;
-            modeButton.classList.toggle("pz-preview-dock-right-icon", previewDocked && previewDockSide !== "right");
-            modeButton.classList.toggle("pz-preview-dock-bottom-icon", !previewDocked || previewDockSide === "right");
-            secondaryModeButton.classList.toggle("pz-preview-dock-right-icon", !previewDocked);
-            secondaryModeButton.classList.toggle("pz-preview-window-icon", previewDocked);
             if (!previewDocked) {
-                modeButton.textContent = "";
+                setButtonIcon(modeButton, "preview-dock-bottom.svg");
                 modeButton.setAttribute("aria-label", labels.dockPreviewBottom || "Dock preview bottom");
-                secondaryModeButton.textContent = "";
+                setButtonIcon(secondaryModeButton, "preview-dock-right.svg");
                 secondaryModeButton.setAttribute("aria-label", labels.dockPreviewRight || "Dock preview right");
             } else if (previewDockSide === "right") {
-                modeButton.textContent = "";
+                setButtonIcon(modeButton, "preview-dock-bottom.svg");
                 modeButton.setAttribute("aria-label", labels.dockPreviewBottom || "Dock preview bottom");
-                secondaryModeButton.textContent = "";
+                setButtonIcon(secondaryModeButton, "preview-window.svg");
                 secondaryModeButton.setAttribute("aria-label", labels.windowPreview || "Window preview");
             } else {
-                modeButton.textContent = "";
+                setButtonIcon(modeButton, "preview-dock-right.svg");
                 modeButton.setAttribute("aria-label", labels.dockPreviewRight || "Dock preview right");
-                secondaryModeButton.textContent = "";
+                setButtonIcon(secondaryModeButton, "preview-window.svg");
                 secondaryModeButton.setAttribute("aria-label", labels.windowPreview || "Window preview");
             }
             modeButton.title = modeButton.getAttribute("aria-label");
@@ -228,7 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const clampToViewport = (left, top) => {
             const margin = 8;
-            const rect = win.getBoundingClientRect();
+            const rect = getWindowRect();
             const minLeft = Math.max(margin, getDockLeft() + margin);
             const minTop = Math.max(margin, getAdminBarBottom());
             const maxLeft = Math.max(minLeft, window.innerWidth - rect.width - margin);
@@ -261,11 +332,17 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         const getWindowRect = () => {
             const rect = win.getBoundingClientRect();
+            // During a mode transition, save the destination rather than an intermediate frame.
+            const value = name => {
+                const inline = win.style[name];
+                return win.classList.contains("pz-settings-preview-animating") && inline.endsWith("px")
+                    ? parseFloat(inline) : rect[name];
+            };
             return {
-                left: rect.left,
-                top: rect.top,
-                width: rect.width,
-                height: rect.height,
+                left: value("left"),
+                top: value("top"),
+                width: value("width"),
+                height: value("height"),
             };
         };
         const syncPreviewState = () => {
@@ -516,28 +593,33 @@ document.addEventListener("DOMContentLoaded", () => {
             floatingPreviewRect = getWindowRect();
             syncPreviewState();
         };
-        const applyDockedRect = (height, width = null) => {
+        const applyDockedRect = height => {
             const bounds = getViewportBounds();
             const dockLeft = getDockLeft();
-            const dockedMinHeight = getDockedMinHeight();
-            const maxHeight = Math.max(dockedMinHeight, window.innerHeight - bounds.minTop);
-            const nextHeight = Math.min(maxHeight, Math.max(dockedMinHeight, height || getWindowRect().height));
-
+            // The right dock's vertical handle spans the entire viewport height.
+            // Switch its layout before measuring the bottom dock's minimum height.
             previewDocked = true;
             previewDockSide = "bottom";
             win.classList.add("pz-settings-preview-docked");
             win.classList.remove("pz-settings-preview-docked-right");
+            const dockedMinHeight = getDockedMinHeight();
+            const maxHeight = Math.max(dockedMinHeight, window.innerHeight - bounds.minTop);
+            // An unset/zero bottom height must never inherit the right dock's
+            // viewport height.
+            const requestedHeight = Number.isFinite(height) && height > 0 ? height : readBottomDockedHeight(readStoredState());
+            const nextHeight = Math.min(maxHeight, Math.max(dockedMinHeight, requestedHeight));
+
             setRightDockedScrollSpace(0);
+            setDockedScrollSpace(nextHeight);
             updateModeButton();
             win.style.left = `${Math.round(dockLeft)}px`;
             win.style.top = `${Math.round(window.innerHeight - nextHeight)}px`;
             win.style.right = "auto";
             win.style.bottom = "auto";
-            const dockedWidth = Math.min(getViewportClientRight() - dockLeft, Math.max(minPreviewWidth, width || getViewportClientRight() - dockLeft));
+            const dockedWidth = Math.max(1, getViewportClientRight() - dockLeft);
             win.style.width = `${Math.round(dockedWidth)}px`;
             win.style.height = `${Math.round(nextHeight)}px`;
             win.style.maxHeight = "none";
-            setDockedScrollSpace(nextHeight);
             syncPreviewState();
         };
         const applyRightDockedRect = width => {
@@ -576,13 +658,13 @@ document.addEventListener("DOMContentLoaded", () => {
             return Math.min(maxHeight, Math.max(minHeight, nextHeight));
         };
         const switchPreviewMode = targetMode => {
-            animatePreviewWindow();
             if (previewDockSide === "bottom") {
                 lastBottomDockedHeight = Math.round(getWindowRect().height);
             }
             if (!previewDocked) floatingPreviewRect = getWindowRect();
             syncPreviewState();
             const stored = readStoredState() || {};
+            animatePreviewWindow();
 
             if (targetMode === "window") {
                 const windowRect = {
@@ -594,12 +676,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const hasWindowRect = !!windowRect && Object.values(windowRect).every(value => value !== null);
                 applyFloatingRect(hasWindowRect ? windowRect : floatingPreviewRect);
             } else if (targetMode === "bottom") {
-                const dockedHeight = readStateNumber(stored, "docked-height")
-                    ?? readStateNumber(stored, "last-bottom-docked-height")
-                    ?? readStateNumber(stored, "preview-docked-height")
-                    ?? minPreviewHeight;
-                const dockedWidth = readStateNumber(stored, "docked-width");
-                applyDockedRect(dockedHeight, dockedWidth);
+                const dockedHeight = readBottomDockedHeight(stored);
+                applyDockedRect(dockedHeight);
             } else if (targetMode === "right") {
                 const dockedWidth = readRightDockedWidth(stored);
                 applyRightDockedRect(dockedWidth);
@@ -650,32 +728,45 @@ document.addEventListener("DOMContentLoaded", () => {
             const stored = readStoredState() || {};
             const storedMode = stored["preview-mode"] || readStateInput("preview-mode");
             const mode = storedMode === "icon" ? (stored["preview-restore-mode"] || "window") : storedMode;
-            const initialFloatingRect = !previewDocked ? getWindowRect() : null;
+            // The server may already have rendered a docked rectangle while the
+            // client mode flags still have their initial floating values.
+            const initiallyDocked = mode === "right" || mode === "docked";
+            let initialFloatingRect = !previewDocked && !initiallyDocked ? getWindowRect() : null;
             const windowRect = {
                 left: readStateNumber(stored, "window-left"),
                 top: readStateNumber(stored, "window-top"),
                 width: readStateNumber(stored, "window-width"),
                 height: readStateNumber(stored, "window-height"),
             };
-            const dockLeft = getDockLeft();
-            const dockWidth = getViewportClientRight() - dockLeft;
-            const isStoredDockRect = windowRect.left !== null
-                && windowRect.width !== null
-                && Math.abs(windowRect.left - dockLeft) <= 1
-                && windowRect.width >= dockWidth - 1;
-            const hasWindowRect = Object.values(windowRect).every(value => value !== null) && !isStoredDockRect;
+            const hasWindowRect = Object.values(windowRect).every(value => value !== null);
             if (hasWindowRect) {
                 floatingPreviewRect = windowRect;
-            } else if (initialFloatingRect?.width > 0 && initialFloatingRect?.height > 0) {
-                floatingPreviewRect = initialFloatingRect;
+            } else if (!floatingPreviewRect) {
+                if (initiallyDocked) {
+                    // Measure the normal window defaults without painting the
+                    // temporary layout or adopting a dock's full-screen size.
+                    const savedStyle = win.style.cssText;
+                    const savedClass = win.className;
+                    win.classList.remove("pz-settings-preview-docked", "pz-settings-preview-docked-right", "pz-settings-preview-animating");
+                    ["left", "top", "right", "bottom", "width", "height", "max-height"].forEach(name => win.style.removeProperty(name));
+                    initialFloatingRect = getWindowRect();
+                    win.style.cssText = savedStyle;
+                    win.className = savedClass;
+                }
+                if (initialFloatingRect?.width > 0 && initialFloatingRect?.height > 0) {
+                    floatingPreviewRect = initialFloatingRect;
+                    persistStoredState({
+                        "window-left": Math.round(initialFloatingRect.left),
+                        "window-top": Math.round(initialFloatingRect.top),
+                        "window-width": Math.round(initialFloatingRect.width),
+                        "window-height": Math.round(initialFloatingRect.height),
+                    });
+                }
             }
 
             if (mode === "docked") {
-                const dockedHeight = readStateNumber(stored, "docked-height")
-                    ?? readStateNumber(stored, "last-bottom-docked-height")
-                    ?? readStateNumber(stored, "preview-docked-height")
-                    ?? minPreviewHeight;
-                applyDockedRect(dockedHeight, readStateNumber(stored, "docked-width"));
+                const dockedHeight = readBottomDockedHeight(stored);
+                applyDockedRect(dockedHeight);
                 return;
             }
             if (mode === "right") {
@@ -713,6 +804,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const stored = readStoredState() || {};
             floatingPreviewRect = rect;
+            syncPreviewState();
             animatePreviewWindow();
             if (dockRight) {
                 const dockedWidth = readStateNumber(stored, "right-docked-width")
@@ -723,7 +815,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const dockedHeight = readStateNumber(stored, "docked-height")
                     ?? readStateNumber(stored, "preview-docked-height")
                     ?? rect.height;
-                applyDockedRect(dockedHeight, readStateNumber(stored, "docked-width"));
+                applyDockedRect(dockedHeight);
             }
             persistPreviewState();
             return true;
@@ -734,19 +826,17 @@ document.addEventListener("DOMContentLoaded", () => {
         win.addEventListener("pointerdown", e => {
             if (e.button !== undefined && e.button !== 0) return;
             if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
-            if (previewDockSide === "right" && e.target?.closest?.("[data-pz-preview-handle]")) {
+            if (e.target?.closest?.("[data-pz-preview-handle]")) {
                 const now = Date.now();
-                const distance = Math.hypot(e.clientX - lastRightHandleClick.x, e.clientY - lastRightHandleClick.y);
-                const isDoubleClick = now - lastRightHandleClick.time < 400 && distance < 8;
-                lastRightHandleClick = { time: now, x: e.clientX, y: e.clientY };
-                if (e.detail >= 2 || isDoubleClick) {
+                const distance = lastHandleClick
+                    ? Math.hypot(e.clientX - lastHandleClick.x, e.clientY - lastHandleClick.y) : Infinity;
+                const isDoubleClick = lastHandleClick && now - lastHandleClick.time < 400 && distance < 8;
+                lastHandleClick = { time: now, x: e.clientX, y: e.clientY };
+                if (e.detail === 2 || isDoubleClick) {
                     e.preventDefault();
                     e.stopPropagation();
-                    rightHandleDoubleClickHandled = true;
+                    lastHandleClick = null;
                     cyclePreviewMode();
-                    window.setTimeout(() => {
-                        rightHandleDoubleClickHandled = false;
-                    }, 1000);
                     return;
                 }
             }
@@ -959,11 +1049,8 @@ document.addEventListener("DOMContentLoaded", () => {
         handle.addEventListener("dblclick", e => {
             if (e.target?.closest?.(".pz-settings-preview-button, .pz-settings-preview-background, .pz-settings-preview-two-cards-control")) return;
             e.preventDefault();
-            if (rightHandleDoubleClickHandled) {
-                rightHandleDoubleClickHandled = false;
-                return;
-            }
-            cyclePreviewMode();
+            // Mode switching is handled on the second pointerdown in every mode.
+            e.stopPropagation();
         });
         modeButton?.addEventListener("click", e => {
             e.preventDefault();
@@ -1013,18 +1100,16 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         document.addEventListener("keydown", e => {
-            if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.isComposing) return;
-            const key = e.key.toLowerCase();
-            if (key !== "p" && key !== "v") return;
-
-            e.preventDefault();
-            if (key === "v") {
-                if (e.repeat) return;
+            if (e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && !e.isComposing && !e.repeat && e.key.toLowerCase() === "v") {
+                e.preventDefault();
                 if (previewClosed) restoreButton.click();
                 else closeButton?.click();
-            } else {
-                cyclePreviewModeWithIcon();
+                return;
             }
+            if (!e.altKey || e.ctrlKey || e.metaKey || e.shiftKey || e.isComposing || e.key.toLowerCase() !== "p") return;
+
+            e.preventDefault();
+            cyclePreviewModeWithIcon();
         });
 
         window.addEventListener("resize", keepInViewport);
@@ -1043,10 +1128,10 @@ document.addEventListener("DOMContentLoaded", () => {
             showIconPreview();
         }
         schedulePreviewFit();
-        initSettingsPreviewLiveStyles(win, syncPreviewState);
+        initSettingsPreviewLiveStyles(win, syncPreviewState, () => applyTwoCards(twoCardsCheckbox?.checked));
     }
 
-    function initSettingsPreviewLiveStyles(win, syncPreviewState) {
+    function initSettingsPreviewLiveStyles(win, syncPreviewState, refreshPreviewTitles) {
         const form = document.querySelector(".pz-settings form");
         if (!form) return;
 
@@ -1058,16 +1143,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const labels = (typeof pzLinkCardPreview !== "undefined" && pzLinkCardPreview.labels) || {};
         let previewCssTimer = null;
         let previewCssRequestSeq = 0;
-        const updateWithoutTransitions = callback => {
-            win.classList.add("pz-settings-preview-updating");
-            try {
-                callback();
-                // Commit the final styles before restoring normal hover transitions.
-                void win.offsetWidth;
-            } finally {
-                win.classList.remove("pz-settings-preview-updating");
-            }
-        };
         const isControlDisabled = el => {
             if (!el) return false;
             if (el.disabled || el.classList.contains("pz-disabled")) return true;
@@ -1098,18 +1173,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const items = [
                 ["title", ".lkc-title"],
                 ["excerpt", ".lkc-excerpt"],
-                ["url", ".lkc-url, .lkc-url-info"],
+                ["url", ".lkc-url, .lkc-url-info, .lkc-url > a.lkc-link, .lkc-url-info > a.lkc-link"],
                 ["date", ".lkc-date"],
                 ["heading", ".lkc-heading"],
                 ["more", ".lkc-more"],
                 ["info", ".lkc-info"],
                 ["added", ".lkc-added"],
-                ["cat", ".lkc-cat"],
             ];
             return ["ex", "in"].flatMap(prefix => items.map(([name, selector]) => {
-                const settingName = findControl(`${prefix}-${name}-hover`) ? `${prefix}-${name}-hover` : `${name}-hover`;
-                const decoration = value(settingName) !== "" ? "underline" : "none";
-                return `.pz-settings-preview-window [data-pz-preview-card="${prefix}"] ${selector}:hover { text-decoration: ${decoration} !important; }`;
+                const decoration = value(`${name}-hover`) !== "" ? "underline" : "none";
+                const selectors = selector.split(",").map(part => `.pz-settings-preview-window [data-pz-preview-card="${prefix}"] ${part.trim()}:hover`);
+                return `${selectors.join(", ")} { text-decoration: ${decoration} !important; }`;
             })).join("\n");
         };
         const collectAllProperties = () => {
@@ -1143,15 +1217,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 const response = await fetch(pzLinkCardPreview.ajaxUrl, { method: "POST", body: fd });
                 const json = await response.json();
                 if (seq !== previewCssRequestSeq || !json?.success) return;
-                updateWithoutTransitions(() => {
-                    getPreviewStyleElement().textContent = json.data?.css || "";
-                });
+                getPreviewStyleElement().textContent = json.data?.css || "";
+                if (Array.isArray(json.data?.cards)) {
+                    win.querySelectorAll('.pz-settings-preview-item').forEach((item, index) => {
+                        if (typeof json.data.cards[index] === 'string') item.innerHTML = json.data.cards[index];
+                    });
+                    refreshPreviewTitles();
+                }
             } catch (err) {
                 console.warn("Pz-LinkCard preview CSS failed:", err);
             }
         };
         const schedulePreviewCssCallback = (delay = 120) => {
             if (previewCssTimer) clearTimeout(previewCssTimer);
+            // Invalidate older responses as soon as settings change, including
+            // while the next request is still waiting for its debounce timer.
             const seq = ++previewCssRequestSeq;
             previewCssTimer = setTimeout(() => kickPreviewCssCallback(seq), delay);
         };
@@ -1191,7 +1271,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const applyDisplay = (node, show) => {
             if (!node) return;
                 if (show) {
-                const displayValue = node.matches(".lkc-info") ? "flex" : (node.matches(".lkc-sns-tw, .lkc-sns-x, .lkc-sns-fb, .lkc-sns-hb, .lkc-sns-gp") ? "inline" : "block");
+                const displayValue = node.matches(".lkc-info") ? "flex" : (node.matches(".lkc-sns-tw, .lkc-sns-x, .lkc-sns-fb, .lkc-sns-hb, .lkc-sns-qiita, .lkc-sns-gp") ? "inline" : "block");
                 node.style.setProperty("display", displayValue, "important");
             } else {
                 node.style.setProperty("display", "none", "important");
@@ -1201,11 +1281,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!node) return;
             props.forEach(prop => node.style[prop] = "");
         };
-        const mainPreviewInfo = card => card.querySelector("[data-pz-preview-main-info]")
-            || card.querySelector("[data-pz-preview-info]")
-            || card.querySelector(".lkc-info");
         const resetCardOrder = card => {
-            const info = mainPreviewInfo(card);
+            const info = card.querySelector("[data-pz-preview-info]");
             const content = card.querySelector("[data-pz-preview-content]");
             const cardBody = card.querySelector(".lkc-card");
             const title = card.querySelector(".lkc-title");
@@ -1227,52 +1304,26 @@ document.addEventListener("DOMContentLoaded", () => {
             node.textContent = text;
             return node;
         };
-        const syncShare = (card, content, info, title, infoUrl, ordered = false) => {
-            const position = value("sns-position");
-            const enabled = (ordered || position !== "") && (checked("sns-tw") || checked("sns-fb") || checked("sns-hb"));
-            if (ordered) {
-                card.querySelectorAll(".lkc-share").forEach(share => {
-                    const twText = checked("sns-tw-x") ? "1234 tweets" : "1234 posts";
-                    const tw = ensureShareNode(share, ".lkc-sns-tw, .lkc-sns-x", checked("sns-tw-x") ? "lkc-sns-tw no_icon" : "lkc-sns-x no_icon", twText);
-                    const fb = ensureShareNode(share, ".lkc-sns-fb", "lkc-sns-fb no_icon", "1234 shares");
-                    const hb = ensureShareNode(share, ".lkc-sns-hb", "lkc-sns-hb no_icon", "1234 users");
-                    applyDisplay(tw, enabled && checked("sns-tw"));
-                    applyDisplay(fb, enabled && checked("sns-fb"));
-                    applyDisplay(hb, enabled && checked("sns-hb"));
-                    applyDisplay(share, enabled);
-                });
-                return;
-            }
-            let share = card.querySelector(".lkc-share");
-            if (!share && enabled) {
-                share = document.createElement("div");
-                share.className = "lkc-share";
-            }
-            if (!share) return;
-
-            const twText = checked("sns-tw-x") ? "1234 tweets" : "1234 posts";
-            const tw = ensureShareNode(share, ".lkc-sns-tw, .lkc-sns-x", checked("sns-tw-x") ? "lkc-sns-tw no_icon" : "lkc-sns-x no_icon", twText);
-            const fb = ensureShareNode(share, ".lkc-sns-fb", "lkc-sns-fb no_icon", "1234 shares");
-            const hb = ensureShareNode(share, ".lkc-sns-hb", "lkc-sns-hb no_icon", "1234 users");
-            applyDisplay(tw, enabled && checked("sns-tw"));
-            applyDisplay(fb, enabled && checked("sns-fb"));
-            applyDisplay(hb, enabled && checked("sns-hb"));
-            applyDisplay(share, enabled);
-            if (!enabled) return;
-
-            if (position === "1" && content && title) {
-                const titleContainer = title.parentElement && title.parentElement.parentElement === content ? title.parentElement : title;
-                content.insertBefore(share, titleContainer.parentElement === content ? titleContainer.nextSibling : null);
-            } else if (info) {
-                info.insertBefore(share, infoUrl && infoUrl.parentElement === info ? infoUrl : null);
-            }
+        const syncShare = (card) => {
+            const enabled = checked("sns-tw") || checked("sns-fb") || checked("sns-hb") || checked("sns-qiita");
+            card.querySelectorAll(".lkc-share").forEach(share => {
+                const twText = checked("sns-tw-x") ? "1234 tweets" : "1234 posts";
+                const tw = ensureShareNode(share, ".lkc-sns-tw, .lkc-sns-x", checked("sns-tw-x") ? "lkc-sns-tw no_icon" : "lkc-sns-x no_icon", twText);
+                const fb = ensureShareNode(share, ".lkc-sns-fb", "lkc-sns-fb no_icon", "1234 shares");
+                const hb = ensureShareNode(share, ".lkc-sns-hb", "lkc-sns-hb no_icon", "1234 users");
+                const qiitaLikes = ensureShareNode(share, ".lkc-sns-qiita:not(.lkc-sns-qiita-stock)", "lkc-sns-qiita lkc-sns-qiita-likes no_icon", labels.qiitaLikes || "1234 likes");
+                const qiitaStocks = ensureShareNode(share, ".lkc-sns-qiita-stock", "lkc-sns-qiita lkc-sns-qiita-stock no_icon", labels.qiitaStocks || "1234 stocks");
+                applyDisplay(tw, enabled && checked("sns-tw"));
+                applyDisplay(fb, enabled && checked("sns-fb"));
+                applyDisplay(hb, enabled && checked("sns-hb"));
+                applyDisplay(qiitaLikes, enabled && checked("sns-qiita"));
+                applyDisplay(qiitaStocks, enabled && checked("sns-qiita"));
+                applyDisplay(share, enabled);
+            });
         };
         const previewUrlText = (card, fallbackPrefix) => {
             const current = card.querySelector(".lkc-url, .lkc-url-info")?.textContent?.trim();
             if (current) return current;
-            const template = card.querySelector('template[data-pz-preview-section="content"][data-pz-preview-item="u"]');
-            const templateUrl = template?.content?.querySelector(".lkc-url")?.textContent?.trim();
-            if (templateUrl) return templateUrl;
             const href = card.querySelector("a.lkc-link")?.getAttribute("href");
             if (href) return href;
             return fallbackPrefix === "in" ? "/" : "https://example.com/pz-linkcard-preview";
@@ -1721,9 +1772,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
                     const prefix = card.dataset.pzPreviewCard;
                     const cardBody = card.querySelector(".lkc-card");
-                    const info = mainPreviewInfo(card);
+                    const info = card.querySelector(".lkc-browser-tab");
                     const content = card.querySelector("[data-pz-preview-content], .lkc-content");
-                    const domain = info?.querySelector(".lkc-domain") || card.querySelector(".lkc-domain");
+                    const domain = card.querySelector(".lkc-browser-site-name");
                     if (cardBody) {
                         cardBody.style.margin = "0";
                         cardBody.style.position = "relative";
@@ -1752,7 +1803,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         content.style.padding = "42px 8px 8px";
                         content.style.background = "#fff";
                     }
-                    const contentUrl = content?.querySelector(".lkc-url");
+                    const contentUrl = content?.querySelector(".lkc-browser-url");
                     if (contentUrl) {
                         contentUrl.style.position = "absolute";
                         contentUrl.style.zIndex = "1";
@@ -1772,7 +1823,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         domain.style.border = "0";
                         domain.style.setProperty("color", "#3c4043", "important");
                     }
-                    card.querySelectorAll(".lkc-share").forEach(node => node.style.setProperty("display", "none", "important"));
                 });
             }
             const ingressPreset = ingressPresets[specialFormat];
@@ -1781,103 +1831,12 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             schedulePreviewCssCallback();
         };
-        const syncOrderedItemLayout = (card, prefix, infoPosition) => {
-            const templates = new Map();
-            card.querySelectorAll("template[data-pz-preview-item][data-pz-preview-section]").forEach(template => {
-                templates.set(`${template.dataset.pzPreviewSection}:${template.dataset.pzPreviewItem}`, template);
-            });
-            if (!templates.size || !form.querySelector(`select[name="properties[${prefix}-content-type-1]"]`)) return false;
-            const content = card.querySelector("[data-pz-preview-content]");
-            const info = mainPreviewInfo(card);
-            const cardBody = card.querySelector(".lkc-card");
-            if (!content || !info || !cardBody) return false;
-            const infoItems = Array.from({ length: 5 }, (_, index) => String(value(`${prefix}-info-type-${index + 1}`) || ""));
-            const contentItems = Array.from({ length: 5 }, (_, index) => String(value(`${prefix}-content-type-${index + 1}`) || ""));
-            const layoutKey = JSON.stringify([infoPosition, value("special-format"), infoItems, contentItems]);
-            const clonePart = (section, code) => {
-                const fragment = templates.get(`${section}:${code}`)?.content.cloneNode(true) || card.ownerDocument.createDocumentFragment();
-                Array.from(fragment.children).forEach(node => {
-                    node.dataset.pzPreviewOrderedItem = code;
-                    node.dataset.pzPreviewOrderedSection = section;
-                });
-                if (section === "content" && code === "i") {
-                    const embeddedInfo = fragment.querySelector(".lkc-info");
-                    if (embeddedInfo) {
-                        embeddedInfo.removeAttribute("data-pz-preview-info");
-                        embeddedInfo.removeAttribute("data-pz-preview-main-info");
-                        embeddedInfo.setAttribute("data-pz-preview-embedded-info", "");
-                        embeddedInfo.replaceChildren(buildInfo());
-                    }
-                }
-                return fragment;
-            };
-            const buildInfo = () => {
-                const fragment = card.ownerDocument.createDocumentFragment();
-                for (const code of infoItems) {
-                    if (code) fragment.appendChild(clonePart("info", code));
-                }
-                return fragment;
-            };
-            if (card.dataset.pzPreviewLayoutKey !== layoutKey) {
-                info.setAttribute("data-pz-preview-main-info", "");
-                info.remove();
-                info.replaceChildren(buildInfo());
-                const contentFragment = card.ownerDocument.createDocumentFragment();
-                for (const code of contentItems) {
-                    if (code) contentFragment.appendChild(clonePart("content", code));
-                }
-                content.replaceChildren(clonePart("content", "thumbnail"), contentFragment, clonePart("content", "more"));
-                if (infoPosition === "2") {
-                    const clear = Array.from(cardBody.children).find(node => node.classList.contains("clear"));
-                    cardBody.insertBefore(info, clear || null);
-                } else if (infoPosition === "3") {
-                    let reference = Array.from(content.children).find(node => node.dataset.pzPreviewOrderedItem === "t");
-                    if (!reference) {
-                        const thumbnail = Array.from(content.children).find(node => node.dataset.pzPreviewOrderedItem === "thumbnail");
-                        reference = thumbnail ? thumbnail.nextSibling : content.firstChild;
-                    }
-                    content.insertBefore(info, reference);
-                } else {
-                    cardBody.insertBefore(info, content);
-                }
-                card.dataset.pzPreviewLayoutKey = layoutKey;
-            }
-            const displayDate = value("display-date");
-            const postDate = labels.previewPostDate || fallbackPreviewDate(1);
-            const modifiedDate = labels.previewModifiedDate || fallbackPreviewDate(0);
-            card.querySelectorAll(".lkc-date").forEach(date => {
-                date.textContent = displayDate === "2" ? `\u{1f501}\ufe0f${modifiedDate}`
-                    : displayDate === "3" ? `\u{1f552}\ufe0f${postDate}\u2002\u{1f501}\ufe0f${modifiedDate}`
-                    : `\u{1f552}\ufe0f${postDate}`;
-            });
-            card.querySelectorAll(".lkc-added").forEach(added => {
-                added.textContent = value(`${prefix}-added-text`) || "";
-                applyDisplay(added, added.textContent !== "");
-            });
-            card.querySelectorAll("[data-pz-preview-site-name]").forEach(siteName => {
-                const domainName = siteName.dataset.pzPreviewDomainName || "";
-                siteName.textContent = siteName.dataset.pzPreviewSiteName || domainName;
-            });
-            card.querySelectorAll(".lkc-excerpt").forEach(excerpt => applyDisplay(excerpt, true));
-            [info, ...card.querySelectorAll("[data-pz-preview-embedded-info]")].forEach(infoPart => {
-                const hasItems = Array.from(infoPart.children).some(item => {
-                    if (item.dataset.pzPreviewOrderedItem === "a") return String(value(`${prefix}-added-text`) || "").trim() !== "";
-                    if (item.dataset.pzPreviewOrderedItem === "s") return checked("sns-tw") || checked("sns-fb") || checked("sns-hb");
-                    return item.textContent.trim() !== "" || item.matches("img") || !!item.querySelector("img");
-                });
-                if (hasItems) infoPart.removeAttribute("data-pz-preview-empty-info");
-                else infoPart.setAttribute("data-pz-preview-empty-info", "");
-            });
-            card.setAttribute("data-pz-preview-ordered-layout", "");
-            return true;
-        };
         const updatePreview = () => {
             const thumbnailPosition = value("thumbnail-position");
             const infoControl = Array.from(form.querySelectorAll('select[name="properties[info-position]"]')).find(el => el.getClientRects?.().length || el.offsetParent !== null);
             const infoPosition = String(infoControl ? infoControl.value : value("info-position") ?? "").trim();
             const showInfo = !["", "0", "none", "なし"].includes(infoPosition.toLowerCase());
-            const displayUrl = value("display-url");
-            const displayDate = value("display-date");
+            const displayDate = value("date-pattern");
             const width = value("width");
             const widthUnit = value("width-unit") || "px";
             const contentHeight = intValue("content-height", 0);
@@ -1889,11 +1848,10 @@ document.addEventListener("DOMContentLoaded", () => {
             win.querySelectorAll("[data-pz-preview-card]").forEach(card => {
                 try {
                 const prefix = card.dataset.pzPreviewCard;
-                const orderedLayout = syncOrderedItemLayout(card, prefix, infoPosition);
                 const wrap = card.querySelector(".lkc-external-wrap, .lkc-internal-wrap");
                 const cardBody = card.querySelector(".lkc-card");
                 const content = card.querySelector("[data-pz-preview-content]");
-                const info = mainPreviewInfo(card);
+                const info = card.querySelector("[data-pz-preview-info], .lkc-info");
                 const title = card.querySelector(".lkc-title");
                 const heading = card.querySelector("[data-pz-preview-heading]");
                 const more = card.querySelector("[data-pz-preview-more]");
@@ -1904,7 +1862,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let date = card.querySelector(".lkc-date");
                 const excerpt = card.querySelector(".lkc-excerpt");
 
-                if (!orderedLayout) resetCardOrder(card);
+                resetCardOrder(card);
                 resetStyle(card, ["marginTop", "marginBottom", "paddingLeft", "paddingRight"]);
                 resetStyle(wrap, ["display", "position", "maxWidth", "width", "height", "margin", "padding", "transform", "background", "backgroundColor", "backgroundImage", "backgroundBlendMode", "backdropFilter", "webkitBackdropFilter", "border", "borderColor", "borderStyle", "borderWidth", "borderRadius", "boxShadow", "opacity", "overflow", "transition"]);
                 resetStyle(cardBody, ["position", "overflow", "marginTop", "marginBottom", "marginLeft", "marginRight", "padding", "border", "borderRadius", "background", "backgroundColor", "boxShadow", "transform"]);
@@ -2085,11 +2043,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         content.style.boxShadow = "inset 4px 4px 4px rgba(255,255,255,1)";
                         content.style.backgroundColor = "rgba(255,255,255,0.8)";
                     }
-                    content.style.margin = infoPosition === "1" ? "6px 0 0 0" : (infoPosition === "2" ? "0 0 8px 0" : "0");
-                    if (checked("separator")) {
-                        if (infoPosition === "1") content.style.borderTop = `1px solid ${value("info-color") || "#222"}`;
-                        if (infoPosition === "2") content.style.borderBottom = `1px solid ${value("info-color") || "#222"}`;
-                    }
+                    content.style.margin = checked("separator") ? "0" : (infoPosition === "1" ? "6px 0 0 0" : (infoPosition === "2" ? "0 0 8px 0" : "0"));
                 }
 
                 if (specialFormat !== "cmp") applyDisplay(info, showInfo);
@@ -2102,11 +2056,11 @@ document.addEventListener("DOMContentLoaded", () => {
 						node.style.setProperty("text-align", "center", "important");
 					});
 				}
-                card.querySelectorAll(".lkc-siteicon").forEach(icon => {
+                info?.querySelectorAll?.(".lkc-siteicon").forEach(icon => {
                     icon.style.flexShrink = "0";
                     icon.style.flexGrow = "0";
                 });
-                if (!orderedLayout && info && content && title && cardBody) {
+                if (info && content && title && cardBody) {
 					if (infoPosition === "1") {
 						cardBody.insertBefore(info, content);
 					} else if (infoPosition === "2") {
@@ -2115,54 +2069,26 @@ document.addEventListener("DOMContentLoaded", () => {
                         content.insertBefore(info, title);
                     }
                 }
-                if (!orderedLayout) {
-                    const showDate = prefix !== "ex" && displayDate !== "";
-                    const urlText = previewUrlText(card, prefix);
-                    const showBrowserUrl = specialFormat === "browser";
-                    if ((showBrowserUrl || (!showDate && displayUrl === "1")) && content && !url) {
-                        url = document.createElement("div");
-                        url.className = "lkc-url";
-                        url.title = urlText;
-                        url.textContent = urlText;
-                        content.insertBefore(url, titleInsertReference(content, title));
-                    }
-                    if (!showDate && displayUrl === "2" && info && !infoUrl) {
-                        infoUrl = document.createElement("div");
-                        infoUrl.className = "lkc-url-info";
-                        infoUrl.textContent = urlText;
-                        info.appendChild(infoUrl);
-                    }
-                    if (prefix !== "ex" && showDate && content && !date) {
-                        date = document.createElement("div");
-                        date.className = "lkc-date";
-                        content.insertBefore(date, excerpt || titleInsertReference(content, title));
-                    }
-                    if (date && showDate) {
+                const showDate = displayDate !== "";
+                card.querySelectorAll(".lkc-date").forEach(dateNode => {
+                    if (showDate) {
+                        const postIconSelect = form.querySelector('[name="properties[date-icon-post]"]');
+                        const modifiedIconSelect = form.querySelector('[name="properties[date-icon-update]"]');
+                        const postIcon = postIconSelect?.value ? postIconSelect.selectedOptions[0]?.textContent || "" : "";
+                        const modifiedIcon = modifiedIconSelect?.value ? modifiedIconSelect.selectedOptions[0]?.textContent || "" : "";
                         const postDate = labels.previewPostDate || fallbackPreviewDate(1);
                         const modifiedDate = labels.previewModifiedDate || fallbackPreviewDate(0);
-                        if (displayDate === "2") {
-                            date.textContent = `\u{1f552}\ufe0f${modifiedDate}`;
-                        } else if (displayDate === "3") {
-                            date.textContent = `\u{1f552}\ufe0f${postDate}\u2002\u{1f501}\ufe0f${modifiedDate}`;
+                        if (displayDate === "u") {
+                            dateNode.textContent = `${modifiedIcon}${modifiedDate}`;
+                        } else if (displayDate === "pu") {
+                            dateNode.textContent = `${postIcon}${postDate}\u2002${modifiedIcon}${modifiedDate}`;
                         } else {
-                            date.textContent = `\u{1f552}\ufe0f${postDate}`;
+                            dateNode.textContent = `${postIcon}${postDate}`;
                         }
                     }
-                    applyDisplay(date, showDate);
-                    applyDisplay(url, showBrowserUrl || (displayUrl === "1" && !showDate));
-                    applyDisplay(infoUrl, !showBrowserUrl && displayUrl === "2" && !showDate);
-                    syncShare(card, content, info, title, infoUrl);
-                    applyDisplay(excerpt, checked("display-excerpt"));
-                } else {
-                    if (specialFormat === "browser" && content && !url) {
-                        url = document.createElement("div");
-                        url.className = "lkc-url";
-                        url.textContent = previewUrlText(card, prefix);
-                        const moreItem = Array.from(content.children).find(node => node.dataset.pzPreviewOrderedItem === "more");
-                        content.insertBefore(url, moreItem || null);
-                    }
-                    syncShare(card, content, info, title, infoUrl, true);
-                }
+                    applyDisplay(dateNode, showDate);
+                });
+                syncShare(card);
 
                 if (heading) {
                     resetStyle(heading, ["alignItems", "position", "top", "left", "height", "padding", "zIndex"]);
@@ -2186,27 +2112,25 @@ document.addEventListener("DOMContentLoaded", () => {
                         applyPartBox(card, ".lkc-more", `${prefix}-more`);
                     }
                 }
-                if (!orderedLayout) {
-                    const addedText = value(`${prefix}-added-text`);
-                    let added = info?.querySelector(".lkc-added");
-                    if (!addedText && added) {
-                        added.remove();
-                        added = null;
+                const addedText = value(`${prefix}-added-text`);
+                let added = info?.querySelector(".lkc-added");
+                if (!addedText && added) {
+                    added.remove();
+                    added = null;
+                }
+                if (addedText && !added && info) {
+                    added = document.createElement("div");
+                    added.className = "lkc-added";
+                    const domain = info.querySelector(".lkc-domain");
+                    if (domain) {
+                        domain.insertAdjacentElement("afterend", added);
+                    } else {
+                        info.insertBefore(added, info.querySelector(".lkc-share"));
                     }
-                    if (addedText && !added && info) {
-                        added = document.createElement("div");
-                        added.className = "lkc-added";
-                        const domain = info.querySelector(".lkc-domain");
-                        if (domain) {
-                            domain.insertAdjacentElement("afterend", added);
-                        } else {
-                            info.insertBefore(added, info.querySelector(".lkc-share"));
-                        }
-                    }
-                    if (added) {
-                        added.textContent = addedText;
-                        applyDisplay(added, true);
-                    }
+                }
+                if (added) {
+                    added.textContent = addedText;
+                    applyDisplay(added, true);
                 }
 				if (specialFormat === "mac") {
 					card.querySelectorAll(".lkc-share, .lkc-siteicon").forEach(node => node.style.setProperty("display", "none", "important"));
@@ -2224,7 +2148,6 @@ document.addEventListener("DOMContentLoaded", () => {
             textStyle(".lkc-added", "added");
             textStyle(".lkc-heading", "heading");
             textStyle(".lkc-more", "more");
-            textStyle(".lkc-cat", "cat");
             bindHoverTextStyle(".lkc-title", "title");
             bindHoverTextStyle(".lkc-excerpt", "excerpt");
             bindHoverTextStyle(".lkc-url, .lkc-url-info", "url");
@@ -2233,35 +2156,25 @@ document.addEventListener("DOMContentLoaded", () => {
             bindHoverTextStyle(".lkc-more", "more");
             bindHoverTextStyle(".lkc-info", "info");
             bindHoverTextStyle(".lkc-added", "added");
-            bindHoverTextStyle(".lkc-cat", "cat");
             win.querySelectorAll("[data-pz-preview-heading], [data-pz-preview-more], .lkc-added").forEach(node => {
                 if (node.textContent.trim() === "") {
                     node.style.setProperty("display", "none", "important");
                 }
             });
             applySpecialFormat();
-            win.querySelectorAll("[data-pz-preview-card][data-pz-preview-ordered-layout]").forEach(card => {
-                const info = mainPreviewInfo(card);
-                applyDisplay(info, showInfo && specialFormat !== "cmp" && !info?.hasAttribute("data-pz-preview-empty-info"));
-                card.querySelectorAll("[data-pz-preview-embedded-info]").forEach(embeddedInfo => {
-                    applyDisplay(embeddedInfo, specialFormat !== "cmp" && !embeddedInfo.hasAttribute("data-pz-preview-empty-info"));
-                });
-            });
             let infoVisibilityStyle = win.querySelector("#pz-preview-info-visibility");
             if (!infoVisibilityStyle) {
                 infoVisibilityStyle = win.ownerDocument.createElement("style");
                 infoVisibilityStyle.id = "pz-preview-info-visibility";
                 win.appendChild(infoVisibilityStyle);
             }
-            const mainInfoSelector = '[data-pz-preview-main-info], [data-pz-preview-card]:not([data-pz-preview-ordered-layout]) .lkc-info';
-            infoVisibilityStyle.textContent = `${mainInfoSelector} { display: ${showInfo ? "flex" : "none"} !important; } [data-pz-preview-main-info]:empty { display: none !important; } [data-pz-preview-embedded-info] { display: flex !important; } [data-pz-preview-embedded-info]:empty, [data-pz-preview-empty-info] { display: none !important; }`;
+            infoVisibilityStyle.textContent = showInfo ? ".lkc-info { display: flex !important; }" : ".lkc-info { display: none !important; }";
         };
 
         const syncPreview = () => {
-            updateWithoutTransitions(() => {
-                updatePreview();
-                getPreviewHoverStyleElement().textContent = getPreviewHoverCss();
-            });
+            // Keep the current card until the selected layout and CSS are ready.
+            // The legacy DOM updater restores fixed items before the AJAX render.
+            getPreviewHoverStyleElement().textContent = getPreviewHoverCss();
             schedulePreviewCssCallback();
         };
 
@@ -2276,7 +2189,6 @@ document.addEventListener("DOMContentLoaded", () => {
             attributes: true,
             attributeFilter: ["class", "disabled", "readonly", "aria-disabled"],
         });
-        updatePreview();
         getPreviewHoverStyleElement().textContent = getPreviewHoverCss();
         schedulePreviewCssCallback(0);
     }

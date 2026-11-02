@@ -33,9 +33,9 @@
 				break;
 			case 'tracking':
 				$tracking_selectors = '.lkc-external-wrap, .lkc-external-wrap:hover, .lkc-internal-wrap, .lkc-internal-wrap:hover';
-				$css = $tracking_selectors.' { --pz-lkc-tracking-enabled: 1; transform: perspective(900px) rotateX(var(--pz-lkc-tracking-x, 0deg)) rotateY(var(--pz-lkc-tracking-y, 0deg)) !important; transform-origin: center center; transition: transform .12s ease-out, box-shadow .2s ease, background-color .2s ease, border-color .2s ease, opacity .2s ease !important; }';
+				$css = $tracking_selectors.' { --pz-lkc-tracking-enabled: 1; transform: perspective(900px) rotateX(var(--pz-lkc-tracking-x, 0deg)) rotateY(var(--pz-lkc-tracking-y, 0deg)) /*IMPORTANT*/; transform-origin: center center; transition: transform .12s ease-out, box-shadow .2s ease, background-color .2s ease, border-color .2s ease, opacity .2s ease /*IMPORTANT*/; }';
 				$css .= '.lkc-external-wrap.pz-lkc-tracking-active, .lkc-internal-wrap.pz-lkc-tracking-active { will-change: transform; }';
-				$css .= '@media (prefers-reduced-motion: reduce) { '.$tracking_selectors.' { transform: none !important; transition: none !important; } }';
+				$css .= '@media (prefers-reduced-motion: reduce) { '.$tracking_selectors.' { transform: none /*IMPORTANT*/; transition: none /*IMPORTANT*/; } }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'falling-hearts':
@@ -99,7 +99,7 @@
 			case 'falling-stars':
 				$falling_shape_path = 'M12 1 15.4 8.2 23 9.3 17.5 14.7 18.8 22.5 12 18.8 5.2 22.5 6.5 14.7 1 9.3 8.6 8.2Z';
 				$trail_lifetime = 3;
-				$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="600" viewBox="0 0 480 600"><style>@keyframes pz-lkc-star-spin{to{transform:rotate(-360deg)}}.star-core,.star-tail{transform-origin:12px 12px;animation:pz-lkc-star-spin 4.8s linear infinite}@keyframes pz-lkc-star-particle{0%{transform:translate(var(--trail-origin-x),var(--trail-origin-y)) scale(var(--trail-scale));opacity:var(--trail-opacity)}70%{opacity:var(--trail-opacity)}100%{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:0}}.star-particle{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:var(--trail-opacity);animation:pz-lkc-star-particle '.$trail_lifetime.'s linear infinite}@media(prefers-reduced-motion:reduce){.star-core,.star-tail,.star-particle{animation:none!important}}</style><defs><path id="shape" d="'.$falling_shape_path.'"/>';
+				$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="600" viewBox="0 0 480 600"><style>@keyframes pz-lkc-star-spin{to{transform:rotate(-360deg)}}.star-core,.star-tail{transform-origin:12px 12px;animation:pz-lkc-star-spin 4.8s linear infinite}@keyframes pz-lkc-star-particle{0%{transform:translate(var(--trail-origin-x),var(--trail-origin-y)) scale(var(--trail-scale));opacity:var(--trail-opacity)}70%{opacity:var(--trail-opacity)}100%{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:0}}.star-particle{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:var(--trail-opacity);animation:pz-lkc-star-particle '.$trail_lifetime.'s linear infinite}@media(prefers-reduced-motion:reduce){.star-core,.star-tail,.star-particle{animation:none/*IMPORTANT*/}}</style><defs><path id="shape" d="'.$falling_shape_path.'"/>';
 				$falling_star_templates = array(
 					array(16, 14, 1, 6, -1 ), array(442, 124, .7, 8, -3 ), array(90, 52, .85, 7, -2 ),
 					array(132, 90, .9, 6.5, -.5 ), array(323, 8, .75, 7.5, -5 ),
@@ -172,7 +172,7 @@
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'falling-snow':
-				$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="200" viewBox="0 0 160 200"><style>@keyframes sway{from{transform:translateX(-9px)}to{transform:translateX(9px)}}@keyframes fall{from{transform:translateY(0)}to{transform:translateY(200px)}}.fall{animation:fall 9s linear infinite}.sway{animation:sway 4s ease-in-out infinite alternate}@media(prefers-reduced-motion:reduce){.fall,.sway{animation:none!important}}</style><g fill="white">';
+				$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="160" height="200" viewBox="0 0 160 200"><style>@keyframes sway{from{transform:translateX(-9px)}to{transform:translateX(9px)}}@keyframes fall{from{transform:translateY(0)}to{transform:translateY(200px)}}.fall{animation:fall 9s linear infinite}.sway{animation:sway 4s ease-in-out infinite alternate}@media(prefers-reduced-motion:reduce){.fall,.sway{animation:none/*IMPORTANT*/}}</style><g fill="white">';
 				$snowflakes = array(
 					array(18, 16, 2, 3.2, -1, 'alternate' ),
 					array(108, 76, 1.5, 4.7, -3, 'alternate-reverse' ),
@@ -224,11 +224,11 @@
 				$file_text	=	str_replace('/*IN-BG-COLOR*/',			'', $file_text );
 				$file_text	=	str_replace('/*IN-BORDER*/',			'border: none;', $file_text );
 				$file_text	=	str_replace('/*IN-SHADOW*/',			'box-shadow: none;', $file_text );
-				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
-				$file_text	=	str_replace('/*NONE-EXCERPT*/',			'display: none !important;', $file_text );
+				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none /*IMPORTANT*/;', $file_text );
+				$file_text	=	str_replace('/*NONE-EXCERPT*/',			'display: none /*IMPORTANT*/;', $file_text );
 				break;
 			case 'floating':
-				$file_text = str_replace(array('/*EX-BORDER*/', '/*IN-BORDER*/'), 'border: none !important;', $file_text );
+				$file_text = str_replace(array('/*EX-BORDER*/', '/*IN-BORDER*/'), 'border: none /*IMPORTANT*/;', $file_text );
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; display: flow-root; margin: 12px; padding: 12px; border: none; box-shadow: none; overflow: visible; }';
 				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; inset: -12px 12px 12px -12px; pointer-events: none; z-index: 0; }';
 				foreach (array('ex', 'in') as $t) {
@@ -249,7 +249,7 @@
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'floating2':
-				$file_text = str_replace(array('/*EX-BORDER*/', '/*IN-BORDER*/'), 'border: none !important;', $file_text );
+				$file_text = str_replace(array('/*EX-BORDER*/', '/*IN-BORDER*/'), 'border: none /*IMPORTANT*/;', $file_text );
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; display: flow-root; margin: 12px; padding: 12px; border: none; box-shadow: none; overflow: visible; }';
 				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; inset: -12px 12px 12px -12px; pointer-events: none; z-index: 0; }';
 				foreach (array('ex', 'in') as $t) {
@@ -275,7 +275,7 @@
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; }';
 				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; z-index: 3; left: 8px; top: 8px; bottom: 8px; width: 16px; pointer-events: none; }';
 				$css .= '.lkc-external-wrap::before { background-color: '.$prop['ex-bg-color'].'; } .lkc-internal-wrap::before { background-color: '.$prop['in-bg-color'].'; }';
-				$css .= '.lkc-external-wrap:hover, .lkc-internal-wrap:hover { background-color: #ffffff !important; }';
+				$css .= '.lkc-external-wrap:hover, .lkc-internal-wrap:hover { background-color: #ffffff /*IMPORTANT*/; }';
 				$css .= '.lkc-card { padding-left: 24px; }';
 				$file_text	= str_replace('/*OPTION*/', $css, $file_text );
 				break;
@@ -301,7 +301,7 @@
 				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',		'margin: -2px 8px 0 -1px;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-RADIUS*/',		'', $file_text );
 				$file_text	=	str_replace('/*POSITION-INFO*/',		'position: absolute; top: 8px; left: 108px;', $file_text );
-				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none !important;', $file_text );
+				$file_text	=	str_replace('/*NONE-INFO*/',			'display: none /*IMPORTANT*/;', $file_text );
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { overflow: hidden; }';
 				$css .= '.lkc-external-wrap .lkc-thumbnail, .lkc-external-wrap .lkc-thumbnail-img { border-radius: '.intval($prop['ex-border-radius'] ?? 0).'px '.intval($prop['ex-thumbnail-border-radius'] ?? 0).'px '.intval($prop['ex-thumbnail-border-radius'] ?? 0).'px '.intval($prop['ex-border-radius'] ?? 0).'px; }';
 				$css .= '.lkc-internal-wrap .lkc-thumbnail, .lkc-internal-wrap .lkc-thumbnail-img { border-radius: '.intval($prop['in-border-radius'] ?? 0).'px '.intval($prop['in-thumbnail-border-radius'] ?? 0).'px '.intval($prop['in-thumbnail-border-radius'] ?? 0).'px '.intval($prop['in-border-radius'] ?? 0).'px; }';
@@ -312,7 +312,7 @@
 				$file_text	=	str_replace('/*MARGIN-BOTTOM*/',		'', $file_text );
 				$file_text	=	str_replace('/*MARGIN-LEFT*/',			'', $file_text );
 				$file_text	=	str_replace('/*MARGIN-RIGHT*/',			'', $file_text );
-				$file_text	=	str_replace('/*CARD-TOP*/',				'margin: 24px 20px 20px 20px !important;', $file_text );
+				$file_text	=	str_replace('/*CARD-TOP*/',				'margin: 24px 20px 20px 20px /*IMPORTANT*/;', $file_text );
 				$file_text	=	str_replace('/*CARD-BOTTOM*/',			'', $file_text );
 				$file_text	=	str_replace('/*CARD-LEFT*/',			'', $file_text );
 				$file_text	=	str_replace('/*CARD-RIGHT*/',			'', $file_text );
@@ -324,7 +324,7 @@
 				$file_text	=	str_replace('/*OPTION*/',				'.linkcard p { display: none; }', $file_text );
 				foreach		(array('ex', 'in' )	as	$t ) {
 					$T		=	strtoupper($t );
-					$file_text		=	str_replace('/*'.$T.'-HEADING*/',		'display: inline-flex !important; align-items: center; padding: 0 16px !important; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px; '.txt_color('background-color: ', $prop['in-border-color'] ).';', $file_text );
+					$file_text		=	str_replace('/*'.$T.'-HEADING*/',		'display: inline-flex /*IMPORTANT*/; align-items: center; padding: 0 16px /*IMPORTANT*/; position: absolute; top: -15px; left: 20px; padding: 0 10px; height: 20px; '.txt_color('background-color: ', $prop['in-border-color'] ).';', $file_text );
 					$value_border	=	'border: solid '.($prop[$t.'-border-color'] ?? '').' 4px;';
 					$file_text		=	str_replace('/*'.$T.'-BORDER*/',			$value_border, $file_text );
 					$file_text		=	str_replace('/*'.$T.'-HEADING-BASE-BORDER*/',	$value_border, $file_text );
@@ -380,8 +380,8 @@
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 0; border: 3px #1f61e3 solid; border-radius: 5px; background: #eeecdf; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; background: linear-gradient(to bottom, #2790ff, #1f61e3); background: -webkit-linear-gradient(top, #2790ff, #1f61e3); font-weight: bold; font-size: 11px; line-height: 16px; }';
-				$css	.=	'.lkc-domain	{ color: #fff !important; }';
-				$css	.=	'.lkc-thumbnail	{ margin: 0 8px !important; }';
+				$css	.=	'.lkc-domain	{ color: #fff /*IMPORTANT*/; }';
+				$css	.=	'.lkc-thumbnail	{ margin: 0 8px /*IMPORTANT*/; }';
 				$css	.=	'.lkc-title		{ padding: 0; }';
 				$css	.=	'.lkc-url		{ padding: 4px; cursor: pointer; }';
 				$css	.=	'.lkc-excerpt	{ padding: 4px; }';
@@ -396,8 +396,8 @@
 				$css	.=	'.lkc-unlink *	{ color: #888; }';
 				$css	.=	'.lkc-card		{ margin: 16px; padding: 4px; border: 3px #c0c7c8 solid; background: #e0e0e0; border: 1px #87888f solid; }';
 				$css	.=	'.lkc-info		{ margin: 0; padding: 4px; border: 1px #87888f solid; background: #0000a8; font-weight: bold; font-size: 11px; line-height: 16px; }';
-				$css	.=	'.lkc-domain	{ color: #fff !important; font-weight: normal; }';
-				$css	.=	'.lkc-thumbnail	{ margin: 0 4px !important; }';
+				$css	.=	'.lkc-domain	{ color: #fff /*IMPORTANT*/; font-weight: normal; }';
+				$css	.=	'.lkc-thumbnail	{ margin: 0 4px /*IMPORTANT*/; }';
 				$css	.=	'.lkc-title		{ padding: 0; }';
 				$css	.=	'.lkc-url		{ padding: 4px; cursor: pointer; }';
 				$css	.=	'.lkc-excerpt	{ padding: 4px; }';
@@ -412,7 +412,7 @@
 				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 2; }';
 				$css .= '.lkc-info { position: relative; margin: -8px -8px 8px; padding: 5px 8px 5px 44px; border-radius: 9px 9px 0 0; background: linear-gradient(#eaf3ff, #c9dcf5); color: #1d3557; font-size: 11px; line-height: 16px; }';
 				$css .= '.lkc-info::before { content: ""; position: absolute; left: 10px; top: 9px; width: 9px; height: 9px; border-radius: 50%; background: #ff5f57; box-shadow: 13px 0 #febc2e, 26px 0 #28c840; }';
-				$css .= '.lkc-info { text-align: center; } .lkc-domain { color: #000 !important; margin-left: auto; margin-right: auto; text-align: center; } .lkc-siteicon, .lkc-share { display: none !important; } .lkc-title { color: #111827; font-weight: 600; } .lkc-url, .lkc-url-info { color: #1769aa; } .lkc-thumbnail { margin: 0 8px !important; }';
+				$css .= '.lkc-info { text-align: center; } .lkc-domain { color: #000 /*IMPORTANT*/; margin-left: auto; margin-right: auto; text-align: center; } .lkc-siteicon, .lkc-share { display: none /*IMPORTANT*/; } .lkc-title { color: #111827; font-weight: 600; } .lkc-url, .lkc-url-info { color: #1769aa; } .lkc-thumbnail { margin: 0 8px /*IMPORTANT*/; }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'glass': // Glass
@@ -425,12 +425,12 @@
 				};
 				$css = '.lkc-external-wrap { background-color: '.$glass_rgba($glass_ex_bg ).'; } .lkc-internal-wrap { background-color: '.$glass_rgba($glass_in_bg ).'; }';
 				$css .= '.lkc-external-wrap, .lkc-internal-wrap { position: relative; overflow: visible; background-image: radial-gradient(circle at 18% 12%, rgba(255,255,255,.5), transparent 34%), radial-gradient(circle at 82% 88%, rgba(176,215,255,.22), transparent 42%), linear-gradient(135deg, rgba(255,255,255,.38), rgba(220,235,255,.14)); background-size: 100% 100%; box-shadow: 0 8px 24px rgba(31,56,85,.18), inset 0 1px rgba(255,255,255,.62); backdrop-filter: blur(2px) saturate(125%); -webkit-backdrop-filter: blur(2px) saturate(125%); }';
-				$css .= '.lkc-card { position: relative; overflow: hidden; } .lkc-card, .lkc-content, .lkc-info { background-color: transparent !important; background-image: none !important; }';
+				$css .= '.lkc-card { position: relative; overflow: hidden; } .lkc-card, .lkc-content, .lkc-info { background-color: transparent /*IMPORTANT*/; background-image: none /*IMPORTANT*/; }';
 				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 6; }';
 				$css .= '.lkc-external-wrap::after, .lkc-internal-wrap::after { content: ""; position: absolute; z-index: 5; inset: 0; border-radius: inherit; background: linear-gradient(110deg, transparent 44%, rgba(255,255,255,.72) 50%, transparent 56%) 100% 0 / 300% 100% no-repeat; opacity: 0; pointer-events: none; transition: background-position .55s ease, opacity .2s ease; }';
 				$css .= '.lkc-external-wrap:hover::after, .lkc-internal-wrap:hover::after { background-position: 0 0; opacity: 1; }';
 				$css .= '.lkc-title { text-shadow: 0 1px rgba(255,255,255,.7); }';
-				$css .= '.lkc-info, .lkc-title, .lkc-url, .lkc-url-info, .lkc-date, .lkc-excerpt { text-shadow: 4px 4px 5px #00000088 !important; }';
+				$css .= '.lkc-info, .lkc-title, .lkc-url, .lkc-url-info, .lkc-date, .lkc-excerpt { text-shadow: 4px 4px 5px #00000088 /*IMPORTANT*/; }';
 				$css .= '.lkc-info { background: rgba(255,255,255,.28); }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
@@ -453,8 +453,8 @@
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { display: flow-root; }';
 				$css .= '.lkc-external-wrap .lkc-heading, .lkc-internal-wrap .lkc-heading { z-index: 2; }';
 				$css .= '.lkc-card { position: relative; margin: 0; padding: 8px; overflow: hidden; border: 0; border-radius: 0; background: #eef1f5; box-shadow: 0 4px 12px rgba(60,64,67,.28); }';
-				$css .= '.lkc-info { position: relative; display: flex !important; width: min(220px, calc(100% - 28px)); min-height: 30px; margin: -2px 0 0 4px; padding: 5px 30px 5px 10px; align-items: center; gap: 6px; border-radius: 8px 8px 0 0; background: #fff; color: #3c4043; box-sizing: border-box; }';
-				$css .= '.lkc-info::after { content: "×"; position: absolute; top: 50%; right: 9px; color: #5f6368; font-size: 14px; line-height: 1; transform: translateY(-50%); }';
+				$css .= '.lkc-browser-tab { position: relative; display: flex /*IMPORTANT*/; width: min(220px, calc(100% - 28px)); min-height: 30px; margin: -2px 0 0 4px; padding: 5px 30px 5px 10px; align-items: center; gap: 6px; border-radius: 8px 8px 0 0; background: #fff; color: #3c4043; box-sizing: border-box; }';
+				$css .= '.lkc-browser-tab::after { content: "×"; position: absolute; top: 50%; right: 9px; color: #5f6368; font-size: 14px; line-height: 1; transform: translateY(-50%); }';
 				$css .= '.lkc-content { position: relative; margin: 0 -8px -8px; padding: 42px 8px 8px; background: #fff; }';
 				foreach (array('ex' => 'external', 'in' => 'internal' ) as $prefix => $type ) {
 					$bg = !empty($prop[$prefix.'-bg-enabled'] ) ? (sanitize_hex_color($prop[$prefix.'-bg-color'] ?? '') ?: 'transparent') : 'transparent';
@@ -463,9 +463,9 @@
 				}
 				$css .= '.lkc-content::before { content: "←   →   ↻"; position: absolute; top: 0; right: 0; left: 0; height: 34px; padding: 8px 12px; border-top: 1px solid #d5d9dd; border-bottom: 1px solid #d5d9dd; background: #f8f9fa; color: #5f6368; font-size: 14px; line-height: 17px; letter-spacing: 2px; box-sizing: border-box; }';
 				$css .= '.lkc-content::after { content: "●"; position: absolute; top: 5px; right: 12px; left: 68px; height: 24px; padding: 4px 10px; overflow: hidden; border: 1px solid #dfe1e5; border-radius: 14px; background: #fff; color: #5f6368; font-size: 9px; line-height: 14px; box-sizing: border-box; pointer-events: none; }';
-				$css .= '.lkc-content .lkc-url { position: absolute; z-index: 1; top: 8px; right: 22px; left: 92px; margin: 0; padding: 0; overflow: hidden; background: transparent; color: #3c4043; font-size: 11px; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; }';
-				$css .= '.lkc-domain { flex: 1 1 auto; min-width: 0; padding: 0; overflow: hidden; color: #3c4043 !important; text-overflow: ellipsis; white-space: nowrap; }';
-				$css .= '.lkc-share { display: none !important; } .lkc-siteicon { flex: 0 0 auto; }';
+				$css .= '.lkc-content .lkc-browser-url { position: absolute; z-index: 1; top: 8px; right: 22px; left: 92px; margin: 0; padding: 0; overflow: hidden; background: transparent; color: #3c4043; font-size: 11px; line-height: 18px; text-overflow: ellipsis; white-space: nowrap; }';
+				$css .= '.lkc-browser-tab .lkc-browser-site-name { font-size: 12px /*IMPORTANT*/; flex: 1 1 auto; min-width: 0; padding: 0; overflow: hidden; color: #3c4043 /*IMPORTANT*/; text-overflow: ellipsis; white-space: nowrap; }';
+				$css .= '.lkc-browser-siteicon { display: inline-flex; flex: 0 0 16px; width: 16px; height: 16px; margin: 0; } .lkc-browser-siteicon img { display: block; width: 16px; height: 16px; object-fit: contain; }';
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'ct1': // プリセット: セロファンテープ中央
@@ -643,7 +643,7 @@
 					if	($maxline	==	0 ) {
 						$after		=	'white-space: wrap; text-overflow: ellipsis;';
 					} else {
-						$after		=	'white-space: wrap; text-overflow: ellipsis; display: -webkit-box !important; -webkit-box-orient: vertical; -webkit-line-clamp: '.$maxline.';';
+						$after		=	'white-space: wrap; text-overflow: ellipsis; display: -webkit-box /*IMPORTANT*/; -webkit-box-orient: vertical; -webkit-line-clamp: '.$maxline.';';
 					}
 					$file_text		=	str_replace('/*'.strtoupper($item_name ).'*/',		$after,		$file_text );
 				}
@@ -692,21 +692,21 @@
 
 			// カード外側の余白
 			if	($prop['margin-top']		!==		'' ) {
-				$file_text		=	str_replace('/*MARGIN-TOP*/',		'margin-top: '.		$prop['margin-top'].	' !important;',		$file_text );
+				$file_text		=	str_replace('/*MARGIN-TOP*/',		'margin-top: '.		$prop['margin-top'].	' /*IMPORTANT*/;',		$file_text );
 			}
 			if	($prop['margin-bottom']		!==		'' ) {
-				$file_text		=	str_replace('/*MARGIN-BOTTOM*/',	'margin-bottom: '.	$prop['margin-bottom'].' !important;',		$file_text );
+				$file_text		=	str_replace('/*MARGIN-BOTTOM*/',	'margin-bottom: '.	$prop['margin-bottom'].' /*IMPORTANT*/;',		$file_text );
 			}
 			if	($prop['margin-left']		!==		'' ) {
-				$file_text		=	str_replace('/*MARGIN-LEFT*/',		'padding-left: '.	$prop['margin-left'].	' !important;',		$file_text );
+				$file_text		=	str_replace('/*MARGIN-LEFT*/',		'padding-left: '.	$prop['margin-left'].	' /*IMPORTANT*/;',		$file_text );
 			}
 			if	($prop['margin-right']		!==		'' ) {
-				$file_text		=	str_replace('/*MARGIN-RIGHT*/',		'padding-right: '.	$prop['margin-right'].	' !important;',		$file_text );
+				$file_text		=	str_replace('/*MARGIN-RIGHT*/',		'padding-right: '.	$prop['margin-right'].	' /*IMPORTANT*/;',		$file_text );
 			}
 
 			// リンク切れの場合の枠線
 			if	(!empty($prop['unlink-border-color'] ) ) {
-				$file_text	=	str_replace('/*UNLINK-BORDER-COLOR*/', 'border-color: '.$prop['unlink-border-color'].' !important;', $file_text );
+				$file_text	=	str_replace('/*UNLINK-BORDER-COLOR*/', 'border-color: '.$prop['unlink-border-color'].' /*IMPORTANT*/;', $file_text );
 			}
 
 			// カード内側の余白
@@ -724,8 +724,8 @@
 
 			// img 要素のスタイルをリセット
 			if (isset($prop['flg-style-reset'] ) ) {
-				$file_text	=	str_replace('/*RESET-IMG*/',	'margin: 0 !important; padding: 0; border: none;', $file_text );
-				$file_text	=	str_replace('/*STATIC*/',		'position: static !important;', $file_text );
+				$file_text	=	str_replace('/*RESET-IMG*/',	'margin: 0 /*IMPORTANT*/; padding: 0; border: none;', $file_text );
+				$file_text	=	str_replace('/*STATIC*/',		'position: static /*IMPORTANT*/;', $file_text );
 			}
 
 			// 中央寄せ
@@ -757,21 +757,21 @@
 				$file_text	=	str_replace('/*THUMBNAIL-POSITION*/',		'float: right;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',			'margin: 0 0 0 8px;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-WIDTH*/',			'width: '.($thumbnail_width + $thumbnail_adjust ).'px;', $file_text );
-				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',		'width: '.$thumbnail_width.'px !important;', $file_text );
-				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',		'height: '.$thumbnail_height.'px !important;', $file_text );
+				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',		'width: '.$thumbnail_width.'px /*IMPORTANT*/;', $file_text );
+				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',		'height: '.$thumbnail_height.'px /*IMPORTANT*/;', $file_text );
 				break;
 			case '2':			// 左側にサムネイル
 				$file_text	=	str_replace('/*THUMBNAIL-POSITION*/',		'float: left;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',			'margin: 0 8px 0 0;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-WIDTH*/',			'width: '.($thumbnail_width + $thumbnail_adjust ).'px;', $file_text );
-				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',		'width: '.$thumbnail_width .'px !important;', $file_text );
-				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',		'height: '.$thumbnail_height.'px !important;', $file_text );
+				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',		'width: '.$thumbnail_width .'px /*IMPORTANT*/;', $file_text );
+				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',		'height: '.$thumbnail_height.'px /*IMPORTANT*/;', $file_text );
 				break;
 			case '3':			// 上側にサムネイル
 				$file_text	=	str_replace('/*THUMBNAIL-POSITION*/',		'display: block;', $file_text );
 				$file_text	=	str_replace('/*THUMBNAIL-MARGIN*/',			'margin: 0 0 8px 0;', $file_text );
-				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',		'width: calc(100% - 2px) !important;', $file_text );
-				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',		'height: '.$thumbnail_height.'px !important; overflow: hidden;', $file_text );
+				$file_text	=	str_replace('/*THUMBNAIL-IMG-WIDTH*/',		'width: calc(100% - 2px) /*IMPORTANT*/;', $file_text );
+				$file_text	=	str_replace('/*THUMBNAIL-IMG-HEIGHT*/',		'height: '.$thumbnail_height.'px /*IMPORTANT*/; overflow: hidden;', $file_text );
 				break;
 			}
 
@@ -783,10 +783,24 @@
 				$height_excerpt		=	intval(preg_replace('/[^0-9]/', '', $prop['excerpt-height'] ) );
 				$thumbnail_height	=	intval($prop['thumbnail-height'] );
 				$thumbnail_width	=	intval($prop['thumbnail-width'] );
-				$file_text	=	str_replace('/*RESIZE*/',
-					'@media screen and ( max-width: 600px )  { .lkc-title { font-size: '.intval($size_title * 0.9).'px; line-height: '.intval($height_title * 0.9).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.95).'px; } .lkc-thumbnail { width: '.intval($thumbnail_width * 0.9).'px !important; } img.lkc-thumbnail-img { height: '.intval($thumbnail_height * 0.9).'px !important; width: '.intval($thumbnail_width * 0.9).'px !important; } }'.
-					'@media screen and ( max-width: 480px )  { .lkc-title { font-size: '.intval($size_title * 0.8).'px; line-height: '.intval($height_title * 0.8).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.8 ).'px; } .lkc-thumbnail { width: '.intval($thumbnail_width * 0.7).'px !important; } img.lkc-thumbnail-img { height: '.intval($thumbnail_height * 0.7).'px !important; width: '.intval($thumbnail_width * 0.7).'px !important; } }'.
-					'@media screen and ( max-width: 320px )  { .lkc-title { font-size: '.intval($size_title * 0.7).'px; line-height: '.intval($height_title * 0.7).'px; } .lkc-excerpt { font-size: '.intval($size_excerpt * 0.6 ).'px; } .lkc-thumbnail { width: '.intval($thumbnail_width * 0.5).'px !important; } img.lkc-thumbnail-img { height: '.intval($thumbnail_height * 0.5).'px !important; width: '.intval($thumbnail_width * 0.5).'px !important; } }', $file_text );
+				$responsive_css = '';
+				$fixed_content_height = intval($prop['content-height'] ?? 0);
+				$thumbnail_position = intval($prop['thumbnail-position'] ?? 0);
+				$resize_content_height = $fixed_content_height > 0 && in_array($thumbnail_position, array(1, 2, 3), true);
+				if ($thumbnail_position === 3) $fixed_content_height += $thumbnail_height;
+				foreach (array(array(600, 0.9, 0.9, 0.95), array(480, 0.7, 0.8, 0.8), array(320, 0.5, 0.7, 0.6)) as $resize) {
+					list($breakpoint, $image_scale, $title_scale, $excerpt_scale) = $resize;
+					$responsive_css .= '@media screen and ( max-width: '.$breakpoint.'px ) { ';
+					$responsive_css .= '.lkc-title { font-size: '.intval($size_title * $title_scale).'px; line-height: '.intval($height_title * $title_scale).'px; } ';
+					$responsive_css .= '.lkc-excerpt { font-size: '.intval($size_excerpt * $excerpt_scale).'px; } ';
+					$responsive_css .= '.lkc-thumbnail { width: '.intval($thumbnail_width * $image_scale).'px /*IMPORTANT*/; } ';
+					$responsive_css .= 'img.lkc-thumbnail-img { height: '.intval($thumbnail_height * $image_scale).'px /*IMPORTANT*/; width: '.intval($thumbnail_width * $image_scale).'px /*IMPORTANT*/; } ';
+					if ($resize_content_height) {
+						$responsive_css .= '.lkc-content { height: '.max(1, intval($fixed_content_height * $image_scale)).'px /*IMPORTANT*/; } ';
+					}
+					$responsive_css .= '}';
+				}
+				$file_text = str_replace('/*RESIZE*/', $responsive_css, $file_text );
 			}
 
 			// カード幅
@@ -825,7 +839,7 @@
 				$file_text	=	str_replace('/*CONTENT-BG-COLOR*/',	'background-color: rgba(255, 255, 255, 0.8 );', $file_text );
 			}
 
-			switch ($prop['info-position'] ) {
+			switch (!empty($prop['separator']) ? 0 : $prop['info-position'] ) {
 			case 1:				// サイト情報を上に表示
 				$file_text	=	str_replace('/*CONTENT-MARGIN*/',	'margin: 6px 0 0 0;', $file_text );
 				break;
@@ -844,17 +858,7 @@
 			$file_text	=	str_replace('/*SITEICON-HEIGHT*/',		'height: 16px;', $file_text );
 			$file_text	=	str_replace('/*SITEICON-WIDTH*/',		'width: 16px;', $file_text );
 
-			// サイト情報の区切り線
-			if (isset($prop['separator'] ) && $prop['separator'] == '1' ) {
-				switch ($prop['info-position'] ) {
-				case '1':
-					$file_text	=	str_replace('/*SEPARATOR*/',	'border-top: 1px solid '.$prop['info-color'].';', $file_text );
-					break;
-				case '2':
-					$file_text	=	str_replace('/*SEPARATOR*/',	'border-bottom: 1px solid '.$prop['info-color'].';', $file_text );
-					break;
-				}
-			}
+			$file_text = str_replace('/*SEPARATOR-COLOR*/', 'color: '.$prop['info-color'].';', $file_text );
 
 			// リンク種別ごとの設定
 			$replace_part_style	=	function($prefix, $placeholder_prefix ) use (&$file_text, $prop ) {
@@ -879,7 +883,7 @@
 					$value_color		=	isset($prop[$prefix.'-border-color'] ) ? $prop[$prefix.'-border-color'] : '';
 					$value_radius		=	isset($prop[$prefix.'-border-radius'] ) ? intval($prop[$prefix.'-border-radius'] ) : 0;
 					if	($value_style ) {
-						$file_text	=	str_replace('/*'.$placeholder_prefix.'-BORDER*/',		'border: '.($value_color ? $value_color : '' ).' '.($value_style ? $value_style : '' ).' '.($value_width_num ? $value_width_num.'px' : '' ).' !important;', $file_text );
+						$file_text	=	str_replace('/*'.$placeholder_prefix.'-BORDER*/',		'border: '.($value_color ? $value_color : '' ).' '.($value_style ? $value_style : '' ).' '.($value_width_num ? $value_width_num.'px' : '' ).' /*IMPORTANT*/;', $file_text );
 					}
 					if	($value_radius > 0 ) {
 						$file_text	=	str_replace('/*'.$placeholder_prefix.'-RADIUS*/',		'border-radius: '.$value_radius.'px; -webkit-border-radius: '.$value_radius.'px; -moz-border-radius: '.$value_radius.'px;', $file_text );
@@ -1084,10 +1088,10 @@
 
 				$replace_part_style($t.'-heading',	$T.'-HEADING' );
 				if (empty($prop[$t.'-heading-bg-enabled'])) {
-					$file_text = str_replace('/*'.$T.'-HEADING-BG-COLOR*/', 'background-color: transparent !important;', $file_text);
+					$file_text = str_replace('/*'.$T.'-HEADING-BG-COLOR*/', 'background-color: transparent /*IMPORTANT*/;', $file_text);
 				}
 				if (empty($prop[$t.'-heading-border-enabled'])) {
-					$file_text = str_replace('/*'.$T.'-HEADING-BORDER*/', 'border-color: transparent !important;', $file_text);
+					$file_text = str_replace('/*'.$T.'-HEADING-BORDER*/', 'border-color: transparent /*IMPORTANT*/;', $file_text);
 				}
 				$replace_part_style($t.'-more',		$T.'-MORE' );
 				$replace_part_style($t.'-thumbnail',	$T.'-THUMBNAIL' );
@@ -1115,7 +1119,7 @@
 				$file_text	=	str_replace('/*CREDIT*/',			'display: none;', $file_text );
 			}
 
-			// img 要素のスタイルをリセット
+			// 重要度
 			if (isset($prop['flg-style-important'] ) ) {
 				$file_text	=	str_replace('/*IMPORTANT*/',	'!important', $file_text );
 			}

@@ -25,25 +25,25 @@
 
 	// 生存確認
 	$proc_count	=	0;
-	$previous_domain	=	null;
+	$retry_at = null;
 	if (isset($proc_datas ) && is_array($proc_datas ) && count($proc_datas) > 0) {
 		foreach($proc_datas as $data ) {
-			$current_domain	=	(string) $data->domain;
-			if	($previous_domain === $current_domain ) {
+			$next_access = $this->pz_ClaimCronSiteAccess($data->url, $data->domain ?? '');
+			if ($next_access > 0) {
+				$retry_at = $retry_at === null ? $next_access : min($retry_at, $next_access);
 				$wpdb->update(
 					$this->db_card,
-					array('alive_nexttime' => $this->now ),
+					array('alive_nexttime' => $next_access ),
 					array('id' => intval($data->id ) ),
 					array('%d' ),
 					array('%d' )
 				);
 				$message	=	sprintf(__('[SKIP] URL=%s', 'pz-linkcard' ), $data->url ).PHP_EOL;
 				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) ).PHP_EOL;
-				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;It will be skipped because the domain is the same. The next check date and time=%s was set.', 'pz-linkcard' ), date('Y-m-d H:i', intval($this->now ) ) );
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;It will be skipped because the domain is the same. The next check date and time=%s was set.', 'pz-linkcard' ), date('Y-m-d H:i', $next_access ) );
 				$log		.=	$message.PHP_EOL;
 				continue;
 			}
-			$previous_domain	=	$current_domain;
 			$proc_count++;
 			$message	=	sprintf(__('[%1$d] URL=%2$s', 'pz-linkcard' ), $proc_count, $data->url ).PHP_EOL;
 			$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) );
@@ -92,4 +92,7 @@
 				break;
 			}
 		}
+	}
+	if ($retry_at !== null && !empty($this->options['alive-period'])) {
+		$this->pz_ScheduleCronRetry('pz_linkcard_alive_retry', $retry_at + 1);
 	}

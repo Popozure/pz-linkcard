@@ -330,7 +330,7 @@
 	</table>
 	</div>
 
-	<?php if	($page_max > 1 ) : ?>
+		<div class="pz-click-log-bottom-navigation">
 		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>">
 			<button type="submit" name="click-page" value="1" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&laquo;', 'pz-linkcard' ) ); ?></button>
 			<button type="submit" name="click-page" value="<?php echo max(1, $click_page - 1 ); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
@@ -338,7 +338,7 @@
 			<button type="submit" name="click-page" value="<?php echo min($page_max, $click_page + 1 ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
 			<button type="submit" name="click-page" value="<?php echo intval($page_max ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&raquo;', 'pz-linkcard' ) ); ?></button>
 		</nav>
-	<?php endif; ?>
+	</div>
 	<p>
 		<button type="submit" name="action" value="list" class="button"><?php esc_html_e('Return to Cache Manager', 'pz-linkcard' ); ?></button>
 		<?php if	($this->pz_IsDashboardWidgetReturnUrl($return_url ) ) : ?>

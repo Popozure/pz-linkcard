@@ -11,21 +11,8 @@
 		$mydomain		=	$m[1];
 	}
 
-	// ドメイン一覧作成
-	$domain_list		=	$wpdb->get_results("SELECT domain, count(*) AS count FROM $this->db_card GROUP BY domain ORDER BY domain ASC", ARRAY_A );
-
-	// ドメイン存在チェック
-	$refine		=	null;
-	if	($param_refine ) {
-		foreach	($domain_list as $item ) {
-			if	($param_refine	===	$item['domain'] ) {
-				$refine			=	$item['domain'];
-				break;
-			}
-		}
-	}
-
 	// ソート項目パラメータ
+	if ($orderby === 'sns_qiita') $orderby = 'sns_qiita_likes';
 	$column_rec			=	$wpdb->get_results("SELECT * FROM $this->db_card LIMIT 1", ARRAY_A );	// 項目名を取得
 	if	(isset($column_rec[0] ) && array_key_exists($orderby, $column_rec[0] ) ) {					// 項目名に存在するかチェック
 		$orderby		=	$orderby;																// 存在したら項目名にセットする
@@ -40,28 +27,24 @@
 		$order			=	'desc';		// 降順
 	}
 
-	// 抽出条件
-	$cond				=	(string) $keyword;
-	if (preg_match('/^[0-9]+$/D', trim($cond ) ) ) {
-		$number = trim($cond );
-		$cond = '('.$number.' id:'.$number.' post:'.$number.')';
-	}
+	// 一覧とドメイン候補で共通の分類条件
+	$filter_cond		=	'';
 	$filter_unregistered	=	false;
 
 	switch	($filter ) {
 	case	'all':
 		break;
 	case	'internal':
-		$cond			.=	' domain='.$this->domain;
+		$filter_cond		=	' domain='.$this->domain;
 		break;
 	case	'external':
-		$cond			.=	' -domain='.$this->domain;
+		$filter_cond		=	' -domain='.$this->domain;
 		break;
 	case	'modify':
-		$cond			.=	' alive_result<>update_result';
+		$filter_cond		=	' alive_result<>update_result';
 		break;
 	case	'unlink':
-		$cond			.=	' alive_result<>0 -alive_result:100..399';
+		$filter_cond		=	' alive_result<>0 -alive_result:100..399';
 		break;
 	case	'unregistered':
 		$filter_unregistered	=	true;
@@ -69,26 +52,56 @@
 	default:
 		if	($this->options['sns-period'] && $this->options['flg-alive-count']) {
 			$filter		=	'unlink';
-			$cond		.=	' alive_result<>0 -alive_result:100..399';
+			$filter_cond	=	' alive_result<>0 -alive_result:100..399';
 		} else {
 			$filter		=	'all';
 		}
 	}	
 
+	$parser				=	new pz_LinkCard_Search_Query_Parser($wpdb );
+	$parsed_filter		=	$parser->parse($filter_cond );
+	$filter_where		=	$filter_unregistered ? '(regist_time IS NULL OR regist_time = 0)' : $parsed_filter['where'];
+	$filter_params		=	$parsed_filter['params'];
+
+	// 検索語・ドメイン指定を加える前の分類内から、候補と件数を取得する。
+	$domain_sql			=	"SELECT domain, count(*) AS count FROM $this->db_card";
+	if ($filter_where) {
+		$domain_sql		.=	" WHERE $filter_where";
+	}
+	$domain_sql			.=	' GROUP BY domain ORDER BY domain ASC';
+	$domain_list		=	$wpdb->get_results($filter_params ? $wpdb->prepare($domain_sql, $filter_params) : $domain_sql, ARRAY_A );
+
+	// 選択中の分類に存在するドメインだけを絞り込みに使う。
+	$refine		=	null;
+	$highlight_search = ($_SERVER['REQUEST_METHOD'] ?? '') === 'POST'
+		&& in_array($action, array('search', 'select-domain'), true) && !isset($_POST['filter-reset']);
+	if ($param_refine) {
+		foreach ($domain_list as $item) {
+			if ($param_refine === $item['domain']) {
+				$refine = $item['domain'];
+				break;
+			}
+		}
+	}
+
 	// キーワード指定
-	$param				=	array();
+	$cond				=	(string) $keyword;
+	if (preg_match('/^[0-9]+$/D', trim($cond ) ) ) {
+		$number = trim($cond );
+		$cond = '('.$number.' id:'.$number.' post:'.$number.')';
+	}
 
 	// ドメイン指定
 	if	($refine ) {
 		$cond			.=	' domain='.$refine;
 	}
 
-	$parser				=	new pz_LinkCard_Search_Query_Parser($wpdb );
 	$parsed_search		=	$parser->parse($cond );
 	$where				=	$parsed_search['where'];
 	$param				=	$parsed_search['params'];
-	if	($filter_unregistered ) {
-	$where	= $where ? "($where) AND (regist_time IS NULL OR regist_time = 0)" : '(regist_time IS NULL OR regist_time = 0)';
+	if ($filter_where) {
+		$where = $where ? "($where) AND ($filter_where)" : $filter_where;
+		$param = array_merge($param, $filter_params);
 	}
 
 	// 表示オプション
@@ -171,13 +184,33 @@
 	$page_next		=	$page_now		<	$page_max	?	$page_now + 1	:	null;							// 次のページ
 	$page_top		=	$page_now		<	1			?	0				:	($page_now - 1 ) * $page_limit;	// 表示中のページの最初に表示するのが何件目か
 
+	// 表示時に補完する内部リンクの投稿IDを、ソート前にも反映する。
+	if	($orderby === 'post_id' ) {
+		$missing_post_ids = $wpdb->get_results($wpdb->prepare(
+			"SELECT id, url FROM $this->db_card WHERE domain = %s AND (post_id IS NULL OR post_id = 0)",
+			$this->domain
+		) );
+		foreach	($missing_post_ids as $missing_post_id ) {
+			$resolved_post_id = url_to_postid($missing_post_id->url );
+			if	($resolved_post_id > 0 ) {
+				$wpdb->update($this->db_card, array('post_id' => $resolved_post_id ), array('id' => $missing_post_id->id ), array('%d' ), array('%d' ) );
+			}
+		}
+	}
+
 	// データ抽出
 	$sql				=	"SELECT * FROM $this->db_card";
 	if	($where ) {
 		$sql			.=	" WHERE $where";
 	}
 	if	($orderby ) {
-		$sql			.=	" ORDER BY $orderby $order";
+		if	($orderby === 'post_id' ) {
+			$sql .= $wpdb->prepare(" ORDER BY CASE WHEN domain = %s THEN COALESCE(post_id, 0) ELSE 0 END $order, id $order", $this->domain );
+		} elseif ($orderby === 'sns_qiita_likes') {
+			$sql .= " ORDER BY CASE WHEN sns_qiita_likes IS NULL AND sns_qiita_stock IS NULL THEN NULL ELSE COALESCE(sns_qiita_likes, 0) + COALESCE(sns_qiita_stock, 0) END $order, id $order";
+		} else {
+			$sql			.=	" ORDER BY $orderby $order";
+		}
 	}
 	$sql				.=	" LIMIT %d OFFSET %d";
 	$data_param			=	array_merge($param, array($page_limit, $page_top ) );
@@ -233,27 +266,6 @@
 		'aria-describedby'	=> true,
 	);
 ?>
-	<div class="pz-man-filter-row">
-	<div class="pz-man-count-list">
-		<?php
-			$items	=
-				array(
-					'all'		=>	__('All', 'pz-linkcard' ),
-					'external'	=>	__('External', 'pz-linkcard' ),
-					'internal'	=>	__('Internal', 'pz-linkcard' ),
-					'modify'	=>	__('Modify', 'pz-linkcard' ),
-					'unlink'	=>	__('Unlink', 'pz-linkcard' ),
-					'unregistered'	=>	__('Unregistered', 'pz-linkcard' ),
-				);
-			$sep		=	'';
-			foreach	($items as $i_code => $i_name ) {
-				echo	esc_html($sep );
-				echo	'<button type="submit" name="filter" value="'.$i_code.'" class="pz-filter-item"><span class="pz-filter-label'.($filter === $i_code ? ' pz-current' : '').'">'.$i_name.'</span><span class="pz-filter-count">'.esc_attr('('.number_format($count_list[$i_code] ).')' ).'</span></button>';
-				$sep	=	' | ';
-			}
-		?>
-	</div>
-
 	<?php
 		$search_label		=	__('Search', 'pz-linkcard' );
 		$help_label			=	__('Help', 'pz-linkcard' );
@@ -321,6 +333,8 @@
 					<div><dt><code>click:&gt;=10</code></dt><dd><?php echo esc_html(__('Click Count', 'pz-linkcard' ) ); ?></dd></div>
 					<div><dt><code>regist:<?php echo esc_html($search_help_date ); ?></code></dt><dd><?php echo esc_html(__('Registered Date', 'pz-linkcard' ) ); ?></dd></div>
 					<div><dt><code>update:<?php echo esc_html($search_help_date ); ?></code></dt><dd><?php echo esc_html(__('Update Date', 'pz-linkcard' ) ); ?></dd></div>
+					<div><dt><code>sns_nexttime&lt;=now</code></dt><dd><?php echo esc_html(__('Next Share Count Retrieval Date', 'pz-linkcard')); ?></dd></div>
+					<div><dt><code>alive_nexttime&lt;=now</code></dt><dd><?php echo esc_html(__('Next Status Check Date', 'pz-linkcard')); ?></dd></div>
 					<div><dt><code>result:200</code></dt><dd><?php echo esc_html(__('Result Code', 'pz-linkcard' ) ); ?></dd></div>
 					<div class="pz-man-search-operators">
 						<dt class="screen-reader-text"><?php echo esc_html__('Comparison operators', 'pz-linkcard' ); ?></dt>
@@ -350,11 +364,34 @@
 		</div>
 	</div>
 	
+	<hr class="wp-header-end">
+	<?php echo $html_notice; ?>
+	<div class="pz-man-filter-row">
+	<div class="pz-man-count-list">
+		<?php
+			$items	=
+				array(
+					'all'		=>	__('All', 'pz-linkcard' ),
+					'external'	=>	__('External', 'pz-linkcard' ),
+					'internal'	=>	__('Internal', 'pz-linkcard' ),
+					'modify'	=>	__('Modify', 'pz-linkcard' ),
+					'unlink'	=>	__('Unlink', 'pz-linkcard' ),
+					'unregistered'	=>	__('Unregistered', 'pz-linkcard' ),
+				);
+			$sep		=	'';
+			foreach	($items as $i_code => $i_name ) {
+				echo	esc_html($sep );
+				echo	'<button type="submit" name="filter-reset" value="'.$i_code.'" class="pz-filter-item"><span class="pz-filter-label'.($filter === $i_code ? ' pz-current' : '').'">'.$i_name.'</span><span class="pz-filter-count">'.esc_attr('('.number_format($count_list[$i_code] ).')' ).'</span></button>';
+				$sep	=	' | ';
+			}
+		?>
+	</div>
+
 	<div class="pz-man-search">
 		<p class="search-box" title="<?php esc_attr_e('Text or field search. Examples: post:1234, id:10, domain:popozure.info', 'pz-linkcard' ); ?>">
 			<label>
 				<span class="dashicons dashicons-search" style="vertical-align: text-bottom;"></span>
-				<input  type="search"  id="post-search-input" name="keyword" value="<?php echo esc_attr($keyword ); ?>" placeholder="<?php esc_attr_e('Search', 'pz-linkcard' ); ?>" data-pz-today="<?php echo esc_attr($search_help_date ); ?>" />
+				<input  type="search"  id="post-search-input" name="keyword" class="<?php echo $highlight_search && trim((string) $keyword) !== '' ? 'pz-man-search-highlight' : ''; ?>" value="<?php echo esc_attr($keyword ); ?>" placeholder="<?php esc_attr_e('Search', 'pz-linkcard' ); ?>" data-pz-today="<?php echo esc_attr($search_help_date ); ?>" />
 				<button type="submit"  id="search-submit"     name="action"  value="search" class="button action" title="<?php echo esc_attr(__('Search cards', 'pz-linkcard' ).' F3'); ?>"><?php esc_html_e('Search cards', 'pz-linkcard' ); ?></button>
 			</label>
 		</p>
@@ -372,12 +409,12 @@
 				<option value="alive"><?php esc_html_e('Check Status', 'pz-linkcard' ); ?></option>
 				<option value="delete"><?php esc_html_e('Delete from Cache', 'pz-linkcard' ); ?></option>
 			</select>
-			<button type="submit" name="action" value="exec-batch" class="button action" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>' );"><?php esc_html_e('Apply', 'pz-linkcard' ); ?></button>
+			<button type="submit" name="action" value="exec-batch" class="button action" data-empty-message="<?php esc_attr_e('Nothing is selected.', 'pz-linkcard'); ?>" data-confirm-message="<?php esc_attr_e('Are you sure?', 'pz-linkcard'); ?>" data-many-message="<?php esc_attr_e('11 or more items are selected. This may take some time. Do you want to proceed?', 'pz-linkcard'); ?>"><?php esc_html_e('Execute', 'pz-linkcard' ); ?></button>
 			&nbsp;
 		</div>
 		
 		<div class="pz-man-domain-list alignleft actions bulkactions">
-			<select name="refine" id="bulk-action-selector-top">
+			<select name="refine" id="bulk-action-selector-top" class="<?php echo $highlight_search && $refine ? 'pz-man-search-highlight' : ''; ?>">
 				<option value="" selected="selected"><?php esc_html_e('All Domains', 'pz-linkcard' ); ?></option>
 					<?php
 						foreach	($domain_list as $rec ) {
@@ -480,6 +517,13 @@
 	echo	'<br>';
 	$item		=	'sns_hatena';
 	$item_name	=	__('B!', 'pz-linkcard' );
+	$add_class	=	'';
+	$sort		=	$get_sort_icon($item);
+	// echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'">';
+	echo	'<button type="submit" name="header" value="'.$item.'">'.$item_name.$sort.'</button>';
+	echo '<br>';
+	$item		=	'sns_qiita_likes';
+	$item_name	=	__('Qiita', 'pz-linkcard' );
 	$add_class	=	'';
 	$sort		=	$get_sort_icon($item);
 	// echo	'<th scope="col" class="pz-man-head-'.$item.$add_class.'">';
@@ -634,6 +678,10 @@
 					$html_sns	=	sns_counter($data->sns_twitter  ).'<br>';
 					$html_sns	.=	sns_counter($data->sns_facebook ).'<br>';
 					$html_sns	.=	sns_counter($data->sns_hatena   ).'<br>';
+					$qiita_likes = $data->sns_qiita_likes ?? null;
+					$qiita_stock = $data->sns_qiita_stock ?? null;
+					$qiita_total = $qiita_likes === null && $qiita_stock === null ? null : intval($qiita_likes) + intval($qiita_stock);
+					$html_sns	.=	sns_counter($qiita_total).'<br>';
 
 					// サムネイル
 					$thumbnail_url				=	null;
@@ -720,7 +768,7 @@
 							$siteicon_url	=	isset($data->favicon ) && $data->favicon ? $this->pz_GetImage($data->favicon ) : null;
 							$html_siteicon	=	$siteicon_url ? '<img src="'.esc_url($siteicon_url ).'" alt="" width="14" height="14" class="pz-man-body-siteicon" />' : '';
 						?>
-						<span class="pz-man-body-domain-line" title="<?php echo esc_attr($disp_domain ); ?>"><?php echo wp_kses_post($html_siteicon ); ?><?php echo esc_html($disp_domain ); ?></span><br>
+						<span class="pz-man-body-domain-line" title="<?php echo esc_attr($domain ); ?>"><?php echo wp_kses_post($html_siteicon ); ?><?php echo esc_html($disp_domain ); ?></span><br>
 						<span class="pz-man-body-sitename" title="<?php echo esc_attr($disp_sitename ); ?>"><?php echo esc_html($disp_sitename ); ?></span>
 					</div>
 				</td>
