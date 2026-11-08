@@ -27,7 +27,7 @@
 
 	// 記事内容
 	$url					=	$data['url'];
-	$link_post_id			=	url_to_postid($url );					// リンク先の記事IDを取得
+	$link_post_id			=	$this->pz_ResolveInternalPostID($url);	// リンク先の記事IDを取得
 	// 記事IDが取得できた場合
 	if	($link_post_id ) {
 		$post				=	get_post($link_post_id );				// 記事情報

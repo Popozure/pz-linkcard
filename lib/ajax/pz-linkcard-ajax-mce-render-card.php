@@ -30,26 +30,9 @@ defined('ABSPATH' ) || wp_die;
 	}
 	$url_info	= $url ? $this->Pz_GetURLInfo($url ) : null;
 	if	(!empty($url_info['is_internal'] ) ) {
-		$post_id	= url_to_postid($url );
-		$post		= $post_id ? get_post($post_id ) : null;
-		if	($post_id && (!$post || !$this->pz_IsPostPubliclyViewable($post ) ) ) {
-			if	(!empty($this->options['flg-public-only'] ) ) {
-				wp_send_json_error(__('Only publicly viewable posts can be previewed with the current setting.', 'pz-linkcard' ), 403 );
-			}
-			if	(!$post ) {
-				wp_send_json_error(__('Post not found.', 'pz-linkcard' ), 404 );
-			}
-			if	(post_password_required($post ) ) {
-				wp_send_json_error(__('You do not have permission to preview this post.', 'pz-linkcard' ), 403 );
-			}
-			if	(!current_user_can('read_post', $post_id ) ) {
-				wp_send_json_error(__('You do not have permission to preview this post.', 'pz-linkcard' ), 403 );
-			}
-			$preview_data	= $this->pz_GetPost(array('url' => $url ), true );
-			if	(!is_array($preview_data ) ) {
-				wp_send_json_error(__('Failed to retrieve the post content.', 'pz-linkcard' ), 500 );
-			}
-			$atts['preview-data']	= $preview_data;
+		$cached_data = $this->pz_GetCache(array('url' => $url));
+		if (!$this->pz_IsInternalCardPubliclyViewable($url, is_array($cached_data) ? $cached_data : array())) {
+			wp_send_json_error(__('Post not found.', 'pz-linkcard'), 404);
 		}
 	}
 	$html	= $this->shortcode($atts, null, $matches[1] );

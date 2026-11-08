@@ -20,17 +20,50 @@
 	if	(is_array($stored_options ) && isset($stored_options['plugin-version'] ) ) {
 		$stored_version	=	$stored_options['plugin-version'];
 	}
+	if ($stored_version && version_compare($stored_version, '2.6.5', '<')) {
+		foreach (array('ex-thumbnail-size', 'in-thumbnail-size') as $key) {
+			if (($this->options[$key] ?? '') === 'full') {
+				$this->options[$key] = 'large';
+			}
+		}
+	}
 	$upgrade_from_264 = is_array($stored_options) && $stored_version
 		&& version_compare($stored_version, '2.6.4', '<=')
 		&& version_compare($stored_version, PZLKC_PLUGIN_VERSION, '<');
 	if ($upgrade_from_264) {
 		$hide_excerpt = array_key_exists('display-excerpt', $stored_options) && empty($stored_options['display-excerpt']);
 		$date_instead_of_url = intval($stored_options['display-date'] ?? 0) > 0;
+		$info_above_title = intval($stored_options['info-position'] ?? 0) === 1;
+		if ($info_above_title) {
+			$this->options['info-position'] = null;
+		}
 		foreach (array('ex', 'in') as $prefix) {
+			if ($info_above_title) {
+				$items = array('i', 't', 'u');
+				if ($prefix === 'in' && $date_instead_of_url) {
+					$items = array('i', 't');
+					for ($index = 1; $index <= 5; $index++) {
+						if (($this->options[$prefix.'-content-type-'.$index] ?? '') === 'p') {
+							$items[] = 'p';
+							break;
+						}
+					}
+				}
+				if (!$hide_excerpt) {
+					$items[] = 'e';
+				}
+				$items = array_pad($items, 5, '');
+				for ($index = 1; $index <= 5; $index++) {
+					$this->options[$prefix.'-content-type-'.$index] = $items[$index - 1];
+				}
+				continue;
+			}
 			for ($index = 1; $index <= 5; $index++) {
 				$key = $prefix.'-content-type-'.$index;
 				$item = $this->options[$key] ?? '';
-				if (($hide_excerpt && $item === 'e') || ($prefix === 'in' && $date_instead_of_url && $item === 'u')) {
+				if ($hide_excerpt && $item === 'e') {
+					$this->options[$key] = '';
+				} elseif ($prefix === 'in' && $date_instead_of_url && $item === 'u') {
 					$this->options[$key] = '';
 				}
 			}

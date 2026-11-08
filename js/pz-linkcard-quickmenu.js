@@ -45,31 +45,6 @@
                 transform: translateY(-2px);
                 transition: opacity 0.16s ease, transform 0.16s ease;
             }
-            .linkcard[data-lkc-id] {
-                position: relative;
-            }
-            .pz-lkc-quickmenu-indicator {
-                position: absolute;
-                top: 8px;
-                right: 8px;
-                z-index: 2;
-                width: 20px;
-                height: 20px;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.78);
-                color: #2271b1;
-                font-size: 20px;
-                line-height: 20px;
-                text-align: center;
-                opacity: 0;
-                cursor: context-menu;
-                pointer-events: auto;
-                transition: opacity 0.15s ease;
-            }
-            .linkcard[data-lkc-id]:hover .pz-lkc-quickmenu-indicator,
-            .linkcard[data-lkc-id]:focus-within .pz-lkc-quickmenu-indicator {
-                opacity: 1;
-            }
             .pz-lkc-quickmenu.pz-lkc-quickmenu-open {
                 opacity: 1;
                 transform: translateY(0);

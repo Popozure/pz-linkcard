@@ -2787,6 +2787,7 @@ button.pz-man-click-log-button:hover {
 	max-width: 240px !important;
 }
 
+
 .pz-click-cleanup-weekdays {
 	display: flex;
 	flex-wrap: wrap;
@@ -4455,8 +4456,65 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 	display: inline-flex !important;
 }
 
+.pz-settings-preview-window.pz-settings-preview-docked-left .pz-settings-preview-handle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	z-index: 4;
+	flex-direction: column;
+	width: 24px;
+	min-height: 0;
+	padding: 6px 2px;
+	border-left: 1px solid #c3c4c7;
+	border-bottom: 0;
+	box-sizing: border-box;
+	cursor: ew-resize;
+	touch-action: none;
+	user-select: none;
+}
+
+.pz-settings-preview-window.pz-settings-preview-docked-left .pz-settings-preview-title {
+	writing-mode: vertical-rl;
+}
+
+.pz-settings-preview-window.pz-settings-preview-docked-left .pz-settings-preview-controls {
+	flex-direction: column;
+	margin-top: auto;
+	margin-right: 0;
+}
+
+.pz-settings-preview-window.pz-settings-preview-docked-left .pz-settings-preview-body {
+	width: calc(100% - 24px);
+	margin-right: 24px;
+}
+
+.pz-settings-preview-window.pz-settings-preview-docked-left .pz-settings-preview-two-cards-control {
+	position: static;
+	display: inline-flex !important;
+}
+
+
 .pz-settings-preview-window.pz-settings-preview-animating {
 	transition: left 100ms ease, top 100ms ease, right 100ms ease, bottom 100ms ease, width 100ms ease, height 100ms ease, border-radius 100ms ease, box-shadow 100ms ease, opacity 100ms ease, visibility 0s linear 100ms;
+}
+
+
+.pz-settings-preview-window .lkc-date.lkc-date-right {
+	box-sizing: border-box;
+	max-width: 100%;
+	min-width: 0;
+	text-align: right;
+}
+
+.pz-settings-preview-window .lkc-info > .lkc-date-right {
+	flex: 0 0 auto;
+	margin-right: 0;
+}
+
+.pz-settings-preview-window .lkc-info:has(> .lkc-date-right) > :not(.lkc-date-right) {
+	min-width: 0;
+	flex-shrink: 1;
 }
 
 .pz-settings-preview-restore {
@@ -4591,7 +4649,7 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 }
 
 /* Responsive */
-@media screen and (max-width: 960px) {
+@media screen and (min-width: 769px) and (max-width: 1024px) {
 	#pz-infobar .pz-infobar-right {
 		position: absolute;
 		top: 0;
@@ -4643,28 +4701,6 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 		margin-right: 0;
 	}
 
-}
-
-@media screen and (min-width: 961px) and (max-width: 1200px) {
-	#pz-infobar .pz-infobar-right {
-		position: absolute;
-		top: 0;
-		right: 16px;
-		bottom: 0;
-		padding-right: 78px;
-		justify-content: flex-end;
-	}
-
-	#pz-infobar .pz-infobar-switch {
-		position: absolute;
-		top: 50%;
-		right: 0;
-		z-index: 12;
-		transform: translateY(-50%);
-	}
-}
-
-@media screen and (min-width: 783px) and (max-width: 1200px) {
 	.pz-cacheman {
 		width: 100%;
 		min-width: 100%;
@@ -4749,7 +4785,85 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 	}
 }
 
-@media screen and (max-width: 782px) {
+@media screen and (max-width: 768px) {
+	#pz-infobar .pz-infobar-right {
+		position: absolute;
+		top: 0;
+		right: 16px;
+		bottom: 0;
+		margin-left: auto;
+		justify-content: flex-end;
+		padding-right: 78px;
+	}
+
+	#pz-infobar .pz-infobar-switch {
+		position: absolute;
+		top: 50%;
+		right: 0;
+		z-index: 12;
+		transform: translateY(-50%);
+	}
+
+	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-debug,
+	#pz-infobar.pz-infobar-hide-modes .pz-infobar-env-admin {
+		display: none;
+	}
+
+	#pz-infobar.pz-infobar-hide-filemenu .pz-infobar-filemenu {
+		display: none;
+	}
+
+	body.auto-fold {
+		--pz-overlay-left: 36px;
+	}
+
+	body.auto-fold #pz-infobar {
+		left: 36px;
+	}
+	#poststuff.pz-man-cache-poststuff #post-body.columns-2 {
+		margin-right: 0;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.pz-man-cache-main,
+	#poststuff.pz-man-cache-poststuff #post-body.columns-2 #postbox-container-1 {
+		display: block;
+		float: none;
+		width: 100%;
+	}
+
+	#poststuff.pz-man-cache-poststuff #post-body.columns-2 #postbox-container-1 {
+		margin-right: 0;
+	}
+
+
+	body.settings_page_pz-linkcard-settings #pz-search-prev-btn {
+		display: none;
+	}
+	body.settings_page_pz-linkcard-settings #pz-infobar .pz-infobar-right {
+		position: static;
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+	body.settings_page_pz-linkcard-settings #pz-infobar-search {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+	body.settings_page_pz-linkcard-settings .pz-infobar-search-box {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+	body.settings_page_pz-linkcard-settings #pz-search-box {
+		box-sizing: border-box;
+		width: 100%;
+		min-width: 0;
+	}
+	body.settings_page_pz-linkcard-settings #pz-search-btn {
+		flex: 0 0 auto;
+		white-space: nowrap;
+	}
+
 	body,
 	body.auto-fold,
 	body.folded {
@@ -5292,4 +5406,10 @@ body.pz-settings-preview-right-docked-active #wpbody-content {
 	.pz-settings-preview-list {
 		grid-template-columns: 1fr;
 	}
+}
+
+body.pz-settings-preview-left-docked-active #wpbody-content {
+    box-sizing: border-box;
+    width: calc(100% - var(--pz-settings-preview-left-docked-width, 0px));
+    margin-left: var(--pz-settings-preview-left-docked-width, 0px);
 }

@@ -117,8 +117,8 @@ trait Pz_LinkCard_Widget {
 			'all'		=> __('All', 'pz-linkcard' ),
 			'external'	=> __('External', 'pz-linkcard' ),
 			'internal'	=> __('Internal', 'pz-linkcard' ),
-			'modify'	=> __('Modify', 'pz-linkcard' ),
-			'unlink'	=> __('Unlink', 'pz-linkcard' ),
+			'modify'	=> __('HTTP Status Changed', 'pz-linkcard' ),
+			'unlink'	=> __('Broken Link', 'pz-linkcard' ),
 			'unregistered'	=> __('Unregistered', 'pz-linkcard' ),
 		);
 		$label_icons	= array(

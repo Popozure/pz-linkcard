@@ -39,7 +39,7 @@ trait Pz_LinkCard_Editor_Block {
 			'shortcodes'	=>	$shortcodes,
 			'title'			=>	'Pz-LinkCard',
 			'placeholder'	=>	__('Enter a URL or search keyword', 'pz-linkcard' ),
-			'description'	=>	__('Create a Pz-LinkCard shortcode.', 'pz-linkcard' ),
+			'description'	=>	__('Display the linked page as a LinkCard.', 'pz-linkcard' ),
 			'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
 			'searchNonce'	=>	wp_create_nonce('pz_lkc_mce_post_search' ),
 			'searchResults'	=>	__('Search results', 'pz-linkcard' ),
@@ -49,7 +49,7 @@ trait Pz_LinkCard_Editor_Block {
 
 		$block_args	=	array(
 			'title'				=>	'Pz-LinkCard',
-			'description'		=>	__('Create a Pz-LinkCard shortcode.', 'pz-linkcard' ),
+			'description'		=>	__('Display the linked page as a LinkCard.', 'pz-linkcard' ),
 			'category'			=>	'widgets',
 			'icon'				=>	'admin-links',
 			'supports'			=>	array(

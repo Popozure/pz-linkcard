@@ -14,7 +14,7 @@
 			<th scope="row"><?php esc_html_e('Initialize Settings', 'pz-linkcard' ); ?></th>
 			<td>
 				<button type="submit" name="action" value="init-settings" class="pz-button-sure" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Run', 'pz-linkcard' ); ?></button>
-				&ensp;<span><?php esc_html_e('Reset the "Settings" to the initial value.', 'pz-linkcard' ); ?></span>
+				&ensp;<span><?php esc_html_e('Reset the settings to their initial values.', 'pz-linkcard' ); ?></span>
 
 				<div class="pz-admin-only" style="margin-top: 16px;">
 					<label>

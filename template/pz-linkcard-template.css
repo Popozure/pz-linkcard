@@ -344,6 +344,20 @@
 .lkc-info.lkc-info-embedded > * {
 	flex-shrink: 0;
 }
+.lkc-date.lkc-date-right {
+	box-sizing: border-box;
+	max-width: 100%;
+	min-width: 0;
+	text-align: right;
+}
+.lkc-info > .lkc-date-right {
+	flex: 0 0 auto;
+	margin-right: 0;
+}
+.lkc-info:has(> .lkc-date-right) > :not(.lkc-date-right) {
+	min-width: 0;
+	flex-shrink: 1;
+}
 .lkc-siteicon {
 	display: inline-flex /*IMPORTANT*/;
 	flex: 0 0 auto;
@@ -382,6 +396,12 @@ img.lkc-siteicon {
 }
 .lkc-cat-list {
 	display: inline-flex /*IMPORTANT*/;
+	min-width: 0;
+	overflow-x: auto;
+	overflow-y: hidden;
+	box-sizing: border-box;
+	scrollbar-width: none;
+	cursor: grab;
 	align-items: center;
 	gap: 4px;
 	max-width: 100%;
@@ -389,6 +409,13 @@ img.lkc-siteicon {
 	padding: 1px;
 	vertical-align: middle;
 	white-space: nowrap;
+}
+.lkc-cat-list::-webkit-scrollbar {
+	display: none;
+}
+.lkc-cat-list.pz-category-dragging {
+	cursor: grabbing;
+	user-select: none;
 }
 .lkc-cat-list > object {
 	display: inline-flex;
@@ -418,6 +445,9 @@ img.lkc-siteicon {
 }
 .lkc-cat-list .lkc-cat:hover {
 	/*CAT-HOVER*/
+}
+.lkc-share > object {
+	display: contents;
 }
 .lkc-share {
 	text-shadow: none;

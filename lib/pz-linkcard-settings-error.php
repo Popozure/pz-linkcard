@@ -10,7 +10,7 @@ $error_post_url = isset($prop['error-url'] ) ? (string) $prop['error-url'] : '';
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 	<h2><?php echo	__('Error Settings', 'pz-linkcard' ).$help_open.'error'.$help_close; ?></h2>
 	<div class="pz-error-text">
-		<?php esc_html_e('The shortcode description is incorrect. Please open the "Linked Articles" section and correct it.', 'pz-linkcard' ); ?>
+		<?php esc_html_e('The shortcode syntax is incorrect. Open the linked post and correct it.', 'pz-linkcard' ); ?>
 	</div>
 	<table class="pz-set-table form-table">
 		<tr>
@@ -58,8 +58,8 @@ $error_post_url = isset($prop['error-url'] ) ? (string) $prop['error-url'] : '';
 			<th scope="row"><?php esc_html_e('Error Reset', 'pz-linkcard' ); ?></th>
 			<td>
 				<button type="submit" name="action" value="clear-error" class="pz-button"><?php esc_html_e('Reset', 'pz-linkcard' ); ?></button>
-				&ensp;<span><?php esc_html_e('Cancel the error condition.', 'pz-linkcard' ); ?></span>
-				<br><span class="pz-warning"><?php esc_html_e('* If you have not corrected the error, you may still get an error even if you cancel the error.', 'pz-linkcard' ); ?></span>
+				&ensp;<span><?php esc_html_e('Clear the error state.', 'pz-linkcard' ); ?></span>
+				<br><span class="pz-warning"><?php esc_html_e('* If you have not corrected the error, viewing the post may trigger the error again.', 'pz-linkcard' ); ?></span>
 			</td>
 		</tr>
 	</table>

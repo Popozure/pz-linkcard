@@ -70,7 +70,7 @@
 
 ?>
 <div class="pz-page pz-page-admin<?php echo $pz_page_active('pz-admin' ); ?>" id="pz-admin">
-	<div class="pz-admin-notice"><?php esc_html_e('Do not use normally as it can be set to incapacitate.', 'pz-linkcard' ); ?></div>
+	<div class="pz-admin-notice"><?php esc_html_e('Do not use this mode for normal operation, as some settings can prevent the plugin from working.', 'pz-linkcard' ); ?></div>
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 
 	<h2><?php esc_html_e('Plugin Information', 'pz-linkcard' ); ?></h2>
@@ -107,10 +107,10 @@
 			<td><span class="pz-monospace"><?php echo esc_html(self::OPTION_NAME ); ?></span></td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Size of the options', 'pz-linkcard' ); ?></th>
+			<th scope="row" colspan="2"><?php esc_html_e('Options Size', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php $option_size = strlen(serialize($this->options ) ); ?>
-				<span class="pz-monospace"><?php printf(esc_html(_n('%s Byte', '%s Bytes', $option_size, 'pz-linkcard' ) ), esc_html(number_format_i18n($option_size ) ) ); ?></span>
+				<span class="pz-monospace"><?php printf(esc_html(_n('%s bytes', '%s Bytes', $option_size, 'pz-linkcard' ) ), esc_html(number_format_i18n($option_size ) ) ); ?></span>
 			</td>
 		</tr>
 		<tr>
@@ -131,12 +131,12 @@
 			<td><span class="pz-monospace"><?php echo esc_html(phpversion() ); ?></span></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('DBMS Version', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Database Server Version', 'pz-linkcard' ); ?></th>
 			<td><span class="pz-monospace"><?php global $wpdb; echo esc_html($wpdb->db_version() ); ?></span></td>
 		</tr>
 	</table>
 
-	<h2><?php esc_html_e('for Debug', 'pz-linkcard' ); ?></h2>
+	<h2><?php esc_html_e('For Debugging', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Error Conditions', 'pz-linkcard' ); ?></th>
@@ -154,7 +154,7 @@
 				<label>
 					<input type="hidden"   name="properties[debug-nocache]" value="" />
 					<input type="checkbox" name="properties[debug-nocache]" value="1" <?php checked($prop['debug-nocache'] ); ?> class="pz-tab-show" />
-					<?php esc_html_e('Forced access to links even if they are recorded in DB.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Always retrieve content from the linked page, even if it is cached in the database.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>

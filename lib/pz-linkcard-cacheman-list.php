@@ -374,8 +374,8 @@
 					'all'		=>	__('All', 'pz-linkcard' ),
 					'external'	=>	__('External', 'pz-linkcard' ),
 					'internal'	=>	__('Internal', 'pz-linkcard' ),
-					'modify'	=>	__('Modify', 'pz-linkcard' ),
-					'unlink'	=>	__('Unlink', 'pz-linkcard' ),
+					'modify'	=>	__('HTTP Status Changed', 'pz-linkcard' ),
+					'unlink'	=>	__('Broken Link', 'pz-linkcard' ),
 					'unregistered'	=>	__('Unregistered', 'pz-linkcard' ),
 				);
 			$sep		=	'';
@@ -628,11 +628,11 @@
 						if	($data->no_failure ) {		// エラー無視が有効か
 							$temp_icon	=	__('&#x26a0;&#xfe0f;', 'pz-linkcard' );		// ⚠️
 							$temp_class	=	'pz-man-body-url-error-ignore';				// エラー無視
-							$temp_title	=	__('The latest HTTP code indicates an error, but it is ignored.', 'pz-linkcard' );
+							$temp_title	=	__('A recorded HTTP status code indicates an error, but the error is being ignored for this card.', 'pz-linkcard' );
 						} else {
 							$temp_icon	=	__('&#x26d4;&#xfe0f;', 'pz-linkcard' );		// ⛔️エラー
 							$temp_class	=	'pz-man-body-url-error';					// エラー
-							$temp_title	=	__('The latest HTTP code indicates an error. You can ignore the error from the edit screen.', 'pz-linkcard' );
+							$temp_title	=	__('A recorded HTTP status code indicates an error. You can choose to ignore the error on the card editing screen.', 'pz-linkcard' );
 						}
 						$html_url_error	=	'<span class="'.$temp_class.'" title="'.$temp_title.'">'.$temp_icon.'</span>';
 					}

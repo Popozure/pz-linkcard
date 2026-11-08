@@ -5,6 +5,10 @@ defined('ABSPATH' ) || wp_die;
 	if	(!check_ajax_referer('pz_lkc_nonce', 'nonce', false ) ) {
 		wp_send_json_error('invalid nonce');
 	}
+	if (empty($this->options['flg-click-count'])) {
+		wp_send_json_success('Click recording is disabled');
+		return;
+	}
 
 	// 入力チェック
 	$lkc_id	=	isset($_POST['lkc_id'])	?	intval($_POST['lkc_id'] )		:	'';

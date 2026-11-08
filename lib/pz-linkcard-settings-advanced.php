@@ -2,43 +2,43 @@
 <div class="pz-page<?php echo $pz_page_active('pz-advanced' ); ?>" id="pz-advanced">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 
-	<h2><?php echo __('Senior Settings', 'pz-linkcard' ).$help_open.'advanced'.$help_close; ?></h2>
+	<h2><?php echo __('Advanced Settings', 'pz-linkcard' ).$help_open.'advanced'.$help_close; ?></h2>
 	<table class="form-table">
 		<?php
 			// 末尾のスラッシュの除去
 			$item_name		=	'trail-slash';
 			$item_list		=	array(
 				''			=>		__('As is',							'pz-linkcard' ),
-				'1'			=> 		__('When only domain name, remove',	'pz-linkcard' ),
+				'1'			=> 		__('Remove only when the URL contains just a domain name',	'pz-linkcard' ),
 				'2'			=>		__('Always remove',					'pz-linkcard' ),
 			);
 			$item_descript		=	__('Trailing Slash',				'pz-linkcard' );
 			echo_list($item_name, $prop[$item_name], $item_list, $item_descript, $item_notice );
 		?>
 		<tr>
-			<th scope="row"><?php esc_html_e('Class ID to be Added (for PC)',	'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('CSS Class to Add (Desktop)',	'pz-linkcard' ); ?></th>
 			<td><input name="properties[class-pc]"			type="text" size="40" value="<?php echo	(isset($this->options['class-pc'] ) ? esc_attr($this->options['class-pc'] ) : '' ); ?>" /></td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Class ID to be Added (for Mobile)',	'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('CSS Class to Add (Mobile)',	'pz-linkcard' ); ?></th>
 			<td><input name="properties[class-mobile]"		type="text" size="40" value="<?php echo	(isset($this->options['class-mobile'] ) ? esc_attr($this->options['class-mobile'] ) : '' ); ?>" /><br>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Filter Priority', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Visual Editor Filter Priority', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input name="properties[mce-priority]" type="number" min="0" max="9999" size="80" value="<?php echo esc_attr($this->options['mce-priority'] ); ?>" /><?php esc_html_e('(Null or 0-9999)',  'pz-linkcard' ); ?>
-					<?php esc_html_e('Setting a larger value may improve when the insert button does not appear in the editor.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('If the insert button does not appear in the editor, setting this value to 11 or higher may help.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Compress', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('CSS Compression', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-compress]" value="" />
 					<input type="checkbox" name="properties[flg-compress]" value="1" <?php checked($this->options['flg-compress'] ); ?> />
-					<?php esc_html_e('Compress CSS and JavaScript to improve access speed.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Use the compressed stylesheet for LinkCards.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -48,12 +48,12 @@
 			<datalist id="date-dormat-man-default"><option value="Y\<\b\r\/\>m/d\<\b\r\/\>H:i">Y\<\b\r\/\>m/d\<\b\r\/\>H:i</option><option value="d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a">d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a</option></datalist>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('Input Inhibit Time', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Input Lock', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-inhibit]" value="" />
 					<input type="checkbox" name="properties[flg-inhibit]" value="1" <?php checked($this->options['flg-inhibit'] ); ?> />
-					<?php esc_html_e('After pressing a button, the screen goes dark to prevent accidental input.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Show a processing overlay while the settings page loads to prevent accidental clicks.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -79,13 +79,13 @@
 		</tr>
 
 		<tr>
-			<th scope="row"><?php esc_html_e('Google AMP determination', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Google AMP Detection', 'pz-linkcard' ); ?></th>
 			<td>
 				<p>
 					<label>
 						<input type="hidden"   name="properties[flg-amp-url]" value="" />
 						<input type="checkbox" name="properties[flg-amp-url]" value="1" <?php checked($this->options['flg-amp-url'] ); ?> />
-						<?php echo __('Simplified display if the URL ends with "/amp", "/amp/", or "/?amp=1".', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?>
+						<?php echo __('Use a simplified display if the URL ends with "/amp", "/amp/", or "/?amp=1".', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' ); ?>
 					</label>
 				</p>
 			</td>
@@ -96,7 +96,7 @@
 				<label>
 					<input type="hidden"   name="properties[error-mode-hide]" value="" />
 					<input type="checkbox" name="properties[error-mode-hide]" value="1" class="pz-tab-show" <?php checked($this->options['error-mode-hide'] ); ?> />
-					<?php echo __('Do not display an error on the admin page.', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?>
+					<?php echo __('Do not display an error on the admin page.', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -122,7 +122,7 @@
 					<label>
 						<input type="hidden"   name="properties[flg-special-ogp]" value="" />
 						<input type="checkbox" name="properties[flg-special-ogp]" value="1" <?php checked($this->options['flg-special-ogp'] ); ?> />
-						<?php echo esc_html__('Retrieve Post and Updated Dates.', 'pz-linkcard' ); ?>
+						<?php echo esc_html__('Retrieve Publication and Update Dates.', 'pz-linkcard' ); ?>
 					</label>
 				</p>
 			</td>
@@ -146,7 +146,7 @@
 					<label>
 						<input type="hidden"   name="properties[flg-special-twitter]" value="" />
 						<input type="checkbox" name="properties[flg-special-twitter]" value="1" <?php checked($this->options['flg-special-twitter'] ); ?> />
-						<?php echo esc_html__('Retrieve Post Date and Profile Images.', 'pz-linkcard' ); ?>
+						<?php echo esc_html__('Retrieve the Publication Date and Profile Images.', 'pz-linkcard' ); ?>
 					</label>
 				</p>
 			</td>
@@ -182,7 +182,7 @@
 					<label>
 						<input type="hidden"   name="properties[flg-special-qiita]" value="" />
 						<input type="checkbox" name="properties[flg-special-qiita]" value="1" <?php checked($this->options['flg-special-qiita'] ); ?> />
-						<?php echo esc_html__('Retrieve Post and Updated Dates', 'pz-linkcard' ); ?>
+						<?php echo esc_html__('Retrieve Publication and Update Dates', 'pz-linkcard' ); ?>
 					</label>
 				</p>
 			</td>
@@ -350,7 +350,7 @@
 			</td>
 		</tr>
 		<tr  class="pz-develop-only">
-			<th scope="row" style="color: #0a8 !important; background-color: #b0bbbb !important;"><?php esc_html_e('Develop Mode', 'pz-linkcard' ); ?></th>
+			<th scope="row" style="color: #0a8 !important; background-color: #b0bbbb !important;"><?php esc_html_e('Development Mode', 'pz-linkcard' ); ?></th>
 			<td style="background-color: #fffff8 !important;">
 				<label>
 					<input type="hidden"   name="properties[develop-mode]" value="" />

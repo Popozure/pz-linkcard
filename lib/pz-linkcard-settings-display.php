@@ -8,7 +8,7 @@
 			<th scope="row" rowspan="2"><?php esc_html_e('Stylesheet', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Reset Image', 'pz-linkcard' ); ?></th>
 			<td>
-				<?php pz_Checkbox($prop, 'flg-style-reset', __('When unnecessary frame is displayed on the image, you can improve it by case.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ) ); ?>
+				<?php pz_Checkbox($prop, 'flg-style-reset', __('Resetting image styles may help if an unwanted border appears around an image.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
 		<tr>
@@ -19,7 +19,7 @@
 		</tr>
 		<tr>
 			<th scope="row" rowspan="5"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
-			<th scope="row"><?php esc_html_e('Post and Updated Dates', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Publication and Update Dates', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Option($prop, 'date-pattern', '', array(
 								''		=>		__('None', 'pz-linkcard' ),
@@ -31,7 +31,7 @@
 		<tr>
 			<th scope="row"><?php esc_html_e('Date Format', 'pz-linkcard'); ?></th>
 			<td>
-				<?php foreach (array('Y-m-d', 'Y.m.d', 'Y年n月j日', 'F j, Y') as $date_format) : ?>
+				<?php foreach (array('Y.m.d', 'Y-m-d', 'Y年n月j日', 'F j, Y') as $date_format) : ?>
 				<label class="pz-date-format-option" style="margin-right:1em"><input type="radio" name="properties[date-format]" value="<?php echo esc_attr($date_format); ?>" <?php checked($prop['date-format'], $date_format); ?> <?php disabled(empty($prop['date-pattern'])); ?> /><?php echo esc_html($date_format); ?></label>
 				<?php endforeach; ?>
 				<label class="pz-date-format-custom"><input type="radio" name="properties[date-format]" value="custom" <?php checked($prop['date-format'], 'custom'); ?> aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern'])); ?> /><input type="text" name="properties[date-format-custom]" value="<?php echo esc_attr($prop['date-format-custom']); ?>" size="20" aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern']) || $prop['date-format'] !== 'custom'); ?> /></label>
@@ -53,6 +53,7 @@
 					<?php $date_icon_value = html_entity_decode($date_icon, ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>
 					<option value="<?php echo esc_attr($date_icon_value); ?>" <?php selected($selected_icon, $date_icon_value); ?>><?php echo esc_html($date_icon_value); ?></option>
 					<?php endforeach; ?>
+
 				</select>
 				</label>
 				<?php endforeach; ?>
@@ -87,7 +88,7 @@
 						<label>
 							<input type="hidden"   name="properties[sns-tw-x]" value="" />
 							<input type="checkbox" name="properties[sns-tw-x]" value="1" <?php checked($prop['sns-tw-x'] ); ?> />
-							<?php echo __('Change the unit of measure to "tweets".', 'pz-linkcard' ); ?>
+							<?php echo __('Use "Tweet" instead of "Post" as the count label.', 'pz-linkcard' ); ?>
 						</label>
 					</li>
 					<li>
@@ -118,7 +119,7 @@
 			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php
-					echo sprintf(esc_html__('The %s are located on the “Advanced” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-sns-recurrence-settings">'.esc_html__('Settings item', 'pz-linkcard').'</a>');
+					echo sprintf(esc_html__('The %s are on the “Advanced” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-sns-recurrence-settings">'.esc_html__('settings', 'pz-linkcard').'</a>');
 				?>
 			</td>
 		</tr>

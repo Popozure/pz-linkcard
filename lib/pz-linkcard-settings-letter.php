@@ -1,12 +1,12 @@
 <?php defined('ABSPATH' ) || wp_die; ?>
 <div class="pz-page<?php echo $pz_page_active('pz-letter' ); ?>" id="pz-letter">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Letter Settings', 'pz-linkcard' ).$help_open.'letter'.$help_close; ?></h2>
+	<h2><?php echo	__('Text Settings', 'pz-linkcard' ).$help_open.'letter'.$help_close; ?></h2>
 	<div class="pz-letter-scroll">
 	<table class="pz-letter-table form-table">
 		<tr class="pz-letter-head">
 			<th></th>
-			<th><?php esc_html_e('Letter Color',		'pz-linkcard' ); ?></th>
+			<th><?php esc_html_e('Text Color',		'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Outline Color',		'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Background Color',	'pz-linkcard' ); ?></th>
 			<th><?php esc_html_e('Size',				'pz-linkcard' ); ?></th>

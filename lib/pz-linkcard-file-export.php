@@ -17,7 +17,7 @@
 	$filename	=	'pz_linkcard_export_utf8_'.gmdate('Ymd_His').'.csv';
 	$wp_filesystem	=	$this->pz_GetFilesystem();
 	if	(!$wp_filesystem ) {
-		wp_die(esc_html__('Failed to open the export file.', 'pz-linkcard' ) );
+		wp_die(esc_html__('Could not initialize filesystem access for export.', 'pz-linkcard' ) );
 	}
 
 	header('Content-Type: text/csv; charset=UTF-8' );

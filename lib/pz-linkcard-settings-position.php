@@ -191,7 +191,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-anti-select]" value="" />
 					<input type="checkbox" name="properties[flg-anti-select]" value="1" <?php checked($this->options['flg-anti-select'] ); ?> />
-					<?php esc_html_e('Prohibit the selection of text in the Link-Card.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Prevent text selection within LinkCards.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>

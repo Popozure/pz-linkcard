@@ -31,12 +31,12 @@ class class_pz_linkcard {
 	// 設定値
 	private		const	DEFAULTS	=
 		array(
-			'debug-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'admin-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'debug-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'admin-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
 
-			'error-postid'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'error-url'							=>	['type'	=>	'url',					'null'	=>	true,	'default'	=>	null,			],
-			'error-time'						=>	['type'	=>	'timestamp',			'null'	=>	true,	'default'	=>	null,			],
+			'error-postid'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'error-url'							=>	['type'	=>	'url',					'null'	=>	true,	'default'	=>	null,						],
+			'error-time'						=>	['type'	=>	'timestamp',			'null'	=>	true,	'default'	=>	null,						],
 
 			'special-format'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 
@@ -169,10 +169,10 @@ class class_pz_linkcard {
 			'ex-added-text'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'ex-siteicon'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	3,						'reset-format'	=>	true,	],
 			'ex-siteicon-alt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
-			'ex-content-type-1'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	't',					'reset-format'	=>	true,	],
-			'ex-content-type-2'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'u',					'reset-format'	=>	true,	],
-			'ex-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'e',					'reset-format'	=>	true,	],
-			'ex-content-type-4'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'ex-content-type-1'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'ex-content-type-2'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	't',					'reset-format'	=>	true,	],
+			'ex-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'u',					'reset-format'	=>	true,	],
+			'ex-content-type-4'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'e',					'reset-format'	=>	true,	],
 			'ex-content-type-5'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
 			'ex-get-from'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	2,						'reset-format'	=>	true,	],
 			'ex-transform-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
@@ -204,7 +204,7 @@ class class_pz_linkcard {
 			'ex-hover-transform-scale'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
 			'ex-hover-opacity'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
 			'ex-hover-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
-			'ex-hover-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#ddeeff88',			'reset-format'	=>	true,	],
+			'ex-hover-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#c0e0ff',				'reset-format'	=>	true,	],
 			'ex-hover-bg-image'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'ex-hover-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'ex-hover-border-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#114488',				'reset-format'	=>	true,	],
@@ -293,8 +293,8 @@ class class_pz_linkcard {
 			'in-siteicon-alt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'in-content-type-1'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'c',					'reset-format'	=>	true,	],
 			'in-content-type-2'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	't',					'reset-format'	=>	true,	],
-			'in-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'e',					'reset-format'	=>	true,	],
-			'in-content-type-4'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'in-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'in-content-type-4'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'e',					'reset-format'	=>	true,	],
 			'in-content-type-5'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
 			'in-get-from'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'in-field-title'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
@@ -329,7 +329,7 @@ class class_pz_linkcard {
 			'in-hover-transform-scale'			=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
 			'in-hover-opacity'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	100,					'reset-format'	=>	true,	],
 			'in-hover-bg-enabled'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						'reset-format'	=>	true,	],
-			'in-hover-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#fffaf088',			'reset-format'	=>	true,	],
+			'in-hover-bg-color'					=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#fff0e0',				'reset-format'	=>	true,	],
 			'in-hover-bg-image'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'in-hover-border-enabled'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'in-hover-border-color'				=>	['type'	=>	'color',				'null'	=>	true,	'default'	=>	'#998888',				'reset-format'	=>	true,	],
@@ -407,115 +407,118 @@ class class_pz_linkcard {
 			'in-thumbnail-shadow-spread'		=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,						'reset-format'	=>	true,	],
 			'in-thumbnail-shadow-inset'			=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 
-			'flg-nofollow'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					],
-			'flg-noopener'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'flg-referer'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'flg-relative-url'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'flg-unlink'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'flg-sslverify'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'flg-robots'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,					],
-			'flg-local-check'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'flg-redir'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'user-agent'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'pzlkc',				],
-			'user-agent-text'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					],
-			'flg-click-count'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,						],
-			'flg-click-log'					 	=>  ['type' => 'flag', 					'null'	=>	true,	'default'	=>	null, 		 			],
-			'flg-alive-count'				 	=>  ['type' => 'flag',	 				'null'	=>	true,	'default'	=>	null, 		 			],
+			'flg-nofollow'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-noopener'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-referer'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-relative-url'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-unlink'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-sslverify'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-robots'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-local-check'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-redir'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'user-agent'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'pzlkc',					],
+			'user-agent-text'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
+			'flg-click-count'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-click-log'					 	=>  ['type' =>	'flag',					'null'	=>	true,	'default'	=>	null, 		 				],
+			'flg-alive-count'				 	=>  ['type' =>	'flag',	 				'null'	=>	true,	'default'	=>	null, 		 				],
 
-			'auto-atag'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'auto-url'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'flg-do-shortcode'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'auto-external'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'exclude-url'						=>	['type'	=>	'textarea',				'null'	=>	true,	'default'	=>	null,			],
-			'flg-edit-block'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-edit-insert'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-edit-preview'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'flg-edit-qtag'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'code1'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	'blogcard',		],
-			'use-inline'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'flg-clear-excerpt'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'code2'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	null,			],
-			'code3'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	null,			],
+			'auto-atag'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'auto-url'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-do-shortcode'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'auto-external'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'exclude-url'						=>	['type'	=>	'textarea',				'null'	=>	true,	'default'	=>	null,						],
+			'flg-edit-block'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-edit-insert'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-edit-preview'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-edit-qtag'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'code1'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	'blogcard',					],
+			'use-inline'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-clear-excerpt'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'code2'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	null,						],
+			'code3'								=>	['type'	=>	'code',					'null'	=>	true,	'default'	=>	null,						],
 
-			'multi-myid'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
-			'multi-count'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
+			'multi-myid'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,							],
+			'multi-count'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,							],
 
-			'trail-slash'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'class-pc'							=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
-			'class-mobile'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
-			'mce-priority'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'flg-compress'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'trail-slash'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'class-pc'							=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
+			'class-mobile'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
+			'mce-priority'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'flg-compress'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
 			'date-format-man'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'Y\<\b\r\>m/d\<\b\r\>H:i',	],
-			'flg-inhibit'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-preview'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'preview-mode'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'icon',			],
-			'preview-restore-mode'				=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
-			'preview-left'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'preview-top'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'preview-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'preview-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'preview-docked-height'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'preview-right-docked-width'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'window-left'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'window-top'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'window-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'window-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'docked-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'docked-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'last-bottom-docked-height'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'right-docked-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'preview-two-cards'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'flg-quickmenu'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-amp-url'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'error-mode-hide'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'flg-public-only'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-ogp'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-amazon'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-twitter'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-jmty'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-note'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-qiita'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-yahoo-auc'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-special-microsoft'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'sns-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',		],
-			'sns-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,				],
-			'alive-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',		],
-			'alive-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,				],
-			'get-period-num' => ['type' => 'numeric', 'null' => false, 'default' => 50],
-			'cron-site-interval'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	30,				],
-			'click-cleanup-hour'				=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	4,				],
-			'click-cleanup-minute'				=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
-			'click-cleanup-day-0'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
-			'click-cleanup-day-1'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
-			'click-cleanup-day-2'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
-			'click-cleanup-day-3'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
-			'click-cleanup-day-4'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
-			'click-cleanup-day-5'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,				],
-			'click-cleanup-day-6'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'click-log-retention'			 	=>  ['type'	=> 'string', 				'null'	=>	false,	'default'	=>	'3m', 		 	],
-			'flg-adminbar'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'multi-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'flg-initialize'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'develop-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'flg-inhibit'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-preview'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'preview-mode'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'icon',						],
+			'preview-restore-mode'				=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-left'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-top'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-docked-height'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-right-docked-width'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'window-left'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'window-top'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'window-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'window-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'docked-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'docked-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'last-bottom-docked-height'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'right-docked-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'left-docked-width' => ['type' => 'numeric', 'null' => true, 'default' => null],
 
-			'css-add-url'						=>	['type'	=>	'url',					'null'	=>	true,	'default'	=>	null,			],
-			'css-add'							=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
-			'css-count'							=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,				],
+
+			'preview-two-cards'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-quickmenu'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-amp-url'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'error-mode-hide'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-public-only'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-ogp'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-amazon'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-twitter'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-jmty'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-note'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-qiita'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-yahoo-auc'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-microsoft'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'sns-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',					],
+			'sns-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,							],
+			'alive-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',					],
+			'alive-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,							],
+			'get-period-num'					=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	50,							],
+			'cron-site-interval'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	30,							],
+			'click-cleanup-hour'				=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	4,							],
+			'click-cleanup-minute'				=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	0,							],
+			'click-cleanup-day-0'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,							],
+			'click-cleanup-day-1'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,							],
+			'click-cleanup-day-2'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,							],
+			'click-cleanup-day-3'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,							],
+			'click-cleanup-day-4'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,							],
+			'click-cleanup-day-5'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	0,							],
+			'click-cleanup-day-6'				=>	['type' =>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'click-log-retention'			 	=>  ['type'	=>	'string', 				'null'	=>	false,	'default'	=>	'3m', 		 				],
+			'flg-adminbar'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'multi-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'flg-initialize'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'develop-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+
+			'css-add-url'						=>	['type'	=>	'url',					'null'	=>	true,	'default'	=>	null,						],
+			'css-add'							=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
+			'css-count'							=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,							],
 			'siteicon-api'						=>	['type'	=>	'url_template',			'null'	=>	true,	'default'	=>	'https://www.google.com/s2/favicons?domain=%DOMAIN%',	],
 			'thumbnail-api'						=>	['type'	=>	'url_template',			'null'	=>	true,	'default'	=>	'https://s.wordpress.com/mshots/v1/%URL%?w=200',		],
 
-			'initialize-exception'				=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	0,				],
-			'flg-delete-settings'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-delete-image'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
-			'flg-delete-db'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,				],
+			'initialize-exception'				=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	0,							],
+			'flg-delete-settings'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-delete-image'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-delete-db'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
 
-			'plugin-version'					=>	['type'	=>	'version',				'null'	=>	true,	'default'	=>	null,			],
-			'db-version'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
-			'db-click-version'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,			],
-			'saved-date'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,			],
-			'debug-nocache'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'error-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
-			'error-hide'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,			],
+			'plugin-version'					=>	['type'	=>	'version',				'null'	=>	true,	'default'	=>	null,						],
+			'db-version'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
+			'db-click-version'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
+			'saved-date'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'debug-nocache'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'error-mode'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
+			'error-hide'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
 
 		);
 
@@ -564,7 +567,6 @@ class class_pz_linkcard {
 	private		$db_card;				// DBのテーブル名
 	private		$db_click;				// DBのテーブル名
 	private		$activate_now;			// 二重実行防止
-	private		$suppression;			// 出力抑制
 	private		$now_page;				// 表示中のページ（1:Pzカード設定 2:Pzカード管理）
 	private		$options;				// パラメータ
 	private		$settings_page;			// 設定画面のパス
@@ -574,6 +576,7 @@ class class_pz_linkcard {
 
 
 	private		$request_cache	=	array();
+	private $internal_post_ids = null;
 
 	private	static	function	pz_GetOptionDefinitions() {
 		return	self::DEFAULTS;
@@ -648,7 +651,6 @@ class class_pz_linkcard {
 		$this->cacheman_url			=	admin_url(self::CACHEMAN_URL );						// Pzカード管理のURL
 
 		// オプション取得
-		$this->suppression			=	false;												// 出力抑制（header出力前かどうか）
 		$result						=	$this->pz_LoadOptions();
 
 		// ログ出力
@@ -765,7 +767,7 @@ class class_pz_linkcard {
 	}
 
 	// テキストリンクの行とURLのみの行をリンクカードへ置き換える処理（直接HTMLタグにするのでは無くショートコードに変換する。）
-	public	function	auto_replace($content ) {
+	public	function	auto_replace($content, $render_shortcodes = true ) {
 
 		if		(!$this->options['auto-external'] && !$this->options['exclude-url'] ) {
 			// 内部リンクも外部リンクも変換する
@@ -775,7 +777,7 @@ class class_pz_linkcard {
 			if	($this->options['auto-url'] ) {
 				$content	=	preg_replace('/(^|<br ?\/?>)(<p.*>)?((https?):\/\/[^\s<>]+)(<\/p>|<br ?\/?>)?$/im', '[pz-linkcard-auto-replace url="$3"]', $content );
 			}
-			if	($this->options['flg-do-shortcode'] && ($this->options['auto-atag'] || $this->options['auto-url'] ) ) {
+			if	($render_shortcodes && $this->options['flg-do-shortcode'] && ($this->options['auto-atag'] || $this->options['auto-url'] ) ) {
 				$content	=	do_shortcode($content );
 			}
 			return	$content;
@@ -860,7 +862,7 @@ class class_pz_linkcard {
 				}
 			}
 
-			if	($this->options['flg-do-shortcode'] && ($this->options['auto-atag'] || $this->options['auto-url'] ) ) {
+			if	($render_shortcodes && $this->options['flg-do-shortcode'] && ($this->options['auto-atag'] || $this->options['auto-url'] ) ) {
 				$content	=	do_shortcode($content );
 			}
 			return	$content;
@@ -992,13 +994,37 @@ class class_pz_linkcard {
 
 	// キャッシュやリンク先からリンクカードの表示データを作成
 	private function pz_GetLinkCard($atts ) {
+		if (empty($this->options['debug-mode']) || !is_user_logged_in()) {
+			return $this->pz_BuildLinkCard($atts);
+		}
+		$started = function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true);
+
+		$html = $this->pz_BuildLinkCard($atts);
+
+		$finished = function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true);
+		if (!$html) return $html;
+		$elapsed = sprintf(__('%s sec.', 'pz-linkcard'), number_format($finished - $started, 4, '.', ''));
+		return '<div class="pz-linkcard-timed" style="display:flex;align-items:center;gap:8px;max-width:100%;"><div style="flex:1;min-width:0;">'.$html.'</div><span class="pz-linkcard-elapsed" style="flex:none;white-space:nowrap;font-size:12px;">'.esc_html($elapsed).'</span></div>';
+	}
+
+	private function pz_BuildLinkCard($atts) {
+		$previous_ids = $this->internal_post_ids;
+		$this->internal_post_ids = array();
+		try {
+			return $this->pz_BuildLinkCardContent($atts);
+		} finally {
+			$this->internal_post_ids = $previous_ids;
+		}
+	}
+
+	private function pz_BuildLinkCardContent($atts) {
 		$url = $atts['url'] ?? null;
 		if (!$url ) {
 			return null;
 		}
 		$url_info = $this->Pz_GetURLInfo($url );
 		if (isset($atts['preview-data'] ) && is_array($atts['preview-data'] ) ) {
-			if (!empty($this->options['flg-public-only'] ) && !empty($url_info['is_internal'] ) && !$this->pz_IsInternalCardPubliclyViewable($url, $atts['preview-data'] ) ) {
+			if (!empty($url_info['is_internal'] ) && !$this->pz_IsInternalCardPubliclyViewable($url, $atts['preview-data'] ) ) {
 				return null;
 			}
 			return $this->pz_GetHTML($atts, $url_info );
@@ -1050,6 +1076,7 @@ class class_pz_linkcard {
 				$data = is_array($data ) ? $data : array('url' => $url );
 				$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
 			}
+
 			if ($force || ($this->options['debug-mode'] == true && $this->options['debug-nocache'] == true ) ) {
 				$remote = $this->pz_GetRemote($data );
 				if (is_array($remote ) && !empty($remote['url'] ) ) {
@@ -1065,15 +1092,20 @@ class class_pz_linkcard {
 			}
 		}
 
+		$data = $this->pz_RecordUsedPost($data);
 		$atts['pz-card-data'] = $data;
-		return $this->pz_GetHTML($atts, $url_info );
+		return	$this->pz_GetHTML($atts, $url_info );
 	}
-
 
 	// URLのエンコード（DB格納用のURL作成）
 	private	function	pz_GetClickToken($card_id, $post_id ) {
 		$payload	= absint($card_id ).'|'.absint($post_id );
 		return	hash_hmac('sha256', $payload, wp_salt('auth') );
+	}
+
+	private function pz_GetAjaxCardToken($card_id, $source_post_id, $expires) {
+		$payload = 'pz-lkc-ajax-card|'.absint($card_id).'|'.absint($source_post_id).'|'.absint($expires);
+		return hash_hmac('sha256', $payload, wp_salt('nonce'));
 	}
 
 	private	function	pz_EncodeURL($url = null, $sanitize = false ) {
@@ -1486,8 +1518,20 @@ class class_pz_linkcard {
 		return	$post_type && !empty($post_type->publicly_queryable ) && $post_status && !empty($post_status->public );
 	}
 
+	private function pz_ResolveInternalPostID($url) {
+		// Share URL resolution only within one card build, never visibility decisions.
+		if ($this->internal_post_ids !== null && array_key_exists($url, $this->internal_post_ids)) {
+			return $this->internal_post_ids[$url];
+		}
+		$post_id = url_to_postid($url);
+		if ($this->internal_post_ids !== null) {
+			$this->internal_post_ids[$url] = $post_id;
+		}
+		return $post_id;
+	}
+
 	private	function	pz_IsInternalCardPubliclyViewable($url, $data = array() ) {
-		$post_id	=	url_to_postid($url );
+		$post_id	=	$this->pz_ResolveInternalPostID($url);
 		if	(!$post_id && !empty($data['post_id'] ) ) {
 			$post_id	=	absint($data['post_id'] );
 		}
@@ -1667,6 +1711,33 @@ class class_pz_linkcard {
 		return	preg_match('#^'.$regex.'#', $path ) === 1;
 	}
 
+	private function pz_CheckedRemoteGet($url, $args) {
+		$limit = max(0, intval($args['redirection'] ?? 0));
+		$args['redirection'] = 0;
+		$args['reject_unsafe_urls'] = true;
+		$visited = array();
+		for ($redirects = 0; ; $redirects++) {
+			$url = preg_replace('/#.*$/s', '', $url);
+			if (!preg_match('~\Ahttps?://~i', $url) || isset($visited[$url]) || $this->pz_ShouldBlockLocalAddress($url)) {
+				return new WP_Error('pz_lkc_unsafe_redirect', 'Unsafe URL or redirect loop.');
+			}
+			$visited[$url] = true;
+			$response = wp_safe_remote_get($url, $args);
+			if (is_wp_error($response)) return $response;
+			$code = intval(wp_remote_retrieve_response_code($response));
+			if ($code < 300 || $code >= 400) {
+				$response['pz_lkc_checked_urls'] = array_keys($visited);
+				return $response;
+			}
+			$location = wp_remote_retrieve_header($response, 'location');
+			if (is_array($location)) $location = end($location);
+			if ($redirects >= $limit || !is_string($location) || trim($location) === '' || preg_match('/[\r\n]/', $location)) {
+				return new WP_Error('pz_lkc_invalid_redirect', 'Invalid redirect or redirect limit exceeded.');
+			}
+			$url = $this->pz_RelToURL($url, trim($location));
+		}
+	}
+
 	private	function	pz_GetRobotsTxt($url, $user_agent ) {
 		$scheme	=	wp_parse_url($url, PHP_URL_SCHEME );
 		$host	=	wp_parse_url($url, PHP_URL_HOST );
@@ -1676,13 +1747,17 @@ class class_pz_linkcard {
 		}
 
 		$robots_url		=	$scheme.'://'.$host.($port ? ':'.intval($port ) : '' ).'/robots.txt';
-		$transient_key	=	'pz_lkc_robots_'.md5($robots_url );
+		if ($this->pz_ShouldBlockLocalAddress($robots_url)) return null;
+		$transient_key	=	'pz_lkc_robots_v2_'.md5($robots_url );
 		$cached			=	get_transient($transient_key );
 		if	(is_array($cached ) && array_key_exists('body', $cached ) ) {
+			foreach (($cached['checked_urls'] ?? array($robots_url)) as $checked_url) {
+				if ($this->pz_ShouldBlockLocalAddress($checked_url)) return null;
+			}
 			return	$cached['body'];
 		}
 
-		$response	=	wp_safe_remote_get($robots_url, array(
+		$response	=	$this->pz_CheckedRemoteGet($robots_url, array(
 			'timeout'				=>	5,
 			'redirection'			=>	3,
 			'reject_unsafe_urls'	=>	true,
@@ -1702,7 +1777,7 @@ class class_pz_linkcard {
 		}
 
 		$body	=	wp_remote_retrieve_body($response );
-		set_transient($transient_key, array('body' => $body ), DAY_IN_SECONDS );
+		set_transient($transient_key, array('body' => $body, 'checked_urls' => $response['pz_lkc_checked_urls']), DAY_IN_SECONDS );
 		return	$body;
 	}
 
@@ -2193,14 +2268,14 @@ class class_pz_linkcard {
 		$preview_mode	=	$this->pz_GetRequestOption('preview-mode', $this->options['preview-mode'] ?? '' );
 		$preview_enabled	=	$this->pz_GetRequestOption('flg-preview', $this->options['flg-preview'] ?? null );
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE
-			&& $preview_mode === 'right'
+			&& in_array($preview_mode, array('right', 'left'), true)
 			&& !empty($preview_enabled ) ) {
-			$preview_width	=	$this->pz_GetRequestOption('right-docked-width', $this->pz_GetRequestOption('preview-right-docked-width', $this->options['right-docked-width'] ?? $this->options['preview-right-docked-width'] ?? 240 ) );
+			$preview_width	=	$preview_mode === 'left' ? $this->pz_GetRequestOption('left-docked-width', $this->options['left-docked-width'] ?? 240) : $this->pz_GetRequestOption('right-docked-width', $this->pz_GetRequestOption('preview-right-docked-width', $this->options['right-docked-width'] ?? $this->options['preview-right-docked-width'] ?? 240 ) );
 			$preview_width	=	is_numeric($preview_width ) ? absint($preview_width ) : 240;
 			$preview_width	=	max(180, $preview_width );
 			wp_add_inline_style(
 				'pz-linkcard-admin-css',
-				':root{--pz-settings-preview-right-docked-width:'.$preview_width.'px;}'
+				':root{--pz-settings-preview-'.$preview_mode.'-docked-width:'.$preview_width.'px;}'
 			);
 		}
 
@@ -2234,6 +2309,7 @@ class class_pz_linkcard {
 						'restorePreviewAria'	=>	__('Preview', 'pz-linkcard' ),
 						'dockPreviewBottom'		=>	__('Dock preview bottom', 'pz-linkcard' ),
 						'dockPreviewRight'		=>	__('Dock preview right', 'pz-linkcard' ),
+						'dockPreviewLeft' => __('Dock preview left', 'pz-linkcard'),
 						'windowPreview'			=>	__('Window preview', 'pz-linkcard' ),
 						'referenced'			=>	__('Referenced', 'pz-linkcard' ),
 						'youMayAlsoLike'		=>	__('You may also like', 'pz-linkcard' ),
@@ -2260,9 +2336,9 @@ class class_pz_linkcard {
 		$preview_mode		=	$this->pz_GetRequestOption('preview-mode', $this->options['preview-mode'] ?? '' );
 		$preview_enabled	=	$this->pz_GetRequestOption('flg-preview', $this->options['flg-preview'] ?? null );
 		if	($this->now_page === 1
-			&& $preview_mode === 'right'
+			&& in_array($preview_mode, array('right', 'left'), true)
 			&& !empty($preview_enabled ) ) {
-			$classes	.=	' pz-settings-preview-right-docked-active';
+			$classes	.=	' pz-settings-preview-'.$preview_mode.'-docked-active';
 		}
 		return	$classes;
 	}
@@ -2331,6 +2407,11 @@ class class_pz_linkcard {
 			wp_enqueue_style	('pz-linkcard-css-add',		$this->options['css-add-url'],			array(),	$css_version );
 		}
 		$this->enqueue_excerpt_fit_script();
+		wp_add_inline_style('pz-linkcard-css', '.lkc-date.lkc-date-right{box-sizing:border-box;max-width:100%;min-width:0;text-align:right}.lkc-info>.lkc-date-right{flex:0 0 auto;margin-right:0}.lkc-info:has(>.lkc-date-right)>:not(.lkc-date-right){min-width:0;flex-shrink:1}');
+		$category_scroll_path = $this->plugin_dir_path.'js/pz-linkcard-category-scroll.js';
+		wp_enqueue_script('pz-linkcard-category-scroll', $this->plugin_dir_url.'js/pz-linkcard-category-scroll.js', array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($category_scroll_path), true);
+		wp_add_inline_style('pz-linkcard-css', '.lkc-cat-list{min-width:0;overflow-x:auto;overflow-y:hidden;box-sizing:border-box;scrollbar-width:none;cursor:grab}.lkc-cat-list::-webkit-scrollbar{display:none}.lkc-cat-list.pz-category-dragging{cursor:grabbing;user-select:none}');
+		wp_add_inline_style('pz-linkcard-css', '.lkc-share>object{display:contents}');
 		$this->enqueue_star_field_script();
 		$this->enqueue_snowfall_script();
 		$this->enqueue_pointer_tracking_script();
@@ -2353,6 +2434,7 @@ class class_pz_linkcard {
 		}
 		if	(!empty($this->options['flg-quickmenu'] ) && is_user_logged_in() && current_user_can('manage_options' ) ) {
 			$quickmenu_script	=	'pz-linkcard-quickmenu';
+			wp_add_inline_style('pz-linkcard-css', '.linkcard[data-lkc-id]{position:relative}.pz-lkc-quickmenu-indicator{position:absolute;top:8px;right:8px;z-index:2;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.78);color:#2271b1;font-size:20px;line-height:20px;text-align:center;opacity:0;cursor:context-menu;pointer-events:auto;transition:opacity .15s ease}.linkcard[data-lkc-id]:hover .pz-lkc-quickmenu-indicator,.linkcard[data-lkc-id]:focus-within .pz-lkc-quickmenu-indicator{opacity:1}' );
 			$quickmenu_path		=	$this->plugin_dir_path.'js/pz-linkcard-quickmenu.js';
 			wp_enqueue_style	('dashicons' );
 			wp_enqueue_script	(

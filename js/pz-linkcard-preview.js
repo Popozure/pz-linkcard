@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const handle = win?.querySelector("[data-pz-preview-handle]");
         const modeButton = win?.querySelector("[data-pz-preview-mode]");
         const secondaryModeButton = win?.querySelector("[data-pz-preview-mode-secondary]");
+        const leftModeButton = win?.querySelector("[data-pz-preview-mode-left]");
         const closeButton = win?.querySelector("[data-pz-preview-close]");
         const backgroundButtons = win?.querySelectorAll("[data-pz-preview-background]");
         const twoCardsCheckbox = win?.querySelector("[data-pz-preview-two-cards]");
@@ -127,7 +128,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showRestoreButton();
             const finish = () => {
                 if (!previewClosed) return;
-                win.classList.remove("pz-settings-preview-ready", "pz-settings-preview-docked", "pz-settings-preview-docked-right");
+                win.classList.remove("pz-settings-preview-ready", "pz-settings-preview-docked", "pz-settings-preview-docked-right", "pz-settings-preview-docked-left");
                 win.style.display = "none";
             };
             if (wasVisible) {
@@ -208,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const dockedMinHeightFallback = 28;
         let previewDocked = false;
         let previewDockSide = null;
+        const isSideDocked = () => previewDockSide === "right" || previewDockSide === "left";
         let floatingPreviewRect = null;
         let lastBottomDockedHeight = null;
         let lastHandleClick = null;
@@ -234,6 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 : null;
             return readStateNumber(state, "right-docked-width") ?? legacyWidth ?? minPreviewWidth;
         };
+        const readLeftDockedWidth = state => readStateNumber(state, "left-docked-width") ?? minPreviewWidth;
         const readBottomDockedHeight = state => {
             return [lastBottomDockedHeight,
                 readStateNumber(state, "docked-height"),
@@ -287,6 +290,11 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             modeButton.title = modeButton.getAttribute("aria-label");
             secondaryModeButton.title = secondaryModeButton.getAttribute("aria-label");
+            if (leftModeButton) {
+                setButtonIcon(leftModeButton, previewDockSide === "left" ? "preview-window.svg" : "preview-dock-left.svg");
+                leftModeButton.setAttribute("aria-label", previewDockSide === "left" ? (labels.windowPreview || "Window preview") : (labels.dockPreviewLeft || "Dock preview left"));
+                leftModeButton.title = leftModeButton.getAttribute("aria-label");
+            }
         };
 
         const getAdminBarBottom = () => {
@@ -359,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     ?? readStateNumber(null, "preview-docked-height");
             const state = {
                 ...storedState,
-                "preview-mode": previewDockSide === "right" ? "right" : (previewDocked ? "docked" : "window"),
+                "preview-mode": isSideDocked() ? previewDockSide : (previewDocked ? "docked" : "window"),
                 "preview-left": Math.round(rect.left),
                 "preview-top": Math.round(rect.top),
                 "preview-width": Math.round(rect.width),
@@ -376,6 +384,8 @@ document.addEventListener("DOMContentLoaded", () => {
             };
             if (previewDockSide === "right") {
                 state["right-docked-width"] = Math.round(rect.width);
+            } else if (previewDockSide === "left") {
+                state["left-docked-width"] = Math.round(rect.width);
             } else if (previewDockSide === "bottom") {
                 state["docked-height"] = Math.round(rect.height);
                 state["docked-width"] = Math.round(rect.width);
@@ -406,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const state = {
                 ...storedState,
                 "preview-mode": "icon",
-                "preview-restore-mode": previewDockSide === "right" ? "right" : (previewDocked ? "docked" : "window"),
+                "preview-restore-mode": isSideDocked() ? previewDockSide : (previewDocked ? "docked" : "window"),
                 "preview-left": Math.round(rect.left),
                 "preview-top": Math.round(rect.top),
                 "preview-width": Math.round(rect.width),
@@ -439,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!twoCardsControl) return;
             twoCardsControl.classList.remove("pz-settings-preview-two-cards-control-hidden");
             const controlRect = twoCardsControl.getBoundingClientRect();
-            const controlFitsWidth = previewDockSide === "right"
+            const controlFitsWidth = isSideDocked()
                 ? rect.width >= rightDockedMinWidth
                 : rect.width >= 32 + Math.ceil(controlRect.width) + 8;
             const controlFitsHeight = rect.height >= handleHeight + Math.ceil(controlRect.height) + 12;
@@ -468,22 +478,22 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         };
         const setRightDockedScrollSpace = (width = 0) => {
-            const active = previewDockSide === "right" && width > 0;
-            document.body.classList.toggle("pz-settings-preview-right-docked-active", active);
-            if (active) {
-                document.documentElement.style.setProperty("--pz-settings-preview-right-docked-width", `${Math.round(width)}px`);
-            } else {
-                document.documentElement.style.removeProperty("--pz-settings-preview-right-docked-width");
-            }
+            ["right", "left"].forEach(side => {
+                const active = previewDockSide === side && width > 0;
+                document.body.classList.toggle(`pz-settings-preview-${side}-docked-active`, active);
+                const property = `--pz-settings-preview-${side}-docked-width`;
+                if (active) document.documentElement.style.setProperty(property, `${Math.round(width)}px`);
+                else document.documentElement.style.removeProperty(property);
+            });
         };
         const getResizeEdges = e => {
             const rect = win.getBoundingClientRect();
             const edgeSize = 8;
             const cornerSize = 28;
             if (previewDocked) {
-                if (previewDockSide === "right") {
+                if (isSideDocked()) {
                     return e.target?.closest?.("[data-pz-preview-handle]")
-                        ? { top: false, right: false, bottom: false, left: true }
+                        ? { top: false, right: previewDockSide === "left", bottom: false, left: previewDockSide === "right" }
                         : null;
                 }
                 return e.clientY - rect.top <= edgeSize ? { top: true, right: false, bottom: false, left: false } : null;
@@ -514,7 +524,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 handle.style.cursor = "";
                 return;
             }
-            if (e.target?.closest?.("[data-pz-preview-handle]") && previewDockSide !== "right") {
+            if (e.target?.closest?.("[data-pz-preview-handle]") && !isSideDocked()) {
                 win.style.cursor = "";
                 handle.style.cursor = "";
                 return;
@@ -541,10 +551,10 @@ document.addEventListener("DOMContentLoaded", () => {
         const keepInViewport = () => {
             if (previewClosed) return;
             if (previewDocked) {
-                if (previewDockSide === "right") {
-                    applyRightDockedRect(getWindowRect().width);
+                if (isSideDocked()) {
+                    applyRightDockedRect(getWindowRect().width, previewDockSide);
                 } else {
-                    applyDockedRect(getWindowRect().height);
+                    applyDockedRect(getWindowRect().height, previewDockSide);
                 }
                 return;
             }
@@ -573,7 +583,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const next = rect || floatingPreviewRect;
             previewDocked = false;
             previewDockSide = null;
-            win.classList.remove("pz-settings-preview-docked", "pz-settings-preview-docked-right");
+            win.classList.remove("pz-settings-preview-docked", "pz-settings-preview-docked-right", "pz-settings-preview-docked-left");
             setDockedScrollSpace(0);
             setRightDockedScrollSpace(0);
             updateModeButton();
@@ -601,7 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
             previewDocked = true;
             previewDockSide = "bottom";
             win.classList.add("pz-settings-preview-docked");
-            win.classList.remove("pz-settings-preview-docked-right");
+            win.classList.remove("pz-settings-preview-docked-right", "pz-settings-preview-docked-left");
             const dockedMinHeight = getDockedMinHeight();
             const maxHeight = Math.max(dockedMinHeight, window.innerHeight - bounds.minTop);
             // An unset/zero bottom height must never inherit the right dock's
@@ -622,7 +632,7 @@ document.addEventListener("DOMContentLoaded", () => {
             win.style.maxHeight = "none";
             syncPreviewState();
         };
-        const applyRightDockedRect = width => {
+        const applyRightDockedRect = (width, side = "right") => {
             const bounds = getViewportBounds();
             const availableWidth = Math.max(1, getViewportClientRight() - bounds.minLeft);
             const minWidth = Math.min(rightDockedMinWidth, availableWidth);
@@ -630,10 +640,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const nextWidth = Math.min(maxWidth, Math.max(minWidth, width || getWindowRect().width));
 
             previewDocked = true;
-            previewDockSide = "right";
-            win.classList.add("pz-settings-preview-docked", "pz-settings-preview-docked-right");
+            previewDockSide = side;
+            win.classList.add("pz-settings-preview-docked");
+            win.classList.toggle("pz-settings-preview-docked-right", side === "right");
+            win.classList.toggle("pz-settings-preview-docked-left", side === "left");
             updateModeButton();
-            win.style.left = `${Math.round(getViewportClientRight() - nextWidth)}px`;
+            win.style.left = `${Math.round(side === "left" ? getDockLeft() : getViewportClientRight() - nextWidth)}px`;
             win.style.top = `${Math.round(bounds.minTop)}px`;
             win.style.right = "auto";
             win.style.bottom = "auto";
@@ -678,9 +690,9 @@ document.addEventListener("DOMContentLoaded", () => {
             } else if (targetMode === "bottom") {
                 const dockedHeight = readBottomDockedHeight(stored);
                 applyDockedRect(dockedHeight);
-            } else if (targetMode === "right") {
-                const dockedWidth = readRightDockedWidth(stored);
-                applyRightDockedRect(dockedWidth);
+            } else if (targetMode === "right" || targetMode === "left") {
+                const dockedWidth = targetMode === "left" ? readLeftDockedWidth(stored) : readRightDockedWidth(stored);
+                applyRightDockedRect(dockedWidth, targetMode);
             }
             persistPreviewState();
         };
@@ -689,6 +701,8 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         const cyclePreviewMode = () => {
             if (!previewDocked) {
+                switchPreviewMode("left");
+            } else if (previewDockSide === "left") {
                 switchPreviewMode("bottom");
             } else if (previewDockSide === "bottom") {
                 switchPreviewMode("right");
@@ -707,7 +721,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            if (previewDockSide === "right") {
+            if (previewDockSide === "left") {
                 syncPreviewState();
                 persistPreviewState();
                 saveIconState();
@@ -717,8 +731,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!previewDocked) {
                 switchPreviewMode("bottom");
-            } else {
+            } else if (previewDockSide === "bottom") {
                 switchPreviewMode("right");
+            } else {
+                switchPreviewMode("left");
             }
         };
         const dockPreviewRight = () => {
@@ -730,7 +746,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const mode = storedMode === "icon" ? (stored["preview-restore-mode"] || "window") : storedMode;
             // The server may already have rendered a docked rectangle while the
             // client mode flags still have their initial floating values.
-            const initiallyDocked = mode === "right" || mode === "docked";
+            const initiallyDocked = mode === "right" || mode === "left" || mode === "docked";
             let initialFloatingRect = !previewDocked && !initiallyDocked ? getWindowRect() : null;
             const windowRect = {
                 left: readStateNumber(stored, "window-left"),
@@ -747,7 +763,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     // temporary layout or adopting a dock's full-screen size.
                     const savedStyle = win.style.cssText;
                     const savedClass = win.className;
-                    win.classList.remove("pz-settings-preview-docked", "pz-settings-preview-docked-right", "pz-settings-preview-animating");
+                    win.classList.remove("pz-settings-preview-docked", "pz-settings-preview-docked-right", "pz-settings-preview-docked-left", "pz-settings-preview-animating");
                     ["left", "top", "right", "bottom", "width", "height", "max-height"].forEach(name => win.style.removeProperty(name));
                     initialFloatingRect = getWindowRect();
                     win.style.cssText = savedStyle;
@@ -769,9 +785,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 applyDockedRect(dockedHeight);
                 return;
             }
-            if (mode === "right") {
-                const dockedWidth = readRightDockedWidth(stored);
-                applyRightDockedRect(dockedWidth);
+            if (mode === "right" || mode === "left") {
+                const dockedWidth = mode === "left" ? readLeftDockedWidth(stored) : readRightDockedWidth(stored);
+                applyRightDockedRect(dockedWidth, mode);
                 return;
             }
             if (hasWindowRect) {
@@ -796,17 +812,21 @@ document.addEventListener("DOMContentLoaded", () => {
             if (upEvent.type !== "pointerup") return false;
             const rect = getWindowRect();
             const dockThreshold = 64;
+            const pushedLeft = getDockLeft() - (upEvent.clientX - offsetX);
             const pushedRight = upEvent.clientX - offsetX + rect.width - window.innerWidth;
             const pushedBottom = upEvent.clientY - offsetY + rect.height - window.innerHeight;
-            const dockRight = pushedRight >= dockThreshold && pushedRight >= pushedBottom;
-            const dockBottom = pushedBottom >= dockThreshold && pushedBottom > pushedRight;
-            if (!dockRight && !dockBottom) return false;
+            const dockLeft = pushedLeft >= dockThreshold && pushedLeft >= pushedRight && pushedLeft >= pushedBottom;
+            const dockRight = pushedRight >= dockThreshold && pushedRight >= pushedBottom && pushedRight >= pushedLeft;
+            const dockBottom = pushedBottom >= dockThreshold && pushedBottom > pushedRight && pushedBottom > pushedLeft;
+            if (!dockLeft && !dockRight && !dockBottom) return false;
 
             const stored = readStoredState() || {};
             floatingPreviewRect = rect;
             syncPreviewState();
             animatePreviewWindow();
-            if (dockRight) {
+            if (dockLeft) {
+                applyRightDockedRect(readLeftDockedWidth(stored), "left");
+            } else if (dockRight) {
                 const dockedWidth = readStateNumber(stored, "right-docked-width")
                     ?? readStateNumber(stored, "preview-right-docked-width")
                     ?? rect.width;
@@ -840,7 +860,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
             }
-            if (e.target?.closest?.("[data-pz-preview-handle]") && previewDockSide !== "right") return;
+            if (e.target?.closest?.("[data-pz-preview-handle]") && !isSideDocked()) return;
             const edges = getResizeEdges(e);
             if (!edges) return;
 
@@ -853,7 +873,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 width: startRect.width,
                 height: startRect.height,
             };
-            const startedRightDocked = previewDockSide === "right";
+            const startedRightDocked = isSideDocked();
             let undockedFromRight = false;
             let dragOffsetX = 0;
             let dragOffsetY = 0;
@@ -893,8 +913,8 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
                 if (previewDocked) {
-                    if (previewDockSide === "right") {
-                        applyRightDockedRect(start.width + e.clientX - moveEvent.clientX);
+                    if (isSideDocked()) {
+                        applyRightDockedRect(start.width + (previewDockSide === "left" ? moveEvent.clientX - e.clientX : e.clientX - moveEvent.clientX), previewDockSide);
                     } else {
                         applyDockedRect(start.height + start.top - moveEvent.clientY);
                     }
@@ -959,7 +979,7 @@ document.addEventListener("DOMContentLoaded", () => {
             let offsetX = e.clientX - rect.left;
             let offsetY = e.clientY - rect.top;
             const startedBottomDocked = previewDockSide === "bottom";
-            const startedRightDocked = previewDockSide === "right";
+            const startedRightDocked = isSideDocked();
             let undockedFromBottom = false;
             let undockedFromRight = false;
 
@@ -992,8 +1012,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
                 if (startedRightDocked && !undockedFromRight) return;
                 if (previewDocked) {
-                    if (previewDockSide === "right") {
-                        applyRightDockedRect(rect.width + e.clientX - moveEvent.clientX);
+                    if (isSideDocked()) {
+                        applyRightDockedRect(rect.width + (previewDockSide === "left" ? moveEvent.clientX - e.clientX : e.clientX - moveEvent.clientX), previewDockSide);
                         return;
                     }
                     applyDockedRect(rect.height + e.clientY - moveEvent.clientY);
@@ -1008,29 +1028,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 let snappedToEdge = undockedFromDock
                     && dockFloatingDragAtEdge(upEvent, offsetX, offsetY);
                 if (!previewDocked && !undockedFromDock && upEvent.type === "pointerup") {
-                    const dockThreshold = 64;
-                    const pushedRight = upEvent.clientX - offsetX + rect.width - window.innerWidth;
-                    const pushedBottom = upEvent.clientY - offsetY + rect.height - window.innerHeight;
-                    const dockRight = pushedRight >= dockThreshold && pushedRight >= pushedBottom;
-                    const dockBottom = pushedBottom >= dockThreshold && pushedBottom > pushedRight;
-                    if (dockRight || dockBottom) {
-                        const stored = readStoredState() || {};
-                        applyFloatingRect({ left: rect.left, top: rect.top, width: rect.width, height: rect.height });
-                        animatePreviewWindow();
-                        if (dockRight) {
-                            const dockedWidth = readStateNumber(stored, "right-docked-width")
-                                ?? readStateNumber(stored, "preview-right-docked-width")
-                                ?? rect.width;
-                            applyRightDockedRect(dockedWidth);
-                        } else {
-                            const dockedHeight = readStateNumber(stored, "docked-height")
-                                ?? readStateNumber(stored, "preview-docked-height")
-                                ?? rect.height;
-                            applyDockedRect(dockedHeight);
-                        }
-                        persistPreviewState();
-                        snappedToEdge = true;
-                    }
+                    snappedToEdge = dockFloatingDragAtEdge(upEvent, offsetX, offsetY);
                 }
                 if (!snappedToEdge) {
                     if (!previewDocked) floatingPreviewRect = getWindowRect();
@@ -1055,7 +1053,7 @@ document.addEventListener("DOMContentLoaded", () => {
         modeButton?.addEventListener("click", e => {
             e.preventDefault();
             e.stopPropagation();
-            if (previewDockSide === "bottom") {
+            if (previewDockSide === "bottom" || previewDockSide === "left") {
                 dockPreviewRight();
             } else if (previewDockSide === "right") {
                 switchPreviewMode("bottom");
@@ -1073,6 +1071,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 dockPreviewRight();
             }
             secondaryModeButton.blur();
+        });
+        leftModeButton?.addEventListener("click", e => {
+            e.preventDefault();
+            e.stopPropagation();
+            switchPreviewMode(previewDockSide === "left" ? "window" : "left");
+            leftModeButton.blur();
         });
         closeButton?.addEventListener("click", e => {
             e.preventDefault();
@@ -2074,16 +2078,18 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (showDate) {
                         const postIconSelect = form.querySelector('[name="properties[date-icon-post]"]');
                         const modifiedIconSelect = form.querySelector('[name="properties[date-icon-update]"]');
-                        const postIcon = postIconSelect?.value ? postIconSelect.selectedOptions[0]?.textContent || "" : "";
-                        const modifiedIcon = modifiedIconSelect?.value ? modifiedIconSelect.selectedOptions[0]?.textContent || "" : "";
+                        const dateIcon = select => {
+                            if (!select?.value) return document.createTextNode("");
+                            return document.createTextNode(select.selectedOptions[0]?.textContent || "");
+                        };
                         const postDate = labels.previewPostDate || fallbackPreviewDate(1);
                         const modifiedDate = labels.previewModifiedDate || fallbackPreviewDate(0);
                         if (displayDate === "u") {
-                            dateNode.textContent = `${modifiedIcon}${modifiedDate}`;
+                            dateNode.replaceChildren(dateIcon(modifiedIconSelect), document.createTextNode(modifiedDate));
                         } else if (displayDate === "pu") {
-                            dateNode.textContent = `${postIcon}${postDate}\u2002${modifiedIcon}${modifiedDate}`;
+                            dateNode.replaceChildren(dateIcon(postIconSelect), document.createTextNode(`${postDate}\u2002`), dateIcon(modifiedIconSelect), document.createTextNode(modifiedDate));
                         } else {
-                            dateNode.textContent = `${postIcon}${postDate}`;
+                            dateNode.replaceChildren(dateIcon(postIconSelect), document.createTextNode(postDate));
                         }
                     }
                     applyDisplay(dateNode, showDate);

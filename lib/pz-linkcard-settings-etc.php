@@ -39,7 +39,7 @@
 			<th scope="row"><?php esc_html_e('Site Icon API', 'pz-linkcard' ); ?></th>
 			<td>
 				<input name="properties[siteicon-api]" type="url" size="120" class="pz-click-all-select" value="<?php echo	esc_attr($prop['siteicon-api'] ); ?>" />
-				<p><?php echo	__('%DOMAIN% replace to domain name.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_domain.' '.__(')', 'pz-linkcard' ).'<br>'.__('%DOMAIN_URL% replace to domain URL.', 'pz-linkcard').' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_domain_url.' '.__(')', 'pz-linkcard' ).'<br>'.__('%URL% replace to URL.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_url.self::PLUGIN_PATH.' '.__(')', 'pz-linkcard' ); ?>
+				<p><?php echo	__('%DOMAIN% is replaced with the domain name.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_domain.' '.__(')', 'pz-linkcard' ).'<br>'.__('%DOMAIN_URL% is replaced with the domain URL.', 'pz-linkcard').' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_domain_url.' '.__(')', 'pz-linkcard' ).'<br>'.__('%URL% is replaced with the article URL.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_url.self::PLUGIN_PATH.' '.__(')', 'pz-linkcard' ); ?>
 				<p><?php esc_html_e('ex1.', 'pz-linkcard' ); ?><input name="" type="text" size="70" class="pz-click-all-select" value="https://www.google.com/s2/favicons?domain=%DOMAIN%" readonly="readonly" /></p>
 				<p><?php esc_html_e('ex2.', 'pz-linkcard' ); ?><input name="" type="text" size="70" class="pz-click-all-select" value="https://favicon.hatena.ne.jp/?url=%URL%" readonly="readonly" /></p>
 			</td>
@@ -48,7 +48,7 @@
 			<th scope="row" rowspan="3"><?php esc_html_e('Thumbnail API', 'pz-linkcard' ); ?></th>
 			<td>
 				<input name="properties[thumbnail-api]" type="url" size="120" class="pz-click-all-select" value="<?php echo	esc_attr($prop['thumbnail-api'] ); ?>" />
-				<p><?php echo	__('%URL% replace to URL.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_url.self::PLUGIN_PATH.' '.__(')', 'pz-linkcard' ); ?></p>
+				<p><?php echo	__('%URL% is replaced with the article URL.', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('ex.', 'pz-linkcard' ).' '.$pz_url.self::PLUGIN_PATH.' '.__(')', 'pz-linkcard' ); ?></p>
 				<p><?php esc_html_e('ex1.', 'pz-linkcard' ); ?><input name="" type="text" size="70" class="pz-click-all-select" value="https://s.wordpress.com/mshots/v1/%URL%?w=200" readonly="readonly" /></p>
 				<p><?php esc_html_e('ex2.', 'pz-linkcard' ); ?><input name="" type="text" size="70" class="pz-click-all-select" value="https://capture.heartrails.com/200x200?%URL%" readonly="readonly" /></p>
 			</td>

@@ -8,6 +8,7 @@
     const maxTries = Math.max(1, Number(config.maxTries) || 40);
 
     document.querySelectorAll(".pz-lkc-pending[data-pz-lkc-pending='1'][data-lkc-id]").forEach(card => {
+        if (!card.dataset.pzLkcToken || !card.dataset.pzLkcExpires) return;
         let tries = 0;
         let stopped = false;
 
@@ -19,6 +20,9 @@
                 action: "pz_lkc_ajax_get",
                 nonce: config.nonce,
                 card_id: card.dataset.lkcId || "",
+                source_post_id: card.dataset.postId || "0",
+                expires: card.dataset.pzLkcExpires,
+                card_token: card.dataset.pzLkcToken,
             });
 
             try {
@@ -29,6 +33,10 @@
                     body: body.toString(),
                 });
                 const result = await response.json();
+                if (response.status === 403 || response.status === 404) {
+                    stopped = true;
+                    return;
+                }
                 if (result?.success && result.data?.ready && result.data.html) {
                     const template = document.createElement("template");
                     template.innerHTML = result.data.html.trim();

@@ -271,10 +271,6 @@
 		$max_width	=	1024;
 		$max_height	=	1024;
 		break;
-	case	'full':
-		$max_width	=	$image_width;
-		$max_height	=	$image_height;
-		break;
 	default:
 		$max_width	=	150;
 		$max_height	=	150;

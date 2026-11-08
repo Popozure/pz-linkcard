@@ -272,7 +272,7 @@
 		$checked_prop		=	self::pz_RemoveThisLinkFallback($prop );
 		foreach	($default_definitions as $key => $value ) {
 			if	(!array_key_exists($key, $checked_prop ) ) {
-				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('Undefined key "%s" in Properties.<br>It may be a glitch. Please inform the developer. (%s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer">@'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
+				$html_notice	.=	'<div class="notice notice-error is-dismissible">'.sprintf(__('The settings data is missing "%s".<br>This may be a plugin issue. Please contact the developer. (%s)', 'pz-linkcard' ), $key, '<a href="https://x.com/'. self::AUTHOR_TWITTER .'" target="_blank" rel="external noopener noreferrer" referrerpolicy="no-referrer">@'.self::AUTHOR_TWITTER.'</a>' ).'</div>';
 			}
 		}
 		// foreach	($checked_prop as $key => $value ) {
@@ -302,7 +302,7 @@
 				}
 				unset($prop['url-length'], $this->options['url-length'], $prop['blockquote'], $this->options['blockquote'] );
 			} else {
-				$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Could not retrieve the content to be changed.', 'pz-linkcard' ).'</strong></p></div>';
+				$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('No settings data was received. Please contact the developer if this problem persists.', 'pz-linkcard' ).'</strong></p></div>';
 			}
 			
 			// パラメーターに変更があった場合
@@ -497,7 +497,7 @@
 		'preview-left', 'preview-top', 'preview-width', 'preview-height',
 		'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards',
 		'window-left', 'window-top', 'window-width', 'window-height',
-		'docked-width', 'docked-height', 'last-bottom-docked-height', 'right-docked-width',
+		'docked-width', 'docked-height', 'last-bottom-docked-height', 'right-docked-width', 'left-docked-width',
 	) as $temp_name ) {
 		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
 		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ?? '' ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
@@ -576,9 +576,13 @@
 		$preview_mode	=	$this->options['preview-mode'] ?? 'icon';
 		$preview_class	=	'';
 		$preview_style	=	'';
-		if	(in_array($preview_mode, array('window', 'right', 'docked' ), true ) ) {
+		if	(in_array($preview_mode, array('window', 'right', 'left', 'docked' ), true ) ) {
 			$preview_class	=	' pz-settings-preview-ready';
-			if	($preview_mode === 'right' ) {
+			if ($preview_mode === 'left') {
+                $preview_class .= ' pz-settings-preview-docked pz-settings-preview-docked-left';
+                $left_width = max(180, absint($this->options['left-docked-width'] ?? 240));
+                $preview_style = 'left:var(--pz-overlay-left,160px);right:auto;top:calc(var(--wp-admin--admin-bar--height, 32px) + 40px);bottom:0;width:'.$left_width.'px;height:auto;max-height:none;';
+            } elseif ($preview_mode === 'right') {
 				$preview_class	.=	' pz-settings-preview-docked pz-settings-preview-docked-right';
 				$right_width	=	max(180, absint($this->options['right-docked-width'] ?? $this->options['preview-right-docked-width'] ?? 180 ) );
 				if	($right_width > 0 ) {
@@ -608,6 +612,7 @@
 							'<span class="pz-settings-preview-controls">'.
 							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode data-no-overlay="1" aria-label="'.esc_attr__('Dock preview bottom', 'pz-linkcard' ).'"><img src="'.esc_url($this->plugin_dir_url.'img/preview-dock-bottom.svg' ).'" width="16" height="16" alt="" /></button>'.
 							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode-secondary data-no-overlay="1" aria-label="'.esc_attr__('Dock preview right', 'pz-linkcard' ).'"><img src="'.esc_url($this->plugin_dir_url.'img/preview-dock-right.svg' ).'" width="16" height="16" alt="" /></button>'.
+							'<button type="button" class="pz-settings-preview-button" data-pz-preview-mode-left data-no-overlay="1" aria-label="'.esc_attr__('Dock preview left', 'pz-linkcard' ).'"><img src="'.esc_url($this->plugin_dir_url.'img/preview-dock-left.svg' ).'" width="16" height="16" alt="" /></button>'.
 							'<button type="button" class="pz-settings-preview-button" data-pz-preview-close data-no-overlay="1" aria-label="'.esc_attr__('Close preview', 'pz-linkcard' ).'"><img src="'.esc_url($this->plugin_dir_url.'img/preview-close.svg' ).'" width="16" height="16" alt="" /></button>'.
 							'</span>'.
 							'</div>'.
@@ -746,17 +751,17 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 			<div id="pz-settings-screen-options-panel" class="pz-man-screen-options-panel pz-settings-screen-options-panel" hidden>
 				<fieldset>
 					<legend><?php esc_html_e('Modes', 'pz-linkcard' ); ?></legend>
-					<label title="<?php echo esc_attr(__('Displays normally hidden items to find and fix defects.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?>">
+					<label title="<?php echo esc_attr(__('Show diagnostic settings and information for troubleshooting.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecated)', 'pz-linkcard' ) ) ); ?>">
 						<input type="hidden" name="properties[debug-mode]" value="" form="pz-settings-form" />
 						<input type="checkbox" name="properties[debug-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($this->options['debug-mode'] ); ?> />
 						<span class="pz-screen-option-name"><?php esc_html_e('Debug Mode', 'pz-linkcard' ); ?></span>
-						<span class="pz-screen-option-description"><?php echo esc_html(__('Displays normally hidden items to find and fix defects.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?></span>
+						<span class="pz-screen-option-description"><?php echo esc_html(__('Show diagnostic settings and information for troubleshooting.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecated)', 'pz-linkcard' ) ) ); ?></span>
 					</label>
-					<label class="pz-settings-debug-dependent"<?php echo $debug_mode ? '' : ' style="display: none;"'; ?> title="<?php echo esc_attr(__('Unlock special settings.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?>">
+					<label class="pz-settings-debug-dependent"<?php echo $debug_mode ? '' : ' style="display: none;"'; ?> title="<?php echo esc_attr(__('Unlock special settings.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecated)', 'pz-linkcard' ) ) ); ?>">
 						<input type="hidden" name="properties[admin-mode]" value="" form="pz-settings-form" />
 						<input type="checkbox" name="properties[admin-mode]" value="1" class="pz-tab-show" form="pz-settings-form" <?php checked($admin_mode ); echo (!$admin_mode ? ' readonly="readonly"' : '' ); ?> ondblclick="this.readOnly=false;" />
 						<span class="pz-screen-option-name"><?php esc_html_e('Administrator Mode', 'pz-linkcard' ); ?></span>
-						<span class="pz-screen-option-description"><?php echo esc_html(__('Unlock special settings.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecation)', 'pz-linkcard' ) ) ); ?></span>
+						<span class="pz-screen-option-description"><?php echo esc_html(__('Unlock special settings.', 'pz-linkcard' ).wp_strip_all_tags(__('(Deprecated)', 'pz-linkcard' ) ) ); ?></span>
 					</label>
 					<label title="<?php echo esc_attr__('Display the Multisite tab on the settings screen.', 'pz-linkcard' ); ?>">
 						<input type="hidden" name="properties[multi-mode]" value="" form="pz-settings-form" />
@@ -789,7 +794,7 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 					<div><dt><kbd>Ctrl</kbd>+<kbd>S</kbd> / <kbd>Alt</kbd>+<kbd>S</kbd></dt><dd><?php esc_html_e('Save Changes'); ?></dd></div>
 					<div><dt><kbd>Ctrl</kbd>+<kbd>←</kbd> / <kbd>Ctrl</kbd>+<kbd>→</kbd></dt><dd><?php esc_html_e('Switch tabs', 'pz-linkcard' ); ?></dd></div>
 					<div><dt><kbd>Shift</kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd> / <kbd><?php esc_html_e('Right click', 'pz-linkcard' ); ?></kbd>+<kbd><?php esc_html_e('Wheel', 'pz-linkcard' ); ?></kbd></dt><dd><?php esc_html_e('Increase or decrease values, or select the previous or next option', 'pz-linkcard' ); ?></dd></div>
-					<div><dt><kbd>Alt</kbd>+<kbd>V</kbd></dt><dd><?php esc_html_e('Toggle preview', 'pz-linkcard' ); ?></dd></div>
+					<div><dt><kbd>Alt</kbd>+<kbd>V</kbd></dt><dd><?php esc_html_e('Cycle preview: window, bottom, right, left, hidden', 'pz-linkcard'); ?></dd></div>
 				</dl>
 			</div>
 		</div>

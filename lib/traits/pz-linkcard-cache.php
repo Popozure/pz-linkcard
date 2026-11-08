@@ -7,6 +7,111 @@ trait Pz_LinkCard_Cache {
 		return require __DIR__.'/../pz-linkcard-schema-card.php';
 	}
 
+	private function pz_FindUsedPostIDs($url) {
+		global	$wpdb;
+		$search_urls = array((string) $url);
+		$host = wp_parse_url($url, PHP_URL_HOST);
+		if ($host && defined('INTL_IDNA_VARIANT_UTS46')) {
+			foreach (array('idn_to_utf8', 'idn_to_ascii') as $converter) {
+				if (!function_exists($converter)) {
+					continue;
+				}
+				$converted_host = $converter($host, 0, INTL_IDNA_VARIANT_UTS46);
+				if ($converted_host !== false && $converted_host !== '') {
+					$search_urls[] = preg_replace_callback(
+						'~\A(https?://(?:[^/?#@]*@)?)'.preg_quote($host, '~').'(?=[:/?#]|$)~i',
+						static function($matches) use ($converted_host) {
+							return $matches[1].$converted_host;
+						},
+						$url
+					);
+				}
+			}
+		}
+		$conditions = array();
+		$search_values = array();
+		foreach (array_unique($search_urls) as $search_url) {
+			$decoded_url = rawurldecode($search_url);
+			$search_urls[] = $decoded_url;
+			$search_urls[] = $this->pz_EncodeURL($decoded_url);
+		}
+		foreach (array_unique($search_urls) as $search_url) {
+			if (!is_string($search_url) || $search_url === '') continue;
+			$conditions[] = 'post_content LIKE %s';
+			$search_values[] = '%'.$wpdb->esc_like($search_url).'%';
+		}
+		$codes = array_values(array_filter(array_unique(array(
+			$this->options['code1'] ?? '', $this->options['code2'] ?? '', $this->options['code3'] ?? '',
+			'pz-linkcard-auto-replace',
+		))));
+		foreach ($codes as $code) {
+			$conditions[] = 'post_content LIKE %s';
+			$search_values[] = '%'.$wpdb->esc_like('['.$code).'%';
+		}
+		$target = $this->pz_EncodeURL($url, true);
+		$post_ids = array();
+		$before_id = PHP_INT_MAX;
+		do {
+			$posts = $wpdb->get_results($wpdb->prepare(
+				"SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type = 'post' AND post_status = 'publish' AND (".implode(' OR ', $conditions).") AND ID < %d ORDER BY ID DESC LIMIT 100",
+				array_merge($search_values, array($before_id))
+			));
+			if ($wpdb->last_error) return null;
+			foreach ($posts as $post) {
+				$before_id = intval($post->ID);
+				$content = $this->auto_replace($post->post_content, false);
+				preg_match_all('/'.get_shortcode_regex($codes).'/s', $content, $matches, PREG_SET_ORDER);
+				foreach ($matches as $match) {
+					if ($match[1] === '[' && $match[6] === ']') continue;
+					$atts = shortcode_parse_atts($match[3]);
+					foreach (array('url', 'href', 'uri', 'ur1') as $key) {
+						if (empty($atts[$key])) continue;
+						$value = html_entity_decode($atts[$key], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+						if (preg_match('/(https?:\/\/[^\s<>]+)/sui', $value, $url_match)) $value = $url_match[1];
+						if (!empty($this->options['flg-relative-url']) && strpos($value, '://') === false) {
+							$value = $this->pz_RelToURL(esc_url(home_url()), $value);
+						}
+						if ($this->pz_EncodeURL($value, true) === $target) {
+							$post_ids[] = intval($post->ID);
+							if (count($post_ids) === 6) return $post_ids;
+							continue 3;
+						}
+						break;
+					}
+				}
+			}
+		} while (count($posts) === 100);
+		return $post_ids;
+	}
+
+	private function pz_RecordUsedPost($data) {
+		$post_id = intval(get_the_ID());
+		if (empty($data['id']) || $post_id <= 0) return $data;
+		$ids = array();
+		for ($index = 1; $index <= 6; $index++) {
+			$ids[] = intval($data['use_post_id'.$index] ?? 0);
+		}
+		if (in_array($post_id, $ids, true)) return $data;
+		$ids[] = $post_id;
+		$ids = array_values(array_unique(array_filter($ids)));
+		rsort($ids, SORT_NUMERIC);
+		$fields = array();
+		for ($index = 1; $index <= 6; $index++) {
+			$fields['use_post_id'.$index] = $ids[$index - 1] ?? null;
+		}
+		$changed = false;
+		foreach ($fields as $key => $value) {
+			if (intval($data[$key] ?? 0) !== intval($value)) $changed = true;
+		}
+		if (!$changed) return $data;
+		global $wpdb;
+		if ($wpdb->update($this->db_card, $fields, array('id' => intval($data['id'])), array_fill(0, 6, '%d'), array('%d')) !== false) {
+			$data = array_merge($data, $fields);
+			$this->request_cache = array();
+		}
+		return $data;
+	}
+
 	// Atomically share the last site access between both cron workers.
 	private function pz_ClaimCronSiteAccess($url, $domain = '') {
 		global $wpdb;
@@ -76,7 +181,7 @@ trait Pz_LinkCard_Cache {
 		if	(!empty($data['id'] ) ) {
 			$this->request_cache['id:'.intval($data['id'] )]	=	$data;
 		}
-		return (array) $data;				// Arrayに直して返す
+		return $data;
 	}
 
 	// キャッシュデータを保存
@@ -178,13 +283,14 @@ trait Pz_LinkCard_Cache {
 				$use_post_ids[]	=	intval($data[$use_post_key] );
 			}
 		}
-		$post_id_t	=	$is_pending
-			? array()
-			: $wpdb->get_col($wpdb->prepare(
-				"SELECT ID FROM {$wpdb->posts} WHERE post_type = 'post' AND post_content LIKE %s ORDER BY ID ASC",
-				'%'.$wpdb->esc_like($data['url'] ).'%'
-			) );
-		$use_post_ids	=	array_values(array_unique(array_filter(array_map('intval', array_merge($use_post_ids, $post_id_t ) ) ) ) );
+		$current_post_id = intval(get_the_ID());
+		if ($current_post_id > 0 && !in_array($current_post_id, $use_post_ids, true)) {
+			$use_post_ids[] = $current_post_id;
+		}
+		$use_post_ids = array_values(array_unique(array_filter($use_post_ids, static function($post_id) {
+			return $post_id > 0;
+		})));
+		rsort($use_post_ids, SORT_NUMERIC);
 		for	($use_post_index = 1; $use_post_index <= 6; $use_post_index++ ) {
 			$data['use_post_id'.$use_post_index]	=	$use_post_ids[$use_post_index - 1] ?? null;
 		}

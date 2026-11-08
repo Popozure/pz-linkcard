@@ -3,7 +3,9 @@ defined('ABSPATH' ) || wp_die;
 
 trait Pz_LinkCard_Get_HTML {
 	private function pz_GetSettingsPreviewCard($prefix, $index = 1) {
-		$url = $prefix === 'ex' ? 'https://popozure.info/pz-linkcard-preview'.($index === 2 ? '-2' : '') : home_url('/pz-linkcard-preview'.($index === 2 ? '-2' : '').'/');
+		$site_host = strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST));
+		$external_origin = preg_match('/(^|\.)popozure\.info$/', $site_host) ? 'https://example.com' : 'https://popozure.info';
+		$url = $prefix === 'ex' ? $external_origin.'/pz-linkcard-preview'.($index === 2 ? '-2' : '') : home_url('/pz-linkcard-preview'.($index === 2 ? '-2' : '').'/');
 		$title = $prefix === 'ex' ? __('External Link Preview', 'pz-linkcard') : __('Internal Link Preview', 'pz-linkcard');
 		return $this->pz_GetHTML(array(
 			'url' => $url, 'preview-card' => $prefix,
@@ -20,10 +22,8 @@ trait Pz_LinkCard_Get_HTML {
 		));
 	}
 
-
 	// $attsと収集済みデータからリンクカードのHTMLを生成
 	private	function	pz_GetHTML($atts, $url_info = null ) {
-
 		static $html_anchor_ids	=	array();
 
 		// リンク先URL
@@ -69,6 +69,11 @@ trait Pz_LinkCard_Get_HTML {
 			$data		=	array_merge($data, $atts['pz-card-data'] );
 			$data_id	=	$data['id'] ?? '';
 			$url		=	$data['url'] ?? $url;
+		}
+
+		// Apply the same visibility rule to prepared data and editor previews.
+		if ($is_internal && !$this->pz_IsInternalCardPubliclyViewable($url, $data)) {
+			return null;
 		}
 
 		// 内部リンクの処理
@@ -125,8 +130,8 @@ trait Pz_LinkCard_Get_HTML {
 		$sns_tw			=	$data['sns_twitter']	??	'';
 		$sns_fb			=	$data['sns_facebook']	??	'';
 		$sns_hb			=	$data['sns_hatena']		??	'';
-		$sns_qiita_likes			=	$data['sns_qiita_likes']		??	'';
-		$sns_qiita_stock		=	$data['sns_qiita_stock']	??	'';
+		$sns_qiita_likes	=	$data['sns_qiita_likes']	??	'';
+		$sns_qiita_stock	=	$data['sns_qiita_stock']	??	'';
 		if ($is_preview) {
 			$sns_tw = $sns_fb = $sns_hb = 1234;
 		}
@@ -301,7 +306,7 @@ trait Pz_LinkCard_Get_HTML {
 			if (($this->options[($is_internal ? 'in' : 'ex').'-content-type-'.$i] ?? '') === 'i') $has_embedded_info = true;
 		}
 		if	(($this->options['info-position'] || $has_embedded_info || $is_preview || ($this->options['special-format'] ?? '') === 'browser') && empty($atts['pz-pending'] ) ) {
-			if	($sw_siteicon == 1 || $sw_siteicon == 13 ) {							// 直接取得
+			if	($sw_siteicon == 1 || $sw_siteicon == 13 ) {						// 直接取得
 				if	($is_internal ) {
 					$siteicon_url	=	get_site_icon_url(16 );						// 自サイトのサイトアイコン
 				} elseif	(!$is_preview ) {
@@ -341,6 +346,11 @@ trait Pz_LinkCard_Get_HTML {
 		$click_post_id		= absint(get_the_ID() );
 		$click_token			= $click_card_id ? $this->pz_GetClickToken($click_card_id, $click_post_id ) : '';
 		$html_click_data		= ' data-lkc-id="'.esc_attr($data_id ).'" data-post-id="'.esc_attr($click_post_id ).'" data-click-token="'.esc_attr($click_token ).'"';
+		if (!$is_preview && !empty($atts['pz-pending']) && $click_card_id) {
+			$expires = time() + DAY_IN_SECONDS;
+			$ajax_token = $this->pz_GetAjaxCardToken($click_card_id, $click_post_id, $expires);
+			$html_click_data .= ' data-pz-lkc-expires="'.esc_attr($expires).'" data-pz-lkc-token="'.esc_attr($ajax_token).'"';
+		}
 		if	(!$no_failure && $this->options['flg-unlink'] && in_array(intval($alive_result ), array(403, 404, 410 ), true ) ) {
 			// Not Found の時は見え消ししてリンクしない
 			$html_wrap_op	=	'<div class="'.$wrap_class.' lkc-unlink">';
@@ -428,8 +438,14 @@ trait Pz_LinkCard_Get_HTML {
 		$html_date	=	null;
 		$card_date_format = ($this->options['date-format'] ?? 'Y年n月j日') === 'custom'
 			? ($this->options['date-format-custom'] ?? 'Y年n月j日') : ($this->options['date-format'] ?? 'Y年n月j日');
-		$post_date_icon = esc_html(html_entity_decode($this->options['date-icon-post'] ?? '&#x1F4C5;&#xFE0F;', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
-		$post_modified_icon = esc_html(html_entity_decode($this->options['date-icon-update'] ?? '&#x1F504;&#xFE0F;', ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+		$render_date_icon = static function($icon) {
+			if (strpos($icon, 'dashicons-') === 0) {
+				return '';
+			}
+			return esc_html(html_entity_decode($icon, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+		};
+		$post_date_icon = $render_date_icon($this->options['date-icon-post'] ?? '&#x1F4C5;&#xFE0F;');
+		$post_modified_icon = $render_date_icon($this->options['date-icon-update'] ?? '&#x1F504;&#xFE0F;');
 		$date_pattern	=	$this->options['date-pattern'];
 		$post_date_timestamp		=	is_numeric($post_date ) ? intval($post_date ) : strtotime($post_date );
 		$post_modified_timestamp	=	is_numeric($post_modified ) ? intval($post_modified ) : strtotime($post_modified );
@@ -490,7 +506,9 @@ trait Pz_LinkCard_Get_HTML {
 		$html_selected_url = '<div class="lkc-url" title="'.esc_attr($url).'">'.$html_a_op.$html_st_op.esc_html($this->pz_DecodeURL($url, true)).$html_st_cl.$html_a_cl.'</div>';
 		$html_selected_info_url = str_replace('class="lkc-url"', 'class="lkc-url-info"', $html_selected_url);
 		$prefix = $is_internal ? 'in' : 'ex';
+
 		$defaults = self::pz_GetDefaultOptions();
+
 		$html_date_r = str_replace('class="lkc-date"', 'class="lkc-date lkc-date-right" style="margin-left:auto;float:right"', $html_date ?? '');
 		$html_cat_list = '';
 		$selected_items = array();
@@ -527,6 +545,7 @@ trait Pz_LinkCard_Get_HTML {
 				if ($html_cat_list) $html_cat_list = '<div class="lkc-cat-list">'.$html_cat_list.'</div>';
 			}
 		}
+
 		$html_separator = !empty($this->options['separator']) ? '<div class="lkc-separator" aria-hidden="true"></div>' : '';
 		$html_info_items = '';
 		for ($i = 1; $i <= 5; $i++) {
@@ -617,13 +636,17 @@ trait Pz_LinkCard_Get_HTML {
 	}
 
 	private function pz_IsWebAPIImageAvailable($url ) {
-		$cache_key = 'pz_lkc_api_image_'.md5($url );
+		if ($this->pz_ShouldBlockLocalAddress($url)) return false;
+		$cache_key = 'pz_lkc_api_image_v2_'.md5($url );
 		$cached = get_transient($cache_key );
 		if (is_array($cached ) && isset($cached['available'] ) ) {
+			foreach (($cached['checked_urls'] ?? array($url)) as $checked_url) {
+				if ($this->pz_ShouldBlockLocalAddress($checked_url)) return false;
+			}
 			return (bool) $cached['available'];
 		}
 
-		$response = wp_safe_remote_get($url, array(
+		$response = $this->pz_CheckedRemoteGet($url, array(
 			'timeout' => 10,
 			'redirection' => !empty($this->options['flg-redir'] ) ? 8 : 0,
 			'limit_response_size' => 1,
@@ -631,7 +654,8 @@ trait Pz_LinkCard_Get_HTML {
 			'sslverify' => !empty($this->options['flg-sslverify'] ),
 		) );
 		$available = !is_wp_error($response ) && 200 === intval(wp_remote_retrieve_response_code($response ) );
-		set_transient($cache_key, array('available' => $available ), $available ? HOUR_IN_SECONDS : MINUTE_IN_SECONDS );
+		$checked_urls = is_wp_error($response) ? array($url) : $response['pz_lkc_checked_urls'];
+		set_transient($cache_key, array('available' => $available, 'checked_urls' => $checked_urls), $available ? HOUR_IN_SECONDS : MINUTE_IN_SECONDS );
 		return $available;
 	}
 }

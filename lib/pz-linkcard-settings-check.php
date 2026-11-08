@@ -9,7 +9,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-nofollow]" value="" />
 					<input type="checkbox" name="properties[flg-nofollow]" value="1" <?php checked($this->options['flg-nofollow'] ); ?> />
-					<?php	echo __('In the case of an external site, it puts the "nofollow".', 'pz-linkcard' ).__('(Deprecation)', 'pz-linkcard' ); ?>
+					<?php	echo __('Add "nofollow" to links to external sites.', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -19,7 +19,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-noopener]" value="" />
 					<input type="checkbox" name="properties[flg-noopener]" value="1" <?php checked($this->options['flg-noopener'] ); ?> />
-					<?php	echo __('In the case of an external site, it puts the "noopener".', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+					<?php	echo __('Add "noopener" to links to external sites.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -29,7 +29,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-relative-url]" value="" />
 					<input type="checkbox" name="properties[flg-relative-url]" value="1" <?php checked($this->options['flg-relative-url'] ); ?> />
-					<?php esc_html_e('For relative-specified URLs, complement the site URL.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Resolve relative URLs against the site URL.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -86,7 +86,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-redir]" value="" />
 					<input type="checkbox" name="properties[flg-redir]" value="1" <?php checked($this->options['flg-redir'] ); ?> />
-					<?php esc_html_e('Track when the link destination is redirected.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Follow redirects when retrieving linked pages.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -107,7 +107,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-click-count]" value="" />
 					<input type="checkbox" name="properties[flg-click-count]" value="1" class="pz-sync-check" <?php checked($this->options['flg-click-count'] ); ?> />
-					<?php esc_html_e('Record the number of times clicked.', 'pz-linkcard' ); ?>
+					<?php esc_html_e('Record the number of clicks.', 'pz-linkcard' ); ?>
 				</label>
 			</td>
 		</tr>
@@ -123,7 +123,7 @@
 		</tr>
 		<tr id="pz-click-log-retention-settings">
 			<th scope="row"><?php esc_html_e('Retention Period', 'pz-linkcard' ); ?></th>
-			<td><?php echo sprintf(esc_html__('The %s are located on the “Advanced” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-click-cleanup-retention-settings">'.esc_html__('Settings item', 'pz-linkcard').'</a>'); ?></td>
+			<td><?php echo sprintf(esc_html__('The %s are on the “Advanced” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-click-cleanup-retention-settings">'.esc_html__('settings', 'pz-linkcard').'</a>'); ?></td>
 		</tr>
 		<tr>
 			<th scope="row" rowspan="2"><?php esc_html_e('Broken Link', 'pz-linkcard' ); ?></th>
@@ -140,7 +140,7 @@
 			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php
-					echo sprintf(esc_html__('The %s are located on the “Advanced” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-alive-recurrence-settings">'.esc_html__('Settings item', 'pz-linkcard').'</a>');
+					echo sprintf(esc_html__('The %s are on the “Advanced” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-alive-recurrence-settings">'.esc_html__('settings', 'pz-linkcard').'</a>');
 				?>
 			</td>
 		</tr>

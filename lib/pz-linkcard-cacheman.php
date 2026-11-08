@@ -276,7 +276,7 @@
 			if	(isset($data ) && is_array($data ) && isset($data['id'] ) ) {
 				$success_count++;
 			}
-			$html_notice			.=	'<div class="notice '.($success_count ? 'notice-success' : 'notice-error' ).' is-dismissible"><p><strong>'.__('Update Cache', 'pz-linkcard' ).__('...', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
+			$html_notice			.=	'<div class="notice '.($success_count ? 'notice-success' : 'notice-error' ).' is-dismissible"><p><strong>'.__('Cache Update Result', 'pz-linkcard' ).__('...', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
 			$redirect_url		=	$return_url ?: $this->cacheman_url;
 			echo	'<script>window.location.replace('.wp_json_encode($redirect_url ).');</script>';
 			$show_list			=	false;
@@ -361,10 +361,18 @@
 			foreach	($select_id as $data_id ) {
 				$data				=	$this->pz_GetCache(array('id' => $data_id ) );
 				$result				=	null;
-				if	(isset($data ) && is_array($data ) ) {
-					$result			=	$this->pz_SetCache($data );
+				if (is_array($data) && !empty($data['id']) && !empty($data['url'])) {
+					$post_ids = $this->pz_FindUsedPostIDs($data['url']);
+					if ($post_ids !== null) {
+						$fields = array();
+						for ($index = 1; $index <= 6; $index++) {
+							$fields['use_post_id'.$index] = $post_ids[$index - 1] ?? null;
+						}
+						$result = $wpdb->update($this->db_card, $fields, array('id' => intval($data['id'])), array_fill(0, 6, '%d'), array('%d'));
+						if ($result !== false) $this->request_cache = array();
+					}
 				}
-				if	($result ) {
+				if ($result !== null && $result !== false) {
 					$success_count++;
 				} else {
 					$skip_count++;

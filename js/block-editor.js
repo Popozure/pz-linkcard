@@ -16,7 +16,7 @@
 	const defaultShortcode = (blockIcon?.shortcode || "blogcard").replace(/[^a-zA-Z0-9]/g, "") || "blogcard";
 	const blockTitle = blockIcon?.title || "Pz-LinkCard";
 	const urlPlaceholder = blockIcon?.placeholder || "Enter the URL and press Enter";
-	const blockDescription = blockIcon?.description || "Create a Pz-LinkCard shortcode.";
+	const blockDescription = blockIcon?.description || "Display the linked page as a LinkCard.";
 	const searchResultsLabel = blockIcon?.searchResults || "Search results";
 	const shortcodes = Array.from(
 		new Set(

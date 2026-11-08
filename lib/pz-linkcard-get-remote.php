@@ -54,6 +54,13 @@
     $url			=	$this->pz_EncodeURL($url ,true );
     $url_redir		=	'';
     $url_access		=	$url;
+    if (!empty($data['url_redir'])) {
+        $saved_redirect = $this->pz_EncodeURL($data['url_redir'], true);
+        if (is_string($saved_redirect) && preg_match('~\Ahttps?://~i', $saved_redirect)) {
+            $url_redir = $saved_redirect;
+            $url_access = $saved_redirect;
+        }
+    }
     $robots_blocked_url	=	'';
     $is_robots_allowed	=	function($check_url ) use ($rget_args, $get_request_args ) {
         if	(empty($this->options['flg-robots'] ) ) {
@@ -142,7 +149,7 @@
     };
 
     // リンク先サイトのアクセス
-    if	($redirect_limit > 0 ) {
+    if	($redirect_limit > 0 && $url_redir === '' ) {
         $last_url	=	$trace_redirect_url($url );
         if	($last_url && $url !== $last_url ) {
             $url_redir	=	$this->pz_EncodeURL($last_url, true );

@@ -39,14 +39,14 @@
 					array('%d' )
 				);
 				$message	=	sprintf(__('[SKIP] URL=%s', 'pz-linkcard' ), $data->url ).PHP_EOL;
-				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) ).PHP_EOL;
-				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;It will be skipped because the domain is the same. The next check date and time=%s was set.', 'pz-linkcard' ), date('Y-m-d H:i', $next_access ) );
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) ).PHP_EOL;
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;Skipping this URL because its domain is the same as the previous one. The next check is scheduled for %s.', 'pz-linkcard' ), date('Y-m-d H:i', $next_access ) );
 				$log		.=	$message.PHP_EOL;
 				continue;
 			}
 			$proc_count++;
 			$message	=	sprintf(__('[%1$d] URL=%2$s', 'pz-linkcard' ), $proc_count, $data->url ).PHP_EOL;
-			$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The next check date and time=%s has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) );
+			$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) );
 			$log		.=	$message.PHP_EOL;
 
 			// リンク先を取得
@@ -84,7 +84,7 @@
 				$result		=	$this->pz_SetCache($before );
 
 				// 実行ログ
-				$message	=	sprintf(__('&ensp;&ensp;&ensp;&ensp;HTTP code=%1$d was returned. The next check date and time=%2$s was set.', 'pz-linkcard' ), intval($result['alive_result'] ), date('Y-m-d H:i', intval($result['alive_nexttime'] ) ) );
+				$message	=	sprintf(__('&ensp;&ensp;&ensp;&ensp;HTTP status code %1$d was returned. The next check is scheduled for %2$s.', 'pz-linkcard' ), intval($result['alive_result'] ), date('Y-m-d H:i', intval($result['alive_nexttime'] ) ) );
 				$log		.=	$message.PHP_EOL;
 			}
 
