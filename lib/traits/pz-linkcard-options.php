@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('ABSPATH' ) || wp_die;
 
 trait Pz_LinkCard_Options {

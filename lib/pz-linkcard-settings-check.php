@@ -91,6 +91,14 @@
 			</td>
 		</tr>
 		<tr>
+			<th scope="row" colspan="2"><?php esc_html_e('Retry from Original URL', 'pz-linkcard'); ?></th>
+			<td><label>
+				<input type="hidden" name="properties[flg-redir-retry]" value="" />
+				<input type="checkbox" name="properties[flg-redir-retry]" value="1" <?php checked($this->options['flg-redir-retry']); ?> />
+				<?php esc_html_e('If the saved redirect destination fails with an HTTP error (such as 403) or a connection error, follow redirects again from the original URL.', 'pz-linkcard'); ?>
+			</label></td>
+		</tr>
+		<tr>
 			<th scope="row" colspan="2"><?php esc_html_e('Use User-Agent', 'pz-linkcard' ); ?></th>
 			<td>
 				<select name="properties[user-agent]" class="pz-sync pz-user-agent">

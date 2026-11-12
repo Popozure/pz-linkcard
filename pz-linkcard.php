@@ -4,7 +4,7 @@
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
 Description:	Displays links in card format.
-Version:		2.6.5
+Version:		2.6.4.9
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -415,6 +415,7 @@ class class_pz_linkcard {
 			'flg-sslverify'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
 			'flg-robots'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
 			'flg-local-check'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-redir-retry'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
 			'flg-redir'							=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
 			'user-agent'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	'pzlkc',					],
 			'user-agent-text'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
@@ -479,11 +480,13 @@ class class_pz_linkcard {
 			'flg-special-note'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
 			'flg-special-qiita'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
 			'flg-special-yahoo-auc'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'flg-special-fanatec' => ['type' => 'flag', 'null' => true, 'default' => null],
 			'flg-special-microsoft'				=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
-			'sns-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',					],
+			'sns-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'daily',					],
 			'sns-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,							],
-			'alive-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'hourly',					],
+			'alive-period'						=>	['type'	=>	'schedule',				'null'	=>	false,	'default'	=>	'daily',					],
 			'alive-period-num'					=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	5,							],
+			'get-timing' => ['type' => 'string', 'null' => false, 'default' => 'background'],
 			'get-period-num'					=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	50,							],
 			'cron-site-interval'				=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	30,							],
 			'click-cleanup-hour'				=>	['type' =>	'numeric',				'null'	=>	false,	'default'	=>	4,							],
@@ -730,6 +733,7 @@ class class_pz_linkcard {
 			add_action		('wp_ajax_pz_lkc_save_cacheman_columns',	[$this, 'action_ajax_pz_lkc_save_cacheman_columns'] );
 			add_action		('wp_ajax_pz_lkc_find_used_posts',			[$this, 'action_ajax_pz_lkc_find_used_posts'] );
 			add_action		('wp_ajax_pz_lkc_cacheman_pending',			[$this, 'action_ajax_pz_lkc_cacheman_pending'] );
+			add_action('wp_ajax_pz_lkc_schedule_pending', [$this, 'action_ajax_pz_lkc_schedule_pending']);
 
 			// ビジュアルエディター用Ajaxアクション
 			add_action		('wp_ajax_pz_lkc_mce_post_search',			[$this, 'action_ajax_pz_lkc_mce_post_search'] );
@@ -1024,21 +1028,37 @@ class class_pz_linkcard {
 		}
 		$url_info = $this->Pz_GetURLInfo($url );
 		if (isset($atts['preview-data'] ) && is_array($atts['preview-data'] ) ) {
-			if (!empty($url_info['is_internal'] ) && !$this->pz_IsInternalCardPubliclyViewable($url, $atts['preview-data'] ) ) {
-				return null;
-			}
 			return $this->pz_GetHTML($atts, $url_info );
 		}
 
-		if (!empty($url_info['is_internal'] ) ) {
-			if (!$this->pz_IsInternalCardPubliclyViewable($url ) ) {
-				return null;
-			}
-		}
 		$data = $this->pz_GetCache(array('url' => $url ) );
 		$data = is_array($data ) && !empty($data['url'] ) ? $data : array('url' => $url );
-		if (!empty($url_info['is_internal'] ) && !$this->pz_IsInternalCardPubliclyViewable($url, $data ) ) {
-			return null;
+		$internal_error = !empty($url_info['is_internal']) ? $this->pz_GetInternalCardErrorStatus($url, $data) : 0;
+		if ($internal_error) {
+			$error_title = __('The requested page could not be found.', 'pz-linkcard');
+			$restricted_fields = array(
+				'title' => $error_title, 'excerpt' => '', 'thumbnail' => '', 'favicon' => get_site_icon_url(16),
+				'url_redir' => null, 'site_name' => get_bloginfo('name'), 'charset' => 'UTF-8',
+				'post_date' => 0, 'post_modified' => 0, 'no_failure' => 0,
+				'update_result' => $internal_error, 'alive_result' => $internal_error,
+				'regist_title' => $error_title, 'regist_excerpt' => '', 'regist_charset' => 'UTF-8', 'regist_result' => $internal_error,
+			);
+			$needs_save = empty($data['id']);
+			foreach ($restricted_fields as $key => $value) {
+				if (!array_key_exists($key, $data) || $data[$key] != $value) $needs_save = true;
+			}
+			$data = array_merge($data, $restricted_fields);
+			$data['post_id'] = $this->pz_ResolveInternalPostID($url) ?: intval($data['post_id'] ?? 0);
+			if ($needs_save) {
+				$data['regist_time'] = $data['regist_time'] ?? $this->now;
+				$data['update_time'] = $this->now;
+				$data['alive_time'] = $this->now;
+				$saved = $this->pz_SetCache($data);
+				if (is_array($saved)) $data = $saved;
+			}
+			$data = $this->pz_RecordUsedPost($data);
+			$atts['pz-card-data'] = $data;
+			return $this->pz_GetHTML($atts, $url_info);
 		}
 		$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
 		$force = isset($atts['force'] ) && $atts['force'] == true;
@@ -1062,7 +1082,9 @@ class class_pz_linkcard {
 				}
 			}
 		} elseif (!empty($url_info['is_external'] ) ) {
-			if (!$data_id && !$force ) {
+			$fetch_on_display = ($this->options['get-timing'] ?? 'background') === 'display';
+			$unregistered = !$data_id || (array_key_exists('regist_time', $data) && empty($data['regist_time']));
+			if (!$data_id && !$force && !$fetch_on_display ) {
 				$data = $this->pz_SetCache(array(
 					'url'				=>	$url,
 					'title'				=>	'',
@@ -1077,12 +1099,9 @@ class class_pz_linkcard {
 				$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
 			}
 
-			if ($force || ($this->options['debug-mode'] == true && $this->options['debug-nocache'] == true ) ) {
-				$remote = $this->pz_GetRemote($data );
-				if (is_array($remote ) && !empty($remote['url'] ) ) {
-					$saved = $this->pz_SetCache($remote );
-					$data = is_array($saved ) ? $saved : $remote;
-				}
+			if ($force || ($fetch_on_display && $unregistered) || ($this->options['debug-mode'] == true && $this->options['debug-nocache'] == true ) ) {
+				$refreshed = $this->pz_RefreshExternalCard($data);
+				if (is_array($refreshed)) $data = $refreshed;
 			} elseif (array_key_exists('regist_time', $data ) && (is_null($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) ) {
 				$atts['title'] = __('Retrieving...', 'pz-linkcard' );
 				$atts['pz-pending'] = true;
@@ -1530,6 +1549,14 @@ class class_pz_linkcard {
 		return $post_id;
 	}
 
+	private function pz_GetInternalCardErrorStatus($url, $data = array()) {
+		$post_id = $this->pz_ResolveInternalPostID($url) ?: intval($data['post_id'] ?? 0);
+		if (!$post_id) return intval($data['update_result'] ?? 0) === 404 ? 404 : 0;
+		$post = get_post($post_id);
+		if (!$post || $post->post_status === 'trash') return 404;
+		return $this->pz_IsPostPubliclyViewable($post) ? 0 : 403;
+	}
+
 	private	function	pz_IsInternalCardPubliclyViewable($url, $data = array() ) {
 		$post_id	=	$this->pz_ResolveInternalPostID($url);
 		if	(!$post_id && !empty($data['post_id'] ) ) {
@@ -1594,6 +1621,25 @@ class class_pz_linkcard {
 			return	'JIS';
 		}
 		return	$charset;
+	}
+
+	// All external content refresh entry points share retrieval, persistence and image caching.
+	private function pz_RefreshExternalCard($data) {
+		$result = $this->pz_GetRemote($data);
+		if (!is_array($result) || empty($result['url'])) return null;
+		if (!empty($data['regist_time'])) {
+			foreach ($data as $key => $value) {
+				if (strpos($key, 'regist_') === 0) $result[$key] = $value;
+			}
+		}
+		$saved = $this->pz_SetCache($result);
+		if (!is_array($saved) || empty($saved['url'])) return null;
+		foreach (array('thumbnail' => 'ex-thumbnail', 'favicon' => 'ex-siteicon') as $field => $option) {
+			if (!empty($saved[$field]) && in_array((string) ($this->options[$option] ?? ''), array('1', '13'), true)) {
+				$this->pz_GetImage($saved[$field]);
+			}
+		}
+		return $saved;
 	}
 
 	private	function	pz_GetRemote($data, $headers_only = false ) {
@@ -1690,7 +1736,7 @@ class class_pz_linkcard {
 		case	'mysite':
 			return	'Mozilla/5.0 (WordPress/'.$wp_version.';) '.home_url();
 		case	'':
-			return	isset($_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ) ) : '';
+			return	sanitize_text_field((string) ($this->options['user-agent-text'] ?? ''));
 		case	'pzlkc':
 		default:
 			return	'Mozilla/5.0 (WordPress/'.$wp_version.';) '.self::PLUGIN_NAME.'-Crawler/'.PZLKC_PLUGIN_VERSION;
@@ -2256,7 +2302,10 @@ class class_pz_linkcard {
 			'noticeNonce'	=>	wp_create_nonce('pz_lkc_clear_error_mode' ),
 			'cachemanColumnsNonce'	=>	wp_create_nonce('pz_lkc_cacheman_columns' ),
 			'findUsedPostsNonce'	=>	wp_create_nonce('pz_lkc_find_used_posts' ),
+			'cachemanRetrieving' => __('Retrieving...', 'pz-linkcard'),
+			'cachemanQueueFailed' => __('Failed to queue article content retrieval.', 'pz-linkcard'),
 			'cachemanPendingNonce'	=>	wp_create_nonce('pz_lkc_cacheman_pending' ),
+			'schedulePendingNonce' => wp_create_nonce('pz_lkc_schedule_pending'),
 			'numericOptions'	=>	$numeric_options,
 			'mediaTitle'	=>	__('Select Image', 'pz-linkcard' ),
 			'mediaButton'	=>	__('Use this image', 'pz-linkcard' ),
@@ -2402,7 +2451,7 @@ class class_pz_linkcard {
 		} else {
 			wp_enqueue_style	('pz-linkcard-css',			PZLKC_URL_STYLE.'style.css',			array(),	$css_version );
 		}
-		wp_add_inline_style('pz-linkcard-css', '.linkcard[id^="pz-lkc-"]{scroll-margin-top:96px}.linkcard[id^="pz-lkc-"]:target{animation:pz-lkc-target-highlight 5s steps(1,end)}.lkc-error:target+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}body:has(.lkc-error:target) .lkc-error+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}.pz-lkc-pending .lkc-external-wrap{position:relative}.pz-lkc-pending-loader{position:absolute;z-index:10;top:50%;left:50%;display:flex;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:4px;background:rgba(0,0,0,.45);align-items:center;justify-content:center;pointer-events:none}.pz-lkc-pending-loader::after{content:"";width:50px;aspect-ratio:1;border-radius:50%;background:radial-gradient(farthest-side,#fff 94%,#0000) top/8px 8px no-repeat,conic-gradient(#0000 30%,#fff);mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);-webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);animation:pz-lkc-pending-loader-spin 1s infinite linear}@keyframes pz-lkc-target-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(0,140,255,.95);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(0,140,255,0);outline-offset:8px}}@keyframes pz-lkc-error-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(214,54,56,.9);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(214,54,56,0);outline-offset:8px}}@keyframes pz-lkc-pending-loader-spin{100%{transform:rotate(1turn)}}' );
+		wp_add_inline_style('pz-linkcard-css', '.linkcard[id^="pz-lkc-"]{scroll-margin-top:96px}.linkcard[id^="pz-lkc-"]:target{animation:pz-lkc-target-highlight 5s steps(1,end)}.lkc-error:target+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}body:has(.lkc-error:target) .lkc-error+.lkc-internal-wrap{animation:pz-lkc-error-highlight 5s steps(1,end)}.linkcard.pz-lkc-pending{opacity:0.7}.pz-lkc-pending .lkc-external-wrap{position:relative}.pz-lkc-pending-loader{position:absolute;z-index:10;top:50%;left:50%;display:flex;width:66px;height:66px;margin:-33px 0 0 -33px;border-radius:4px;background:rgba(0,0,0,.45);align-items:center;justify-content:center;pointer-events:none}.pz-lkc-pending-loader::after{content:"";width:50px;aspect-ratio:1;border-radius:50%;background:radial-gradient(farthest-side,#fff 94%,#0000) top/8px 8px no-repeat,conic-gradient(#0000 30%,#fff);mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);-webkit-mask:radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);animation:pz-lkc-pending-loader-spin 1s infinite linear}@keyframes pz-lkc-target-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(0,140,255,.95);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(0,140,255,0);outline-offset:8px}}@keyframes pz-lkc-error-highlight{0%,20%,40%,60%,80%{outline:4px solid rgba(214,54,56,.9);outline-offset:4px}10%,30%,50%,70%,90%,100%{outline:4px solid rgba(214,54,56,0);outline-offset:8px}}@keyframes pz-lkc-pending-loader-spin{100%{transform:rotate(1turn)}}' );
 		if	($this->options['css-add-url'] ) {
 			wp_enqueue_style	('pz-linkcard-css-add',		$this->options['css-add-url'],			array(),	$css_version );
 		}
@@ -2606,6 +2655,21 @@ class class_pz_linkcard {
 		return	require(__DIR__.'/lib/ajax/pz-linkcard-ajax-find-used-posts.php' );
 	}
 
+	private function pz_GetSchedulePendingCounts() {
+		global $wpdb;
+		$now = current_time('timestamp', false);
+		return $wpdb->get_row($wpdb->prepare(
+			"SELECT (SELECT COUNT(*) FROM $this->db_card WHERE sns_nexttime <= %d) AS sns,
+			(SELECT COUNT(*) FROM $this->db_card WHERE alive_nexttime <= %d) AS alive,
+			(SELECT COUNT(*) FROM $this->db_card WHERE regist_time IS NULL OR regist_time = 0) AS unregistered",
+			$now, $now
+		));
+	}
+
+	public function action_ajax_pz_lkc_schedule_pending() {
+		require $this->plugin_dir_path.'lib/ajax/pz-linkcard-ajax-schedule-pending.php';
+	}
+
 	public	function	action_ajax_pz_lkc_cacheman_pending() {
 		return	require(__DIR__.'/lib/ajax/pz-linkcard-ajax-cacheman-pending.php' );
 	}
@@ -2641,6 +2705,10 @@ class class_pz_linkcard {
 
 	// Schedule click-log cleanup on the selected weekdays in the site timezone.
 	private function pz_ScheduleClickLogCleanup() {
+		if (empty($this->options['flg-click-count']) || empty($this->options['flg-click-log'])) {
+			wp_clear_scheduled_hook(self::CRON_CLICK_CLEANUP);
+			return;
+		}
 		$hour = min(23, max(0, intval($this->options['click-cleanup-hour'] ?? 4)));
 		$minute = min(59, max(0, intval($this->options['click-cleanup-minute'] ?? 0)));
 		$days = array();
@@ -2813,6 +2881,10 @@ class class_pz_linkcard {
 
 	// WP-CRONスケジュール（クリックログ整理）
 	public	function	schedule_hook_click_cleanup() {
+		if (empty($this->options['flg-click-count']) || empty($this->options['flg-click-log'])) {
+			$this->pz_ScheduleClickLogCleanup();
+			return 'Click log cleanup is disabled.';
+		}
 		$result	= $this->pz_DeleteExpiredClickLogs();
 		$this->pz_ScheduleClickLogCleanup();
 		return	'Expired click logs: '.$result['expired'].PHP_EOL.'Orphaned click logs: '.$result['orphaned'].PHP_EOL;

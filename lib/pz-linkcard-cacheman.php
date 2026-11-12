@@ -292,11 +292,18 @@
 			foreach	($select_id as $data_id ) {
 				$data		=	$this->pz_GetCache(array('id' => $data_id ) );
 				if	(isset($data ) && is_array($data ) ) {
+					if (isset($_POST['single-renew'])) {
+						if ($this->pz_QueueCardRefresh($data_id)) $success_count++;
+						else $skip_count++;
+						continue;
+					}
 					$url_info	=	$this->Pz_GetURLInfo($data['url'] );
-					$data		=	!empty($url_info['is_internal'] )
-						?	$this->pz_GetPost($data )
-						:	$this->pz_GetRemote($data );
-					$result		=	is_array($data ) ? $this->pz_SetCache($data ) : null;
+					if (!empty($url_info['is_internal'])) {
+						$data = $this->pz_GetPost($data);
+						$result = is_array($data) ? $this->pz_SetCache($data) : null;
+					} else {
+						$result = $this->pz_RefreshExternalCard($data);
+					}
 					if	($result ) {
 						$success_count++;
 					} else {
@@ -306,7 +313,7 @@
 					$skip_count++;
 				}
 			}
-			$html_notice			.=	'<div class="notice '.($success_count ? 'notice-success' : 'notice-error' ).' is-dismissible"><p><strong>'.__('Renew Cache', 'pz-linkcard' ).__('...', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
+			$html_notice			.=	'<div class="notice '.($success_count ? 'notice-success' : 'notice-error' ).' is-dismissible"><p><strong>'.(isset($_POST['single-renew']) ? __('Content retrieval queued', 'pz-linkcard') : __('Renew Cache', 'pz-linkcard' )).__('...', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
 			break;
 
 		case	'renew_thumbnail':			// サムネイルの再取得
@@ -392,10 +399,17 @@
 				$data				=	$this->pz_GetCache(array('id' => $data_id ) );
 				if	(isset($data ) && is_array($data ) ) {
 					$data						=	$this->pz_GetCache($data );
-					$after						=	$this->pz_GetRemote($data );
+					$url_info = $this->pz_GetURLInfo($data['url']);
+					$after = !empty($url_info['is_internal'])
+						? $this->pz_GetPost($data)
+						: $this->pz_GetRemote($data);
+					if (!is_array($after) || !isset($after['update_result'])) {
+						$skip_count++;
+						continue;
+					}
 					$data['alive_result']		=	$after['update_result'];
 					$data['alive_time']			=	$this->now;
-					$data['alive_nexttime']		=	$this->now + WEEK_IN_SECONDS * 4;
+					$data['alive_nexttime']		=	(!empty($url_info['is_internal']) ? null : ($after['alive_nexttime'] ?? null)) ?? $this->pz_GetNextAliveTime($data['alive_result'], $this->now);
 					$data						=	$this->pz_SetCache($data );
 					if	($data ) {
 						$success_count++;

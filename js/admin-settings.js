@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
             : []
     );
     let processingOverlayTimer = null;
+    let cachemanPendingMonitor = null;
 	const processingOverlayDelay = 800;
 	initInfobarPosition();
 	initTargetHighlightLinks();
@@ -15,6 +16,44 @@ document.addEventListener("DOMContentLoaded", () => {
     initCachemanScrollMemory();
     initCachemanDebugToggle();
     initClickCleanupTime();
+    initRetrievalScheduleControls();
+    initSchedulePendingCounts();
+
+    function initSchedulePendingCounts() {
+        const counts = document.querySelectorAll('#pz-advanced [data-pz-schedule-count]');
+        const config = window.pzLinkCardAdmin;
+        if (counts.length !== 3 || !config?.ajaxUrl || !config.schedulePendingNonce) return;
+        let busy = false;
+        let stopped = false;
+        async function update() {
+            if (busy || stopped || document.hidden || !counts[0].getClientRects().length) return;
+            busy = true;
+            const controller = new AbortController();
+            const timeout = window.setTimeout(() => controller.abort(), 10000);
+            try {
+                const response = await fetch(config.ajaxUrl, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    body: new URLSearchParams({ action: 'pz_lkc_schedule_pending', nonce: config.schedulePendingNonce }),
+                    signal: controller.signal
+                });
+                if (response.status === 403) stopped = true;
+                if (!response.ok) return;
+                const result = await response.json();
+                if (result.success && Array.isArray(result.data) && result.data.length === counts.length) {
+                    counts.forEach((element, index) => { element.textContent = result.data[index]; });
+                }
+            } catch (_) {
+                // Keep the last known counts and retry on the next interval.
+            } finally {
+                window.clearTimeout(timeout);
+                busy = false;
+            }
+        }
+        window.setInterval(update, 5000);
+        document.addEventListener('visibilitychange', update);
+        update();
+    }
 	window.addEventListener("load", () => {
 		// Let admin-tabs.js finish restoring the active tab before jumping to
 		// a setting linked from another admin screen. Keep this independent of
@@ -104,6 +143,7 @@ document.addEventListener("DOMContentLoaded", () => {
         initSettingsTabs();
         initCachemanUsedPostRefresh();
         initCachemanPendingMonitor();
+        initCachemanInlineRefresh();
         initCachemanSearch();
         initCachemanPaginationKeys();
         initCachemanCheckboxKeys();
@@ -373,9 +413,10 @@ document.addEventListener("DOMContentLoaded", () => {
 	}
 
 	function activateTargetHighlight(hash, fromClick = false) {
-		const scheduleTargets = ["#pz-click-cleanup-retention-settings", "#pz-alive-recurrence-settings", "#pz-sns-recurrence-settings"];
+		const scheduleTargets = ["#pz-click-cleanup-retention-settings", "#pz-alive-recurrence-settings", "#pz-sns-recurrence-settings", "#pz-click-log-record-target"];
 		if (scheduleTargets.includes(hash) && !fromClick) return;
 		const targets = {
+			"#pz-click-log-record-target": ["#pz-click-log-settings", "pz-settings-target-highlight"],
 			"#pz-sns-recurrence-settings": ["#pz-sns-recurrence-settings", "pz-schedule-target-highlight"],
 			"#pz-click-cleanup-retention-settings": ["#pz-click-cleanup-retention-settings", "pz-schedule-target-highlight"],
 			"#pz-alive-recurrence-settings": ["#pz-alive-recurrence-settings", "pz-schedule-target-highlight"],
@@ -567,15 +608,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Admin setting helper
+    function initRetrievalScheduleControls() {
+        const select = name => document.querySelector(`select[name="properties[${name}]"]`);
+        const sns = select('sns-period');
+        const alive = select('alive-period');
+        const timing = select('get-timing');
+        const update = () => {
+            const snsCount = select('sns-period-num');
+            const aliveCount = select('alive-period-num');
+            if (sns && snsCount) snsCount.disabled = sns.value === '';
+            if (alive && aliveCount) aliveCount.disabled = alive.value === '';
+            if (timing) {
+                for (const name of ['cron-site-interval', 'get-period-num']) {
+                    const control = select(name);
+                    if (control) control.disabled = timing.value === 'display';
+                }
+            }
+        };
+        [sns, alive, timing].forEach(control => control?.addEventListener('change', update));
+        (sns || alive || timing)?.closest('form')?.addEventListener('reset', () => window.setTimeout(update, 0));
+        update();
+    }
+
     function initClickCleanupTime() {
         const weekdays = document.querySelector(".pz-click-cleanup-weekdays");
         if (!weekdays) return;
         const days = Array.from(weekdays.querySelectorAll("input[type='checkbox']"));
         const times = weekdays.parentElement.querySelectorAll("select[name='properties[click-cleanup-hour]'], select[name='properties[click-cleanup-minute]']");
+        const count = document.querySelector("input[name='properties[flg-click-count]'][type='checkbox']");
+        const log = document.querySelector("input[name='properties[flg-click-log]'][type='checkbox']");
+        const retention = document.querySelector("select[name='properties[click-log-retention]']");
         const update = () => {
-            const disabled = !days.some(day => day.checked);
+            const logDisabled = !count?.checked || !log?.checked;
+            weekdays.querySelectorAll("input").forEach(input => { input.disabled = logDisabled; });
+            const disabled = logDisabled || !days.some(day => day.checked);
+            if (retention) retention.disabled = disabled;
             times.forEach(time => { time.disabled = disabled; });
         };
+        count?.addEventListener("change", update);
+        log?.addEventListener("change", update);
         weekdays.addEventListener("change", update);
         weekdays.closest("form")?.addEventListener("reset", () => window.setTimeout(update, 0));
         update();
@@ -2101,6 +2172,9 @@ document.addEventListener("DOMContentLoaded", () => {
             ?.closest(".pz-man-cache-image-box")
             ?.querySelector(".pz-man-cache-clear-image");
 
+        const setButton = input.closest(".pz-man-cache-image-box")?.querySelector(".pz-man-cache-set-image");
+        if (setButton) setButton.hidden = !!url;
+
         imageBox.innerHTML = "";
 
         if (!url) {
@@ -2617,21 +2691,40 @@ document.addEventListener("DOMContentLoaded", () => {
     function initCachemanPendingMonitor() {
         const pendingRows = Array.from(document.querySelectorAll(".pz-cacheman tr[data-pz-pending-id]"));
         const config = window.pzLinkCardAdmin;
-        if (!pendingRows.length || !config?.ajaxUrl || !config?.cachemanPendingNonce) return;
+        if (cachemanPendingMonitor || !config?.ajaxUrl || !config?.cachemanPendingNonce) return;
 
         const cardIds = pendingRows
             .map(row => parseInt(row.dataset.pzPendingId || "", 10))
             .filter(id => Number.isInteger(id) && id > 0);
-        if (!cardIds.length) return;
 
 		const pendingCardIds = new Set(cardIds);
         let stopped = false;
+        let polling = false;
+        const form = document.querySelector('.pz-cacheman tr[data-pz-card-id]')?.closest('form');
+        const loadRows = async (cardId = null) => {
+            if (!form) throw new Error('Missing card manager form');
+            const params = new FormData(form);
+            ['single-renew', 'single-delete', 'single-edit', 'header', 'page_button', 'bulk_action'].forEach(key => params.delete(key));
+            params.set('action', 'list');
+            if (cardId !== null) {
+                params.set('keyword', 'id:' + cardId);
+                params.set('filter', 'all');
+                params.set('refine', '');
+                params.set('page_now', '1');
+            }
+            // Named action buttons can shadow HTMLFormElement.action.
+            const requestUrl = new URL(form.getAttribute('action') || window.location.href, window.location.href);
+            const response = await fetch(requestUrl.href, { method: 'POST', credentials: 'same-origin', body: params });
+            if (!response.ok) throw new Error('Failed to reload card rows');
+            return new DOMParser().parseFromString(await response.text(), 'text/html');
+        };
 		let timerId = 0;
         const poll = async () => {
-            if (stopped || document.visibilityState === "hidden") return;
+            if (stopped || polling || document.visibilityState === "hidden") return;
 			if (!pendingCardIds.size) {
 				stopped = true;
 				if (timerId) window.clearInterval(timerId);
+                timerId = 0;
 				return;
 			}
 
@@ -2640,6 +2733,7 @@ document.addEventListener("DOMContentLoaded", () => {
             body.set("nonce", config.cachemanPendingNonce);
 			pendingCardIds.forEach(id => body.append("card_ids[]", String(id)));
 
+            polling = true;
             try {
                 const response = await fetch(config.ajaxUrl, {
                     method: "POST",
@@ -2649,31 +2743,81 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 const json = await response.json();
 				if (!json?.success || !Array.isArray(json.data?.ready_ids)) return;
-				const readyCards = new Map(
-					(Array.isArray(json.data.ready_cards) ? json.data.ready_cards : [])
-						.map(card => [Number(card?.id), card])
-				);
-				json.data.ready_ids.forEach(value => {
-					const cardId = Number(value);
-					if (!Number.isInteger(cardId) || cardId <= 0) return;
-					pendingCardIds.delete(cardId);
-					const row = document.querySelector(`.pz-cacheman tr[data-pz-pending-id="${cardId}"]`);
-					if (!row) return;
-					const title = String(readyCards.get(cardId)?.title || "");
-					const titleElement = row.querySelector(".pz-man-body-title > span");
-					if (titleElement) {
-						titleElement.textContent = title;
-						titleElement.title = title;
-					}
-					row.removeAttribute("data-pz-pending-id");
-				});
+                if (!json.data.ready_ids.length) return;
+                const page = await loadRows();
+                for (const value of json.data.ready_ids) {
+                    const cardId = Number(value);
+                    if (!Number.isInteger(cardId) || cardId <= 0) continue;
+                    const selector = '.pz-cacheman tr[data-pz-card-id="' + cardId + '"]';
+                    const row = document.querySelector(selector);
+                    if (!row) { pendingCardIds.delete(cardId); continue; }
+                    let replacement = page.querySelector(selector);
+                    if (!replacement) replacement = (await loadRows(cardId)).querySelector(selector);
+                    if (!replacement || replacement.hasAttribute('data-pz-pending-id')) continue;
+                    const checked = row.querySelector('input[type="checkbox"]')?.checked;
+                    const checkbox = replacement.querySelector('input[type="checkbox"]');
+                    if (checkbox && checked !== undefined) checkbox.checked = checked;
+                    row.replaceWith(document.importNode(replacement, true));
+                    pendingCardIds.delete(cardId);
+                }
             } catch (error) {
                 // 一時的な通信エラーでは監視を継続する。
+            } finally {
+                polling = false;
             }
         };
 
-		timerId = window.setInterval(poll, 3000);
-        poll();
+        cachemanPendingMonitor = (cardId) => {
+            if (Number.isInteger(cardId) && cardId > 0) pendingCardIds.add(cardId);
+            if (!pendingCardIds.size) return;
+            stopped = false;
+            if (!timerId) timerId = window.setInterval(poll, 3000);
+            poll();
+        };
+        cachemanPendingMonitor();
+    }
+
+    function initCachemanInlineRefresh() {
+        const config = window.pzLinkCardAdmin;
+        if (!config?.ajaxUrl || !config?.cachemanPendingNonce || !cachemanPendingMonitor) return;
+        document.addEventListener('click', async event => {
+            const button = event.target.closest('.pz-cacheman button[name="single-renew"]');
+            if (!button || event.defaultPrevented) return;
+            event.preventDefault();
+            const row = button.closest('tr[data-pz-card-id]');
+            const cardId = Number(button.value);
+            if (!row || !Number.isInteger(cardId) || cardId <= 0 || button.disabled || row.hasAttribute('data-pz-pending-id')) return;
+            const title = row.querySelector('.pz-man-body-title > span');
+            const previousTitle = title?.innerHTML;
+            const previousTooltip = title?.getAttribute('title');
+            row.dataset.pzPendingId = String(cardId);
+            button.disabled = true;
+            if (title) {
+                title.textContent = config.cachemanRetrieving;
+                title.title = config.cachemanRetrieving;
+                const loader = document.createElement('span');
+                loader.className = 'pz-man-pending-loader';
+                loader.setAttribute('aria-hidden', 'true');
+                title.append(loader);
+            }
+            try {
+                const body = new URLSearchParams({ action: 'pz_lkc_cacheman_pending', nonce: config.cachemanPendingNonce, queue_card_id: String(cardId) });
+                const response = await fetch(config.ajaxUrl, { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }, body: body.toString() });
+                const result = await response.json();
+                if (!response.ok || !result?.success || Number(result.data?.queued_id) !== cardId) throw new Error(config.cachemanQueueFailed);
+                row.dataset.pzPendingId = String(cardId);
+                cachemanPendingMonitor(cardId);
+            } catch (error) {
+                delete row.dataset.pzPendingId;
+                button.disabled = false;
+                if (title) {
+                    title.innerHTML = previousTitle;
+                    if (previousTooltip === null) title.removeAttribute('title');
+                    else title.setAttribute('title', previousTooltip);
+                }
+                window.alert(config.cachemanQueueFailed);
+            }
+        });
     }
 
 	function initCachemanUsedPostRefresh() {

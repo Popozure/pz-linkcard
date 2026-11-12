@@ -52,26 +52,20 @@
 			// リンク先を取得
 			if (isset($data ) && isset($data->id ) ) {
 				$before	=	$this->pz_GetCache(array('id' => intval($data->id ) ) );
-				$after	=	$this->pz_GetRemote($before, true );
-				$after_result	=	isset($after['alive_result'] ) ? intval($after['alive_result'] ) : 0;
-				switch	(true ) {
-				case	($after_result >= 200 && $after_result < 300 ):
-					$next_check_days	=	168;
-					break;
-				case	($after_result >= 300 && $after_result < 400 ):
-					$next_check_days	=	56;
-					break;
-				case	($after_result >= 400 && $after_result < 500 ):
-					$next_check_days	=	28;
-					break;
-				case	($after_result >= 500 && $after_result < 600 ):
-					$next_check_days	=	3;
-					break;
-				default:
-					$next_check_days	=	84;
-					break;
+				$url_info = $this->pz_GetURLInfo($before['url']);
+				if (!empty($url_info['is_internal'])) {
+					$recorded_post_id = intval($before['post_id'] ?? 0);
+					$recorded_post = $recorded_post_id > 0 ? get_post($recorded_post_id) : null;
+					if ($recorded_post_id > 0 && (!$recorded_post || $recorded_post->post_status === 'trash')) {
+						$after = array('alive_result' => 404);
+					} else {
+						$after = $this->pz_GetPost($before);
+					}
+				} else {
+					$after = $this->pz_GetRemote($before, true);
 				}
-				$before['alive_nexttime']	=	$this->now + DAY_IN_SECONDS * $next_check_days;
+				$after_result	=	isset($after['alive_result'] ) ? intval($after['alive_result'] ) : 0;
+				$before['alive_nexttime'] = (!empty($url_info['is_internal']) ? null : ($after['alive_nexttime'] ?? null)) ?? $this->pz_GetNextAliveTime($after_result, $this->now);
 				$before['alive_result']		=	$after['alive_result'];
 				$before['alive_time']		=	$this->now;
 

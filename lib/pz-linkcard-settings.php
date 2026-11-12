@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+﻿<?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	define('LIST_ENCLOSE_TAG',	array(
 		'div'			=>		__('DIV Tag',			'pz-linkcard' ),
@@ -300,6 +300,13 @@
 						}
 					}
 				}
+				if (($prop['user-agent'] ?? 'pzlkc') === '') {
+					$browser_user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
+					if ($browser_user_agent !== ($this->options['user-agent-text'] ?? '')) {
+						$flg_change = true;
+					}
+					$prop['user-agent-text'] = $browser_user_agent;
+				}
 				unset($prop['url-length'], $this->options['url-length'], $prop['blockquote'], $this->options['blockquote'] );
 			} else {
 				$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('No settings data was received. Please contact the developer if this problem persists.', 'pz-linkcard' ).'</strong></p></div>';
@@ -324,7 +331,7 @@
 						$saved_value	=	$wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", self::OPTION_NAME ) );
 						$saved_options	=	($saved_value !== null ) ? maybe_unserialize($saved_value ) : array();
 						if	($saved_options != $this->options ) {
-							$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to save the settings.', 'pz-linkcard' ).'</strong></p></div>';
+							$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to save the settings.', 'pz-linkcard' ).'</strong></p></div>'.self::pz_RenderOptionSaveDebugNotice(['pz_lkc_option_save_debug'] ?? array());
 						} else {
 							$html_notice	.=	'<div class="notice notice-info is-dismissible"><p><strong>'.__('The settings have not changed.', 'pz-linkcard' ).'</strong></p></div>';
 						}
@@ -1023,8 +1030,8 @@ function		echo_list($item_name, $item_value, $item_list, $item_title, $item_noti
 }
 
 // スケジュール用リスト項目
-function pz_echo_schedule_select($item_name, $item_value, $item_list ) {
-	echo '<select name="properties['.esc_attr($item_name ).']">';
+function pz_echo_schedule_select($item_name, $item_value, $item_list, $is_disabled = false ) {
+	echo '<select name="properties['.esc_attr($item_name ).']"'.disabled($is_disabled, true, false).'>';
 	foreach ($item_list as $key => $value ) {
 		echo '<option value="'.esc_attr($key ).'" '.selected((string) $key, (string) $item_value, false ).'>'.esc_html($value ).'</option>';
 	}

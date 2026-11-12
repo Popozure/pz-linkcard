@@ -1575,8 +1575,8 @@ msgid "Amazon.co.jp"
 msgstr "Amazon.co.jp"
 
 #: ../lib/pz-linkcard-settings-advanced.php:137
-msgid "Retrieve Product Images"
-msgstr "商品画像を取得する"
+msgid "Retrieve Product Images."
+msgstr "商品画像を取得する。"
 
 #: ../lib/pz-linkcard-settings-advanced.php:143
 msgid "X.com"
@@ -1591,28 +1591,24 @@ msgid "Jmty.jp"
 msgstr "ジモティー（jmty.jp）"
 
 #: ../lib/pz-linkcard-settings-advanced.php:161
-msgid "Retrieve Created and Updated Dates"
-msgstr "作成日と更新日を取得する"
+msgid "Retrieve Created and Updated Dates."
+msgstr "作成日と更新日を取得する。"
 
 #: ../lib/pz-linkcard-settings-advanced.php:167
 msgid "note.com"
 msgstr "note.com"
 
 #: ../lib/pz-linkcard-settings-advanced.php:173
-msgid "Retrieve Post Date"
-msgstr "投稿日を取得する"
-
-#: ../lib/pz-linkcard-settings-advanced.php:185
-msgid "Retrieve Publication and Update Dates"
-msgstr "投稿日・更新日時を取得する"
+msgid "Retrieve Post Date."
+msgstr "投稿日を取得する。"
 
 #: ../lib/pz-linkcard-settings-advanced.php:191
 msgid "Yahoo! Auctions"
 msgstr "Yahoo!オークション"
 
 #: ../lib/pz-linkcard-settings-advanced.php:197
-msgid "Retrieve Title and Start Date"
-msgstr "タイトルと開始日時を取得する"
+msgid "Retrieve Title and Start Date."
+msgstr "タイトルと開始日時を取得する。"
 
 #: ../lib/pz-linkcard-settings-advanced.php:203
 msgid "Microsoft"
@@ -4064,3 +4060,59 @@ msgstr "プレビューを左端にドッキング"
 #: ../lib/pz-linkcard-settings.php
 msgid "Cycle preview: window, bottom, right, left, hidden"
 msgstr "プレビューをウィンドウ・下ドッキング・右ドッキング・左ドッキング・非表示の順に切り替え"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+#, php-format
+msgid "The %s are on the “Link Check” tab."
+msgstr "「リンク先の検査」タブに%sがあります。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Log Recording"
+msgstr "ログ取得"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "On display (not recommended)"
+msgstr "表示時（非推奨）"
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Retry from Original URL"
+msgstr "元URLから再試行"
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "If the saved redirect destination fails with an HTTP error (such as 403) or a connection error, follow redirects again from the original URL."
+msgstr "保存済みのリダイレクト先が403などのHTTPエラーや通信エラーで取得に失敗した場合、元URLからリダイレクトを追跡し直します。"
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Set thumbnail image"
+msgstr "サムネイル画像を設定"
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Set site icon"
+msgstr "サイトアイコンを設定"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "FANATEC"
+msgstr "FANATEC"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Retrieve the product excerpt and adjust the thumbnail URL to the thumbnail size selected on the External Link tab."
+msgstr "商品情報の概要文を取得し、サムネイル画像URLを「外部リンク」タブで選択したサムネイルの大きさに合わせる。"
+
+#: ../pz-linkcard.php
+#: ../lib/pz-linkcard-get-post.php
+#: ../lib/traits/pz-linkcard-get-html.php
+msgid "The requested page could not be found."
+msgstr "指定のページが見つかりません。"
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Use a dedicated User-Agent for Microsoft."
+msgstr "Microsoft向けの専用ユーザーエージェントを使用する。"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Content retrieval queued"
+msgstr "記事内容の取得を予約しました"
+
+#: ../pz-linkcard.php
+#: ../lib/ajax/pz-linkcard-ajax-cacheman-pending.php
+msgid "Failed to queue article content retrieval."
+msgstr "記事内容の取得を予約できませんでした。"

@@ -72,8 +72,14 @@ trait Pz_LinkCard_Get_HTML {
 		}
 
 		// Apply the same visibility rule to prepared data and editor previews.
-		if ($is_internal && !$this->pz_IsInternalCardPubliclyViewable($url, $data)) {
-			return null;
+		$internal_error = $is_internal ? $this->pz_GetInternalCardErrorStatus($url, $data) : 0;
+		if ($internal_error) {
+			$error_title = __('The requested page could not be found.', 'pz-linkcard');
+			// Never reuse cached article details or shortcode content for restricted posts.
+			$data = array('url' => $url, 'title' => $error_title, 'site_name' => get_bloginfo('name'), 'favicon' => get_site_icon_url(16), 'alive_result' => $internal_error, 'update_result' => $internal_error);
+			$atts['title'] = $error_title;
+			$atts['excerpt'] = '';
+			unset($atts['pz-pending']);
 		}
 
 		// 内部リンクの処理
@@ -138,9 +144,17 @@ trait Pz_LinkCard_Get_HTML {
 		$html_thumbnail	=	null;
 		$html_siteicon	=	null;
 
+		// Keep card navigation on the original URL while displaying redirected content.
+		$link_url = $url;
+
 		// リダイレクトURL
 		if	($url_redir ) {
 			$url		=	$url_redir;
+			$redirect_info = wp_parse_url(html_entity_decode($url_redir, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+			if (is_array($redirect_info) && !empty($redirect_info['host']) && in_array(strtolower($redirect_info['scheme'] ?? ''), array('http', 'https'), true)) {
+				$domain = $redirect_info['host'];
+				$domain_url = $redirect_info['scheme'].'://'.$domain;
+			}
 		}
 
 		// ラッピング
@@ -244,7 +258,7 @@ trait Pz_LinkCard_Get_HTML {
 				}
 			}
 			if	($this->amp === 1 ) {
-				$html_tag		=	'<div class="lkc-external amp"><table border="1" cellspacing="0" cellpadding="4"><tr><td>'.$excerpt.'<br><a href="'.esc_url($url ).'"'.$target.$rel.'>'.$title.'</a>&nbsp;-&nbsp;'.esc_html($site_name ).'</td></tr></table></div>';
+				$html_tag		=	'<div class="lkc-external amp"><table border="1" cellspacing="0" cellpadding="4"><tr><td>'.$excerpt.'<br><a href="'.esc_url($link_url ).'"'.$target.$rel.'>'.$title.'</a>&nbsp;-&nbsp;'.esc_html($site_name ).'</td></tr></table></div>';
 				return	$html_tag;		// タグを出力して終了
 			}
 		}
@@ -362,7 +376,7 @@ trait Pz_LinkCard_Get_HTML {
 			$html_st_cl		=	'</strike>';
 		} elseif	($this->options['flg-linkall'] ) {
 			// カード全体をリンク（どこをクリックしても良いのが分かり易い）
-			$html_a_op_all	=	'<a class="lkc-link no_icon" href="'.esc_url($url ).'"'.$html_click_data.$target.$rel.'>';
+			$html_a_op_all	=	'<a class="lkc-link no_icon" href="'.esc_url($link_url ).'"'.$html_click_data.$target.$rel.'>';
 			$html_a_cl_all	=	'</a>';
 			$html_a_op		=	null;
 			$html_a_cl		=	null;
@@ -372,7 +386,7 @@ trait Pz_LinkCard_Get_HTML {
 			// タイトルとかURLとかを個別でリンク（タイトルや抜粋文などの文字を範囲指定をしてコピー等がし易い）
 			$html_a_op_all	=	null;
 			$html_a_cl_all	=	null;
-			$html_a_op		=	'<a class="lkc-link no_icon" href="'.esc_url($url ).'"'.$html_click_data.$target.$rel.'>';
+			$html_a_op		=	'<a class="lkc-link no_icon" href="'.esc_url($link_url ).'"'.$html_click_data.$target.$rel.'>';
 			$html_a_cl		=	'</a>';
 			$html_st_op		=	null;
 			$html_st_cl		=	null;

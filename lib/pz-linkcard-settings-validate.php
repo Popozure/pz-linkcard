@@ -25,6 +25,9 @@
 		case	'version':
 		case	'string':
 			$this->options[$key]	=	strval($temp_value );
+			if ($key === 'get-timing' && !in_array($this->options[$key], array('background', 'display'), true)) {
+				$this->options[$key] = $definition['default'];
+			}
 			if ($key === 'date-pattern' && !in_array($this->options[$key], array('', 'p', 'u', 'pu'), true)) {
 				$this->options[$key] = $definition['default'];
 			}

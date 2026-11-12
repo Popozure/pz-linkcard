@@ -70,6 +70,24 @@
 		}
 	}
 
+	// Apply legacy visibility after any slot-layout migration has completed.
+	if (is_array($stored_options) && $stored_version && version_compare($stored_version, '2.6.5', '<')) {
+		$hidden_content_types = array();
+		foreach (array('display-url' => array('u'), 'display-excerpt' => array('e'), 'display-date' => array('p', 'q')) as $key => $types) {
+			if (array_key_exists($key, $stored_options) && $stored_options[$key] === '') {
+				$hidden_content_types = array_merge($hidden_content_types, $types);
+			}
+		}
+		foreach (array('ex', 'in') as $prefix) {
+			for ($index = 1; $index <= 5; $index++) {
+				$key = $prefix.'-content-type-'.$index;
+				if (in_array($this->options[$key] ?? '', $hidden_content_types, true)) {
+					$this->options[$key] = '';
+				}
+			}
+		}
+	}
+
 	// 項目名称変更
 	$rename_key	=	array(
 		'old_key_name'			=>		'new_key_name',

@@ -2224,6 +2224,7 @@ input.pz-admin-only[type="submit"],
 }
 
 .pz-man-body-url-error {
+	color: #d63638;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -2234,6 +2235,7 @@ input.pz-admin-only[type="submit"],
 }
 
 .pz-man-body-url-error-ignore {
+	color: #dba617;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -5412,4 +5414,9 @@ body.pz-settings-preview-left-docked-active #wpbody-content {
     box-sizing: border-box;
     width: calc(100% - var(--pz-settings-preview-left-docked-width, 0px));
     margin-left: var(--pz-settings-preview-left-docked-width, 0px);
+}
+
+/* Hide row actions throughout initial retrieval and inline refresh. */
+.pz-cacheman tr[data-pz-pending-id] .pz-man-body-menu {
+	display: none;
 }

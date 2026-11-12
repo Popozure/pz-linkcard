@@ -607,7 +607,7 @@
 
 					// データID
 					$data_id	=	$data->id;
-					$is_pending	=	is_null($data->regist_time ) || intval($data->regist_time ) === 0;
+					$is_pending	=	$this->pz_IsCardRetrievalPending((array) $data);
 
 					// URL
 					$url		=	$data->url;
@@ -626,12 +626,12 @@
 					$update_error	=	!is_null($data->update_result ) && intval($data->update_result ) !== 0 && (intval($data->update_result ) < 100 || intval($data->update_result ) >= 400 );
 					if	($alive_error || $update_error ) {
 						if	($data->no_failure ) {		// エラー無視が有効か
-							$temp_icon	=	__('&#x26a0;&#xfe0f;', 'pz-linkcard' );		// ⚠️
-							$temp_class	=	'pz-man-body-url-error-ignore';				// エラー無視
+							$temp_icon = ''; // Dashicons supplies the warning symbol.
+							$temp_class	=	'pz-man-body-url-error-ignore dashicons dashicons-warning';				// エラー無視
 							$temp_title	=	__('A recorded HTTP status code indicates an error, but the error is being ignored for this card.', 'pz-linkcard' );
 						} else {
-							$temp_icon	=	__('&#x26d4;&#xfe0f;', 'pz-linkcard' );		// ⛔️エラー
-							$temp_class	=	'pz-man-body-url-error';					// エラー
+							$temp_icon = ''; // Dashicons supplies the error symbol.
+							$temp_class	=	'pz-man-body-url-error dashicons dashicons-dismiss';					// エラー
 							$temp_title	=	__('A recorded HTTP status code indicates an error. You can choose to ignore the error on the card editing screen.', 'pz-linkcard' );
 						}
 						$html_url_error	=	'<span class="'.$temp_class.'" title="'.$temp_title.'">'.$temp_icon.'</span>';
@@ -737,7 +737,7 @@
 
 					// HTML 明細行
 			?>
-			<tr<?php if ($is_pending ) { ?> data-pz-pending-id="<?php echo intval($data_id ); ?>"<?php } ?>>
+			<tr data-pz-card-id="<?php echo intval($data_id); ?>"<?php if ($is_pending ) { ?> data-pz-pending-id="<?php echo intval($data_id ); ?>"<?php } ?>>
 				<th scope="row" class="pz-man-body-check check-column"><input id="cb-select-<?php echo intval($data_id ); ?>" type="checkbox" name="select_id[]" value="<?php echo intval($data_id ); ?>" /><div class="locked-indicator"></div></th>
 				<td class="pz-man-body-id<?php echo esc_attr($screen_option_hidden_class('id') ); ?>"><button type="button" data-pz-man-search-id="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu pz-man-id-search" title="<?php echo esc_attr('id:'.intval($data_id ) ); ?>"><span><?php echo intval($data_id ); ?></span><span class="dashicons dashicons-filter" aria-hidden="true"></span></button><?php echo wp_kses($html_thumbnail, $cacheman_list_allowed_html ); ?></td>
 				<td colspan="2" class="pz-man-body-url-title-cell">
@@ -745,7 +745,7 @@
 					<div class="pz-man-body-title"><span title="<?php echo esc_attr($title ); ?>"><?php echo wp_kses_post($html_title ); ?></span></div>
 					<div id="inline_<?php echo intval($data_id ); ?>" class="pz-man-body-menu row-actions">
 						<button type="submit" name="single-edit" value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu"><?php esc_html_e('Edit','pz-linkcard' ); ?></button> |
-						<button type="submit" name="single-renew"  value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>' );"><?php esc_html_e('Renew','pz-linkcard' ); ?></button> | 
+						<button type="submit" name="single-renew"  value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu"><?php esc_html_e('Renew','pz-linkcard' ); ?></button> |
 						<button type="submit" name="single-delete" value="<?php echo intval($data_id ); ?>" class="pz-man-inline-menu" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>' );"><?php esc_html_e('Delete','pz-linkcard' ); ?></button>
 					</div>
 				</td>

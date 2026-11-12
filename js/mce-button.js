@@ -4,6 +4,14 @@
 	let activeVisualScroll = null;
 	let activeVisualShortcode = null;
 	let urlDialogFocusTimer = 0;
+	let postSearchResults = null;
+	let postSearchTimer = null;
+	let postSearchController = null;
+
+	function onDialogReady(callback) {
+		if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', callback, { once: true });
+		else callback();
+	}
 
 	function rememberScrollPosition(editor) {
 		const editorWindow = editor.getWin();
@@ -383,45 +391,49 @@
 	});
 
 	// 右上の「×」、もしくは画面の暗い部分をクリックしたらモーダルを閉じる
-	document.querySelectorAll("#pz-overlay, #pz-close").forEach(el => {
-		el.addEventListener("click", function() {
-			const editor = tinymce.activeEditor;
-			activeVisualCard = null;
-			activeVisualBookmark = null;
-			activeVisualShortcode = null;
-			clearPostSearch();
-			releaseUrlDialogFocus();
-			document.getElementById("pz-overlay").style.display = "none";
-			document.getElementById("pz-modal").style.display = "none";
-			setTimeout(() => {
-				focusVisualEditor(editor);
-				restoreScrollPosition(editor, true);
-			}, 0);
+	onDialogReady(() => {
+		document.querySelectorAll("#pz-overlay, #pz-close").forEach(el => {
+			el.addEventListener("click", function() {
+				const editor = tinymce.activeEditor;
+				activeVisualCard = null;
+				activeVisualBookmark = null;
+				activeVisualShortcode = null;
+				clearPostSearch();
+				releaseUrlDialogFocus();
+				document.getElementById("pz-overlay").style.display = "none";
+				document.getElementById("pz-modal").style.display = "none";
+				setTimeout(() => {
+					focusVisualEditor(editor);
+					restoreScrollPosition(editor, true);
+				}, 0);
+			});
 		});
+
 	});
 
 	// 貼り付け
-	document.getElementById("pz-url").addEventListener("paste", function(e) {
-		if (this.value === "") {
-			let cb;
-			if (e.clipboardData && e.clipboardData.getData) {
-				cb = e.clipboardData.getData("text/plain");
+	onDialogReady(() => {
+		document.getElementById("pz-url")?.addEventListener("paste", function(e) {
+			if (this.value === "") {
+				let cb;
+				if (e.clipboardData && e.clipboardData.getData) {
+					cb = e.clipboardData.getData("text/plain");
+				}
+				const url = cut_url(cb);
+				if (url) {
+					this.value = url;
+					this.select();
+					updateInsertButton();
+					clearPostSearch();
+					e.preventDefault();
+				}
 			}
-			const url = cut_url(cb);
-			if (url) {
-				this.value = url;
-				this.select();
-				updateInsertButton();
-				clearPostSearch();
-				e.preventDefault();
-			}
-		}
+		});
+
 	});
 
 	// URL以外が入力されたとき、記事タイトルを検索
-	const postSearchResults = document.getElementById("pz-post-search-results");
-	let postSearchTimer = null;
-	let postSearchController = null;
+	onDialogReady(() => { postSearchResults = document.getElementById("pz-post-search-results"); });
 
 	function isUrl(value) {
 		return /^(https?|file|ftp|data|ogg):\/\//i.test(String(value || "").trim());
@@ -606,136 +618,143 @@
 	}
 
 	function schedulePostSearch(value) {
+		postSearchResults = document.getElementById("pz-post-search-results");
 		clearPostSearch();
 		const keyword = String(value || "").trim();
 		if (!keyword || isUrl(keyword) || !postSearchResults) return;
 		postSearchTimer = setTimeout(() => searchPosts(keyword), 250);
 	}
 
-	document.getElementById("pz-url").addEventListener("input", function() {
-		updateInsertButton();
-		schedulePostSearch(this.value);
-	});
-	document.getElementById("pz-url").addEventListener("keydown", function(event) {
-		if (event.key === "Enter") {
-			event.preventDefault();
-			const button = document.getElementById("pz-insert");
-			if (!button.disabled) button.click();
-		} else if (event.key === "ArrowDown" && postSearchResults) {
-			const firstResult = postSearchResults.querySelector(".pz-post-search-result");
-			if (firstResult) {
+	onDialogReady(() => {
+		document.getElementById("pz-url")?.addEventListener("input", function() {
+			updateInsertButton();
+			schedulePostSearch(this.value);
+		});
+		document.getElementById("pz-url")?.addEventListener("keydown", function(event) {
+			if (event.key === "Enter") {
 				event.preventDefault();
-				firstResult.focus();
-			}
-		}
-	});
-
-	// 挿入ボタン
-	document.getElementById("pz-insert").addEventListener("click", function() {
-		clearPostSearch();
-		releaseUrlDialogFocus();
-		document.getElementById("pz-overlay").style.display = "none";
-		document.getElementById("pz-modal").style.display = "none";
-		const editor = tinymce.activeEditor;
-		setTimeout(() => focusVisualEditor(editor), 0);
-		const url = document.getElementById("pz-url").value;
-		const code = document.getElementById("pz-code").value;
-		if (url) {
-			const safeUrl = url.replace(/"/g, "%22");
-			if (activeVisualCard?.isConnected) {
-				let shortcode = decodeURIComponent(activeVisualCard.dataset.pzShortcode || "");
-				shortcode = /\burl\s*=\s*(["']).*?\1/i.test(shortcode)
-					? shortcode.replace(/(\burl\s*=\s*)(["']).*?\2/i, '$1"' + safeUrl + '"')
-					: shortcode.replace(/\]$/, ' url="' + safeUrl + '"]');
-				editor.undoManager.transact(() => {
-					activeVisualCard.dataset.pzShortcode = encodeURIComponent(shortcode);
-					delete activeVisualCard.dataset.pzLoaded;
-					activeVisualCard.querySelector(".pz-lkc-mce-preview").textContent = "Pz-LinkCard";
-					editor.pzLoadPreview(activeVisualCard);
-				});
-				editor.nodeChanged();
-				editor.setDirty(true);
-				focusAfterCard(editor, activeVisualCard);
-				activeVisualCard = null;
-				activeVisualBookmark = null;
-				return;
-			} else if (activeVisualShortcode && activeVisualBookmark) {
-				let shortcode = activeVisualShortcode.text;
-				shortcode = /\burl\s*=\s*(["']).*?\1/i.test(shortcode)
-					? shortcode.replace(/(\burl\s*=\s*)(["']).*?\2/i, '$1"' + safeUrl + '"')
-					: shortcode.replace(/\]$/, ' url="' + safeUrl + '"]');
-				const markerId = "pz-lkc-inline-caret-" + Date.now() + "-" + Math.random().toString(36).slice(2);
-				editor.selection.moveToBookmark(activeVisualBookmark);
-				editor.selection.setContent(shortcode + `<span id="${markerId}" data-mce-bogus="all">&#xfeff;</span>`);
-				activeVisualShortcode = null;
-				activeVisualBookmark = null;
-				focusInlineMarker(editor, markerId);
-				return;
-			} else {
-				const markerId = "pz-lkc-caret-" + Date.now() + "-" + Math.random().toString(36).slice(2);
-				if (activeVisualBookmark) editor.selection.moveToBookmark(activeVisualBookmark);
-				const shortcode = `[${code} url="${safeUrl}"]`;
-				const previewEnabled = document.getElementById("pz-code")?.dataset.previewEnabled === "1";
-				if (previewEnabled) {
-					editor.selection.setContent(`${shortcode}<p><span id="${markerId}" data-mce-bogus="all">&#xfeff;</span><br data-mce-bogus="1"></p>`);
-				} else {
-					editor.undoManager.transact(() => {
-						if (!insertParagraphAtCaretBoundary(editor, shortcode, markerId)) {
-							editor.selection.setContent(`<p>${shortcode}</p><p><span id="${markerId}" data-mce-bogus="all">&#xfeff;</span><br data-mce-bogus="1"></p>`);
-						}
-					});
+				const button = document.getElementById("pz-insert");
+				if (!button.disabled) button.click();
+			} else if (event.key === "ArrowDown" && postSearchResults) {
+				const firstResult = postSearchResults.querySelector(".pz-post-search-result");
+				if (firstResult) {
+					event.preventDefault();
+					firstResult.focus();
 				}
-				activeVisualCard = null;
-				activeVisualBookmark = null;
-				focusInlineMarker(editor, markerId);
-				return;
 			}
-		}
-		activeVisualCard = null;
-		activeVisualBookmark = null;
-		activeVisualShortcode = null;
-		focusVisualEditor(editor);
+		});
+
+		// 挿入ボタン
+		document.getElementById("pz-insert")?.addEventListener("click", function() {
+			clearPostSearch();
+			releaseUrlDialogFocus();
+			document.getElementById("pz-overlay").style.display = "none";
+			document.getElementById("pz-modal").style.display = "none";
+			const editor = tinymce.activeEditor;
+			setTimeout(() => focusVisualEditor(editor), 0);
+			const url = document.getElementById("pz-url").value;
+			const code = document.getElementById("pz-code").value;
+			if (url) {
+				const safeUrl = url.replace(/"/g, "%22");
+				if (activeVisualCard?.isConnected) {
+					let shortcode = decodeURIComponent(activeVisualCard.dataset.pzShortcode || "");
+					shortcode = /\burl\s*=\s*(["']).*?\1/i.test(shortcode)
+						? shortcode.replace(/(\burl\s*=\s*)(["']).*?\2/i, '$1"' + safeUrl + '"')
+						: shortcode.replace(/\]$/, ' url="' + safeUrl + '"]');
+					editor.undoManager.transact(() => {
+						activeVisualCard.dataset.pzShortcode = encodeURIComponent(shortcode);
+						delete activeVisualCard.dataset.pzLoaded;
+						activeVisualCard.querySelector(".pz-lkc-mce-preview").textContent = "Pz-LinkCard";
+						editor.pzLoadPreview(activeVisualCard);
+					});
+					editor.nodeChanged();
+					editor.setDirty(true);
+					focusAfterCard(editor, activeVisualCard);
+					activeVisualCard = null;
+					activeVisualBookmark = null;
+					return;
+				} else if (activeVisualShortcode && activeVisualBookmark) {
+					let shortcode = activeVisualShortcode.text;
+					shortcode = /\burl\s*=\s*(["']).*?\1/i.test(shortcode)
+						? shortcode.replace(/(\burl\s*=\s*)(["']).*?\2/i, '$1"' + safeUrl + '"')
+						: shortcode.replace(/\]$/, ' url="' + safeUrl + '"]');
+					const markerId = "pz-lkc-inline-caret-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+					editor.selection.moveToBookmark(activeVisualBookmark);
+					editor.selection.setContent(shortcode + `<span id="${markerId}" data-mce-bogus="all">&#xfeff;</span>`);
+					activeVisualShortcode = null;
+					activeVisualBookmark = null;
+					focusInlineMarker(editor, markerId);
+					return;
+				} else {
+					const markerId = "pz-lkc-caret-" + Date.now() + "-" + Math.random().toString(36).slice(2);
+					if (activeVisualBookmark) editor.selection.moveToBookmark(activeVisualBookmark);
+					const shortcode = `[${code} url="${safeUrl}"]`;
+					const previewEnabled = document.getElementById("pz-code")?.dataset.previewEnabled === "1";
+					if (previewEnabled) {
+						editor.selection.setContent(`${shortcode}<p><span id="${markerId}" data-mce-bogus="all">&#xfeff;</span><br data-mce-bogus="1"></p>`);
+					} else {
+						editor.undoManager.transact(() => {
+							if (!insertParagraphAtCaretBoundary(editor, shortcode, markerId)) {
+								editor.selection.setContent(`<p>${shortcode}</p><p><span id="${markerId}" data-mce-bogus="all">&#xfeff;</span><br data-mce-bogus="1"></p>`);
+							}
+						});
+					}
+					activeVisualCard = null;
+					activeVisualBookmark = null;
+					focusInlineMarker(editor, markerId);
+					return;
+				}
+			}
+			activeVisualCard = null;
+			activeVisualBookmark = null;
+			activeVisualShortcode = null;
+			focusVisualEditor(editor);
+		});
+
 	});
 
 	// ダイアログの白い余白をドラッグして移動
-	const draggableModal = document.getElementById("pz-modal");
-	const modalContent = document.getElementById("pz-content");
-	let modalDrag = null;
-	if (draggableModal) {
-		draggableModal.addEventListener("pointerdown", function(event) {
-			if (event.button !== 0 || (event.target !== draggableModal && event.target !== modalContent)) return;
-			const rect = draggableModal.getBoundingClientRect();
-			modalDrag = {
-				pointerId: event.pointerId,
-				offsetX: event.clientX - rect.left,
-				offsetY: event.clientY - rect.top
+	onDialogReady(() => {
+		const draggableModal = document.getElementById("pz-modal");
+		const modalContent = document.getElementById("pz-content");
+		let modalDrag = null;
+		if (draggableModal) {
+			draggableModal.addEventListener("pointerdown", function(event) {
+				if (event.button !== 0 || (event.target !== draggableModal && event.target !== modalContent)) return;
+				const rect = draggableModal.getBoundingClientRect();
+				modalDrag = {
+					pointerId: event.pointerId,
+					offsetX: event.clientX - rect.left,
+					offsetY: event.clientY - rect.top
+				};
+				draggableModal.setPointerCapture(event.pointerId);
+				draggableModal.classList.add("is-dragging");
+				event.preventDefault();
+			});
+
+			draggableModal.addEventListener("pointermove", function(event) {
+				if (!modalDrag || event.pointerId !== modalDrag.pointerId) return;
+				const maxLeft = Math.max(0, window.innerWidth - draggableModal.offsetWidth);
+				const maxTop = Math.max(0, window.innerHeight - draggableModal.offsetHeight);
+				const left = Math.max(0, Math.min(maxLeft, event.clientX - modalDrag.offsetX));
+				const top = Math.max(0, Math.min(maxTop, event.clientY - modalDrag.offsetY));
+				draggableModal.style.left = left + "px";
+				draggableModal.style.top = top + "px";
+			});
+
+			const stopModalDrag = function(event) {
+				if (!modalDrag || event.pointerId !== modalDrag.pointerId) return;
+				if (draggableModal.hasPointerCapture(event.pointerId)) {
+					draggableModal.releasePointerCapture(event.pointerId);
+				}
+				modalDrag = null;
+				draggableModal.classList.remove("is-dragging");
 			};
-			draggableModal.setPointerCapture(event.pointerId);
-			draggableModal.classList.add("is-dragging");
-			event.preventDefault();
-		});
+			draggableModal.addEventListener("pointerup", stopModalDrag);
+			draggableModal.addEventListener("pointercancel", stopModalDrag);
+		}
 
-		draggableModal.addEventListener("pointermove", function(event) {
-			if (!modalDrag || event.pointerId !== modalDrag.pointerId) return;
-			const maxLeft = Math.max(0, window.innerWidth - draggableModal.offsetWidth);
-			const maxTop = Math.max(0, window.innerHeight - draggableModal.offsetHeight);
-			const left = Math.max(0, Math.min(maxLeft, event.clientX - modalDrag.offsetX));
-			const top = Math.max(0, Math.min(maxTop, event.clientY - modalDrag.offsetY));
-			draggableModal.style.left = left + "px";
-			draggableModal.style.top = top + "px";
-		});
-
-		const stopModalDrag = function(event) {
-			if (!modalDrag || event.pointerId !== modalDrag.pointerId) return;
-			if (draggableModal.hasPointerCapture(event.pointerId)) {
-				draggableModal.releasePointerCapture(event.pointerId);
-			}
-			modalDrag = null;
-			draggableModal.classList.remove("is-dragging");
-		};
-		draggableModal.addEventListener("pointerup", stopModalDrag);
-		draggableModal.addEventListener("pointercancel", stopModalDrag);
-	}
+	});
 
 	// ウィンドウのリサイズ
 	window.addEventListener("resize", modal_move_center);

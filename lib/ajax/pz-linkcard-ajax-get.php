@@ -31,13 +31,9 @@ if (!is_array($data ) || empty($data['url'] ) ) {
 }
 
 $url_info = $this->Pz_GetURLInfo($data['url'] );
-if (!empty($url_info['is_internal'] ) ) {
-	if (!$this->pz_IsInternalCardPubliclyViewable($data['url'], $data)) {
-		wp_send_json_error(array('message' => 'Card not found.'), 404);
-	}
-}
+$restricted_internal = !empty($url_info['is_internal']) && !$this->pz_IsInternalCardPubliclyViewable($data['url'], $data);
 
-if (!array_key_exists('regist_time', $data ) || is_null($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) {
+if (!$restricted_internal && (!array_key_exists('regist_time', $data ) || is_null($data['regist_time'] ) || intval($data['regist_time'] ) === 0)) {
 	wp_send_json_success(array('ready' => false ) );
 }
 

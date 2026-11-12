@@ -8,8 +8,37 @@
         return	null;
     }
 
+    // Cookies live only for this retrieval, including its individual redirect requests.
+    $request_cookies = array();
+    $request_remote = static function($request_url, $args, $head = false) use (&$request_cookies) {
+        $origin = new \WpOrg\Requests\Iri($request_url);
+        $cookie_values = array();
+        foreach ($request_cookies as $key => $cookie) {
+            if ($cookie->is_expired()) {
+                unset($request_cookies[$key]);
+            } elseif ($cookie->uri_matches($origin)) {
+                $cookie_values[] = $cookie->format_for_header();
+            }
+        }
+        if ($cookie_values) $args['headers']['Cookie'] = implode('; ', $cookie_values);
+        $response = $head ? wp_safe_remote_head($request_url, $args) : wp_safe_remote_get($request_url, $args);
+        if (!is_wp_error($response)) {
+            $headers = new \WpOrg\Requests\Response\Headers();
+            foreach ((array) wp_remote_retrieve_header($response, 'set-cookie') as $value) {
+                $headers['Set-Cookie'] = $value;
+            }
+            foreach (\WpOrg\Requests\Cookie::parse_from_headers($headers, $origin) as $cookie) {
+                $key = strtolower((string) ($cookie->attributes['domain'] ?? '')).'|'.($cookie->attributes['path'] ?? '/').'|'.$cookie->name;
+                if ($cookie->is_expired()) unset($request_cookies[$key]);
+                else $request_cookies[$key] = $cookie;
+            }
+        }
+        return $response;
+    };
+
     // wp_safe_remote_get/wp_safe_remote_headのオプション
     $rget_args					=	[];
+    $rget_args['timeout'] = $headers_only ? 5 : 20;
     $rget_args['user-agent']	=	$this->pz_GetUserAgent();
     $rget_args['sslverify']		=	$this->options['flg-sslverify']		?	true	:	false ;
 	$rget_args['limit_response_size']	=	defined('MB_IN_BYTES' ) ? MB_IN_BYTES : 1048576;
@@ -50,15 +79,29 @@
         return	$request_args;
     };
 
+    // Keep stored URLs unchanged; HTTP requests need literal query separators.
+    $normalize_request_url = static function($request_url) {
+        if (!is_string($request_url)) return '';
+        for ($i = 0; $i < 5; $i++) {
+            $decoded = html_entity_decode($request_url, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            if ($decoded === $request_url) break;
+            $request_url = $decoded;
+        }
+        $request_url = esc_url_raw($request_url, array('http', 'https'));
+        if (!preg_match('~\Ahttps?://~i', $request_url) || !wp_parse_url($request_url, PHP_URL_HOST)) return '';
+        return $request_url;
+    };
+    $invalid_request_url = false;
+
     // URLエンコード
     $url			=	$this->pz_EncodeURL($url ,true );
     $url_redir		=	'';
-    $url_access		=	$url;
-    if (!empty($data['url_redir'])) {
+    $url_access		=	$normalize_request_url($url);
+    if ($redirect_limit > 0 && !empty($data['url_redir'])) {
         $saved_redirect = $this->pz_EncodeURL($data['url_redir'], true);
         if (is_string($saved_redirect) && preg_match('~\Ahttps?://~i', $saved_redirect)) {
             $url_redir = $saved_redirect;
-            $url_access = $saved_redirect;
+            $url_access = $normalize_request_url($saved_redirect);
         }
     }
     $robots_blocked_url	=	'';
@@ -83,7 +126,7 @@
             }
             return	null;
         };
-    $get_location_url	=	function($response, $base_url ) {
+    $get_location_url	=	function($response, $base_url ) use ($normalize_request_url, &$invalid_request_url) {
         if	(is_wp_error($response ) ) {
             return	null;
         }
@@ -98,10 +141,72 @@
         if	(!preg_match('/^https?:\/\//i', $location ) ) {
             $location	=	$this->pz_RelToURL($base_url, $location );
         }
-        return	$this->pz_EncodeURL($location, true );
+        $location = $normalize_request_url($location);
+        if (!$location) $invalid_request_url = true;
+        return $location;
     };
-    $trace_redirect_url	=	function($start_url ) use ($rget_args, $get_request_args, $get_response_url, $get_location_url, $redirect_limit, $is_robots_allowed, $headers_only, &$robots_blocked_url ) {
-        $current_url	=	$start_url;
+    // Read declarative redirects without executing JavaScript.
+    $get_refresh_url = function($response, $base_url) use ($normalize_request_url, &$invalid_request_url) {
+        if (is_wp_error($response)) return null;
+        $refresh = wp_remote_retrieve_header($response, 'refresh');
+        if (is_array($refresh)) $refresh = end($refresh);
+        $script_location = null;
+        if (!$refresh && !empty($response['body']) && class_exists('DOMDocument')) {
+            $previous_errors = libxml_use_internal_errors(true);
+            try {
+                $document = new DOMDocument();
+                if ($document->loadHTML($response['body'], LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_NONET)) {
+                    foreach ($document->getElementsByTagName('meta') as $meta) {
+                        if (strcasecmp(trim($meta->getAttribute('http-equiv')), 'refresh') === 0) {
+                            $refresh = $meta->getAttribute('content');
+                            break;
+                        }
+                    }
+                    if (!$refresh) {
+                        // Only accept a script consisting entirely of a literal assignment.
+                        $redirect_pattern = <<<'REGEX'
+~\A\s*(?:(?:window|document)\s*\.\s*)?location\s*\.\s*href\s*=\s*(["'])([^"'\\\r\n]+)\1\s*;?\s*\z~
+REGEX;
+                        foreach ($document->getElementsByTagName('script') as $script) {
+                            $type = strtolower(trim($script->getAttribute('type')));
+                            if ($script->hasAttribute('src') || !in_array($type, array('', 'text/javascript', 'application/javascript', 'text/ecmascript', 'application/ecmascript'), true)) continue;
+                            if (preg_match($redirect_pattern, $script->textContent, $script_match)) {
+                                $script_location = $script_match[2];
+                                break;
+                            }
+                        }
+                    }
+                }
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($previous_errors);
+            }
+        }
+        if (is_string($refresh) && preg_match('~^\s*\d+(?:\.\d+)?\s*;\s*url\s*=\s*(.*?)\s*$~is', $refresh, $match)) {
+            $location = trim($match[1]);
+        } elseif ($script_location !== null) {
+            $location = $script_location;
+        } else {
+            return null;
+        }
+        if (strlen($location) >= 2 && (($location[0] === '"' && substr($location, -1) === '"') || ($location[0] === "'" && substr($location, -1) === "'"))) {
+            $location = substr($location, 1, -1);
+        }
+        if ($location === '') return null;
+        $location = html_entity_decode($location, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $location = $this->pz_RelToURL($base_url, $location);
+        $location = $normalize_request_url($location);
+        if (!$location) $invalid_request_url = true;
+        return $location;
+    };
+    $traced_response = null;
+    $traced_response_url = '';
+    $trace_redirect_url	=	function($start_url ) use ($rget_args, $get_request_args, $get_response_url, $get_location_url, $get_refresh_url, $redirect_limit, $is_robots_allowed, $headers_only, &$robots_blocked_url, $normalize_request_url, &$invalid_request_url, $request_remote, &$traced_response, &$traced_response_url ) {
+        $current_url	=	$normalize_request_url($start_url);
+        if (!$current_url) {
+            $invalid_request_url = true;
+            return '';
+        }
         $trace_args		=	$rget_args;
         $trace_args['redirection']	=	0;
 
@@ -116,16 +221,21 @@
 			$probe_args	=	$get_request_args($current_url, $trace_args );
 			if	($headers_only ) {
 				$probe_args['method']	=	'HEAD';
-				$response				=	wp_safe_remote_head($current_url, $probe_args );
+				$response				=	$request_remote($current_url, $probe_args, true);
 			} else {
 				// Some sites redirect GET requests but not HEAD requests.
-				$probe_args['limit_response_size']	=	1;
-				$response							=	wp_safe_remote_get($current_url, $probe_args );
+				$response							=	$request_remote($current_url, $probe_args);
 			}
 
             $http_code		=	intval(wp_remote_retrieve_response_code($response ) );
             $location_url	=	$get_location_url($response, $current_url );
-            if	($http_code >= 300 && $http_code < 400 && $location_url && $location_url !== $current_url ) {
+            $is_refresh = false;
+            if ($http_code >= 200 && $http_code < 300) {
+                $location_url = $get_refresh_url($response, $current_url);
+                $is_refresh = !empty($location_url);
+            }
+            if ($invalid_request_url) return '';
+            if	(($is_refresh || ($http_code >= 300 && $http_code < 400)) && $location_url && $location_url !== $current_url ) {
                 $current_url	=	$location_url;
                 if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
                     return	$current_url;
@@ -135,47 +245,72 @@
 
 			$response_url	=	$get_response_url($response );
 			if	($response_url && rtrim($response_url, '/' ) !== rtrim($current_url, '/' ) ) {
-				$current_url	=	$this->pz_EncodeURL($response_url, true );
+				$current_url	=	$normalize_request_url($response_url);
+                if (!$current_url) {
+                    $invalid_request_url = true;
+                    return '';
+                }
 				if	($this->pz_ShouldBlockLocalAddress($current_url ) ) {
 					return	$current_url;
 				}
 				continue;
 			}
 
+            $traced_response = $response;
+            $traced_response_url = $current_url;
             break;
         }
 
         return	$current_url;
     };
 
+    $retry_saved_redirect = !empty($this->options['flg-redir-retry']) && $redirect_limit > 0 && $url_redir !== '';
+    for ($attempt = 0; $attempt < 2; $attempt++) {
+    $traced_response = null;
+    $traced_response_url = '';
     // リンク先サイトのアクセス
-    if	($redirect_limit > 0 && $url_redir === '' ) {
-        $last_url	=	$trace_redirect_url($url );
-        if	($last_url && $url !== $last_url ) {
-            $url_redir	=	$this->pz_EncodeURL($last_url, true );
-            $url_access	=	$url_redir;
+    if	($redirect_limit > 0) {
+        $last_url	=	$trace_redirect_url($url_access);
+        if	($last_url) {
+            $url_redir	=	$url !== $last_url ? $this->pz_EncodeURL($last_url, true) : '';
+            $url_access	=	$normalize_request_url($last_url);
         }
     }
-    if	(!$robots_blocked_url && !$is_robots_allowed($url_access ) ) {
+    if	($url_access && !$invalid_request_url && !$robots_blocked_url && !$is_robots_allowed($url_access ) ) {
         $robots_blocked_url	=	$url_access;
     }
     $is_amazon_access	=	$is_amazon_url($url_access );
     $is_twitter_access	=	$is_twitter_url($url_access );
 	$is_jmty_access		=	$is_jmty_url($url_access );
 	$is_yahoo_auction_access	=	$is_yahoo_auction_url($url_access );
-    $blocked_local_url	=	$this->pz_ShouldBlockLocalAddress($url ) || ($url_redir && $this->pz_ShouldBlockLocalAddress($url_redir ) );
-    if	($blocked_local_url ) {
+    $blocked_local_url	=	$this->pz_ShouldBlockLocalAddress($normalize_request_url($url)) || ($url_access && $this->pz_ShouldBlockLocalAddress($url_access));
+    if (!$url_access || $invalid_request_url) {
+        $rget_data = new WP_Error('pz_lkc_invalid_url', 'Invalid HTTP request URL');
+    } elseif ($blocked_local_url) {
         $rget_data	=	new WP_Error('pz_lkc_local_redirect', 'Local address blocked' );
     } elseif ($robots_blocked_url ) {
         $rget_data	=	new WP_Error('pz_lkc_robots_disallowed', 'Blocked by robots.txt' );
+    } elseif ($traced_response !== null && $traced_response_url === $url_access) {
+        $rget_data = $traced_response;
     } else {
 		$rget_args	=	$get_request_args($url_access, $rget_args );
         if	($headers_only ) {
             $rget_args['method']	=	'HEAD';
-            $rget_data	=	wp_safe_remote_head($url_access, $rget_args );
+            $rget_data	=	$request_remote($url_access, $rget_args, true);
         } else {
-            $rget_data	=	wp_safe_remote_get($url_access, $rget_args );	// wp_remote_get実行
+            $rget_data	=	$request_remote($url_access, $rget_args);	// wp_remote_get実行
         }
+    }
+
+    $request_failed = is_wp_error($rget_data) || intval(wp_remote_retrieve_response_code($rget_data)) >= 400;
+    if ($attempt === 0 && $retry_saved_redirect && $request_failed && !$blocked_local_url && !$robots_blocked_url && !$invalid_request_url) {
+        // Retry once, retaining all URL, local-address and robots checks.
+        $request_cookies = array();
+        $url_redir = '';
+        $url_access = $normalize_request_url($url);
+        continue;
+    }
+    break;
     }
 
     // 初期化
@@ -218,6 +353,8 @@
         $data['update_time']		=	$this->now;							// 更新：最終更新日
         $data['update_result']		=	403;								// 更新：HTTPレスポンス
 
+        $data['alive_result'] = $data['update_result'];
+        $data['alive_time'] = $data['update_time'];
         return	$data;
     }
 
@@ -516,6 +653,33 @@
 			$title	=	$yahoo_auction_title;
 		}
         
+        // FANATEC product pages can have English metadata despite localized content.
+        if (!empty($this->options['flg-special-fanatec']) && $http_code == 200
+            && preg_match('/(^|\.)fanatec\.com$/i', (string) wp_parse_url($url_access, PHP_URL_HOST))
+            && class_exists('DOMDocument')) {
+            $previous_libxml_errors = libxml_use_internal_errors(true);
+            try {
+                $document = new DOMDocument();
+                if ($document->loadHTML('<?xml encoding="'.esc_attr($this->charset).'">'.$http_body, LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_NONET)) {
+                    $xpath = new DOMXPath($document);
+                    $sections = $xpath->query('//div[contains(concat(" ", normalize-space(@class), " "), " PDP_product-info__FfuRM ")]');
+                    foreach ($sections as $section) {
+                        foreach ($xpath->query('.//script | .//style | .//noscript', $section) as $unwanted) {
+                            $unwanted->parentNode->removeChild($unwanted);
+                        }
+                        $product_excerpt = trim(preg_replace('/[\s\x{00A0}]+/u', ' ', $section->textContent));
+                        if ($product_excerpt !== '') {
+                            $excerpt = $product_excerpt;
+                            break;
+                        }
+                    }
+                }
+            } finally {
+                libxml_clear_errors();
+                libxml_use_internal_errors($previous_libxml_errors);
+            }
+        }
+
         // サムネイル画像
         if				(!$thumbnail_url ) {
             if			($amazon_image ) {
@@ -532,6 +696,21 @@
             $thumbnail_url	=	$this->pz_RelToURL($url_access, $thumbnail_url );
         }
         $thumbnail_url		=	$this->pz_EncodeImageURL($thumbnail_url );
+        if (!empty($this->options['flg-special-fanatec'])
+            && preg_match('/(^|\.)fanatec\.com$/i', (string) wp_parse_url($url_access, PHP_URL_HOST))
+            && (strtolower((string) wp_parse_url((string) $thumbnail_url, PHP_URL_HOST)) === 'assets.fanatec.com'
+                || (strtolower((string) wp_parse_url((string) $thumbnail_url, PHP_URL_HOST)) === 'res.cloudinary.com'
+                    && strpos((string) wp_parse_url((string) $thumbnail_url, PHP_URL_PATH), '/fanatec-pwa/') === 0))) {
+            $thumbnail_sizes = array('thumbnail' => 150, 'medium' => 300, 'large' => 1024);
+            $thumbnail_size = $thumbnail_sizes[$this->options['ex-thumbnail-size'] ?? 'thumbnail'] ?? 150;
+            if ($thumbnail_size > 0) {
+                $thumbnail_url = preg_replace_callback(
+                    '~(/image/upload/c_fill(?:%2c|,)q_auto(?:%2c|,)w_)\d+(?=/)~i',
+                    static function($match) use ($thumbnail_size) { return $match[1].$thumbnail_size; },
+                    $thumbnail_url
+                );
+            }
+        }
 
         // サイト名
         if				(!$sitename ) {
@@ -562,14 +741,6 @@
         $excerpt			=	mb_strimwidth($excerpt, 0, 1000, '...' );	// 1000文字制限
     }
 
-    // 呼ばれている記事
-    if	(!isset($data['use_post_id1'] ) ) {
-		$post_id_t	=	intval(get_the_ID() );
-		if	($post_id_t > 0 ) {
-			$data['use_post_id1']	=	$post_id_t;
-		}
-    }
-
     // リダイレクト先URL
     if	(!$url_redir || $url == $url_redir ) {
         $url_redir	=	null;
@@ -588,7 +759,7 @@
     $data['favicon']			=	$siteicon_url;									// リンク先：サイトアイコンURL
     $data['charset']			=	$charset;										// リンク先：文字コード
     $data['alive_time']			=	$this->now;														// 生存確認：確認日時
-    $data['alive_nexttime']		=	$this->now + WEEK_IN_SECONDS * 4 + rand(0, DAY_IN_SECONDS );	// 生存確認：次回確認日時
+    $data['alive_nexttime']		=	$this->pz_GetNextAliveTime($http_code, $this->now, is_wp_error($rget_data) ? '' : (string) wp_remote_retrieve_header($rget_data, 'retry-after'));	// 生存確認：次回確認日時
     $data['alive_result']		=	$http_code;														// 生存確認：HTTPレスポンス
     $data['sns_twitter']		=	$data['sns_twitter']	??	null;				// SNS：Twitter
     $data['sns_facebook']		=	$data['sns_facebook']	??	null;				// SNS：facebook
@@ -605,4 +776,6 @@
     $data['use_post_id6']		=	$data['use_post_id6']	??	null;				// 呼ばれている記事
     $data['update_time']		=	$this->now;										// 更新：最終更新日
     $data['update_result']		=	$http_code;										// 更新：HTTPレスポンス
+    $data['alive_result'] = $data['update_result'];
+    $data['alive_time'] = $data['update_time'];
     return	$data;

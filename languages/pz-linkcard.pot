@@ -1207,7 +1207,7 @@ msgid "Amazon.co.jp"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:125
-msgid "Retrieve Product Images"
+msgid "Retrieve Product Images."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:131
@@ -1223,7 +1223,7 @@ msgid "Jmty.jp"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:149
-msgid "Retrieve Created and Updated Dates"
+msgid "Retrieve Created and Updated Dates."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:155
@@ -1231,7 +1231,7 @@ msgid "Yahoo! Auctions"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:161
-msgid "Retrieve Title and Start Date"
+msgid "Retrieve Title and Start Date."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:167
@@ -3750,16 +3750,12 @@ msgstr ""
 msgid "A Qiita like count of %s was returned."
 msgstr ""
 
-#: ../lib/pz-linkcard-settings-advanced.php:162
-msgid "Retrieve Publication and Update Dates"
-msgstr ""
-
 #: ../lib/pz-linkcard-settings-advanced.php:155
 msgid "note.com"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:155
-msgid "Retrieve Post Date"
+msgid "Retrieve Post Date."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:119
@@ -4001,4 +3997,60 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings.php
 msgid "Cycle preview: window, bottom, right, left, hidden"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+#, php-format
+msgid "The %s are on the “Link Check” tab."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Log Recording"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "On display (not recommended)"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "Retry from Original URL"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-check.php
+msgid "If the saved redirect destination fails with an HTTP error (such as 403) or a connection error, follow redirects again from the original URL."
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Set thumbnail image"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman-edit.php
+msgid "Set site icon"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "FANATEC"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Retrieve the product excerpt and adjust the thumbnail URL to the thumbnail size selected on the External Link tab."
+msgstr ""
+
+#: ../pz-linkcard.php
+#: ../lib/pz-linkcard-get-post.php
+#: ../lib/traits/pz-linkcard-get-html.php
+msgid "The requested page could not be found."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php
+msgid "Use a dedicated User-Agent for Microsoft."
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Content retrieval queued"
+msgstr ""
+
+#: ../pz-linkcard.php
+#: ../lib/ajax/pz-linkcard-ajax-cacheman-pending.php
+msgid "Failed to queue article content retrieval."
 msgstr ""

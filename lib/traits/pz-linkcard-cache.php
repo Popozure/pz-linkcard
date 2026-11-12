@@ -2,6 +2,41 @@
 defined('ABSPATH' ) || wp_die;
 
 trait Pz_LinkCard_Cache {
+	private function pz_IsCardRetrievalPending($data) {
+		return empty($data['regist_time']) || (!empty($data['id']) && get_option('pz_lkc_refresh_'.intval($data['id']), false) !== false);
+	}
+
+	private function pz_QueueCardRefresh($card_id) {
+		$card_id = intval($card_id);
+		if ($card_id <= 0) return false;
+		$key = 'pz_lkc_refresh_'.$card_id;
+		if (!add_option($key, '1', '', false) && get_option($key, false) === false) return false;
+		if (!wp_next_scheduled(self::CRON_GET) && !wp_schedule_single_event(time() + 3, self::CRON_GET)) {
+			delete_option($key);
+			return false;
+		}
+		return true;
+	}
+
+	private function pz_GetNextAliveTime($status, $checked_at, $retry_after = '') {
+		$status = intval($status);
+		$checked_at = intval($checked_at);
+		$days = 1;
+		if ($status >= 200 && $status < 300) $days = 168;
+		elseif ($status >= 300 && $status < 400) $days = 56;
+		elseif ($status >= 400 && $status < 500 && $status !== 429) $days = 28;
+		elseif ($status >= 500 && $status < 600) $days = 3;
+		$next = $checked_at + DAY_IN_SECONDS * $days;
+		if ($status === 429 && is_string($retry_after) && trim($retry_after) !== '') {
+			$retry_after = trim($retry_after);
+			$retry_time = ctype_digit($retry_after)
+				? $checked_at + min((float) $retry_after, PHP_INT_MAX - $checked_at)
+				: strtotime($retry_after);
+			if ($retry_time !== false && $retry_time >= $checked_at) $next = intval($retry_time);
+		}
+		return $next;
+	}
+
 	private function pz_GetCardTableSQL() {
 		global $wpdb;
 		return require __DIR__.'/../pz-linkcard-schema-card.php';
@@ -221,6 +256,14 @@ trait Pz_LinkCard_Cache {
 		$data['scheme']				=	isset($url_m['scheme'])			?	$url_m['scheme']		: null;
 		$data['domain']				=	isset($url_m['host'])			?	$url_m['host']			: null;
 
+		// Record the content destination's domain while retaining the original URL/key.
+		if (!empty($data['url_redir']) && is_string($data['url_redir'])) {
+			$redirect_parts = wp_parse_url(html_entity_decode($data['url_redir'], ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+			if (is_array($redirect_parts) && !empty($redirect_parts['host']) && in_array(strtolower($redirect_parts['scheme'] ?? ''), array('http', 'https'), true)) {
+				$data['domain'] = $redirect_parts['host'];
+			}
+		}
+
 		// 記事内容等
 		$data['url_redir']			=	isset($data['url_redir'] )		? $data['url_redir']		: null;			// リンク先：リダイレクト
 		$data['site_name']			=	isset($data['site_name'] )		? $data['site_name']		: null;			// リンク先：サイト名称
@@ -261,7 +304,7 @@ trait Pz_LinkCard_Cache {
 		if	(!isset($data['alive_time'] ) || !$data['alive_time'] ) {
 			$data['alive_result']	=	$data['update_result'];
 			$data['alive_time']		=	$this->now;
-			$data['alive_nexttime']	=	$this->now + WEEK_IN_SECONDS * 4 + rand(0, DAY_IN_SECONDS );
+			$data['alive_nexttime']	=	$this->pz_GetNextAliveTime($data['alive_result'], $data['alive_time']);
 		}
 
 		// SNS関連
@@ -402,6 +445,7 @@ trait Pz_LinkCard_Cache {
 			$card_id	=	intval($data['id'] );
 			$result		=	$wpdb->delete($this->db_card, array('id' => $card_id ), array('%d' ) );
 			if	($result ) {
+				delete_option('pz_lkc_refresh_'.$card_id);
 				return	true;
 			}
 		}
@@ -410,6 +454,7 @@ trait Pz_LinkCard_Cache {
 			$card_id	=	intval($wpdb->get_var($wpdb->prepare("SELECT id FROM $this->db_card WHERE url = %s LIMIT 1", $url ) ) );
 			$result		=	$wpdb->delete($this->db_card, array('url' => $url ), array('%s' ) );
 			if	($result ) {
+				delete_option('pz_lkc_refresh_'.$card_id);
 				return	true;
 			}
 		}

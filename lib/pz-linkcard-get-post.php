@@ -27,20 +27,22 @@
 
 	// 記事内容
 	$url					=	$data['url'];
-	$link_post_id			=	$this->pz_ResolveInternalPostID($url);	// リンク先の記事IDを取得
+	$link_post_id			=	$this->pz_ResolveInternalPostID($url) ?: intval($data['post_id'] ?? 0);	// リンク先の記事IDを取得
 	// 記事IDが取得できた場合
 	if	($link_post_id ) {
 		$post				=	get_post($link_post_id );				// 記事情報
-		if	(!$post || ((!$allow_non_public || !empty($this->options['flg-public-only'] ) ) && !$this->pz_IsPostPubliclyViewable($post ) ) ) {
-			$data['title']			=	'';
+		if	(!$post || $post->post_status === 'trash' || ((!$allow_non_public || !empty($this->options['flg-public-only'] ) ) && !$this->pz_IsPostPubliclyViewable($post ) ) ) {
+			$error_status = !$post || $post->post_status === 'trash' ? 404 : 403;
+			$data['title']			=	__('The requested page could not be found.', 'pz-linkcard');
 			$data['excerpt']		=	'';
 			$data['thumbnail']		=	'';
-			$data['favicon']		=	'';
+			$data['favicon']		=	$siteicon;
+			$data['site_name']	=	$site_name;
 			$data['post_id']		=	0;
 			$data['post_date']		=	0;
 			$data['post_modified']	=	0;
-			$data['update_result']	=	403;
-			$data['alive_result']	=	403;
+			$data['update_result']	=	$error_status;
+			$data['alive_result']	=	$error_status;
 			return	$data;
 		}
 		// 記事IDが取得できた場合
@@ -142,6 +144,11 @@
 				}
 			}
 		}
+	}
+
+	if (($update_result ?? 0) === 404) {
+		$title = __('The requested page could not be found.', 'pz-linkcard');
+		$excerpt = '';
 	}
 
 	// タイトル整形

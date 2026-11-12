@@ -247,7 +247,15 @@
         if (!newCard) throw new Error(labels.failed);
 
         document.querySelectorAll(`.linkcard[data-lkc-id="${cardId}"]`).forEach((card) => {
-            card.replaceWith(newCard.cloneNode(true));
+            if (!card.isConnected) return;
+            // Replace the timing wrapper as well, so elapsed labels never accumulate.
+            let target = card;
+            let timed = target.closest(".pz-linkcard-timed");
+            while (timed) {
+                target = timed;
+                timed = target.parentElement?.closest(".pz-linkcard-timed");
+            }
+            target.replaceWith(newCard.cloneNode(true));
         });
     }
 
