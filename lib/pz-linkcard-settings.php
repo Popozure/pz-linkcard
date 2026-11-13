@@ -331,7 +331,10 @@
 						$saved_value	=	$wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", self::OPTION_NAME ) );
 						$saved_options	=	($saved_value !== null ) ? maybe_unserialize($saved_value ) : array();
 						if	($saved_options != $this->options ) {
-							$html_notice	.=	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to save the settings.', 'pz-linkcard' ).'</strong></p></div>'.self::pz_RenderOptionSaveDebugNotice(['pz_lkc_option_save_debug'] ?? array());
+							$save_debug = $GLOBALS['pz_lkc_option_save_debug'] ?? array();
+							$db_error = trim((string) ($save_debug['direct_write_error'] ?? $wpdb->last_error));
+							$diagnostic = 'WP update='.var_export($save_debug['update_option_result'] ?? null, true).'; direct DB write='.var_export($save_debug['direct_write_result'] ?? null, true).'; option row exists='.(!empty($save_debug['option_exists']) ? 'yes' : 'no').'; submitted/saved keys='.($save_debug['submitted_keys'] ?? '?').'/'.($save_debug['saved_keys'] ?? '?').'; DB error='.($db_error !== '' ? $db_error : __('none', 'pz-linkcard'));
+							$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to save the settings.', 'pz-linkcard').'</strong><br><code>'.esc_html($diagnostic).'</code></p></div>';
 						} else {
 							$html_notice	.=	'<div class="notice notice-info is-dismissible"><p><strong>'.__('The settings have not changed.', 'pz-linkcard' ).'</strong></p></div>';
 						}

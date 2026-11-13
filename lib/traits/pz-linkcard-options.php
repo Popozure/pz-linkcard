@@ -38,7 +38,6 @@ trait Pz_LinkCard_Options {
 
 			$result			=	add_option(self::OPTION_NAME, $this->options, '', 'yes' );
 			if	(!$result ) {
-				$result		=	update_option(self::OPTION_NAME, $this->options );
 			}
 
 			if	(function_exists('wp_cache_delete' ) ) {
@@ -100,7 +99,6 @@ trait Pz_LinkCard_Options {
 		$this->options	=	self::pz_RemoveThisLinkFallback($this->options );
 
 		// 変更前
-		$return_status	=	false;
 		$before			=	get_option(self::OPTION_NAME, self::pz_GetDefaultOptions() );
 
 		// 変更有無チェック
@@ -122,6 +120,7 @@ trait Pz_LinkCard_Options {
 
 		// 設定の更新
 		$result				=	update_option(self::OPTION_NAME, $this->options );
+		$update_option_result = $result;
 		if	(function_exists('wp_cache_delete' ) ) {
 			wp_cache_delete(self::OPTION_NAME, 'options' );
 			wp_cache_delete('alloptions', 'options' );
@@ -129,6 +128,8 @@ trait Pz_LinkCard_Options {
 		global	$wpdb;
 		$saved_value		=	$wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", self::OPTION_NAME ) );
 		$saved_options		=	($saved_value !== null ) ? maybe_unserialize($saved_value ) : array();
+		$direct_write_result = null;
+		$direct_write_error = '';
 		if	($saved_options		!=	$this->options ) {
 			$serialized_options	=	maybe_serialize($this->options );
 			if	($saved_value === null ) {
@@ -137,12 +138,16 @@ trait Pz_LinkCard_Options {
 					'option_value'	=>	$serialized_options,
 					'autoload'		=>	'yes',
 				), array('%s', '%s', '%s' ) );
+				$direct_write_result = $result;
+				$direct_write_error = (string) $wpdb->last_error;
 			} else {
 				$result		=	$wpdb->update($wpdb->options, array(
 					'option_value'	=>	$serialized_options,
 				), array(
 					'option_name'	=>	self::OPTION_NAME,
 				), array('%s' ), array('%s' ) );
+				$direct_write_result = $result;
+				$direct_write_error = (string) $wpdb->last_error;
 			}
 			if	(function_exists('wp_cache_delete' ) ) {
 				wp_cache_delete(self::OPTION_NAME, 'options' );
@@ -153,6 +158,7 @@ trait Pz_LinkCard_Options {
 		}
 		if	($saved_options		!=	$this->options ) {
 			$return_status	=	false;
+			$GLOBALS['pz_lkc_option_save_debug'] = array('update_option_result' => $update_option_result, 'direct_write_result' => $direct_write_result, 'direct_write_error' => $direct_write_error, 'option_exists' => ($saved_value !== null), 'submitted_keys' => is_array($this->options) ? count($this->options) : 0, 'saved_keys' => is_array($saved_options) ? count($saved_options) : 0);
 		} else {
 			$this->options	=	$saved_options;
 			$this->pz_SyncCronSchedules();

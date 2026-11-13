@@ -51,7 +51,7 @@
 					<option value="" <?php selected($prop[$icon_key], ''); ?>><?php esc_html_e('None', 'pz-linkcard'); ?></option>
 					<?php foreach ($date_icons as $date_icon) : ?>
 					<?php $date_icon_value = html_entity_decode($date_icon, ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>
-					<option value="<?php echo esc_attr($date_icon_value); ?>" <?php selected($selected_icon, $date_icon_value); ?>><?php echo esc_html($date_icon_value); ?></option>
+					<option value="<?php echo esc_attr(str_replace('&', '&amp;', $date_icon)); ?>" <?php selected($selected_icon, $date_icon_value); ?>><?php echo esc_html($date_icon_value); ?></option>
 					<?php endforeach; ?>
 
 				</select>
