@@ -20,72 +20,45 @@
 	if	(is_array($stored_options ) && isset($stored_options['plugin-version'] ) ) {
 		$stored_version	=	$stored_options['plugin-version'];
 	}
-	if ($stored_version && version_compare($stored_version, '2.6.5', '<')) {
+	if (is_array($stored_options) && $stored_version && version_compare($stored_version, '2.6.5', '<')) {
+		foreach (array_keys(self::pz_GetOptionDefinitions()) as $key) {
+			if (strpos($key, 'cat-') === 0) {
+				$this->options[$key] = self::pz_GetDefaultOption($key);
+			}
+		}
+		foreach (array('ex', 'in') as $prefix) {
+			for ($index = 1; $index <= 5; $index++) {
+				$this->options[$prefix.'-content-type-'.$index] = '';
+			}
+		}
+		$info_position = $stored_options['info-position'] ?? null;
+		if ($info_position === 3 || $info_position === '3') {
+			$this->options['ex-content-type-1'] = 'i';
+			$this->options['in-content-type-1'] = 'i';
+		} elseif (in_array($info_position, array('', 0, '0', 1, '1', 2, '2', null), true)) {
+			$this->options['in-content-type-1'] = 'c';
+		}
+		foreach (array('ex', 'in') as $prefix) {
+			$this->options[$prefix.'-content-type-2'] = 't';
+			$display_url = $stored_options['display-url'] ?? '';
+			if ($display_url !== '') {
+				$this->options[$prefix.'-content-type-4'] = 'u';
+				if ($prefix === 'in') {
+					$this->options['in-content-type-4'] = !empty($stored_options['display-date']) ? 'p' : 'u';
+				}
+			} else {
+				$this->options[$prefix.'-content-type-4'] = '';
+			}
+			if (!empty($stored_options['display-excerpt'])) {
+				$this->options[$prefix.'-content-type-5'] = 'e';
+			}
+		}
 		foreach (array('ex-thumbnail-size', 'in-thumbnail-size') as $key) {
 			if (($this->options[$key] ?? '') === 'full') {
 				$this->options[$key] = 'large';
 			}
 		}
-	}
-	$upgrade_from_264 = is_array($stored_options) && $stored_version
-		&& version_compare($stored_version, '2.6.4', '<=')
-		&& version_compare($stored_version, PZLKC_PLUGIN_VERSION, '<');
-	if ($upgrade_from_264) {
-		$hide_excerpt = array_key_exists('display-excerpt', $stored_options) && empty($stored_options['display-excerpt']);
-		$date_instead_of_url = intval($stored_options['display-date'] ?? 0) > 0;
-		$info_above_title = intval($stored_options['info-position'] ?? 0) === 1;
-		if ($info_above_title) {
-			$this->options['info-position'] = null;
-		}
-		foreach (array('ex', 'in') as $prefix) {
-			if ($info_above_title) {
-				$items = array('i', 't', 'u');
-				if ($prefix === 'in' && $date_instead_of_url) {
-					$items = array('i', 't');
-					for ($index = 1; $index <= 5; $index++) {
-						if (($this->options[$prefix.'-content-type-'.$index] ?? '') === 'p') {
-							$items[] = 'p';
-							break;
-						}
-					}
-				}
-				if (!$hide_excerpt) {
-					$items[] = 'e';
-				}
-				$items = array_pad($items, 5, '');
-				for ($index = 1; $index <= 5; $index++) {
-					$this->options[$prefix.'-content-type-'.$index] = $items[$index - 1];
-				}
-				continue;
-			}
-			for ($index = 1; $index <= 5; $index++) {
-				$key = $prefix.'-content-type-'.$index;
-				$item = $this->options[$key] ?? '';
-				if ($hide_excerpt && $item === 'e') {
-					$this->options[$key] = '';
-				} elseif ($prefix === 'in' && $date_instead_of_url && $item === 'u') {
-					$this->options[$key] = '';
-				}
-			}
-		}
-	}
 
-	// Apply legacy visibility after any slot-layout migration has completed.
-	if (is_array($stored_options) && $stored_version && version_compare($stored_version, '2.6.5', '<')) {
-		$hidden_content_types = array();
-		foreach (array('display-url' => array('u'), 'display-excerpt' => array('e'), 'display-date' => array('p', 'q')) as $key => $types) {
-			if (array_key_exists($key, $stored_options) && $stored_options[$key] === '') {
-				$hidden_content_types = array_merge($hidden_content_types, $types);
-			}
-		}
-		foreach (array('ex', 'in') as $prefix) {
-			for ($index = 1; $index <= 5; $index++) {
-				$key = $prefix.'-content-type-'.$index;
-				if (in_array($this->options[$key] ?? '', $hidden_content_types, true)) {
-					$this->options[$key] = '';
-				}
-			}
-		}
 	}
 
 	// 項目名称変更
@@ -428,14 +401,16 @@
 		}
 	}
 
-	foreach	(self::pz_GetOptionDefinitions()	as	$key => $value ) {
+	$definitions	= self::pz_GetOptionDefinitions();
+	foreach	($definitions	as	$key => $value ) {
 		if	(!array_key_exists($key, $this->options ) ) {
 			$this->options[$key]	=	self::pz_GetDefaultOption($key );
 		}
 	}
 
 	// DEFAULTSから削除された旧項目を参照する移行処理
-	if	(version_compare($this->options['plugin-version'], '2.5.6', '<' ) ) {
+	$upgrade_from_256 = version_compare($this->options['plugin-version'], '2.5.6', '<');
+	if	($upgrade_from_256 ) {
 		foreach	(array('title', 'excerpt', 'url', 'date', 'heading', 'more', 'info', 'added', 'cat' ) as $t ) {
 			if	(array_key_exists($t.'-outline', $this->options ) && !$this->options[$t.'-outline'] ) {
 				$this->options[$t.'-outline-color']	=	null;
@@ -450,7 +425,6 @@
 	}
 
 	// DEFAULTSに存在しない項目を削除
-	$definitions	=	self::pz_GetOptionDefinitions();
 	foreach	(array_keys($this->options ) as $key ) {
 		if	(!array_key_exists($key, $definitions ) ) {
 			unset($this->options[$key] );
@@ -458,7 +432,7 @@
 	}
 
 	// 個別に設定しなおす
-	if		(version_compare($this->options['plugin-version'],	'2.5.6', '<' ) ) {
+	if		($upgrade_from_256 ) {
 		if	(intval($this->options['width'] ) == 0 ) {
 			$this->options['width']					=	500;
 			$this->options['width-unit']			=	'px';

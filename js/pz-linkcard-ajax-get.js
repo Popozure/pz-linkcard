@@ -6,9 +6,14 @@
 
     const interval = Math.max(1000, Number(config.interval) || 3000);
     const maxTries = Math.max(1, Number(config.maxTries) || 40);
+    const pendingSelector = ".pz-lkc-pending[data-pz-lkc-pending='1'][data-lkc-id]";
+    const polledCards = new WeakSet();
+    const observedDocuments = new WeakSet();
+    const observedFrames = new WeakSet();
 
-    document.querySelectorAll(".pz-lkc-pending[data-pz-lkc-pending='1'][data-lkc-id]").forEach(card => {
-        if (!card.dataset.pzLkcToken || !card.dataset.pzLkcExpires) return;
+    const pollCard = card => {
+        if (polledCards.has(card) || !card.dataset.pzLkcToken || !card.dataset.pzLkcExpires) return;
+        polledCards.add(card);
         let tries = 0;
         let stopped = false;
 
@@ -38,17 +43,21 @@
                     return;
                 }
                 if (result?.success && result.data?.ready && result.data.html) {
-                    const template = document.createElement("template");
+                    const cardDocument = card.ownerDocument;
+                    const template = cardDocument.createElement("template");
                     template.innerHTML = result.data.html.trim();
                     const replacement = template.content.firstElementChild;
-                    if (replacement) {
-                        const existing = replacement.id ? document.getElementById(replacement.id) : null;
-                        if (existing && existing !== card ) {
-                            replacement.removeAttribute("id");
-                        }
+                    if (replacement && card.isConnected) {
+                        const existing = replacement.id ? cardDocument.getElementById(replacement.id) : null;
+                        if (existing && existing !== card) replacement.removeAttribute("id");
                         card.replaceWith(replacement);
                         stopped = true;
-                        document.dispatchEvent(new CustomEvent("pz-linkcard:loaded", { detail: { card: replacement } }));
+                        const EventConstructor = cardDocument.defaultView?.CustomEvent || CustomEvent;
+                        cardDocument.dispatchEvent(new EventConstructor("pz-linkcard:loaded", { detail: { card: replacement } }));
+                        return;
+                    }
+                    if (!card.isConnected) {
+                        stopped = true;
                         return;
                     }
                 }
@@ -60,5 +69,39 @@
         };
 
         window.setTimeout(poll, interval);
-    });
+    };
+
+    const scanNode = node => {
+        if (node.nodeType !== 1) return;
+        if (node.matches(pendingSelector)) pollCard(node);
+        node.querySelectorAll(pendingSelector).forEach(pollCard);
+        if (node.tagName === "IFRAME") observeFrame(node);
+        node.querySelectorAll("iframe").forEach(observeFrame);
+    };
+
+    const observeDocument = targetDocument => {
+        if (!targetDocument?.documentElement || observedDocuments.has(targetDocument)) return;
+        observedDocuments.add(targetDocument);
+        scanNode(targetDocument.documentElement);
+        const Observer = targetDocument.defaultView?.MutationObserver || MutationObserver;
+        new Observer(records => {
+            records.forEach(record => record.addedNodes.forEach(scanNode));
+        }).observe(targetDocument.documentElement, { childList: true, subtree: true });
+    };
+
+    function observeFrame(frame) {
+        if (observedFrames.has(frame)) return;
+        observedFrames.add(frame);
+        const attach = () => {
+            try {
+                if (frame.contentDocument) observeDocument(frame.contentDocument);
+            } catch (error) {
+                // Cross-origin frames cannot contain this site's link-card preview.
+            }
+        };
+        frame.addEventListener("load", attach);
+        attach();
+    }
+
+    observeDocument(document);
 })();

@@ -108,6 +108,7 @@ trait Pz_LinkCard_Editor_Block {
 
 		wp_enqueue_style('pz-linkcard-block-editor', $this->plugin_dir_url.'css/admin.css', array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/admin.css' ) );
 		$this->enqueue_block_card_styles();
+		$this->enqueue_ajax_get_script();
 	}
 
 	// ブロックエディタ本文用スタイルシート

@@ -3623,7 +3623,7 @@ msgid "&#x2718;&#xFE0F;Does not exist"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php
-msgid "Falling hearts"
+msgid "Rising hearts"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php
@@ -3632,6 +3632,10 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php
 msgid "Falling snow"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-basic.php
+msgid "Cherry blossom petals"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-basic.php

@@ -4,7 +4,7 @@
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
 Description:	Displays links in card format.
-Version:		2.6.4.9
+Version:		2.6.5
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -293,7 +293,7 @@ class class_pz_linkcard {
 			'in-siteicon-alt'					=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
 			'in-content-type-1'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'c',					'reset-format'	=>	true,	],
 			'in-content-type-2'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	't',					'reset-format'	=>	true,	],
-			'in-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
+			'in-content-type-3'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'u',						'reset-format'	=>	true,	],
 			'in-content-type-4'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'e',					'reset-format'	=>	true,	],
 			'in-content-type-5'					=>	['type'	=>	'card_content_item',	'null'	=>	false,	'default'	=>	'',						'reset-format'	=>	true,	],
 			'in-get-from'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,					'reset-format'	=>	true,	],
@@ -651,6 +651,21 @@ class class_pz_linkcard {
 		$this->plugin_dir_path		=	plugin_dir_path(__FILE__ );							// プラグイン ディレクトリのパス
 		$this->plugin_dir_url		=	plugin_dir_url (__FILE__ );							// プラグイン ディレクトリのURL
 		$this->settings_url			=	admin_url(self::SETTINGS_URL );						// Pzカード設定のURL
+		$this->cacheman_url			=	admin_url(self::CACHEMAN_URL );						// Pzカード管理のURL
+
+		// オプション取得
+		$result						=	$this->pz_LoadOptions();
+
+		// ログ出力
+
+		// バージョンが違う場合、初期処理を実行する
+		if	($this->options['plugin-version'] <> PZLKC_PLUGIN_VERSION
+			|| ($this->options['db-version'] ?? '') !== md5($this->pz_GetCardTableSQL())
+			|| !array_key_exists('sns-qiita', (array) get_option(self::OPTION_NAME ) ) ) {
+			$this->hook_activate();															// プラグインの再起動
+		}
+
+		// 環境情報
 		$this->cacheman_url			=	admin_url(self::CACHEMAN_URL );						// Pzカード管理のURL
 
 		// オプション取得
@@ -1026,14 +1041,28 @@ class class_pz_linkcard {
 		if (!$url ) {
 			return null;
 		}
+		$timing_enabled = !empty($this->options['debug-mode']) && is_user_logged_in();
+		$timing_now = function() { return function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true); };
+		$timing_started = $timing_enabled ? $timing_now() : 0;
+		$timing_last = $timing_started;
+		$timing_parts = array();
+		$timing_mark = function($name) use (&$timing_last, &$timing_parts, $timing_enabled, $timing_now) {
+			if (!$timing_enabled) return;
+			$now = $timing_now();
+			$timing_parts[$name] = round(($now - $timing_last) * 1000, 3);
+			$timing_last = $now;
+		};
 		$url_info = $this->Pz_GetURLInfo($url );
+		$timing_mark('url_info');
 		if (isset($atts['preview-data'] ) && is_array($atts['preview-data'] ) ) {
 			return $this->pz_GetHTML($atts, $url_info );
 		}
 
 		$data = $this->pz_GetCache(array('url' => $url ) );
+		$timing_mark('cache_read');
 		$data = is_array($data ) && !empty($data['url'] ) ? $data : array('url' => $url );
 		$internal_error = !empty($url_info['is_internal']) ? $this->pz_GetInternalCardErrorStatus($url, $data) : 0;
+		$timing_mark('internal_status');
 		if ($internal_error) {
 			$error_title = __('The requested page could not be found.', 'pz-linkcard');
 			$restricted_fields = array(
@@ -1056,9 +1085,14 @@ class class_pz_linkcard {
 				$saved = $this->pz_SetCache($data);
 				if (is_array($saved)) $data = $saved;
 			}
+			$timing_mark('restricted_save');
 			$data = $this->pz_RecordUsedPost($data);
+			$timing_mark('record_used_post');
 			$atts['pz-card-data'] = $data;
-			return $this->pz_GetHTML($atts, $url_info);
+			$html = $this->pz_GetHTML($atts, $url_info);
+			$timing_mark('html');
+			$this->pz_LogCardTiming($url, $data, $timing_parts, $timing_started, $timing_now());
+			return $html;
 		}
 		$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
 		$force = isset($atts['force'] ) && $atts['force'] == true;
@@ -1081,6 +1115,7 @@ class class_pz_linkcard {
 					}
 				}
 			}
+			$timing_mark('internal_post');
 		} elseif (!empty($url_info['is_external'] ) ) {
 			$fetch_on_display = ($this->options['get-timing'] ?? 'background') === 'display';
 			$unregistered = !$data_id || (array_key_exists('regist_time', $data) && empty($data['regist_time']));
@@ -1109,11 +1144,51 @@ class class_pz_linkcard {
 					wp_schedule_single_event(time() + 3, self::CRON_GET );
 				}
 			}
+			$timing_mark('external_refresh_or_pending');
+		} else {
+			$timing_mark('link_type');
 		}
 
 		$data = $this->pz_RecordUsedPost($data);
+		$timing_mark('record_used_post');
 		$atts['pz-card-data'] = $data;
-		return	$this->pz_GetHTML($atts, $url_info );
+		$html = $this->pz_GetHTML($atts, $url_info );
+		$timing_mark('html');
+		$this->pz_LogCardTiming($url, $data, $timing_parts, $timing_started, $timing_now());
+		return $html;
+	}
+
+	private function pz_LogCardTiming($url, $data, $parts, $started, $finished) {
+		if (empty($this->options['debug-mode']) || !is_user_logged_in()) return;
+		$entry = array(
+			'host' => (string) wp_parse_url($url, PHP_URL_HOST),
+			'card_id' => intval($data['id'] ?? 0),
+			'cached' => !empty($data['id']),
+			'title_present' => !empty($data['title']),
+			'image_present' => !empty($data['thumbnail']),
+			'parts_ms' => $parts,
+			'total_ms' => round(($finished - $started) * 1000, 3),
+		);
+		$this->pz_WriteCardTimingLog($entry);
+	}
+
+	private function pz_LogCardSubtaskTiming($label, $url, $started, $finished, $cache_hit = null) {
+		if (empty($this->options['debug-mode']) || !is_user_logged_in()) return;
+		$entry = array(
+			'stage' => $label,
+			'host' => (string) wp_parse_url($url, PHP_URL_HOST),
+			'cache_hit' => $cache_hit,
+			'elapsed_ms' => round(($finished - $started) * 1000, 3),
+		);
+		$this->pz_WriteCardTimingLog($entry);
+	}
+
+	private function pz_WriteCardTimingLog($entry) {
+		$line = '[Pz-LinkCard timing] '.wp_json_encode($entry, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).PHP_EOL;
+		$written = @file_put_contents($this->plugin_dir_path.'debug.log', $line, FILE_APPEND | LOCK_EX);
+		if ($written === false) {
+			error_log('[Pz-LinkCard timing] Could not write plugin debug.log. Check plugin directory permissions.');
+		}
 	}
 
 	// URLのエンコード（DB格納用のURL作成）
@@ -2038,8 +2113,13 @@ class class_pz_linkcard {
 
 	// サムネイル取得（外部リンクOGP画像取得）
 	private	function	pz_GetImage($thumbnail_url, $force = false, $stamp = false ) {
-
-		return	require('lib/pz-linkcard-get-image.php' );
+		$started = !empty($this->options['debug-mode']) && is_user_logged_in() ? (function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true)) : null;
+		$result = require('lib/pz-linkcard-get-image.php' );
+		if ($started !== null) {
+			$finished = function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true);
+			$this->pz_LogCardSubtaskTiming('image_cache_or_fetch', $thumbnail_url, $started, $finished);
+		}
+		return $result;
 	}
 
 
@@ -2346,6 +2426,7 @@ class class_pz_linkcard {
 			wp_enqueue_script	('pz-linkcard-preview',			plugins_url('js/pz-linkcard-preview.js', __FILE__ ),	array(),	$preview_js_version, true );
 			$this->enqueue_star_field_script(true );
 			$this->enqueue_snowfall_script(true );
+			$this->enqueue_sakura_petals_script(true );
 			$this->enqueue_pointer_tracking_script(true );
 			wp_localize_script	('pz-linkcard-preview',			'pzLinkCardPreview',	array(
 					'ajaxUrl'		=>	admin_url('admin-ajax.php' ),
@@ -2415,6 +2496,27 @@ class class_pz_linkcard {
 		);
 	}
 
+	private function enqueue_ajax_get_script() {
+		if (!self::AJAX_GET_ENABLED ) {
+			return;
+		}
+		$ajax_get_script = 'pz-linkcard-ajax-get';
+		$ajax_get_path = $this->plugin_dir_path.'js/pz-linkcard-ajax-get.js';
+		wp_enqueue_script(
+			$ajax_get_script,
+			$this->plugin_dir_url.'js/pz-linkcard-ajax-get.js',
+			array(),
+			PZLKC_PLUGIN_VERSION.'.'.(file_exists($ajax_get_path ) ? filemtime($ajax_get_path ) : '0' ),
+			true
+		);
+		wp_localize_script($ajax_get_script, 'pzLinkCardAjaxGet', array(
+			'ajaxUrl' => admin_url('admin-ajax.php' ),
+			'nonce' => wp_create_nonce('pz_lkc_ajax_get' ),
+			'interval' => 3000,
+			'maxTries' => 40,
+		) );
+	}
+
 	private function enqueue_snowfall_script($preview = false ) {
 		if (!$preview && ($this->options['special-format'] ?? '') !== 'falling-snow' ) {
 			return;
@@ -2424,6 +2526,20 @@ class class_pz_linkcard {
 			$this->plugin_dir_url.'js/snowfall.js',
 			array(),
 			PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/snowfall.js' ),
+			true
+		);
+	}
+
+	private function enqueue_sakura_petals_script($preview = false ) {
+		if (!$preview && ($this->options['special-format'] ?? '') !== 'falling-sakura' ) {
+			return;
+		}
+		$script_path = $this->plugin_dir_path.'js/sakura-petals.js';
+		wp_enqueue_script(
+			'pz-linkcard-sakura-petals',
+			$this->plugin_dir_url.'js/sakura-petals.js',
+			array(),
+			PZLKC_PLUGIN_VERSION.'.'.(file_exists($script_path ) ? filemtime($script_path ) : '0' ),
 			true
 		);
 	}
@@ -2463,24 +2579,9 @@ class class_pz_linkcard {
 		wp_add_inline_style('pz-linkcard-css', '.lkc-share>object{display:contents}');
 		$this->enqueue_star_field_script();
 		$this->enqueue_snowfall_script();
+		$this->enqueue_sakura_petals_script();
 		$this->enqueue_pointer_tracking_script();
-		if (self::AJAX_GET_ENABLED ) {
-			$ajax_get_script = 'pz-linkcard-ajax-get';
-			$ajax_get_path = $this->plugin_dir_path.'js/pz-linkcard-ajax-get.js';
-			wp_enqueue_script(
-				$ajax_get_script,
-				$this->plugin_dir_url.'js/pz-linkcard-ajax-get.js',
-				array(),
-				PZLKC_PLUGIN_VERSION.'.'.(file_exists($ajax_get_path ) ? filemtime($ajax_get_path ) : '0' ),
-				true
-			);
-			wp_localize_script($ajax_get_script, 'pzLinkCardAjaxGet', array(
-				'ajaxUrl'	=> admin_url('admin-ajax.php' ),
-				'nonce'		=> wp_create_nonce('pz_lkc_ajax_get' ),
-				'interval'	=> 3000,
-				'maxTries'	=> 40,
-			) );
-		}
+		$this->enqueue_ajax_get_script();
 		if	(!empty($this->options['flg-quickmenu'] ) && is_user_logged_in() && current_user_can('manage_options' ) ) {
 			$quickmenu_script	=	'pz-linkcard-quickmenu';
 			wp_add_inline_style('pz-linkcard-css', '.linkcard[data-lkc-id]{position:relative}.pz-lkc-quickmenu-indicator{position:absolute;top:8px;right:8px;z-index:2;width:20px;height:20px;border-radius:50%;background:rgba(255,255,255,.78);color:#2271b1;font-size:20px;line-height:20px;text-align:center;opacity:0;cursor:context-menu;pointer-events:auto;transition:opacity .15s ease}.linkcard[data-lkc-id]:hover .pz-lkc-quickmenu-indicator,.linkcard[data-lkc-id]:focus-within .pz-lkc-quickmenu-indicator{opacity:1}' );

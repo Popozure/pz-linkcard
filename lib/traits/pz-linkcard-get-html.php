@@ -651,12 +651,15 @@ trait Pz_LinkCard_Get_HTML {
 
 	private function pz_IsWebAPIImageAvailable($url ) {
 		if ($this->pz_ShouldBlockLocalAddress($url)) return false;
+		$timing_enabled = !empty($this->options['debug-mode']) && is_user_logged_in();
+		$started = $timing_enabled ? (function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true)) : null;
 		$cache_key = 'pz_lkc_api_image_v2_'.md5($url );
 		$cached = get_transient($cache_key );
 		if (is_array($cached ) && isset($cached['available'] ) ) {
 			foreach (($cached['checked_urls'] ?? array($url)) as $checked_url) {
 				if ($this->pz_ShouldBlockLocalAddress($checked_url)) return false;
 			}
+			if ($started !== null) $this->pz_LogCardSubtaskTiming('webapi_image_check_cached', $url, $started, function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true), true);
 			return (bool) $cached['available'];
 		}
 
@@ -670,6 +673,7 @@ trait Pz_LinkCard_Get_HTML {
 		$available = !is_wp_error($response ) && 200 === intval(wp_remote_retrieve_response_code($response ) );
 		$checked_urls = is_wp_error($response) ? array($url) : $response['pz_lkc_checked_urls'];
 		set_transient($cache_key, array('available' => $available, 'checked_urls' => $checked_urls), $available ? HOUR_IN_SECONDS : MINUTE_IN_SECONDS );
+		if ($started !== null) $this->pz_LogCardSubtaskTiming('webapi_image_check_remote', $url, $started, function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true), false);
 		return $available;
 	}
 }

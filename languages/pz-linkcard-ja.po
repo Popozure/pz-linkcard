@@ -1,4 +1,4 @@
-# Copyright (C) 2013 WordPress
+﻿# Copyright (C) 2013 WordPress
 # This file is distributed under the same license as the WordPress package.
 msgid ""
 msgstr ""
@@ -1857,8 +1857,8 @@ msgid "Metal"
 msgstr "金属"
 
 #: ../lib/pz-linkcard-settings-basic.php:34
-msgid "Falling hearts"
-msgstr "ハートが降ってくる"
+msgid "Rising hearts"
+msgstr "ハートが登っていく"
 
 #: ../lib/pz-linkcard-settings-basic.php:35
 msgid "Falling stars"
@@ -1869,6 +1869,10 @@ msgid "Falling snow"
 msgstr "雪が降ってくる"
 
 #: ../lib/pz-linkcard-settings-basic.php:37
+msgid "Cherry blossom petals"
+msgstr "桜の花びらが舞う"
+
+#: ../lib/pz-linkcard-settings-basic.php:38
 msgid "3D Tracking"
 msgstr "3D追跡"
 

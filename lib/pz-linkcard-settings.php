@@ -651,8 +651,15 @@
 
 	$changelog		=	'';
 	$changelog_limit	=	(function_exists('wp_is_mobile' ) && wp_is_mobile() ) ? 3 : 10;
-	$changelog		=	file_get_contents($this->plugin_dir_path.'/readme.txt' );											// readme.txt を読み込み
-	if	(false !== $changelog ) {
+	$changelog_file = $this->plugin_dir_path.'/readme.txt';
+	if (!is_readable($changelog_file)) {
+		$legacy_changelog_file = $this->plugin_dir_path.'/changelog.old';
+		$changelog_file = is_readable($legacy_changelog_file) ? $legacy_changelog_file : '';
+	}
+	if ($changelog_file !== '') {
+		$changelog = file_get_contents($changelog_file);
+	}
+	if (false !== $changelog && $changelog !== '') {
 		$changelog_pattern	=	'/^== Changelog ==\s*(?<entries>(?:^= [^=\r\n]+ =\s*(?:(?!^= [^=\r\n]+ =|^== ).*\R?)*){1,'.$changelog_limit.'})/m';
 		preg_match($changelog_pattern, $changelog, $m );
 		$changelog	=	$m['entries'] ?? '';
