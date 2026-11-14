@@ -10,10 +10,13 @@
 	}
 
 	// デバグモード・管理モード
-	$debug_mode		=	isset($this->options['debug-mode'] )	?	intval($this->options['debug-mode'] )	:	0;
-	$admin_mode		=	isset($this->options['admin-mode'] )	?	intval($this->options['admin-mode'] )	:	0;
-	$develop_mode	=	isset($this->options['develop-mode'] )	?	intval($this->options['develop-mode'] )	:	0;
-	$inhibit		=	isset($this->options['flg-inhibit'] )	?	intval($this->options['flg-inhibit'] )	:	0;
+	$debug_mode			=	isset($this->options['debug-mode'] )		?	intval($this->options['debug-mode'] )		:	0 ;
+	$admin_mode			=	isset($this->options['admin-mode'] )		?	intval($this->options['admin-mode'] )		:	0 ;
+	$develop_mode		=	isset($this->options['develop-mode'] )		?	intval($this->options['develop-mode'] )		:	0 ;
+	$menu_error			=	isset($this->options['error-mode'] )		?	intval($this->options['error-mode'] )		:	0 ;
+	$menu_multi			=	isset($this->options['multi-mode'] )		?	intval($this->options['multi-mode'] )		:	0 ;
+	$menu_initialize	=	isset($this->options['flg-initialize'] )	?	intval($this->options['flg-initialize'] )	:	0 ;
+	$inhibit			=	isset($this->options['flg-inhibit'] )		?	intval($this->options['flg-inhibit'] )		:	0 ;
 
 	// 引数・変数の設定
 	$page			=	'pz-linkcard-cacheman';			// ツール画面のページ

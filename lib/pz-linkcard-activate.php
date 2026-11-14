@@ -64,6 +64,15 @@
 	// 項目名称変更
 	$rename_key	=	array(
 		'old_key_name'			=>		'new_key_name',
+		'window-left'			=>	'preview-window-left',
+		'window-top'			=>	'preview-window-top',
+		'window-width'		=>	'preview-window-width',
+		'window-height'		=>	'preview-window-height',
+		'docked-width'		=>	'preview-docked-width',
+		'last-bottom-docked-height'	=>	'preview-last-bottom-docked-height',
+		'left-docked-width'	=>	'preview-left-docked-width',
+		'post-date-icon1'		=>	'date-icon-post',
+		'post-date-icon2'		=>	'date-icon-update',
 		'flg-invalid'			=>		'error-mode',				// Ver.2.4.4 パラメータ名変更のため：エラー状態
 		'invalid-url'			=>		'error-url',				// Ver.2.4.4 パラメータ名変更のため：エラーURL
 		'invalid-time'			=>		'error-time',				// Ver.2.4.4 パラメータ名変更のため：エラー発生日時
@@ -123,6 +132,18 @@
 		}
 	}
 
+	// Migrate saved card info/content placement and visibility when introducing the five slots.
+	if (is_array($stored_options) && !array_key_exists('ex-info-type-1', $stored_options) && !array_key_exists('ex-content-type-1', $stored_options)) {
+		foreach (array('ex', 'in') as $prefix) {
+			$info = array('i', 'n', 'a', ($stored_options['sns-position'] ?? '') == 2 ? 's' : '', ($stored_options['display-url'] ?? '') == 2 ? 'u' : '');
+			$content = array('t', ($stored_options['sns-position'] ?? '') == 1 ? 's' : '', ($stored_options['display-url'] ?? '') == 1 ? 'u' : '', 'p', 'e');
+			foreach (array('info' => $info, 'content' => $content) as $group => $items) {
+				foreach ($items as $index => $item) {
+					$this->options[$prefix.'-'.$group.'-type-'.($index + 1)] = $item;
+				}
+			}
+		}
+	}
 	// Read stored keys before defaults are merged so existing values survive the rename.
 	foreach (array(
 		'favicon-api' => 'siteicon-api',

@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll("a.lkc-link").forEach(function (el) {
         el.addEventListener("click", function (e) {
-            let lkc_id = el.getAttribute("data-lkc-id");
-            if (!lkc_id) return;
-			let post_id = el.getAttribute("data-post-id") || "";
-			let click_token = el.getAttribute("data-click-token") || "";
+            let card = el.closest(".linkcard[data-lkc-id]");
+            let lkc_id = card?.getAttribute("data-lkc-id") || "";
+            let post_id = card.getAttribute("data-post-id") || "";
+            let click_token = card.getAttribute("data-click-token") || "";
 			if (!click_token) return;
 
             fetch(pz_lkc_ajax.ajax_url, {

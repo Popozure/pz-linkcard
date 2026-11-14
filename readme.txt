@@ -2,7 +2,7 @@
 Contributors: Poporon
 Tags: LinkCard, BlogCard, Internal Link, External Link
 Requires at least: 6.0
-Tested up to: 7.1.3
+Tested up to: 7.1.5
 Requires PHP: 8.2
 Stable tag: trunk
 License: GPLv2 or later
@@ -151,6 +151,18 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 
 
 == Changelog ==
+
+= 2.6.5.1 =
+* [Tested] WordPress 7.1.5 での動作確認を行いました。
+* [Fixed] リンクカードが表示される速度を改善しました。
+* 
+* 
+* 
+* カード設定の上の部分をカード管理に移植する
+
+
+
+
 
 = 2.6.5 =
 * [Tested] WordPress 7.1.4 での動作確認を行いました。

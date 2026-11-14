@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 defined('ABSPATH' ) || wp_die;
 
 trait Pz_LinkCard_Options {
@@ -59,29 +59,6 @@ trait Pz_LinkCard_Options {
 				if	(function_exists('wp_cache_delete' ) ) {
 					wp_cache_delete(self::OPTION_NAME, 'options' );
 					wp_cache_delete('alloptions', 'options' );
-				}
-			}
-		}
-		// Preserve the selected date pattern from the former numeric setting.
-		if (!array_key_exists('date-pattern', $this->options) && array_key_exists('display-date', $this->options)) {
-			$date_patterns = array('' => '', '0' => '', '1' => 'p', '2' => 'u', '3' => 'pu');
-			$this->options['date-pattern'] = $date_patterns[(string) $this->options['display-date']] ?? 'p';
-		}
-		unset($this->options['display-date']);
-		foreach (array('post-date-icon1' => 'date-icon-post', 'post-date-icon2' => 'date-icon-update') as $old_key => $new_key) {
-			if (!array_key_exists($new_key, $this->options) && array_key_exists($old_key, $this->options)) {
-				$this->options[$new_key] = $this->options[$old_key];
-			}
-			unset($this->options[$old_key]);
-		}
-		// Preserve existing visibility and placement when introducing the five slots.
-		foreach (array('ex', 'in') as $prefix) {
-			$info = array('i', 'n', 'a', ($this->options['sns-position'] ?? '') == 2 ? 's' : '', ($this->options['display-url'] ?? '') == 2 ? 'u' : '');
-			$content = array('t', ($this->options['sns-position'] ?? '') == 1 ? 's' : '', ($this->options['display-url'] ?? '') == 1 ? 'u' : '', 'p', 'e');
-			foreach (array('info' => $info, 'content' => $content) as $group => $items) {
-				foreach ($items as $index => $item) {
-					$key = $prefix.'-'.$group.'-type-'.($index + 1);
-					if (!array_key_exists($key, $this->options)) $this->options[$key] = $item;
 				}
 			}
 		}

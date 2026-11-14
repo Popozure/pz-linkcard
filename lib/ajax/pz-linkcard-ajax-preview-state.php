@@ -15,13 +15,13 @@ defined('ABSPATH' ) || wp_die;
 	$this->options['preview-mode']	=	$mode;
 	$this->options['preview-two-cards']	=	isset($_POST['preview-two-cards'] ) && intval(wp_unslash($_POST['preview-two-cards'] ) ) ? 1 : 0;
 
-	foreach	(array('preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'left-docked-width' ) as $key ) {
+	foreach	(array('preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-left-docked-width' ) as $key ) {
 		if	(!isset($_POST[$key] ) || $_POST[$key] === '' ) {
 			$this->options[$key]	=	null;
 			continue;
 		}
 		$value	=	intval(wp_unslash($_POST[$key] ) );
-		if	(in_array($key, array('preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'left-docked-width' ), true ) ) {
+		if	(in_array($key, array('preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-left-docked-width' ), true ) ) {
 			$value	=	max(0, $value );
 		}
 		$this->options[$key]	=	$value;
@@ -31,7 +31,7 @@ defined('ABSPATH' ) || wp_die;
 	if	(!is_array($options ) ) {
 		$options	=	self::pz_GetDefaultOptions();
 	}
-	foreach	(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'left-docked-width', 'preview-two-cards' ) as $key ) {
+	foreach	(array('preview-mode', 'preview-left', 'preview-top', 'preview-width', 'preview-height', 'preview-docked-height', 'preview-right-docked-width', 'preview-left-docked-width', 'preview-two-cards' ) as $key ) {
 		$options[$key]	=	$this->options[$key] ?? null;
 	}
 	update_option(self::OPTION_NAME, $options );

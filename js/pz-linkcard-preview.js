@@ -234,13 +234,13 @@ document.addEventListener("DOMContentLoaded", () => {
             const legacyWidth = storedMode === "right" || (storedMode === "icon" && restoreMode === "right")
                 ? readStateNumber(state, "preview-right-docked-width")
                 : null;
-            return readStateNumber(state, "right-docked-width") ?? legacyWidth ?? minPreviewWidth;
+            return readStateNumber(state, "preview-right-docked-width") ?? legacyWidth ?? minPreviewWidth;
         };
-        const readLeftDockedWidth = state => readStateNumber(state, "left-docked-width") ?? minPreviewWidth;
+        const readLeftDockedWidth = state => readStateNumber(state, "preview-left-docked-width") ?? minPreviewWidth;
         const readBottomDockedHeight = state => {
             return [lastBottomDockedHeight,
-                readStateNumber(state, "docked-height"),
-                readStateNumber(state, "last-bottom-docked-height"),
+                readStateNumber(state, "preview-docked-height"),
+                readStateNumber(state, "preview-last-bottom-docked-height"),
                 readStateNumber(state, "preview-docked-height"),
             ].find(value => Number.isFinite(value) && value > 0) ?? minPreviewHeight;
         };
@@ -362,7 +362,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const savedBottomDockedHeight = previewDockSide === "bottom"
                 ? rect.height
                 : lastBottomDockedHeight
-                    ?? readStateNumber(storedState, "last-bottom-docked-height")
+                    ?? readStateNumber(storedState, "preview-last-bottom-docked-height")
                     ?? readStateNumber(storedState, "preview-docked-height")
                     ?? readStateNumber(null, "preview-docked-height");
             const state = {
@@ -373,32 +373,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 "preview-width": Math.round(rect.width),
                 "preview-height": Math.round(rect.height),
                 "preview-docked-height": Math.round(savedBottomDockedHeight || minPreviewHeight),
-                "last-bottom-docked-height": Math.round(savedBottomDockedHeight || minPreviewHeight),
+                "preview-last-bottom-docked-height": Math.round(savedBottomDockedHeight || minPreviewHeight),
                 "preview-right-docked-width": Math.round(previewDockSide === "right"
                     ? rect.width
-                    : (readStateNumber(storedState, "right-docked-width")
+                    : (readStateNumber(storedState, "preview-right-docked-width")
                         ?? readStateNumber(storedState, "preview-right-docked-width")
                         ?? readStateNumber(null, "preview-right-docked-width")
                         ?? minPreviewWidth)),
                 "preview-two-cards": twoCardsCheckbox?.checked ? 1 : 0,
             };
             if (previewDockSide === "right") {
-                state["right-docked-width"] = Math.round(rect.width);
+                state["preview-right-docked-width"] = Math.round(rect.width);
             } else if (previewDockSide === "left") {
-                state["left-docked-width"] = Math.round(rect.width);
+                state["preview-left-docked-width"] = Math.round(rect.width);
             } else if (previewDockSide === "bottom") {
-                state["docked-height"] = Math.round(rect.height);
-                state["docked-width"] = Math.round(rect.width);
+                state["preview-docked-height"] = Math.round(rect.height);
+                state["preview-docked-width"] = Math.round(rect.width);
             } else if (previewDocked) {
                 Object.assign(state, {
-                    "docked-width": Math.round(rect.width),
+                    "preview-docked-width": Math.round(rect.width),
                 });
             } else {
                 Object.assign(state, {
-                    "window-left": Math.round(rect.left),
-                    "window-top": Math.round(rect.top),
-                    "window-width": Math.round(rect.width),
-                    "window-height": Math.round(rect.height),
+                    "preview-window-left": Math.round(rect.left),
+                    "preview-window-top": Math.round(rect.top),
+                    "preview-window-width": Math.round(rect.width),
+                    "preview-window-height": Math.round(rect.height),
                 });
             }
             persistStoredState(state);
@@ -410,7 +410,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const savedBottomDockedHeight = previewDockSide === "bottom"
                 ? rect.height
                 : lastBottomDockedHeight
-                    ?? readStateNumber(storedState, "last-bottom-docked-height")
+                    ?? readStateNumber(storedState, "preview-last-bottom-docked-height")
                     ?? readStateNumber(storedState, "preview-docked-height")
                     ?? readStateNumber(null, "preview-docked-height");
             const state = {
@@ -423,20 +423,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 "preview-height": Math.round(rect.height),
                 "preview-right-docked-width": Math.round(previewDockSide === "right"
                     ? rect.width
-                    : (readStateNumber(storedState, "right-docked-width")
+                    : (readStateNumber(storedState, "preview-right-docked-width")
                         ?? readStateNumber(storedState, "preview-right-docked-width")
                         ?? readStateNumber(null, "preview-right-docked-width")
                         ?? minPreviewWidth)),
                 "preview-two-cards": twoCardsCheckbox?.checked ? 1 : 0,
-                "window-left": readStateNumber(storedState, "window-left"),
-                "window-top": readStateNumber(storedState, "window-top"),
-                "window-width": readStateNumber(storedState, "window-width"),
-                "window-height": readStateNumber(storedState, "window-height"),
+                "preview-window-left": readStateNumber(storedState, "preview-window-left"),
+                "preview-window-top": readStateNumber(storedState, "preview-window-top"),
+                "preview-window-width": readStateNumber(storedState, "preview-window-width"),
+                "preview-window-height": readStateNumber(storedState, "preview-window-height"),
                 "docked-left": readStateNumber(storedState, "docked-left"),
                 "docked-top": readStateNumber(storedState, "docked-top"),
-                "docked-width": readStateNumber(storedState, "docked-width"),
-                "docked-height": readStateNumber(storedState, "docked-height"),
-                "right-docked-width": readStateNumber(storedState, "right-docked-width"),
+                "preview-docked-width": readStateNumber(storedState, "preview-docked-width"),
+                "preview-docked-height": readStateNumber(storedState, "preview-docked-height"),
+                "preview-right-docked-width": readStateNumber(storedState, "preview-right-docked-width"),
             };
             persistStoredState(state);
         };
@@ -680,10 +680,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (targetMode === "window") {
                 const windowRect = {
-                    left: readStateNumber(stored, "window-left"),
-                    top: readStateNumber(stored, "window-top"),
-                    width: readStateNumber(stored, "window-width"),
-                    height: readStateNumber(stored, "window-height"),
+                    left: readStateNumber(stored, "preview-window-left"),
+                    top: readStateNumber(stored, "preview-window-top"),
+                    width: readStateNumber(stored, "preview-window-width"),
+                    height: readStateNumber(stored, "preview-window-height"),
                 };
                 const hasWindowRect = !!windowRect && Object.values(windowRect).every(value => value !== null);
                 applyFloatingRect(hasWindowRect ? windowRect : floatingPreviewRect);
@@ -749,10 +749,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const initiallyDocked = mode === "right" || mode === "left" || mode === "docked";
             let initialFloatingRect = !previewDocked && !initiallyDocked ? getWindowRect() : null;
             const windowRect = {
-                left: readStateNumber(stored, "window-left"),
-                top: readStateNumber(stored, "window-top"),
-                width: readStateNumber(stored, "window-width"),
-                height: readStateNumber(stored, "window-height"),
+                left: readStateNumber(stored, "preview-window-left"),
+                top: readStateNumber(stored, "preview-window-top"),
+                width: readStateNumber(stored, "preview-window-width"),
+                height: readStateNumber(stored, "preview-window-height"),
             };
             const hasWindowRect = Object.values(windowRect).every(value => value !== null);
             if (hasWindowRect) {
@@ -772,10 +772,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (initialFloatingRect?.width > 0 && initialFloatingRect?.height > 0) {
                     floatingPreviewRect = initialFloatingRect;
                     persistStoredState({
-                        "window-left": Math.round(initialFloatingRect.left),
-                        "window-top": Math.round(initialFloatingRect.top),
-                        "window-width": Math.round(initialFloatingRect.width),
-                        "window-height": Math.round(initialFloatingRect.height),
+                        "preview-window-left": Math.round(initialFloatingRect.left),
+                        "preview-window-top": Math.round(initialFloatingRect.top),
+                        "preview-window-width": Math.round(initialFloatingRect.width),
+                        "preview-window-height": Math.round(initialFloatingRect.height),
                     });
                 }
             }
@@ -827,12 +827,12 @@ document.addEventListener("DOMContentLoaded", () => {
             if (dockLeft) {
                 applyRightDockedRect(readLeftDockedWidth(stored), "left");
             } else if (dockRight) {
-                const dockedWidth = readStateNumber(stored, "right-docked-width")
+                const dockedWidth = readStateNumber(stored, "preview-right-docked-width")
                     ?? readStateNumber(stored, "preview-right-docked-width")
                     ?? rect.width;
                 applyRightDockedRect(dockedWidth);
             } else {
-                const dockedHeight = readStateNumber(stored, "docked-height")
+                const dockedHeight = readStateNumber(stored, "preview-docked-height")
                     ?? readStateNumber(stored, "preview-docked-height")
                     ?? rect.height;
                 applyDockedRect(dockedHeight);
@@ -890,10 +890,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     && Math.abs(moveEvent.clientY - e.clientY) >= 64) {
                     const stored = readStoredState() || {};
                     const windowRect = {
-                        left: readStateNumber(stored, "window-left"),
-                        top: readStateNumber(stored, "window-top"),
-                        width: readStateNumber(stored, "window-width"),
-                        height: readStateNumber(stored, "window-height"),
+                        left: readStateNumber(stored, "preview-window-left"),
+                        top: readStateNumber(stored, "preview-window-top"),
+                        width: readStateNumber(stored, "preview-window-width"),
+                        height: readStateNumber(stored, "preview-window-height"),
                     };
                     const hasWindowRect = Object.values(windowRect).every(value => value !== null);
                     applyFloatingRect(hasWindowRect ? windowRect : floatingPreviewRect);

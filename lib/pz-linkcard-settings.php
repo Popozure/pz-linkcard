@@ -505,9 +505,9 @@
 	foreach		(array(
 		'preview-mode', 'preview-restore-mode',
 		'preview-left', 'preview-top', 'preview-width', 'preview-height',
-		'preview-docked-height', 'preview-right-docked-width', 'preview-two-cards',
-		'window-left', 'window-top', 'window-width', 'window-height',
-		'docked-width', 'docked-height', 'last-bottom-docked-height', 'right-docked-width', 'left-docked-width',
+		'preview-two-cards',
+		'preview-window-left', 'preview-window-top', 'preview-window-width', 'preview-window-height',
+		'preview-docked-width', 'preview-last-bottom-docked-height', 'preview-left-docked-width',
 	) as $temp_name ) {
 		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
 		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ?? '' ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
@@ -590,25 +590,25 @@
 			$preview_class	=	' pz-settings-preview-ready';
 			if ($preview_mode === 'left') {
                 $preview_class .= ' pz-settings-preview-docked pz-settings-preview-docked-left';
-                $left_width = max(180, absint($this->options['left-docked-width'] ?? 240));
+                $left_width = max(180, absint($this->options['preview-left-docked-width'] ?? 240));
                 $preview_style = 'left:var(--pz-overlay-left,160px);right:auto;top:calc(var(--wp-admin--admin-bar--height, 32px) + 40px);bottom:0;width:'.$left_width.'px;height:auto;max-height:none;';
             } elseif ($preview_mode === 'right') {
 				$preview_class	.=	' pz-settings-preview-docked pz-settings-preview-docked-right';
-				$right_width	=	max(180, absint($this->options['right-docked-width'] ?? $this->options['preview-right-docked-width'] ?? 180 ) );
+				$right_width		= max(180, absint($this->options['preview-right-docked-width'] ?? 180 ) );
 				if	($right_width > 0 ) {
 					$preview_style	=	'left:auto;right:0;top:calc(var(--wp-admin--admin-bar--height, 32px) + 40px);bottom:0;width:'.$right_width.'px;height:auto;max-height:none;';
 				}
 			} elseif	($preview_mode === 'docked' ) {
 				$preview_class	.=	' pz-settings-preview-docked';
-				$docked_height	=	absint($this->options['docked-height'] ?? $this->options['last-bottom-docked-height'] ?? $this->options['preview-docked-height'] ?? 0 );
+				$docked_height	= absint($this->options['preview-docked-height'] ?? $this->options['preview-last-bottom-docked-height'] ?? 0 );
 				if	($docked_height > 0 ) {
 					$preview_style	=	'left:160px;right:0;top:auto;bottom:0;width:calc(100vw - 160px);height:'.$docked_height.'px;max-height:none;';
 				}
 			} else {
-				$window_left	=	$this->options['window-left'] ?? null;
-				$window_top		=	$this->options['window-top'] ?? null;
-				$window_width	=	$this->options['window-width'] ?? null;
-				$window_height	=	$this->options['window-height'] ?? null;
+				$window_left	=	$this->options['preview-window-left'] ?? null;
+				$window_top		=	$this->options['preview-window-top'] ?? null;
+				$window_width	=	$this->options['preview-window-width'] ?? null;
+				$window_height	=	$this->options['preview-window-height'] ?? null;
 				if	($window_left !== null && $window_top !== null && $window_width !== null && $window_height !== null ) {
 					$preview_style	=	'left:'.intval($window_left).'px;top:'.intval($window_top).'px;right:auto;bottom:auto;width:'.max(240, absint($window_width) ).'px;height:'.max(100, absint($window_height) ).'px;max-height:none;';
 				}
@@ -731,13 +731,12 @@
 	$show_admin			=	($admin_mode		==	0	?	'style="display: none;"' : '' );
 
 
-// 画面描画
-echo	wp_kses($html_style, array('style' => array() ) );
-$settings_allowed_html	=	wp_kses_allowed_html('post' );
-$settings_allowed_html['a']['referrerpolicy']	=	true;
-?>
-<div class="pz-dashboard<?php echo esc_attr($page_class.($debug_mode ? ' pz-debug-mode' : '' ).($admin_mode ? ' pz-admin-mode' : '' ) ); ?> wrap">
-	<header class="pz-header">
+	// 画面描画
+	echo	wp_kses($html_style, array('style' => array() ) );
+	$settings_allowed_html	=	wp_kses_allowed_html('post' );
+	$settings_allowed_html['a']['referrerpolicy']	=	true;
+	?>
+	<div class="pz-dashboard<?php echo esc_attr($page_class.($debug_mode ? ' pz-debug-mode' : '' ).($admin_mode ? ' pz-admin-mode' : '' ) ); ?> wrap">
 		<?php
 			$infobar_allowed_html			=	wp_kses_allowed_html('post' );
 			$infobar_allowed_html['input']	=	array(
@@ -836,7 +835,6 @@ $settings_allowed_html['a']['referrerpolicy']	=	true;
 			</div>
 			<button type="button" class="pz-tab-scroll pz-tab-right" aria-label="<?php esc_attr_e('Scroll tabs right', 'pz-linkcard' ); ?>"><span class="dashicons dashicons-arrow-right-alt2"></span></button>
 		</div>
-	</header>
 	<article>
 		<form id="pz-settings-form" action="" method="post">
 			<?php wp_nonce_field('pz-settings' ); ?>

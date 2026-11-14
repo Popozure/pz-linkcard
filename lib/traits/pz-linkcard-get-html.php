@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 defined('ABSPATH' ) || wp_die;
 
 trait Pz_LinkCard_Get_HTML {
@@ -22,14 +22,14 @@ trait Pz_LinkCard_Get_HTML {
 		));
 	}
 
-	// $attsと収集済みデータからリンクカードのHTMLを生成
+	// $atts縺ｨ蜿朱寔貂医∩繝・・繧ｿ縺九ｉ繝ｪ繝ｳ繧ｯ繧ｫ繝ｼ繝峨・HTML繧堤函謌・
 	private	function	pz_GetHTML($atts, $url_info = null ) {
 		static $html_anchor_ids	=	array();
 
-		// リンク先URL
+		// 繝ｪ繝ｳ繧ｯ蜈・RL
 		$url			=	isset($atts['url'] ) ? $atts['url'] : null ;
 
-		// URL指定なし
+		// URL謖・ｮ壹↑縺・
 		if	(!$url ) {
 			return	null;
 		}
@@ -41,14 +41,14 @@ trait Pz_LinkCard_Get_HTML {
 
 		$is_mobile = function_exists('wp_is_mobile' ) && wp_is_mobile();
 
-		// URL解析（自サイトチェック）
+		// URL隗｣譫撰ｼ郁・繧ｵ繧､繝医メ繧ｧ繝・け・・
 		$url_info		=	$url_info ?? $this->Pz_GetURLInfo($url );
-		$domain			=	$url_info['domain'];		// ドメイン名
-		$domain_url		=	$url_info['domain_url'];	// ドメインURL
-		$is_external	=	$url_info['is_external'];	// 外部リンク
-		$is_internal	=	$url_info['is_internal'];	// 内部リンク
+		$domain			=	$url_info['domain'];		// 繝峨Γ繧､繝ｳ蜷・
+		$domain_url		=	$url_info['domain_url'];	// 繝峨Γ繧､繝ｳURL
+		$is_external	=	$url_info['is_external'];	// 螟夜Κ繝ｪ繝ｳ繧ｯ
+		$is_internal	=	$url_info['is_internal'];	// 蜀・Κ繝ｪ繝ｳ繧ｯ
 
-		// モバイルかPCかのクラス名を追加
+		// 繝｢繝舌う繝ｫ縺輝C縺九・繧ｯ繝ｩ繧ｹ蜷阪ｒ霑ｽ蜉
 		$class_id		=	'linkcard';
 		if	($is_mobile && $this->options['class-mobile'] ) {
 			$class_id	.=	' '.esc_attr($this->options['class-mobile'] );
@@ -59,7 +59,7 @@ trait Pz_LinkCard_Get_HTML {
 			$class_id .= ' pz-lkc-pending';
 		}
 
-		// キャッシュから取得
+		// 繧ｭ繝｣繝・す繝･縺九ｉ蜿門ｾ・
 		$data			=	array('url' => $url );
 		if	($is_preview ) {
 			$data		=	array_merge($data, $atts['preview-data'] );
@@ -82,38 +82,38 @@ trait Pz_LinkCard_Get_HTML {
 			unset($atts['pz-pending']);
 		}
 
-		// 内部リンクの処理
+		// 蜀・Κ繝ｪ繝ｳ繧ｯ縺ｮ蜃ｦ逅・
 		if	($is_internal ) {
-			// リンクターゲットの設定
-			$target			=	null;									// 同じタブに開く
+			// 繝ｪ繝ｳ繧ｯ繧ｿ繝ｼ繧ｲ繝・ヨ縺ｮ險ｭ螳・
+			$target			=	null;									// 蜷後§繧ｿ繝悶↓髢九￥
 			if	(isset($this->options['in-target'] ) ) {
 				if	($this->options['in-target'] == 1 || ($this->options['in-target'] == 2 && !$is_mobile ) ) {
-					$target	=	' target="_blank"';						// 新しいタブで開く
+					$target	=	' target="_blank"';						// 譁ｰ縺励＞繧ｿ繝悶〒髢九￥
 				}
 			}
 
-			// nofollowの指定
+			// nofollow縺ｮ謖・ｮ・
 			$rel			=	null;
 			if	((isset($atts['follow'] ) && mb_strtolower($atts['follow'] ) == 'no' ) || (isset($atts['nofollow'] ) && mb_strtolower($atts['nofollow'] ) == 'true' ) ) {
-				$rel		=	' rel="nofollow"';						// 要望により内部リンクでもnofollow可能（ショートコードのパラメータで指定時のみ）
+				$rel		=	' rel="nofollow"';						// 隕∵悍縺ｫ繧医ｊ蜀・Κ繝ｪ繝ｳ繧ｯ縺ｧ繧Ｏofollow蜿ｯ閭ｽ・医す繝ｧ繝ｼ繝医さ繝ｼ繝峨・繝代Λ繝｡繝ｼ繧ｿ縺ｧ謖・ｮ壽凾縺ｮ縺ｿ・・
 			}
 
 		}
 
-		// 外部リンクの処理
+		// 螟夜Κ繝ｪ繝ｳ繧ｯ縺ｮ蜃ｦ逅・
 		if	($is_external ) {
-			// リンクターゲットの設定
-			$target			=	null;								// 同じタブに開く
+			// 繝ｪ繝ｳ繧ｯ繧ｿ繝ｼ繧ｲ繝・ヨ縺ｮ險ｭ螳・
+			$target			=	null;								// 蜷後§繧ｿ繝悶↓髢九￥
 			if	(isset($this->options['ex-target'] ) ) {
 				if	($this->options['ex-target'] == 1 || ($this->options['ex-target'] == 2 && !$is_mobile ) ) {
-					$target	=	' target="_blank"';					// 新しいタブで開く
+					$target	=	' target="_blank"';					// 譁ｰ縺励＞繧ｿ繝悶〒髢九￥
 				}
 			}
 
-			// noopenerとnofollowの指定
+			// noopener縺ｨnofollow縺ｮ謖・ｮ・
 			$rel			=	'external';
 			if	($this->options['flg-nofollow'] || (isset($atts['follow'] ) && mb_strtolower($atts['follow'] ) == 'no' ) || (isset($atts['nofollow'] ) && mb_strtolower($atts['nofollow'] ) == 'true' ) ) {
-				$rel		.=	' nofollow';						// nofollow指定。趣味の問題？
+				$rel		.=	' nofollow';						// nofollow謖・ｮ壹りｶ｣蜻ｳ縺ｮ蝠城｡鯉ｼ・
 			}
 			if	($this->options['flg-noopener'] ) {
 				$rel		.=	' noopener';
@@ -122,7 +122,7 @@ trait Pz_LinkCard_Get_HTML {
 
 		}
 
-		// 記事内容をセット
+		// 險倅ｺ句・螳ｹ繧偵そ繝・ヨ
 		$url_redir		=	$data['url_redir']		??	'';
 		$title			=	$data['title']			??	'';
 		$excerpt		=	$data['excerpt']		??	'';
@@ -147,7 +147,7 @@ trait Pz_LinkCard_Get_HTML {
 		// Keep card navigation on the original URL while displaying redirected content.
 		$link_url = $url;
 
-		// リダイレクトURL
+		// 繝ｪ繝繧､繝ｬ繧ｯ繝・RL
 		if	($url_redir ) {
 			$url		=	$url_redir;
 			$redirect_info = wp_parse_url(html_entity_decode($url_redir, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
@@ -157,7 +157,7 @@ trait Pz_LinkCard_Get_HTML {
 			}
 		}
 
-		// ラッピング
+		// 繝ｩ繝・ヴ繝ｳ繧ｰ
 		if	($is_internal ) {
 			$wrap_class			=	'lkc-internal-wrap';
 			$html_wrap_op		=	'<div class="'.$wrap_class.'">';
@@ -183,13 +183,13 @@ trait Pz_LinkCard_Get_HTML {
 			$sw_siteicon			=	isset($this->options['ex-siteicon'] )		?	esc_attr($this->options['ex-siteicon'] )		:	0 ;
 		}
 
-		// ドメイン名の準備
+		// 繝峨Γ繧､繝ｳ蜷阪・貅門ｙ
 		$domain_name			=	$domain;
-		if	(function_exists('idn_to_utf8' ) && substr($domain, 0, 4 ) == 'xn--' ) {	// 国際ドメイン対応（日本語ドメイン対応）
+		if	(function_exists('idn_to_utf8' ) && substr($domain, 0, 4 ) == 'xn--' ) {	// 蝗ｽ髫帙ラ繝｡繧､繝ｳ蟇ｾ蠢懶ｼ域律譛ｬ隱槭ラ繝｡繧､繝ｳ蟇ｾ蠢懶ｼ・
 			$domain_name		=	(function_exists('idn_to_utf8' ) && defined('INTL_IDNA_VARIANT_UTS46' ) ) ? idn_to_utf8($domain, 0, INTL_IDNA_VARIANT_UTS46 ) : $domain;
 		}
 
-		// 表示用サイト名
+		// 陦ｨ遉ｺ逕ｨ繧ｵ繧､繝亥錐
 		if	(($this->options['flg-use-sitename'] ) && ($site_name ) ) {
 			$disp_sitename		=	$site_name;
 		} else {
@@ -197,44 +197,44 @@ trait Pz_LinkCard_Get_HTML {
 		}
 		$disp_sitename			=	esc_html($disp_sitename );
 
-		// 表示用サイト名の文字数
+		// 陦ｨ遉ｺ逕ｨ繧ｵ繧､繝亥錐縺ｮ譁・ｭ玲焚
 		$title_sitename			=	'';
 		$disp_sitename		=	mb_strimwidth($disp_sitename, 0, 100 , '...' );
 
-		// タイトル
+		// 繧ｿ繧､繝医Ν
 		if	(!$title && empty($atts['title'] ) ) {
-			$title			=	$this->pz_DecodeURL($url, true );				// タイトル取得できていなかったらURLをセットする
+			$title			=	$this->pz_DecodeURL($url, true );				// 繧ｿ繧､繝医Ν蜿門ｾ励〒縺阪※縺・↑縺九▲縺溘ｉURL繧偵そ繝・ヨ縺吶ｋ
 		}
 
-		// パラメータ取得（タイトル）
-		if	(isset($atts['title'] ) && $atts['title'] ) {						// title パラメータ
+		// 繝代Λ繝｡繝ｼ繧ｿ蜿門ｾ暦ｼ医ち繧､繝医Ν・・
+		if	(isset($atts['title'] ) && $atts['title'] ) {						// title 繝代Λ繝｡繝ｼ繧ｿ
 			$title			=	$atts['title'];
-			if	(isset($this->options['flg-clear-excerpt'] ) && $this->options['flg-clear-excerpt'] ) {	// 概要文をクリアする
+			if	(isset($this->options['flg-clear-excerpt'] ) && $this->options['flg-clear-excerpt'] ) {	// 讎りｦ∵枚繧偵け繝ｪ繧｢縺吶ｋ
 				$excerpt		=	'';
 			}
 		}
 
-		// パラメータ取得（抜粋文）
-		if	(isset($atts['excerpt'] ) && $atts['excerpt'] ) {					// title パラメータ
-			$excerpt		=	$atts['excerpt'] ?? '';							// excerpt パラメータ
+		// 繝代Λ繝｡繝ｼ繧ｿ蜿門ｾ暦ｼ域栢邊区枚・・
+		if	(isset($atts['excerpt'] ) && $atts['excerpt'] ) {					// title 繝代Λ繝｡繝ｼ繧ｿ
+			$excerpt		=	$atts['excerpt'] ?? '';							// excerpt 繝代Λ繝｡繝ｼ繧ｿ
 		}
 
-		// タイトル整形
-		$temp			=	$title;												// タイトル
-		$temp			=	strip_tags($temp );									// HTMLタグ除去
-		$temp			=	str_replace(array("\r", "\n"), '', $temp );			// 改行を除去
+		// 繧ｿ繧､繝医Ν謨ｴ蠖｢
+		$temp			=	$title;												// 繧ｿ繧､繝医Ν
+		$temp			=	strip_tags($temp );									// HTML繧ｿ繧ｰ髯､蜴ｻ
+		$temp			=	str_replace(array("\r", "\n"), '', $temp );			// 謾ｹ陦後ｒ髯､蜴ｻ
 		$temp			=	mb_strimwidth($temp, 0, 200 , '...' );
 		$title			=	esc_html($temp );
 		$html_title		=	'<div class="lkc-title">'.$title.'</div>';
 
-		// 抜粋文整形（表示は記事内容の選択で制御する）
-		$temp		=	$excerpt;											// 抜粋文
-		$temp		=	strip_tags($temp );									// HTMLタグ除去
-		$temp		=	str_replace(array("\r", "\n"), '', $temp );			// 改行を除去
-		$temp		=	preg_replace('/<!--more-->.+/is', '', $temp );		// moreタグ以降削除
-		$temp		=	preg_replace('/\[[^]]*\]/', '', $temp );			// ショートコードすべて除去
+		// 謚懃ｲ区枚謨ｴ蠖｢・郁｡ｨ遉ｺ縺ｯ險倅ｺ句・螳ｹ縺ｮ驕ｸ謚槭〒蛻ｶ蠕｡縺吶ｋ・・
+		$temp		=	$excerpt;											// 謚懃ｲ区枚
+		$temp		=	strip_tags($temp );									// HTML繧ｿ繧ｰ髯､蜴ｻ
+		$temp		=	str_replace(array("\r", "\n"), '', $temp );			// 謾ｹ陦後ｒ髯､蜴ｻ
+		$temp		=	preg_replace('/<!--more-->.+/is', '', $temp );		// more繧ｿ繧ｰ莉･髯榊炎髯､
+		$temp		=	preg_replace('/\[[^]]*\]/', '', $temp );			// 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨☆縺ｹ縺ｦ髯､蜴ｻ
 		$temp		=	mb_strimwidth($temp, 0, 500 , '...' );
-		$temp		=	esc_html($temp );									// HTMLエスケープ
+		$temp		=	esc_html($temp );									// HTML繧ｨ繧ｹ繧ｱ繝ｼ繝・
 		$excerpt	=	$temp;
 		if	($excerpt ) {
 			$html_excerpt		=	'<div class="lkc-excerpt">'.$excerpt.'</div>';
@@ -242,10 +242,10 @@ trait Pz_LinkCard_Get_HTML {
 			$html_excerpt		=	'';
 		}
 
-		// Google AMP用 簡易タグ作成
+		// Google AMP逕ｨ 邁｡譏薙ち繧ｰ菴懈・
 		if	($this->amp <> 2 ) {
 			if	($this->amp === 0 ) {
-				$this->amp			=	2;		// 仮に 2:通常（非AMP）とする
+				$this->amp			=	2;		// 莉ｮ縺ｫ 2:騾壼ｸｸ・磯撼AMP・峨→縺吶ｋ
 				if	((function_exists('ampforwp_is_amp_endpoint' ) && ampforwp_is_amp_endpoint() ) || (function_exists('is_amp_endpoint' ) && is_amp_endpoint() ) || (function_exists('is_amp' ) && is_amp() ) ) {
 					$this->amp		=	1;		// 1:AMP
 				} else {
@@ -259,11 +259,11 @@ trait Pz_LinkCard_Get_HTML {
 			}
 			if	($this->amp === 1 ) {
 				$html_tag		=	'<div class="lkc-external amp"><table border="1" cellspacing="0" cellpadding="4"><tr><td>'.$excerpt.'<br><a href="'.esc_url($link_url ).'"'.$target.$rel.'>'.$title.'</a>&nbsp;-&nbsp;'.esc_html($site_name ).'</td></tr></table></div>';
-				return	$html_tag;		// タグを出力して終了
+				return	$html_tag;		// 繧ｿ繧ｰ繧貞・蜉帙＠縺ｦ邨ゆｺ・
 			}
 		}
 
-		// 代替テキスト（サムネイル）
+		// 莉｣譖ｿ繝・く繧ｹ繝茨ｼ医し繝繝阪う繝ｫ・・
 		if	(($thumbnail_alt	<>	'' )	&&		(strstr($thumbnail_alt, '%' )	<>		'' ) ) {
 			$temp				=	$thumbnail_alt;
 			$temp				=	preg_replace('/%TITLE%/',		$title,					$temp );
@@ -275,7 +275,7 @@ trait Pz_LinkCard_Get_HTML {
 			$thumbnail_alt		=	esc_html($temp );
 		}
 
-		// 代替テキスト（サイトアイコン）
+		// 莉｣譖ｿ繝・く繧ｹ繝茨ｼ医し繧､繝医い繧､繧ｳ繝ｳ・・
 		if	(($siteicon_alt		<>	'' )	&&		(strstr($siteicon_alt, '%' )		<>		'' ) )	{
 			$temp				=	$siteicon_alt;
 			$temp				=	preg_replace('/%DOMAIN_URL%/',	$domain_url,			$temp );
@@ -284,20 +284,20 @@ trait Pz_LinkCard_Get_HTML {
 			$siteicon_alt		=	esc_html($temp );
 		}
 
-		// サムネイル取得
+		// 繧ｵ繝繝阪う繝ｫ蜿門ｾ・
 		if	($this->options['thumbnail-position'] && empty($atts['pz-pending'] ) ) {
-			if	($sw_thumbnail == 1 || $sw_thumbnail == 13 ) {						// 直接取得
+			if	($sw_thumbnail == 1 || $sw_thumbnail == 13 ) {						// 逶ｴ謗･蜿門ｾ・
 				if	($is_external && !$is_preview ) {
-					$thumbnail_url	=	$this->pz_GetImage($thumbnail_url );		// 外部サイトのサムネイルをキャッシュ
+					$thumbnail_url	=	$this->pz_GetImage($thumbnail_url );		// 螟夜Κ繧ｵ繧､繝医・繧ｵ繝繝阪う繝ｫ繧偵く繝｣繝・す繝･
 				}
 				if	($thumbnail_url ) {
 					$html_thumbnail		=	'<img class="lkc-thumbnail-img" src="'.esc_url($thumbnail_url ).'" width="'.esc_attr($this->options['thumbnail-width'] ).'" height="'.esc_attr($this->options['content-height'] ).'" alt="'.esc_attr($thumbnail_alt ).'" />';
-				} elseif	($sw_thumbnail == 13 ) {								// 直接取得に失敗
+				} elseif	($sw_thumbnail == 13 ) {								// 逶ｴ謗･蜿門ｾ励↓螟ｱ謨・
 					$sw_thumbnail	=	3;
 				}
 			}
-			if	($sw_thumbnail == 3 ) {												// WebAPIを利用
-				// サムネイル取得WebAPI
+			if	($sw_thumbnail == 3 ) {												// WebAPI繧貞茜逕ｨ
+				// 繧ｵ繝繝阪う繝ｫ蜿門ｾ邑ebAPI
 				if	($this->options['thumbnail-api'] ) {
 					$temp					=	$this->options['thumbnail-api'];
 					if	(strstr($temp, '%' )	<>	'' ) {
@@ -307,35 +307,36 @@ trait Pz_LinkCard_Get_HTML {
 						$temp				=	preg_replace('/%DOMAIN%/',		$domain,				$temp );
 						$temp				=	preg_replace('/%URL%/',			rawurlencode($url ),	$temp );
 					}
-					if ($this->pz_IsWebAPIImageAvailable($temp ) ) {
-						$html_thumbnail	=	'<img class="lkc-thumbnail-img" src="'.esc_url($temp ).'" width="'.esc_attr($this->options['thumbnail-width'] ).'" height="'.esc_attr($this->options['content-height'] ).'" alt="'.esc_attr($thumbnail_alt ).'" />';
+					$thumbnail_api_url = esc_url($temp);
+					if ($thumbnail_api_url) {
+						$html_thumbnail = '<img class="lkc-thumbnail-img" src="'.$thumbnail_api_url.'" width="'.esc_attr($this->options['thumbnail-width']).'" height="'.esc_attr($this->options['content-height']).'" alt="'.esc_attr($thumbnail_alt).'" onerror="this.remove()" />';
 					}
 				}
 			}
-		}
 
-		// サイトアイコン取得
+		}
+		// 繧ｵ繧､繝医い繧､繧ｳ繝ｳ蜿門ｾ・
 		$has_embedded_info = false;
 		for ($i = 1; $i <= 5; $i++) {
 			if (($this->options[($is_internal ? 'in' : 'ex').'-content-type-'.$i] ?? '') === 'i') $has_embedded_info = true;
 		}
 		if	(($this->options['info-position'] || $has_embedded_info || $is_preview || ($this->options['special-format'] ?? '') === 'browser') && empty($atts['pz-pending'] ) ) {
-			if	($sw_siteicon == 1 || $sw_siteicon == 13 ) {						// 直接取得
+			if	($sw_siteicon == 1 || $sw_siteicon == 13 ) {						// 逶ｴ謗･蜿門ｾ・
 				if	($is_internal ) {
-					$siteicon_url	=	get_site_icon_url(16 );						// 自サイトのサイトアイコン
+					$siteicon_url	=	get_site_icon_url(16 );						// 閾ｪ繧ｵ繧､繝医・繧ｵ繧､繝医い繧､繧ｳ繝ｳ
 				} elseif	(!$is_preview ) {
-					$siteicon_url	=	$this->pz_GetImage($siteicon_url );			// 外部サイトのサイトアイコンをキャッシュ
+					$siteicon_url	=	$this->pz_GetImage($siteicon_url );			// 螟夜Κ繧ｵ繧､繝医・繧ｵ繧､繝医い繧､繧ｳ繝ｳ繧偵く繝｣繝・す繝･
 				}
 				if	($siteicon_url ) {
 					$html_siteicon	=	'<div  class="lkc-siteicon"><img src="'.esc_url($siteicon_url ).'" alt="'.esc_attr($siteicon_alt ).'" width="16" height="16" /></div>';
-				} elseif	($sw_siteicon == 13 ) {									// 直接取得に失敗
+				} elseif	($sw_siteicon == 13 ) {									// 逶ｴ謗･蜿門ｾ励↓螟ｱ謨・
 					$sw_siteicon	=	3;
 				}
 			}
-			if	($sw_siteicon == 3 ) {												// WebAPIを利用
+			if	($sw_siteicon == 3 ) {												// WebAPI繧貞茜逕ｨ
 				if	($is_preview && $siteicon_url ) {
 					$html_siteicon	=	'<div class="lkc-siteicon"><img src="'.esc_url($siteicon_url ).'" alt="'.esc_attr($siteicon_alt ).'" width="16" height="16" /></div>';
-				// サイトアイコン取得WebAPI
+				// 繧ｵ繧､繝医い繧､繧ｳ繝ｳ蜿門ｾ邑ebAPI
 				} elseif	($this->options['siteicon-api'] ) {
 					$temp					=	$this->options['siteicon-api'];
 					if	(strstr($temp, '%' )	<>	'' ) {
@@ -345,8 +346,10 @@ trait Pz_LinkCard_Get_HTML {
 						$temp				=	preg_replace('/%DOMAIN%/',		$domain,				$temp );
 						$temp				=	preg_replace('/%URL%/',			rawurlencode($url ),	$temp );
 					}
-					if ($this->pz_IsWebAPIImageAvailable($temp ) ) {
-						$html_siteicon	=	'<div class="lkc-siteicon"><img src="'.esc_url($temp ).'" alt="'.esc_attr($siteicon_alt ).'" width="16" height="16" /></div>';
+					$siteicon_api_url = esc_url($temp);
+					if ($siteicon_api_url) {
+						$siteicon_fallback = esc_url($this->plugin_dir_url.'img/siteicon_dummy.png');
+						$html_siteicon = '<div class="lkc-siteicon"><img src="'.$siteicon_api_url.'" alt="'.esc_attr($siteicon_alt).'" width="16" height="16" onerror="this.onerror=null;this.src=\''.$siteicon_fallback.'\'" /></div>';
 					}
 				}
 				if (!$html_siteicon) {
@@ -355,18 +358,19 @@ trait Pz_LinkCard_Get_HTML {
 			}
 		}
 
-		// リンク先URL
+		// 繝ｪ繝ｳ繧ｯ蜈・RL
 		$click_card_id		= absint($data_id );
 		$click_post_id		= absint(get_the_ID() );
 		$click_token			= $click_card_id ? $this->pz_GetClickToken($click_card_id, $click_post_id ) : '';
-		$html_click_data		= ' data-lkc-id="'.esc_attr($data_id ).'" data-post-id="'.esc_attr($click_post_id ).'" data-click-token="'.esc_attr($click_token ).'"';
+		$html_click_data		= '';
+		$html_card_click_data	= ' data-click-token="'.esc_attr($click_token ).'"';
 		if (!$is_preview && !empty($atts['pz-pending']) && $click_card_id) {
 			$expires = time() + DAY_IN_SECONDS;
 			$ajax_token = $this->pz_GetAjaxCardToken($click_card_id, $click_post_id, $expires);
-			$html_click_data .= ' data-pz-lkc-expires="'.esc_attr($expires).'" data-pz-lkc-token="'.esc_attr($ajax_token).'"';
+			$html_card_click_data .= ' data-pz-lkc-expires="'.esc_attr($expires).'" data-pz-lkc-token="'.esc_attr($ajax_token).'"';
 		}
 		if	(!$no_failure && $this->options['flg-unlink'] && in_array(intval($alive_result ), array(403, 404, 410 ), true ) ) {
-			// Not Found の時は見え消ししてリンクしない
+			// Not Found 縺ｮ譎ゅ・隕九∴豸医＠縺励※繝ｪ繝ｳ繧ｯ縺励↑縺・
 			$html_wrap_op	=	'<div class="'.$wrap_class.' lkc-unlink">';
 			$html_a_op_all	=	null;
 			$html_a_cl_all	=	null;
@@ -375,7 +379,7 @@ trait Pz_LinkCard_Get_HTML {
 			$html_st_op		=	'<strike>';
 			$html_st_cl		=	'</strike>';
 		} elseif	($this->options['flg-linkall'] ) {
-			// カード全体をリンク（どこをクリックしても良いのが分かり易い）
+			// 繧ｫ繝ｼ繝牙・菴薙ｒ繝ｪ繝ｳ繧ｯ・医←縺薙ｒ繧ｯ繝ｪ繝・け縺励※繧り憶縺・・縺悟・縺九ｊ譏薙＞・・
 			$html_a_op_all	=	'<a class="lkc-link no_icon" href="'.esc_url($link_url ).'"'.$html_click_data.$target.$rel.'>';
 			$html_a_cl_all	=	'</a>';
 			$html_a_op		=	null;
@@ -383,7 +387,7 @@ trait Pz_LinkCard_Get_HTML {
 			$html_st_op		=	null;
 			$html_st_cl		=	null;
 		} else {
-			// タイトルとかURLとかを個別でリンク（タイトルや抜粋文などの文字を範囲指定をしてコピー等がし易い）
+			// 繧ｿ繧､繝医Ν縺ｨ縺偽RL縺ｨ縺九ｒ蛟句挨縺ｧ繝ｪ繝ｳ繧ｯ・医ち繧､繝医Ν繧・栢邊区枚縺ｪ縺ｩ縺ｮ譁・ｭ励ｒ遽・峇謖・ｮ壹ｒ縺励※繧ｳ繝斐・遲峨′縺玲・縺・ｼ・
 			$html_a_op_all	=	null;
 			$html_a_cl_all	=	null;
 			$html_a_op		=	'<a class="lkc-link no_icon" href="'.esc_url($link_url ).'"'.$html_click_data.$target.$rel.'>';
@@ -392,11 +396,11 @@ trait Pz_LinkCard_Get_HTML {
 			$html_st_cl		=	null;
 		}
 
-		// ソーシャルカウントの表示
+		// 繧ｽ繝ｼ繧ｷ繝｣繝ｫ繧ｫ繧ｦ繝ｳ繝医・陦ｨ遉ｺ
 		$sns				=	null;
 		$html_sns = null;
-		$url_noscheme	=	preg_replace('/^https?:\/\//i', '', $url );	// スキームと「//」を外す
-		// カード全体をリンクにするときもSNSボタンをクリック可能にする
+		$url_noscheme	=	preg_replace('/^https?:\/\//i', '', $url );	// 繧ｹ繧ｭ繝ｼ繝縺ｨ縲・/縲阪ｒ螟悶☆
+		// 繧ｫ繝ｼ繝牙・菴薙ｒ繝ｪ繝ｳ繧ｯ縺ｫ縺吶ｋ縺ｨ縺阪ｂSNS繝懊ち繝ｳ繧偵け繝ｪ繝・け蜿ｯ閭ｽ縺ｫ縺吶ｋ
 		if	($this->options['flg-linkall'] ) {
 			if	($this->options['sns-tw'] && $sns_tw > 0 ) {
 				if	($this->options['sns-tw-x'] ) {
@@ -412,7 +416,7 @@ trait Pz_LinkCard_Get_HTML {
 				$sns	.=	' <object><a class="lkc-sns-hb no_icon" href="'.esc_url('https://b.hatena.ne.jp/entry/s/'.$url_noscheme ).'" target="_blank">'.sprintf(($sns_hb == 1 ? __('%d user',   'pz-linkcard' ) : __('%d users',   'pz-linkcard' ) ), $sns_hb ).'</a></object>';
 			}
 		} else {
-			// 外部リンクアイコンを表示させるプラグイン対応のため no_icon を付与
+			// 螟夜Κ繝ｪ繝ｳ繧ｯ繧｢繧､繧ｳ繝ｳ繧定｡ｨ遉ｺ縺輔○繧九・繝ｩ繧ｰ繧､繝ｳ蟇ｾ蠢懊・縺溘ａ no_icon 繧剃ｻ倅ｸ・
 			if	($this->options['sns-tw'] && $sns_tw > 0 ) {
 				if	($this->options['sns-tw-x'] ) {
 					$sns	.=	' <a class="lkc-sns-tw no_icon" href="'.esc_url('https://twitter.com/search?q='.$url_noscheme.'&text='.$title ).'" target="_blank">'.intval($sns_tw ).'&nbsp;tweet'.(($sns_tw > 1 ) ? 's' : null ).'</a>';
@@ -443,15 +447,15 @@ trait Pz_LinkCard_Get_HTML {
 			$html_sns = '<div class="lkc-share">'.$sns.'</div>';
 		}
 
-		// サムネイル
+		// 繧ｵ繝繝阪う繝ｫ
 		if	($html_thumbnail ) {
 			$html_thumbnail	=	'<figure class="lkc-thumbnail">'.$html_thumbnail.'</figure>';
 		}
 
-		// 投稿日
+		// 謚慕ｨｿ譌･
 		$html_date	=	null;
-		$card_date_format = ($this->options['date-format'] ?? 'Y年n月j日') === 'custom'
-			? ($this->options['date-format-custom'] ?? 'Y年n月j日') : ($this->options['date-format'] ?? 'Y年n月j日');
+		$card_date_format = ($this->options['date-format'] ?? 'Y蟷ｴn譛・譌･') === 'custom'
+			? ($this->options['date-format-custom'] ?? 'Y蟷ｴn譛・譌･') : ($this->options['date-format'] ?? 'Y蟷ｴn譛・譌･');
 		$render_date_icon = static function($icon) {
 			if (strpos($icon, 'dashicons-') === 0) {
 				return '';
@@ -489,7 +493,7 @@ trait Pz_LinkCard_Get_HTML {
 			}
 		}
 
-		// 見出し情報
+		// 隕句・縺玲ュ蝣ｱ
 		if (($this->options['special-format'] ?? null) === 'JIN' && ($heading_text === null || $heading_text === '')) {
 			$heading_text = $is_internal ? __('You may also like', 'pz-linkcard' ) : __('Referenced', 'pz-linkcard' );
 		}
@@ -499,7 +503,7 @@ trait Pz_LinkCard_Get_HTML {
 			$html_heading	=	null;
 		}
 
-		// 続きを読むボタン
+		// 邯壹″繧定ｪｭ繧繝懊ち繝ｳ
 		if	($more_text || $is_preview ) {
 			$html_moretag	=	$html_a_op.'<div class="lkc-more"'.($is_preview ? ' data-pz-preview-more'.(trim((string) $more_text) === '' ? ' style="display:none !important"' : '') : '').'>'.$more_text.'</div>'.$html_a_cl;
 
@@ -507,7 +511,7 @@ trait Pz_LinkCard_Get_HTML {
 			$html_moretag	=	null;
 		}
 
-		// サイト情報
+		// 繧ｵ繧､繝域ュ蝣ｱ
 		if	($added_text ) {
 			$html_added	=	'<div class="lkc-added">'.$added_text.'</div>';
 		} else {
@@ -635,7 +639,7 @@ trait Pz_LinkCard_Get_HTML {
 		$html_quickmenu_icon	=	'';
 		$html_data_id			=	'';
 		if	(!$is_preview && !empty($data_id ) ) {
-			$html_data_id		=	$html_click_data;
+			$html_data_id		= ' data-lkc-id="'.esc_attr($data_id ).'" data-post-id="'.esc_attr($click_post_id ).'"'.$html_card_click_data;
 			if	(empty($html_anchor_ids[$data_id] ) ) {
 				$html_data_id		=	' id="pz-lkc-'.esc_attr($data_id ).'"'.$html_data_id;
 				$html_anchor_ids[$data_id]	=	true;
@@ -649,31 +653,4 @@ trait Pz_LinkCard_Get_HTML {
 		return	$html_tag;
 	}
 
-	private function pz_IsWebAPIImageAvailable($url ) {
-		if ($this->pz_ShouldBlockLocalAddress($url)) return false;
-		$timing_enabled = !empty($this->options['debug-mode']) && is_user_logged_in();
-		$started = $timing_enabled ? (function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true)) : null;
-		$cache_key = 'pz_lkc_api_image_v2_'.md5($url );
-		$cached = get_transient($cache_key );
-		if (is_array($cached ) && isset($cached['available'] ) ) {
-			foreach (($cached['checked_urls'] ?? array($url)) as $checked_url) {
-				if ($this->pz_ShouldBlockLocalAddress($checked_url)) return false;
-			}
-			if ($started !== null) $this->pz_LogCardSubtaskTiming('webapi_image_check_cached', $url, $started, function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true), true);
-			return (bool) $cached['available'];
-		}
-
-		$response = $this->pz_CheckedRemoteGet($url, array(
-			'timeout' => 10,
-			'redirection' => !empty($this->options['flg-redir'] ) ? 8 : 0,
-			'limit_response_size' => 1,
-			'user-agent' => $this->pz_GetUserAgent(),
-			'sslverify' => !empty($this->options['flg-sslverify'] ),
-		) );
-		$available = !is_wp_error($response ) && 200 === intval(wp_remote_retrieve_response_code($response ) );
-		$checked_urls = is_wp_error($response) ? array($url) : $response['pz_lkc_checked_urls'];
-		set_transient($cache_key, array('available' => $available, 'checked_urls' => $checked_urls), $available ? HOUR_IN_SECONDS : MINUTE_IN_SECONDS );
-		if ($started !== null) $this->pz_LogCardSubtaskTiming('webapi_image_check_remote', $url, $started, function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true), false);
-		return $available;
-	}
 }

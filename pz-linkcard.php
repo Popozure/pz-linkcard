@@ -457,15 +457,15 @@ class class_pz_linkcard {
 			'preview-height'					=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
 			'preview-docked-height'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
 			'preview-right-docked-width'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'window-left'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'window-top'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'window-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'window-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'docked-width'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'docked-height'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'last-bottom-docked-height'			=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'right-docked-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
-			'left-docked-width' => ['type' => 'numeric', 'null' => true, 'default' => null],
+			'preview-window-left'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-window-top'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-window-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-window-height'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-docked-width'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-docked-height'				=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-last-bottom-docked-height'	=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-right-docked-width'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
+			'preview-left-docked-width'		=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
 
 
 			'preview-two-cards'					=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
@@ -1041,28 +1041,14 @@ class class_pz_linkcard {
 		if (!$url ) {
 			return null;
 		}
-		$timing_enabled = !empty($this->options['debug-mode']) && is_user_logged_in();
-		$timing_now = function() { return function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true); };
-		$timing_started = $timing_enabled ? $timing_now() : 0;
-		$timing_last = $timing_started;
-		$timing_parts = array();
-		$timing_mark = function($name) use (&$timing_last, &$timing_parts, $timing_enabled, $timing_now) {
-			if (!$timing_enabled) return;
-			$now = $timing_now();
-			$timing_parts[$name] = round(($now - $timing_last) * 1000, 3);
-			$timing_last = $now;
-		};
-		$url_info = $this->Pz_GetURLInfo($url );
-		$timing_mark('url_info');
+$url_info = $this->Pz_GetURLInfo($url );
 		if (isset($atts['preview-data'] ) && is_array($atts['preview-data'] ) ) {
 			return $this->pz_GetHTML($atts, $url_info );
 		}
 
 		$data = $this->pz_GetCache(array('url' => $url ) );
-		$timing_mark('cache_read');
 		$data = is_array($data ) && !empty($data['url'] ) ? $data : array('url' => $url );
 		$internal_error = !empty($url_info['is_internal']) ? $this->pz_GetInternalCardErrorStatus($url, $data) : 0;
-		$timing_mark('internal_status');
 		if ($internal_error) {
 			$error_title = __('The requested page could not be found.', 'pz-linkcard');
 			$restricted_fields = array(
@@ -1085,13 +1071,9 @@ class class_pz_linkcard {
 				$saved = $this->pz_SetCache($data);
 				if (is_array($saved)) $data = $saved;
 			}
-			$timing_mark('restricted_save');
 			$data = $this->pz_RecordUsedPost($data);
-			$timing_mark('record_used_post');
 			$atts['pz-card-data'] = $data;
 			$html = $this->pz_GetHTML($atts, $url_info);
-			$timing_mark('html');
-			$this->pz_LogCardTiming($url, $data, $timing_parts, $timing_started, $timing_now());
 			return $html;
 		}
 		$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
@@ -1115,7 +1097,6 @@ class class_pz_linkcard {
 					}
 				}
 			}
-			$timing_mark('internal_post');
 		} elseif (!empty($url_info['is_external'] ) ) {
 			$fetch_on_display = ($this->options['get-timing'] ?? 'background') === 'display';
 			$unregistered = !$data_id || (array_key_exists('regist_time', $data) && empty($data['regist_time']));
@@ -1144,54 +1125,16 @@ class class_pz_linkcard {
 					wp_schedule_single_event(time() + 3, self::CRON_GET );
 				}
 			}
-			$timing_mark('external_refresh_or_pending');
 		} else {
-			$timing_mark('link_type');
 		}
 
 		$data = $this->pz_RecordUsedPost($data);
-		$timing_mark('record_used_post');
 		$atts['pz-card-data'] = $data;
 		$html = $this->pz_GetHTML($atts, $url_info );
-		$timing_mark('html');
-		$this->pz_LogCardTiming($url, $data, $timing_parts, $timing_started, $timing_now());
 		return $html;
 	}
 
-	private function pz_LogCardTiming($url, $data, $parts, $started, $finished) {
-		if (empty($this->options['debug-mode']) || !is_user_logged_in()) return;
-		$entry = array(
-			'host' => (string) wp_parse_url($url, PHP_URL_HOST),
-			'card_id' => intval($data['id'] ?? 0),
-			'cached' => !empty($data['id']),
-			'title_present' => !empty($data['title']),
-			'image_present' => !empty($data['thumbnail']),
-			'parts_ms' => $parts,
-			'total_ms' => round(($finished - $started) * 1000, 3),
-		);
-		$this->pz_WriteCardTimingLog($entry);
-	}
-
-	private function pz_LogCardSubtaskTiming($label, $url, $started, $finished, $cache_hit = null) {
-		if (empty($this->options['debug-mode']) || !is_user_logged_in()) return;
-		$entry = array(
-			'stage' => $label,
-			'host' => (string) wp_parse_url($url, PHP_URL_HOST),
-			'cache_hit' => $cache_hit,
-			'elapsed_ms' => round(($finished - $started) * 1000, 3),
-		);
-		$this->pz_WriteCardTimingLog($entry);
-	}
-
-	private function pz_WriteCardTimingLog($entry) {
-		$line = '[Pz-LinkCard timing] '.wp_json_encode($entry, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).PHP_EOL;
-		$written = @file_put_contents($this->plugin_dir_path.'debug.log', $line, FILE_APPEND | LOCK_EX);
-		if ($written === false) {
-			error_log('[Pz-LinkCard timing] Could not write plugin debug.log. Check plugin directory permissions.');
-		}
-	}
-
-	// URLのエンコード（DB格納用のURL作成）
+// URLのエンコード（DB格納用のURL作成）
 	private	function	pz_GetClickToken($card_id, $post_id ) {
 		$payload	= absint($card_id ).'|'.absint($post_id );
 		return	hash_hmac('sha256', $payload, wp_salt('auth') );
@@ -2113,18 +2056,8 @@ class class_pz_linkcard {
 
 	// サムネイル取得（外部リンクOGP画像取得）
 	private	function	pz_GetImage($thumbnail_url, $force = false, $stamp = false ) {
-		$started = !empty($this->options['debug-mode']) && is_user_logged_in() ? (function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true)) : null;
-		$result = require('lib/pz-linkcard-get-image.php' );
-		if ($started !== null) {
-			$finished = function_exists('hrtime') ? hrtime(true) / 1000000000 : microtime(true);
-			$this->pz_LogCardSubtaskTiming('image_cache_or_fetch', $thumbnail_url, $started, $finished);
-		}
-		return $result;
+		return require('lib/pz-linkcard-get-image.php' );
 	}
-
-
-
-
 	// 書式に関する設定を初期化する
 	private	function	pz_InitializeFormatOptions() {
 
@@ -2399,7 +2332,7 @@ class class_pz_linkcard {
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE
 			&& in_array($preview_mode, array('right', 'left'), true)
 			&& !empty($preview_enabled ) ) {
-			$preview_width	=	$preview_mode === 'left' ? $this->pz_GetRequestOption('left-docked-width', $this->options['left-docked-width'] ?? 240) : $this->pz_GetRequestOption('right-docked-width', $this->pz_GetRequestOption('preview-right-docked-width', $this->options['right-docked-width'] ?? $this->options['preview-right-docked-width'] ?? 240 ) );
+			$preview_width	= $preview_mode === 'left' ? $this->pz_GetRequestOption('preview-left-docked-width', $this->options['preview-left-docked-width'] ?? 240) : $this->pz_GetRequestOption('preview-right-docked-width', $this->options['preview-right-docked-width'] ?? 240 );
 			$preview_width	=	is_numeric($preview_width ) ? absint($preview_width ) : 240;
 			$preview_width	=	max(180, $preview_width );
 			wp_add_inline_style(

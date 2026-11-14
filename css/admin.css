@@ -719,9 +719,7 @@ body.folded #pz-infobar {
 
 /* Manager & Settings Header */
 .pz-header {
-	/* position: sticky; */
-	top: 0;
-	left: 0;
+	position: relative;
 	width: 100%;
 	z-index: 1;
 	display: block;
@@ -1763,14 +1761,6 @@ input.pz-admin-only[type="submit"],
 	z-index: 2;
 	top: 30px;
 	right: 20px;
-}
-
-.pz-settings .pz-page-help {
-	z-index: 6;
-}
-
-.pz-settings .pz-settings-screen-tabs {
-	z-index: 6;
 }
 
 .pz-settings-screen-tabs .pz-page-help,

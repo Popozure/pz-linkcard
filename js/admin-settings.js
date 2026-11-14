@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
 	const dashboard = document.querySelector(".pz-dashboard");
-    if (!dashboard) return;
     const numericOptions = new Set(
         Array.isArray(window.pzLinkCardAdmin?.numericOptions)
             ? window.pzLinkCardAdmin.numericOptions
@@ -65,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	const keepInitialOverlay = initialOverlay?.classList.contains("pz-overlay-proc-active");
 
 	// カード管理画面はナビゲーション開始から一定時間を超えた場合だけ表示する
-    if (dashboard.classList.contains("pz-cacheman")) {
+	if (dashboard?.classList.contains("pz-cacheman")) {
         showProcessingOverlay(Math.max(0, processingOverlayDelay - performance.now()));
     } else if (!keepInitialOverlay) {
         hideProcessingOverlay();
@@ -1371,6 +1370,28 @@ document.addEventListener("DOMContentLoaded", () => {
         if (form.dataset.pzUnsavedWarningInitialized) return;
         form.dataset.pzUnsavedWarningInitialized = "1";
 
+        if (form.id === "pz-settings-form") {
+            form.removeAttribute("target");
+            form.querySelectorAll("button, input[type='button'], input[type='submit'], input[type='reset']").forEach(control => {
+                control.removeAttribute("formtarget");
+            });
+
+            // Replace modified submit clicks with a normal form submission.
+            // This avoids Chrome opening a new context while preserving the
+            // clicked submitter's name and value.
+            form.addEventListener("click", event => {
+                if (!(event.ctrlKey || event.shiftKey)) return;
+                const submitter = event.target?.closest?.("button[type='submit'], button:not([type]), input[type='submit']");
+                if (!submitter || submitter.disabled || submitter.form !== form) return;
+
+                event.preventDefault();
+                event.stopImmediatePropagation();
+                if (typeof submitter.onclick === "function" && submitter.onclick.call(submitter, event) === false) return;
+                if (form.requestSubmit) form.requestSubmit(submitter);
+                else submitter.click();
+            }, true);
+        }
+
         const confirmMessage = window.pzLinkCardAdmin?.discardChanges || "Discard changes?";
         const confirmNonUpdateSubmit = options.confirmNonUpdateSubmit || false;
         let isSubmitting = false;
@@ -1421,7 +1442,7 @@ document.addEventListener("DOMContentLoaded", () => {
         initUnsavedFormWarning(document.querySelector(".pz-man-cache-dirty-check")?.closest("form"), {
             confirmNonUpdateSubmit: true,
         });
-        initUnsavedFormWarning(document.querySelector(".pz-settings form"), {
+        initUnsavedFormWarning(document.querySelector("#pz-settings-form"), {
             fieldNamePrefix: "properties[",
         });
     }
