@@ -19,321 +19,321 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../lib/pz-linkcard-cacheman-click.php:63
+#: ../lib/pz-linkcard-oldman-click.php:63
 msgid "Clicks in the last 7 days"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:73
+#: ../lib/pz-linkcard-oldman-click.php:73
 msgid "Clicks in the last 8 weeks"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:82
+#: ../lib/pz-linkcard-oldman-click.php:82
 msgid "Clicks in the last 12 months"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:89
+#: ../lib/pz-linkcard-oldman-click.php:89
 msgid "Clicks in the last 5 years"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:152 ../lib/pz-linkcard-settings-check.php:128
+#: ../lib/pz-linkcard-oldman-click.php:152 ../lib/pz-linkcard-settings-check.php:128
 msgid "1 week"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:153 ../lib/pz-linkcard-settings-check.php:129
+#: ../lib/pz-linkcard-oldman-click.php:153 ../lib/pz-linkcard-settings-check.php:129
 msgid "1 month"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:154 ../lib/pz-linkcard-settings-check.php:130
+#: ../lib/pz-linkcard-oldman-click.php:154 ../lib/pz-linkcard-settings-check.php:130
 msgid "2 months"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:155 ../lib/pz-linkcard-settings-check.php:131
+#: ../lib/pz-linkcard-oldman-click.php:155 ../lib/pz-linkcard-settings-check.php:131
 msgid "3 months"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:156 ../lib/pz-linkcard-settings-check.php:132
+#: ../lib/pz-linkcard-oldman-click.php:156 ../lib/pz-linkcard-settings-check.php:132
 msgid "6 months"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:157 ../lib/pz-linkcard-settings-check.php:133
+#: ../lib/pz-linkcard-oldman-click.php:157 ../lib/pz-linkcard-settings-check.php:133
 msgid "1 year"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:158
+#: ../lib/pz-linkcard-oldman-click.php:158
 msgid "2 years"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:159
+#: ../lib/pz-linkcard-oldman-click.php:159
 msgid "3 years"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:160
+#: ../lib/pz-linkcard-oldman-click.php:160
 msgid "5 years"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:165
+#: ../lib/pz-linkcard-oldman-click.php:165
 msgid "Day"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:166
+#: ../lib/pz-linkcard-oldman-click.php:166
 msgid "Week"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:167
+#: ../lib/pz-linkcard-oldman-click.php:167
 msgid "Month"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:168
+#: ../lib/pz-linkcard-oldman-click.php:168
 msgid "Year"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:176 ../lib/pz-linkcard-cacheman-click.php:250 ../lib/pz-linkcard-cacheman-click.php:259
-#: ../lib/pz-linkcard-cacheman-click.php:310
+#: ../lib/pz-linkcard-oldman-click.php:176 ../lib/pz-linkcard-oldman-click.php:250 ../lib/pz-linkcard-oldman-click.php:259
+#: ../lib/pz-linkcard-oldman-click.php:310
 msgid "Click Log"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:179 ../lib/pz-linkcard-cacheman-click.php:264
+#: ../lib/pz-linkcard-oldman-click.php:179 ../lib/pz-linkcard-oldman-click.php:264
 msgid "Card ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:180
+#: ../lib/pz-linkcard-oldman-click.php:180
 msgid "Edit card"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:181 ../lib/pz-linkcard-cacheman-edit.php:168 ../lib/pz-linkcard-cacheman-edit.php:169
-#: ../lib/pz-linkcard-cacheman-list.php:311 ../lib/pz-linkcard-cacheman-list.php:420 ../lib/pz-linkcard-settings-letter.php:22
+#: ../lib/pz-linkcard-oldman-click.php:181 ../lib/pz-linkcard-oldman-edit.php:168 ../lib/pz-linkcard-oldman-edit.php:169
+#: ../lib/pz-linkcard-oldman-list.php:311 ../lib/pz-linkcard-oldman-list.php:420 ../lib/pz-linkcard-settings-letter.php:22
 msgid "Title"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:182 ../lib/pz-linkcard-cacheman-edit.php:173 ../lib/pz-linkcard-cacheman-edit.php:246
-#: ../lib/pz-linkcard-cacheman-edit.php:258 ../lib/pz-linkcard-cacheman-list.php:313 ../lib/pz-linkcard-cacheman-list.php:414
+#: ../lib/pz-linkcard-oldman-click.php:182 ../lib/pz-linkcard-oldman-edit.php:173 ../lib/pz-linkcard-oldman-edit.php:246
+#: ../lib/pz-linkcard-oldman-edit.php:258 ../lib/pz-linkcard-oldman-list.php:313 ../lib/pz-linkcard-oldman-list.php:414
 #: ../lib/pz-linkcard-settings-letter.php:24 ../lib/pz-linkcard-settings-multisite.php:89 ../pz-linkcard.php:905
 msgid "URL"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:189
+#: ../lib/pz-linkcard-oldman-click.php:189
 #, php-format
 msgid "To collect click logs, enable click count recording <a href=\"%s\">here</a>."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:196
+#: ../lib/pz-linkcard-oldman-click.php:196
 msgid "Chart period"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:203
+#: ../lib/pz-linkcard-oldman-click.php:203
 msgid "Remove filter"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:216
+#: ../lib/pz-linkcard-oldman-click.php:216
 #, php-format
 msgid "%s clicks"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:229
+#: ../lib/pz-linkcard-oldman-click.php:229
 #, php-format
 msgid "The click count is cumulative. Detailed logs are retained <a href=\"%s\">permanently</a>."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:236
+#: ../lib/pz-linkcard-oldman-click.php:236
 #, php-format
 msgid "The click count is cumulative. Detailed logs are retained for <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:243 ../lib/pz-linkcard-cacheman-click.php:319 ../lib/pz-linkcard-file-export-menu.php:18
+#: ../lib/pz-linkcard-oldman-click.php:243 ../lib/pz-linkcard-oldman-click.php:319 ../lib/pz-linkcard-file-export-menu.php:18
 #: ../lib/pz-linkcard-file-import-csv.php:185 ../lib/pz-linkcard-file-import-menu.php:15
 msgid "Return to Cache Manager"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:245 ../lib/pz-linkcard-cacheman-click.php:321 ../lib/pz-linkcard-cacheman.php:151
+#: ../lib/pz-linkcard-oldman-click.php:245 ../lib/pz-linkcard-oldman-click.php:321 ../lib/pz-linkcard-oldman.php:151
 #: ../lib/pz-linkcard-settings.php:258
 msgid "Return to Dashboard"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:251 ../lib/pz-linkcard-cacheman-click.php:311 ../lib/pz-linkcard-cacheman-list.php:205
-#: ../lib/pz-linkcard-cacheman-list.php:214
+#: ../lib/pz-linkcard-oldman-click.php:251 ../lib/pz-linkcard-oldman-click.php:311 ../lib/pz-linkcard-oldman-list.php:205
+#: ../lib/pz-linkcard-oldman-list.php:214
 msgid "&laquo;"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:252 ../lib/pz-linkcard-cacheman-click.php:312 ../lib/pz-linkcard-cacheman-list.php:206
-#: ../lib/pz-linkcard-cacheman-list.php:215
+#: ../lib/pz-linkcard-oldman-click.php:252 ../lib/pz-linkcard-oldman-click.php:312 ../lib/pz-linkcard-oldman-list.php:206
+#: ../lib/pz-linkcard-oldman-list.php:215
 msgid "&lsaquo;"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:254 ../lib/pz-linkcard-cacheman-click.php:314 ../lib/pz-linkcard-cacheman-list.php:209
-#: ../lib/pz-linkcard-cacheman-list.php:218
+#: ../lib/pz-linkcard-oldman-click.php:254 ../lib/pz-linkcard-oldman-click.php:314 ../lib/pz-linkcard-oldman-list.php:209
+#: ../lib/pz-linkcard-oldman-list.php:218
 msgid "&rsaquo;"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:255 ../lib/pz-linkcard-cacheman-click.php:315 ../lib/pz-linkcard-cacheman-list.php:210
-#: ../lib/pz-linkcard-cacheman-list.php:219
+#: ../lib/pz-linkcard-oldman-click.php:255 ../lib/pz-linkcard-oldman-click.php:315 ../lib/pz-linkcard-oldman-list.php:210
+#: ../lib/pz-linkcard-oldman-list.php:219
 msgid "&raquo;"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:263 ../lib/pz-linkcard-cacheman-edit.php:228 ../lib/pz-linkcard-cacheman-list.php:92
-#: ../lib/pz-linkcard-cacheman-list.php:309 ../lib/pz-linkcard-cacheman-list.php:408
+#: ../lib/pz-linkcard-oldman-click.php:263 ../lib/pz-linkcard-oldman-edit.php:228 ../lib/pz-linkcard-oldman-list.php:92
+#: ../lib/pz-linkcard-oldman-list.php:309 ../lib/pz-linkcard-oldman-list.php:408
 msgid "ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:265
+#: ../lib/pz-linkcard-oldman-click.php:265
 msgid "Click Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:266 ../lib/pz-linkcard-cacheman-edit.php:199 ../lib/pz-linkcard-cacheman-list.php:94
-#: ../lib/pz-linkcard-cacheman-list.php:310 ../lib/pz-linkcard-settings-error.php:17
+#: ../lib/pz-linkcard-oldman-click.php:266 ../lib/pz-linkcard-oldman-edit.php:199 ../lib/pz-linkcard-oldman-list.php:94
+#: ../lib/pz-linkcard-oldman-list.php:310 ../lib/pz-linkcard-settings-error.php:17
 msgid "Post ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:267
+#: ../lib/pz-linkcard-oldman-click.php:267
 msgid "IP Hash"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:268
+#: ../lib/pz-linkcard-oldman-click.php:268
 msgid "User-Agent"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-click.php:273
+#: ../lib/pz-linkcard-oldman-click.php:273
 msgid "No click logs found."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:85 ../lib/pz-linkcard-cacheman-edit.php:155
+#: ../lib/pz-linkcard-oldman-edit.php:85 ../lib/pz-linkcard-oldman-edit.php:155
 msgid "Update"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:85 ../lib/pz-linkcard-cacheman-edit.php:156
+#: ../lib/pz-linkcard-oldman-edit.php:85 ../lib/pz-linkcard-oldman-edit.php:156
 msgid "Cancel"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:99 ../lib/pz-linkcard-cacheman-edit.php:184
+#: ../lib/pz-linkcard-oldman-edit.php:99 ../lib/pz-linkcard-oldman-edit.php:184
 #, php-format
 msgid "%s characters"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:111 ../lib/pz-linkcard-settings-card.php:50
+#: ../lib/pz-linkcard-oldman-edit.php:111 ../lib/pz-linkcard-settings-card.php:50
 msgid "Media"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:137
+#: ../lib/pz-linkcard-oldman-edit.php:137
 msgid "All Categories"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:146 ../lib/pz-linkcard-cacheman-edit.php:147 ../lib/pz-linkcard-cacheman-list.php:255
-#: ../lib/pz-linkcard-cacheman.php:154 ../lib/pz-linkcard-settings.php:260 ../lib/pz-linkcard-settings.php:579
+#: ../lib/pz-linkcard-oldman-edit.php:146 ../lib/pz-linkcard-oldman-edit.php:147 ../lib/pz-linkcard-oldman-list.php:255
+#: ../lib/pz-linkcard-oldman.php:154 ../lib/pz-linkcard-settings.php:260 ../lib/pz-linkcard-settings.php:579
 #: ../lib/pz-linkcard-settings.php:810 ../lib/pz-linkcard-settings.php:811
 msgid "Help"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:150 ../lib/pz-linkcard-cacheman-list.php:334 ../lib/pz-linkcard-settings.php:814
+#: ../lib/pz-linkcard-oldman-edit.php:150 ../lib/pz-linkcard-oldman-list.php:334 ../lib/pz-linkcard-settings.php:814
 msgid "Keyboard Shortcuts"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:152 ../lib/pz-linkcard-cacheman-list.php:336 ../lib/pz-linkcard-settings.php:816
+#: ../lib/pz-linkcard-oldman-edit.php:152 ../lib/pz-linkcard-oldman-list.php:336 ../lib/pz-linkcard-settings.php:816
 msgid "Show Help"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:153
+#: ../lib/pz-linkcard-oldman-edit.php:153
 msgid "Edit title"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:154 ../lib/pz-linkcard-cacheman-list.php:339 ../lib/pz-linkcard-settings.php:819
+#: ../lib/pz-linkcard-oldman-edit.php:154 ../lib/pz-linkcard-oldman-list.php:339 ../lib/pz-linkcard-settings.php:819
 msgid "Switch between Card Manager and Settings"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:177
+#: ../lib/pz-linkcard-oldman-edit.php:177
 msgid "Redirect URL"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:185 ../lib/pz-linkcard-cacheman-list.php:93 ../lib/pz-linkcard-cacheman-list.php:312
-#: ../lib/pz-linkcard-cacheman-list.php:426 ../lib/pz-linkcard-settings-letter.php:23
+#: ../lib/pz-linkcard-oldman-edit.php:185 ../lib/pz-linkcard-oldman-list.php:93 ../lib/pz-linkcard-oldman-list.php:312
+#: ../lib/pz-linkcard-oldman-list.php:426 ../lib/pz-linkcard-settings-letter.php:23
 msgid "Excerpt"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:190
+#: ../lib/pz-linkcard-oldman-edit.php:190
 msgid "Site Data"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:192 ../lib/pz-linkcard-cacheman-list.php:315 ../lib/pz-linkcard-settings-multisite.php:88
+#: ../lib/pz-linkcard-oldman-edit.php:192 ../lib/pz-linkcard-oldman-list.php:315 ../lib/pz-linkcard-settings-multisite.php:88
 msgid "Site Name"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:193 ../lib/pz-linkcard-cacheman-list.php:98 ../lib/pz-linkcard-cacheman-list.php:314
-#: ../lib/pz-linkcard-cacheman-list.php:456 ../lib/pz-linkcard-settings-multisite.php:90
+#: ../lib/pz-linkcard-oldman-edit.php:193 ../lib/pz-linkcard-oldman-list.php:98 ../lib/pz-linkcard-oldman-list.php:314
+#: ../lib/pz-linkcard-oldman-list.php:456 ../lib/pz-linkcard-settings-multisite.php:90
 msgid "Domain"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:207
+#: ../lib/pz-linkcard-oldman-edit.php:207
 msgid "Post Data"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:200 ../lib/pz-linkcard-cacheman-list.php:95 ../lib/pz-linkcard-cacheman-list.php:438
+#: ../lib/pz-linkcard-oldman-edit.php:200 ../lib/pz-linkcard-oldman-list.php:95 ../lib/pz-linkcard-oldman-list.php:438
 #: ../lib/traits/pz-linkcard-editor-visual.php:15 ../lib/pz-linkcard-settings-display.php:32 ../pz-linkcard.php:3591
 msgid "Post Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:96
+#: ../lib/pz-linkcard-oldman-list.php:96
 msgid "Post Modified Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:202 ../lib/pz-linkcard-settings-letter.php:30 ../pz-linkcard.php:2319 ../pz-linkcard.php:2323
+#: ../lib/pz-linkcard-oldman-edit.php:202 ../lib/pz-linkcard-settings-letter.php:30 ../pz-linkcard.php:2319 ../pz-linkcard.php:2323
 msgid "Category"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:206
+#: ../lib/pz-linkcard-oldman-edit.php:206
 msgid "Registration Data"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:208
+#: ../lib/pz-linkcard-oldman-edit.php:208
 msgid "Registered Title"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:209
+#: ../lib/pz-linkcard-oldman-edit.php:209
 msgid "Registered Excerpt"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:210
+#: ../lib/pz-linkcard-oldman-edit.php:210
 msgid "Registered Character Set"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:211 ../lib/pz-linkcard-cacheman-edit.php:231 ../lib/pz-linkcard-cacheman-list.php:100
-#: ../lib/pz-linkcard-cacheman-list.php:318
+#: ../lib/pz-linkcard-oldman-edit.php:211 ../lib/pz-linkcard-oldman-edit.php:231 ../lib/pz-linkcard-oldman-list.php:100
+#: ../lib/pz-linkcard-oldman-list.php:318
 msgid "Registered Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:214
+#: ../lib/pz-linkcard-oldman-edit.php:214
 msgid "Registered Result Code"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:222
+#: ../lib/pz-linkcard-oldman-edit.php:222
 msgid "Reload"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:223
+#: ../lib/pz-linkcard-oldman-edit.php:223
 msgid "Cache Editor"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:229 ../lib/pz-linkcard-cacheman-list.php:316
+#: ../lib/pz-linkcard-oldman-edit.php:229 ../lib/pz-linkcard-oldman-list.php:316
 msgid "Character Set"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:230 ../lib/pz-linkcard-cacheman-edit.php:272 ../lib/pz-linkcard-cacheman-list.php:107
-#: ../lib/pz-linkcard-cacheman-list.php:317 ../lib/pz-linkcard-settings-check.php:104
+#: ../lib/pz-linkcard-oldman-edit.php:230 ../lib/pz-linkcard-oldman-edit.php:272 ../lib/pz-linkcard-oldman-list.php:107
+#: ../lib/pz-linkcard-oldman-list.php:317 ../lib/pz-linkcard-settings-check.php:104
 msgid "Click Count"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:232 ../lib/pz-linkcard-cacheman-edit.php:275 ../lib/pz-linkcard-cacheman-list.php:101
-#: ../lib/pz-linkcard-cacheman-list.php:319 ../lib/pz-linkcard-settings-display.php:33
-#: ../lib/pz-linkcard-cacheman-edit.php:211
+#: ../lib/pz-linkcard-oldman-edit.php:232 ../lib/pz-linkcard-oldman-edit.php:275 ../lib/pz-linkcard-oldman-list.php:101
+#: ../lib/pz-linkcard-oldman-list.php:319 ../lib/pz-linkcard-settings-display.php:33
+#: ../lib/pz-linkcard-oldman-edit.php:211
 msgid "Update Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:242
+#: ../lib/pz-linkcard-oldman-edit.php:242
 msgid "Thumbnail Image"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:244
+#: ../lib/pz-linkcard-oldman-edit.php:244
 msgid "Clear thumbnail image"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:254
+#: ../lib/pz-linkcard-oldman-edit.php:254
 msgid "Site Icon URL"
 msgstr ""
 
@@ -341,450 +341,450 @@ msgstr ""
 msgid "Site Icon"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:256
+#: ../lib/pz-linkcard-oldman-edit.php:256
 msgid "Clear site icon"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:266
+#: ../lib/pz-linkcard-oldman-edit.php:266
 msgid "Status"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:269
+#: ../lib/pz-linkcard-oldman-edit.php:269
 msgid "Ignore the result code when it indicates an error."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:279 ../lib/pz-linkcard-cacheman-list.php:320
+#: ../lib/pz-linkcard-oldman-edit.php:279 ../lib/pz-linkcard-oldman-list.php:320
 msgid "Result Code"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:283
+#: ../lib/pz-linkcard-oldman-edit.php:283
 msgid "Last Alive Check"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:287
+#: ../lib/pz-linkcard-oldman-edit.php:287
 msgid "Alive Check Result Code"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:290
+#: ../lib/pz-linkcard-oldman-edit.php:290
 msgid "Next Alive Check"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:310
+#: ../lib/pz-linkcard-oldman-edit.php:310
 msgid "Used Post ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:310
+#: ../lib/pz-linkcard-oldman-edit.php:310
 msgid ", "
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:310 ../lib/pz-linkcard-cacheman-list.php:367 ../lib/pz-linkcard-cacheman.php:362
+#: ../lib/pz-linkcard-oldman-edit.php:310 ../lib/pz-linkcard-oldman-list.php:367 ../lib/pz-linkcard-oldman.php:362
 msgid "Renew Post ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:316 ../lib/pz-linkcard-cacheman-list.php:99
+#: ../lib/pz-linkcard-oldman-edit.php:316 ../lib/pz-linkcard-oldman-list.php:99
 msgid "SNS"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:319
+#: ../lib/pz-linkcard-oldman-edit.php:319
 msgid "Tw:"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:320
+#: ../lib/pz-linkcard-oldman-edit.php:320
 msgid "fb:"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:321
+#: ../lib/pz-linkcard-oldman-edit.php:321
 msgid "B!:"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:328
+#: ../lib/pz-linkcard-oldman-edit.php:328
 msgid "(Not yet acquired)"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:339
+#: ../lib/pz-linkcard-oldman-edit.php:339
 msgid "Last SNS Check"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:342
+#: ../lib/pz-linkcard-oldman-edit.php:342
 msgid "Next SNS Check"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:97 ../lib/pz-linkcard-cacheman-list.php:450
+#: ../lib/pz-linkcard-oldman-list.php:97 ../lib/pz-linkcard-oldman-list.php:450
 msgid "Charset"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:102
+#: ../lib/pz-linkcard-oldman-list.php:102
 msgid "SNS Check Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:103
+#: ../lib/pz-linkcard-oldman-list.php:103
 msgid "Next Share Count Retrieval Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:104
+#: ../lib/pz-linkcard-oldman-list.php:104
 msgid "Alive Check Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:105
+#: ../lib/pz-linkcard-oldman-list.php:105
 msgid "Next Status Check Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:106
+#: ../lib/pz-linkcard-oldman-list.php:106
 msgid "Published Post ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:108
+#: ../lib/pz-linkcard-oldman-list.php:108
 msgid "Result code"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:204 ../lib/pz-linkcard-cacheman-list.php:213 ../lib/pz-linkcard-file-export-menu.php:6
+#: ../lib/pz-linkcard-oldman-list.php:204 ../lib/pz-linkcard-oldman-list.php:213 ../lib/pz-linkcard-file-export-menu.php:6
 #, php-format
 msgid "%s item"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:204 ../lib/pz-linkcard-cacheman-list.php:213 ../lib/pz-linkcard-file-export-menu.php:6
+#: ../lib/pz-linkcard-oldman-list.php:204 ../lib/pz-linkcard-oldman-list.php:213 ../lib/pz-linkcard-file-export-menu.php:6
 #, php-format
 msgid "%s items"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:237 ../pz-linkcard.php:3191
+#: ../lib/pz-linkcard-oldman-list.php:237 ../pz-linkcard.php:3191
 msgid "All"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:238 ../pz-linkcard.php:3192
+#: ../lib/pz-linkcard-oldman-list.php:238 ../pz-linkcard.php:3192
 msgid "External"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:239 ../pz-linkcard.php:3193
+#: ../lib/pz-linkcard-oldman-list.php:239 ../pz-linkcard.php:3193
 msgid "Internal"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:240 ../pz-linkcard.php:3194
+#: ../lib/pz-linkcard-oldman-list.php:240 ../pz-linkcard.php:3194
 msgid "HTTP Status Changed"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-check.php:144
-#: ../lib/pz-linkcard-cacheman-list.php:241 ../pz-linkcard.php:3195
+#: ../lib/pz-linkcard-oldman-list.php:241 ../pz-linkcard.php:3195
 msgid "Broken Link"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:242 ../pz-linkcard.php:3196
+#: ../lib/pz-linkcard-oldman-list.php:242 ../pz-linkcard.php:3196
 msgid "Unregistered"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:254 ../lib/pz-linkcard-cacheman-list.php:341 ../lib/pz-linkcard-cacheman-list.php:353
+#: ../lib/pz-linkcard-oldman-list.php:254 ../lib/pz-linkcard-oldman-list.php:341 ../lib/pz-linkcard-oldman-list.php:353
 msgid "Search"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:261 ../lib/pz-linkcard-cacheman-list.php:262 ../lib/pz-linkcard-settings.php:770
+#: ../lib/pz-linkcard-oldman-list.php:261 ../lib/pz-linkcard-oldman-list.php:262 ../lib/pz-linkcard-settings.php:770
 #: ../lib/pz-linkcard-settings.php:771
 msgid "Screen Options"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-oldman-edit.php
 msgid "Screen elements"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-oldman-edit.php
 msgid "Reset positions"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:266
+#: ../lib/pz-linkcard-oldman-list.php:266
 msgid "Columns"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:288
+#: ../lib/pz-linkcard-oldman-list.php:288
 msgid "Pagination"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:290
+#: ../lib/pz-linkcard-oldman-list.php:290
 msgid "Number of items per page:"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:309 ../pz-linkcard.php:3885
+#: ../lib/pz-linkcard-oldman-list.php:309 ../pz-linkcard.php:3885
 msgid "Pz Card"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:322
+#: ../lib/pz-linkcard-oldman-list.php:322
 msgid "Comparison operators"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:324
+#: ../lib/pz-linkcard-oldman-list.php:324
 msgid "Equal"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:325
+#: ../lib/pz-linkcard-oldman-list.php:325
 msgid "Less than"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:326
+#: ../lib/pz-linkcard-oldman-list.php:326
 msgid "Less than or equal to"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:327
+#: ../lib/pz-linkcard-oldman-list.php:327
 msgid "Greater than"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:328
+#: ../lib/pz-linkcard-oldman-list.php:328
 msgid "Greater than or equal to"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:329
+#: ../lib/pz-linkcard-oldman-list.php:329
 msgid "Not equal to"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:330
+#: ../lib/pz-linkcard-oldman-list.php:330
 msgid "The colon before a comparison operator can be omitted."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:337 ../lib/pz-linkcard-settings.php:817
+#: ../lib/pz-linkcard-oldman-list.php:337 ../lib/pz-linkcard-settings.php:817
 msgid "Show Screen Options"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:338 ../lib/pz-linkcard-cacheman-list.php:354
+#: ../lib/pz-linkcard-oldman-list.php:338 ../lib/pz-linkcard-oldman-list.php:354
 msgid "Search cards"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:340
+#: ../lib/pz-linkcard-oldman-list.php:340
 msgid "Select All"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:342
+#: ../lib/pz-linkcard-oldman-list.php:342
 msgid "Today"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:343
+#: ../lib/pz-linkcard-oldman-list.php:343
 msgid "Previous page"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:343
+#: ../lib/pz-linkcard-oldman-list.php:343
 msgid "Next page"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:350
+#: ../lib/pz-linkcard-oldman-list.php:350
 msgid "Text or field search. Examples: post:1234, id:10, domain:popozure.info"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:363
+#: ../lib/pz-linkcard-oldman-list.php:363
 msgid "Bulk Actions"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:364 ../lib/pz-linkcard-cacheman.php:298
+#: ../lib/pz-linkcard-oldman-list.php:364 ../lib/pz-linkcard-oldman.php:298
 msgid "Renew Cache"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:365 ../lib/pz-linkcard-cacheman.php:319
+#: ../lib/pz-linkcard-oldman-list.php:365 ../lib/pz-linkcard-oldman.php:319
 msgid "Renew Thumbnail Image"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:366 ../lib/pz-linkcard-cacheman.php:340
+#: ../lib/pz-linkcard-oldman-list.php:366 ../lib/pz-linkcard-oldman.php:340
 msgid "Renew SNS Count"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:368
+#: ../lib/pz-linkcard-oldman-list.php:368
 msgid "Check Status"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:369
+#: ../lib/pz-linkcard-oldman-list.php:369
 msgid "Delete from Cache"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:371 ../lib/pz-linkcard-cacheman-list.php:696 ../lib/pz-linkcard-cacheman-list.php:697
+#: ../lib/pz-linkcard-oldman-list.php:371 ../lib/pz-linkcard-oldman-list.php:696 ../lib/pz-linkcard-oldman-list.php:697
 #: ../lib/pz-linkcard-file-import-menu.php:12 ../lib/pz-linkcard-settings-admin.php:56 ../lib/pz-linkcard-settings-etc.php:129
 #: ../lib/pz-linkcard-settings-initialize.php:9 ../lib/pz-linkcard-settings-initialize.php:16
 #: ../lib/pz-linkcard-settings-initialize.php:31
 msgid "Are you sure?"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:371
+#: ../lib/pz-linkcard-oldman-list.php:371
 msgid "Apply"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:377
+#: ../lib/pz-linkcard-oldman-list.php:377
 msgid "All Domains"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:388
+#: ../lib/pz-linkcard-oldman-list.php:388
 msgid "Refine Search"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:394 ../lib/pz-linkcard-settings.php:250 ../pz-linkcard.php:3314 ../pz-linkcard.php:4374
+#: ../lib/pz-linkcard-oldman-list.php:394 ../lib/pz-linkcard-settings.php:250 ../pz-linkcard.php:3314 ../pz-linkcard.php:4374
 msgid "Manager"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:432
+#: ../lib/pz-linkcard-oldman-list.php:432
 msgid "Post<br>ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:444
+#: ../lib/pz-linkcard-oldman-list.php:444
 msgid "Post<br>Modified Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:462
+#: ../lib/pz-linkcard-oldman-list.php:462
 msgid "Tw"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:470
+#: ../lib/pz-linkcard-oldman-list.php:470
 msgid "fb"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:478
+#: ../lib/pz-linkcard-oldman-list.php:478
 msgid "B!"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:486
+#: ../lib/pz-linkcard-oldman-list.php:486
 msgid "Registered<br>Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:492
+#: ../lib/pz-linkcard-oldman-list.php:492
 msgid "Update<br>Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:498
+#: ../lib/pz-linkcard-oldman-list.php:498
 msgid "SNS<br>Check<br>Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:505
+#: ../lib/pz-linkcard-oldman-list.php:505
 msgid "Next<br>Share Count<br>Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:512
+#: ../lib/pz-linkcard-oldman-list.php:512
 msgid "Alive<br>Check<br>Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:519
+#: ../lib/pz-linkcard-oldman-list.php:519
 msgid "Next<br>Status<br>Date"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:526
+#: ../lib/pz-linkcard-oldman-list.php:526
 msgid "Published<br>Post<br>ID"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:532
+#: ../lib/pz-linkcard-oldman-list.php:532
 msgid "Click<br>Count"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:538
+#: ../lib/pz-linkcard-oldman-list.php:538
 msgid "Result<br>code"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:546
+#: ../lib/pz-linkcard-oldman-list.php:546
 msgid "(Last)"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:581
+#: ../lib/pz-linkcard-oldman-list.php:581
 msgid "&#x26a0;&#xfe0f;"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:583
+#: ../lib/pz-linkcard-oldman-list.php:583
 msgid "A recorded HTTP status code indicates an error, but the error is being ignored for this card."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:585
+#: ../lib/pz-linkcard-oldman-list.php:585
 msgid "&#x26d4;&#xfe0f;"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:587
+#: ../lib/pz-linkcard-oldman-list.php:587
 msgid "A recorded HTTP status code indicates an error. You can choose to ignore the error on the card editing screen."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:611 ../pz-linkcard.php:1031 ../pz-linkcard.php:3760
+#: ../lib/pz-linkcard-oldman-list.php:611 ../pz-linkcard.php:1031 ../pz-linkcard.php:3760
 msgid "Retrieving..."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:683
+#: ../lib/pz-linkcard-oldman-list.php:683
 msgid "Ignore"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:695 ../pz-linkcard.php:3754
+#: ../lib/pz-linkcard-oldman-list.php:695 ../pz-linkcard.php:3754
 msgid "Edit"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:696
+#: ../lib/pz-linkcard-oldman-list.php:696
 msgid "Renew"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:697
+#: ../lib/pz-linkcard-oldman-list.php:697
 msgid "Delete"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:735
+#: ../lib/pz-linkcard-oldman-list.php:735
 msgid "History"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:130 ../lib/pz-linkcard-settings.php:240 ../lib/pz-linkcard-settings.php:779
+#: ../lib/pz-linkcard-oldman.php:130 ../lib/pz-linkcard-settings.php:240 ../lib/pz-linkcard-settings.php:779
 msgid "Debug Mode"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:132 ../lib/pz-linkcard-settings.php:242
+#: ../lib/pz-linkcard-oldman.php:132 ../lib/pz-linkcard-settings.php:242
 msgid "Admin Mode"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:133 ../lib/pz-linkcard-settings.php:243
+#: ../lib/pz-linkcard-oldman.php:133 ../lib/pz-linkcard-settings.php:243
 msgid "Development Environment"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:134 ../lib/pz-linkcard-settings.php:244
+#: ../lib/pz-linkcard-oldman.php:134 ../lib/pz-linkcard-settings.php:244
 msgid "Production Environment"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:140 ../pz-linkcard.php:3315 ../pz-linkcard.php:4375
+#: ../lib/pz-linkcard-oldman.php:140 ../pz-linkcard.php:3315 ../pz-linkcard.php:4375
 msgid "Settings"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:142
+#: ../lib/pz-linkcard-oldman.php:142
 msgid "Import"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:143
+#: ../lib/pz-linkcard-oldman.php:143
 msgid "Export"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:146 ../pz-linkcard.php:3757 ../pz-linkcard.php:3886
+#: ../lib/pz-linkcard-oldman.php:146 ../pz-linkcard.php:3757 ../pz-linkcard.php:3886
 msgid "Pz-LinkCard Manager"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:151 ../lib/pz-linkcard-settings.php:258
+#: ../lib/pz-linkcard-oldman.php:151 ../lib/pz-linkcard-settings.php:258
 msgid "Return to Previous Page"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:206 ../lib/pz-linkcard-settings.php:554
+#: ../lib/pz-linkcard-oldman.php:206 ../lib/pz-linkcard-settings.php:554
 msgid "Invalid URL parameter in "
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:206 ../lib/pz-linkcard-settings-basic.php:56 ../lib/pz-linkcard-settings.php:554
+#: ../lib/pz-linkcard-oldman.php:206 ../lib/pz-linkcard-settings-basic.php:56 ../lib/pz-linkcard-settings.php:554
 msgid "*"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:206 ../lib/pz-linkcard-settings.php:554
+#: ../lib/pz-linkcard-oldman.php:206 ../lib/pz-linkcard-settings.php:554
 msgid ""
 "You can dismiss this message from <a href=\"./options-general.php?page=pz-linkcard-settings&tab=pz-error#pz-error-reset-settings\">the "
 "settings screen</a>."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:246
+#: ../lib/pz-linkcard-oldman.php:246
 msgid "The specified link card was not found."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:258 ../lib/pz-linkcard-cacheman.php:278 ../lib/pz-linkcard-cacheman.php:305
-#: ../lib/pz-linkcard-cacheman.php:326 ../lib/pz-linkcard-cacheman.php:347 ../lib/pz-linkcard-cacheman.php:369
-#: ../lib/pz-linkcard-cacheman.php:395 ../pz-linkcard.php:4127 ../pz-linkcard.php:4156
+#: ../lib/pz-linkcard-oldman.php:258 ../lib/pz-linkcard-oldman.php:278 ../lib/pz-linkcard-oldman.php:305
+#: ../lib/pz-linkcard-oldman.php:326 ../lib/pz-linkcard-oldman.php:347 ../lib/pz-linkcard-oldman.php:369
+#: ../lib/pz-linkcard-oldman.php:395 ../pz-linkcard.php:4127 ../pz-linkcard.php:4156
 msgid "Not selected"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:268
+#: ../lib/pz-linkcard-oldman.php:268
 msgid "Cache Update Result"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:268 ../lib/pz-linkcard-cacheman.php:298 ../lib/pz-linkcard-cacheman.php:319
-#: ../lib/pz-linkcard-cacheman.php:340 ../lib/pz-linkcard-cacheman.php:362 ../lib/pz-linkcard-cacheman.php:388
-#: ../lib/pz-linkcard-cacheman.php:406
+#: ../lib/pz-linkcard-oldman.php:268 ../lib/pz-linkcard-oldman.php:298 ../lib/pz-linkcard-oldman.php:319
+#: ../lib/pz-linkcard-oldman.php:340 ../lib/pz-linkcard-oldman.php:362 ../lib/pz-linkcard-oldman.php:388
+#: ../lib/pz-linkcard-oldman.php:406
 msgid "..."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:268 ../lib/pz-linkcard-cacheman.php:298 ../lib/pz-linkcard-cacheman.php:319
-#: ../lib/pz-linkcard-cacheman.php:340 ../lib/pz-linkcard-cacheman.php:362 ../lib/pz-linkcard-cacheman.php:388
-#: ../lib/pz-linkcard-cacheman.php:406 ../lib/pz-linkcard-file-import-csv.php:11 ../lib/pz-linkcard-file-import-csv.php:118
+#: ../lib/pz-linkcard-oldman.php:268 ../lib/pz-linkcard-oldman.php:298 ../lib/pz-linkcard-oldman.php:319
+#: ../lib/pz-linkcard-oldman.php:340 ../lib/pz-linkcard-oldman.php:362 ../lib/pz-linkcard-oldman.php:388
+#: ../lib/pz-linkcard-oldman.php:406 ../lib/pz-linkcard-file-import-csv.php:11 ../lib/pz-linkcard-file-import-csv.php:118
 #: ../lib/pz-linkcard-file-import-csv.php:125 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183
 #: ../lib/pz-linkcard-file-import.php:9 ../lib/pz-linkcard-file-import.php:51 ../lib/pz-linkcard-file-import.php:58
 #: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100 ../lib/pz-linkcard-settings-basic.php:93
@@ -793,22 +793,22 @@ msgstr ""
 msgid "("
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:268 ../lib/pz-linkcard-cacheman.php:298 ../lib/pz-linkcard-cacheman.php:319
-#: ../lib/pz-linkcard-cacheman.php:340 ../lib/pz-linkcard-cacheman.php:362 ../lib/pz-linkcard-cacheman.php:388
-#: ../lib/pz-linkcard-cacheman.php:406 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import.php:98
+#: ../lib/pz-linkcard-oldman.php:268 ../lib/pz-linkcard-oldman.php:298 ../lib/pz-linkcard-oldman.php:319
+#: ../lib/pz-linkcard-oldman.php:340 ../lib/pz-linkcard-oldman.php:362 ../lib/pz-linkcard-oldman.php:388
+#: ../lib/pz-linkcard-oldman.php:406 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import.php:98
 msgid "Success:"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:268 ../lib/pz-linkcard-cacheman.php:298 ../lib/pz-linkcard-cacheman.php:319
-#: ../lib/pz-linkcard-cacheman.php:340 ../lib/pz-linkcard-cacheman.php:362 ../lib/pz-linkcard-cacheman.php:388
-#: ../lib/pz-linkcard-cacheman.php:406 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183
+#: ../lib/pz-linkcard-oldman.php:268 ../lib/pz-linkcard-oldman.php:298 ../lib/pz-linkcard-oldman.php:319
+#: ../lib/pz-linkcard-oldman.php:340 ../lib/pz-linkcard-oldman.php:362 ../lib/pz-linkcard-oldman.php:388
+#: ../lib/pz-linkcard-oldman.php:406 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183
 #: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100
 msgid "Skip:"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:268 ../lib/pz-linkcard-cacheman.php:298 ../lib/pz-linkcard-cacheman.php:319
-#: ../lib/pz-linkcard-cacheman.php:340 ../lib/pz-linkcard-cacheman.php:362 ../lib/pz-linkcard-cacheman.php:388
-#: ../lib/pz-linkcard-cacheman.php:406 ../lib/pz-linkcard-file-import-csv.php:11 ../lib/pz-linkcard-file-import-csv.php:118
+#: ../lib/pz-linkcard-oldman.php:268 ../lib/pz-linkcard-oldman.php:298 ../lib/pz-linkcard-oldman.php:319
+#: ../lib/pz-linkcard-oldman.php:340 ../lib/pz-linkcard-oldman.php:362 ../lib/pz-linkcard-oldman.php:388
+#: ../lib/pz-linkcard-oldman.php:406 ../lib/pz-linkcard-file-import-csv.php:11 ../lib/pz-linkcard-file-import-csv.php:118
 #: ../lib/pz-linkcard-file-import-csv.php:125 ../lib/pz-linkcard-file-import-csv.php:181 ../lib/pz-linkcard-file-import-csv.php:183
 #: ../lib/pz-linkcard-file-import.php:9 ../lib/pz-linkcard-file-import.php:51 ../lib/pz-linkcard-file-import.php:58
 #: ../lib/pz-linkcard-file-import.php:98 ../lib/pz-linkcard-file-import.php:100 ../lib/pz-linkcard-settings-basic.php:93
@@ -817,15 +817,15 @@ msgstr ""
 msgid ")"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:388
+#: ../lib/pz-linkcard-oldman.php:388
 msgid "Alive check"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:406
+#: ../lib/pz-linkcard-oldman.php:406
 msgid "Delete Cache"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php:425
+#: ../lib/pz-linkcard-oldman.php:425
 msgid "An undefined action was selected."
 msgstr ""
 
@@ -3735,11 +3735,11 @@ msgstr ""
 msgid "Date (right aligned)"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:509
+#: ../lib/pz-linkcard-oldman-list.php:509
 msgid "Qiita"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:322
+#: ../lib/pz-linkcard-oldman-edit.php:322
 msgid "Qiita:"
 msgstr ""
 
@@ -3839,15 +3839,15 @@ msgstr ""
 msgid "%s items selected"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:397
+#: ../lib/pz-linkcard-oldman-list.php:397
 msgid "Execute"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:397
+#: ../lib/pz-linkcard-oldman-list.php:397
 msgid "11 or more items are selected. This may take some time. Do you want to proceed?"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-list.php:397
+#: ../lib/pz-linkcard-oldman-list.php:397
 msgid "Nothing is selected."
 msgstr ""
 
@@ -3907,30 +3907,30 @@ msgstr ""
 msgid "Log Manager"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:323
+#: ../lib/pz-linkcard-oldman-edit.php:323
 msgid "Qiita stocks"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:87
+#: ../lib/pz-linkcard-oldman-edit.php:87
 #, php-format
 msgid "%s: "
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:87
+#: ../lib/pz-linkcard-oldman-edit.php:87
 msgid "X"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:103
+#: ../lib/pz-linkcard-oldman-edit.php:103
 #, php-format
 msgid "Character count: %s"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:104
+#: ../lib/pz-linkcard-oldman-edit.php:104
 #, php-format
 msgid "Character count: %1$s / %2$s"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:104
+#: ../lib/pz-linkcard-oldman-edit.php:104
 msgid "URLs can contain up to 65,535 bytes. Non-ASCII characters may use more than one byte."
 msgstr ""
 
@@ -3948,7 +3948,7 @@ msgstr ""
 msgid "%d stocks"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php:366
+#: ../lib/pz-linkcard-oldman-edit.php:366
 msgid "facebook"
 msgstr ""
 
@@ -4032,11 +4032,11 @@ msgstr ""
 msgid "If the saved redirect destination fails with an HTTP error (such as 403) or a connection error, follow redirects again from the original URL."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-oldman-edit.php
 msgid "Set thumbnail image"
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-oldman-edit.php
 msgid "Set site icon"
 msgstr ""
 
@@ -4058,11 +4058,99 @@ msgstr ""
 msgid "Use a dedicated User-Agent for Microsoft."
 msgstr ""
 
-#: ../lib/pz-linkcard-cacheman.php
+#: ../lib/pz-linkcard-oldman.php
 msgid "Content retrieval queued"
 msgstr ""
 
 #: ../pz-linkcard.php
 #: ../lib/ajax/pz-linkcard-ajax-cacheman-pending.php
 msgid "Failed to queue article content retrieval."
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "External Links"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Internal Links"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Changed"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Errors"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "HTTP Status"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Updated"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Link Cards"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Search Link Cards"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "(no title)"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Filter Search"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Post Modified"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Registration Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Share Count Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Next Share Count Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Status Check Date"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Published Post IDs"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Likes"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Stocks"
+msgstr ""
+
+#: ../pz-linkcard.php
+msgid "Use the links above the list to filter cards by link type or status. Search by URL, title or site name, or select a domain to narrow the list."
+msgstr ""
+
+#: ../pz-linkcard.php
+msgid "Select cards with the checkboxes to run a bulk action. Click a column heading to change the sort order. Screen Options lets you change the number of cards per page (1–200)."
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Post<br>Date and Time"
+msgstr ""
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Card<br>ID"
 msgstr ""

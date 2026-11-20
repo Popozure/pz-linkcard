@@ -156,6 +156,11 @@
 	$stored_post_id		=	intval($cacheman_get_value('post_id' ) );
 	$link_post_id_value	=	intval(url_to_postid((string) $cacheman_get_value('url' ) ) );
 	$link_post_id_class	=	$link_post_id_value !== $stored_post_id ? 'pz-man-cache-post-id-changed' : '';
+	$cacheman_update_status = isset($data['update_result']) ? (int) $data['update_result'] : null;
+	$cacheman_update_error = $cacheman_update_status !== null && $cacheman_update_status !== 0 && ($cacheman_update_status < 100 || $cacheman_update_status >= 400);
+	$cacheman_error_ignored = !empty($data['no_failure']);
+	$cacheman_error_label = __('A recorded HTTP status code indicates an error. You can choose to ignore the error on the card editing screen.', 'pz-linkcard');
+	$cacheman_ignored_label = __('A recorded HTTP status code indicates an error, but the error is being ignored for this card.', 'pz-linkcard');
 ?>
 	<div class="pz-man-screen-tabs pz-man-cache-screen-tabs">
 		<div class="pz-man-screen-options pz-man-cache-screen-options">
@@ -206,7 +211,7 @@
 
 	<button type="submit" name="action" value="update" class="pz-man-cache-default-submit" aria-hidden="true" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden;padding:0;border:0;"></button>
 
-	<div id="poststuff" class="pz-man-cache-dirty-check pz-man-cache-poststuff" data-pz-cache-layout-key="<?php echo esc_attr('pz-linkcard-cacheman-layout:'.md5(home_url('/')).':'.get_current_user_id()); ?>">
+	<div id="poststuff" class="pz-man-cache-dirty-check pz-man-cache-poststuff" data-pz-cache-layout-key="<?php echo esc_attr('pz-linkcard-oldman-layout:'.md5(home_url('/')).':'.get_current_user_id()); ?>">
 		<div id="post-body" class="metabox-holder columns-2">
 			<div id="post-body-content" class="pz-man-cache-main">
 				<div id="titlediv" class="pz-man-cache-titlediv">
@@ -218,6 +223,7 @@
 					<div class="inside pz-man-cache-permalink">
 						<div class="pz-man-cache-permalink-row">
 							<strong><?php echo $cacheman_field_label(esc_html__('URL', 'pz-linkcard')); ?></strong>
+							<span id="pz-man-cache-url-status" class="<?php echo esc_attr($cacheman_error_ignored ? 'pz-man-body-url-error-ignore dashicons dashicons-warning' : 'pz-man-body-url-error dashicons dashicons-dismiss'); ?>" role="img" aria-label="<?php echo esc_attr($cacheman_error_ignored ? $cacheman_ignored_label : $cacheman_error_label); ?>" title="<?php echo esc_attr($cacheman_error_ignored ? $cacheman_ignored_label : $cacheman_error_label); ?>" data-error-label="<?php echo esc_attr($cacheman_error_label); ?>" data-ignored-label="<?php echo esc_attr($cacheman_ignored_label); ?>"<?php if (!$cacheman_update_error) { echo ' hidden'; } ?>></span>
 							<?php echo wp_kses($cacheman_static_value('url', array('class' => 'pz-monospace', 'display' => $this->pz_DecodeURL($cacheman_get_value('url' ) ), 'title' => $this->pz_DecodeURL($cacheman_get_value('url' ) ), 'href' => $cacheman_get_value('url' ) ) ), $cacheman_allowed_html ); ?>
 						</div>
 						<div class="pz-man-cache-permalink-row">
@@ -266,9 +272,6 @@
 				<?php echo wp_kses($cacheman_postbox_open('status', __('Status', 'pz-linkcard' ) ), $cacheman_allowed_html ); ?>
 					<table class="form-table pz-man-cache-form-table pz-man-cache-status-table">
 
-						<tr class="pz-man-cache-side-single-row">
-							<td colspan="2"><label><input name="data[no_failure]" type="hidden" value="0" /><input name="data[no_failure]" type="checkbox" value="1" <?php checked(!empty($data['no_failure'] ), true ); ?> accesskey="4" /><?php esc_html_e('Ignore the result code when it indicates an error.', 'pz-linkcard' ); ?></label></td>
-						</tr>
 						<?php
 							$rs = esc_attr($cacheman_get_value('alive_result' ) );
 							echo wp_kses('<tr class="pz-man-cache-side-meta-row"><td colspan="2"><strong>'.$cacheman_field_label(esc_html__('Alive Check Result Code', 'pz-linkcard' )).'</strong> '.esc_html($rs ).' '.esc_html($this->pz_HTTPMessage($rs ) ).'<br class="pz-debug-only"><input name="data[alive_result]" type="text" value="'.esc_attr($cacheman_get_value('alive_result' ) ).'" class="pz-debug-only" size="2" readonly="readonly"'.$cacheman_admin_edit_attr().'></td></tr>', $cacheman_allowed_html );
@@ -330,6 +333,7 @@
 						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('ID', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('id' ) ); ?></span></div>
 						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Character Set', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('regist_charset' ) ); ?></span></div>
 						<div class="pz-debug-only"><input name="data[charset]" type="text" value="<?php echo esc_attr($cacheman_get_value('charset')); ?>" class="pz-debug-only" readonly="readonly"<?php echo $cacheman_admin_edit_attr(); ?>></div>
+						<div class="pz-man-cache-submit-meta-row pz-man-cache-ignore-error"><label><input name="data[no_failure]" type="hidden" value="0" /><input name="data[no_failure]" type="checkbox" value="1" <?php checked(!empty($data['no_failure']), true); ?> accesskey="4" /><?php esc_html_e('Ignore the result code when it indicates an error.', 'pz-linkcard'); ?></label></div>
 						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Result Code', 'pz-linkcard')); ?></span> <span class="pz-man-cache-submit-meta-value"><?php $rs = $cacheman_get_value('update_result'); echo esc_html($rs).' '.esc_html($this->pz_HTTPMessage($rs)); ?><br class="pz-debug-only"><input name="data[update_result]" type="text" value="<?php echo esc_attr($rs); ?>" class="pz-debug-only" size="5" readonly="readonly"<?php echo $cacheman_admin_edit_attr(); ?>></span></div>
 						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Click Count', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html(number_format_i18n(intval($cacheman_get_value('click_count' ) ) ) ); ?><br class="pz-debug-only"><input name="data[click_count]" type="text" value="<?php echo esc_attr($cacheman_get_value('click_count' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly" ondblclick="this.readOnly=false;" /></span></div>
 						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Registered Date', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('regist_time' ) ) ); ?></span></div>

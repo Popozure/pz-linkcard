@@ -69,6 +69,7 @@
 					$after_result	=	isset($after['alive_result'] ) ? intval($after['alive_result'] ) : 0;
 					$before['alive_nexttime'] = (!empty($url_info['is_internal']) ? null : ($after['alive_nexttime'] ?? null)) ?? $this->pz_GetNextAliveTime($after_result, $this->now);
 					$before['alive_result']		=	$after['alive_result'];
+					$before['update_result']		=	$before['alive_result'];
 					$before['alive_time']		=	$this->now;
 
 					// if	(!$before['thumbnail'] ) {

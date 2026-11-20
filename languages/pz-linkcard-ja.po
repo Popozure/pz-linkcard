@@ -1,4 +1,4 @@
-﻿# Copyright (C) 2013 WordPress
+# Copyright (C) 2013 WordPress
 # This file is distributed under the same license as the WordPress package.
 msgid ""
 msgstr ""
@@ -72,119 +72,119 @@ msgstr "記事内容の読み込みに失敗しました。"
 
 #: ../lib/ajax/pz-linkcard-ajax-refresh-card.php:18
 #: ../lib/ajax/pz-linkcard-ajax-refresh-thumbnail.php:18
-#: ../lib/pz-linkcard-cacheman.php:269 ../lib/pz-linkcard-cacheman.php:289
-#: ../lib/pz-linkcard-cacheman.php:316 ../lib/pz-linkcard-cacheman.php:337
-#: ../lib/pz-linkcard-cacheman.php:358 ../lib/pz-linkcard-cacheman.php:388
-#: ../lib/pz-linkcard-cacheman.php:414
+#: ../lib/pz-linkcard-oldman.php:269 ../lib/pz-linkcard-oldman.php:289
+#: ../lib/pz-linkcard-oldman.php:316 ../lib/pz-linkcard-oldman.php:337
+#: ../lib/pz-linkcard-oldman.php:358 ../lib/pz-linkcard-oldman.php:388
+#: ../lib/pz-linkcard-oldman.php:414
 msgid "Not selected"
 msgstr "選択されていません"
 
-#: ../lib/pz-linkcard-cacheman-click.php:76
+#: ../lib/pz-linkcard-oldman-click.php:76
 msgid "Clicks in the last 7 days"
 msgstr "直近7日間のクリック数"
 
-#: ../lib/pz-linkcard-cacheman-click.php:86
+#: ../lib/pz-linkcard-oldman-click.php:86
 msgid "Clicks in the last 8 weeks"
 msgstr "直近8週間のクリック数"
 
-#: ../lib/pz-linkcard-cacheman-click.php:95
+#: ../lib/pz-linkcard-oldman-click.php:95
 msgid "Clicks in the last 12 months"
 msgstr "直近12か月のクリック数"
 
-#: ../lib/pz-linkcard-cacheman-click.php:102
+#: ../lib/pz-linkcard-oldman-click.php:102
 msgid "Clicks in the last 5 years"
 msgstr "直近5年間のクリック数"
 
-#: ../lib/pz-linkcard-cacheman-click.php:165
+#: ../lib/pz-linkcard-oldman-click.php:165
 #: ../lib/pz-linkcard-settings-advanced.php:322
 msgid "1 week"
 msgstr "1週間"
 
-#: ../lib/pz-linkcard-cacheman-click.php:166
+#: ../lib/pz-linkcard-oldman-click.php:166
 #: ../lib/pz-linkcard-settings-advanced.php:323
 msgid "1 month"
 msgstr "1か月"
 
-#: ../lib/pz-linkcard-cacheman-click.php:167
+#: ../lib/pz-linkcard-oldman-click.php:167
 #: ../lib/pz-linkcard-settings-advanced.php:324
 msgid "2 months"
 msgstr "2か月"
 
-#: ../lib/pz-linkcard-cacheman-click.php:168
+#: ../lib/pz-linkcard-oldman-click.php:168
 #: ../lib/pz-linkcard-settings-advanced.php:325
 msgid "3 months"
 msgstr "3か月"
 
-#: ../lib/pz-linkcard-cacheman-click.php:169
+#: ../lib/pz-linkcard-oldman-click.php:169
 #: ../lib/pz-linkcard-settings-advanced.php:326
 msgid "6 months"
 msgstr "半年"
 
-#: ../lib/pz-linkcard-cacheman-click.php:170
+#: ../lib/pz-linkcard-oldman-click.php:170
 #: ../lib/pz-linkcard-settings-advanced.php:327
 msgid "1 year"
 msgstr "1年"
 
-#: ../lib/pz-linkcard-cacheman-click.php:171
+#: ../lib/pz-linkcard-oldman-click.php:171
 msgid "2 years"
 msgstr "2年"
 
-#: ../lib/pz-linkcard-cacheman-click.php:172
+#: ../lib/pz-linkcard-oldman-click.php:172
 msgid "3 years"
 msgstr "3年"
 
-#: ../lib/pz-linkcard-cacheman-click.php:173
+#: ../lib/pz-linkcard-oldman-click.php:173
 msgid "5 years"
 msgstr "5年"
 
-#: ../lib/pz-linkcard-cacheman-click.php:178
+#: ../lib/pz-linkcard-oldman-click.php:178
 msgid "Day"
 msgstr "日"
 
-#: ../lib/pz-linkcard-cacheman-click.php:179
+#: ../lib/pz-linkcard-oldman-click.php:179
 msgid "Week"
 msgstr "週"
 
-#: ../lib/pz-linkcard-cacheman-click.php:180
+#: ../lib/pz-linkcard-oldman-click.php:180
 msgid "Month"
 msgstr "月"
 
-#: ../lib/pz-linkcard-cacheman-click.php:181
+#: ../lib/pz-linkcard-oldman-click.php:181
 msgid "Year"
 msgstr "年"
 
-#: ../lib/pz-linkcard-cacheman-click.php:190
-#: ../lib/pz-linkcard-cacheman-click.php:270
-#: ../lib/pz-linkcard-cacheman-click.php:279
-#: ../lib/pz-linkcard-cacheman-click.php:334
+#: ../lib/pz-linkcard-oldman-click.php:190
+#: ../lib/pz-linkcard-oldman-click.php:270
+#: ../lib/pz-linkcard-oldman-click.php:279
+#: ../lib/pz-linkcard-oldman-click.php:334
 msgid "Click Log"
 msgstr "クリックログ"
 
-#: ../lib/pz-linkcard-cacheman-click.php:193
-#: ../lib/pz-linkcard-cacheman-click.php:284
+#: ../lib/pz-linkcard-oldman-click.php:193
+#: ../lib/pz-linkcard-oldman-click.php:284
 msgid "Card ID"
 msgstr "カードID"
 
-#: ../lib/pz-linkcard-cacheman-click.php:194
+#: ../lib/pz-linkcard-oldman-click.php:194
 msgid "Edit card"
 msgstr "カード編集"
 
-#: ../lib/pz-linkcard-cacheman-click.php:195
-#: ../lib/pz-linkcard-cacheman-edit.php:216
-#: ../lib/pz-linkcard-cacheman-edit.php:217
-#: ../lib/pz-linkcard-cacheman-list.php:327
-#: ../lib/pz-linkcard-cacheman-list.php:461
+#: ../lib/pz-linkcard-oldman-click.php:195
+#: ../lib/pz-linkcard-oldman-edit.php:216
+#: ../lib/pz-linkcard-oldman-edit.php:217
+#: ../lib/pz-linkcard-oldman-list.php:327
+#: ../lib/pz-linkcard-oldman-list.php:461
 #: ../lib/pz-linkcard-settings-letter.php:22
 #: ../lib/traits/pz-linkcard-options.php:11
 msgid "Title"
 msgstr "タイトル"
 
-#: ../lib/pz-linkcard-cacheman-click.php:196
-#: ../lib/pz-linkcard-cacheman-edit.php:222
-#: ../lib/pz-linkcard-cacheman-edit.php:352
-#: ../lib/pz-linkcard-cacheman-edit.php:365
-#: ../lib/pz-linkcard-cacheman-list.php:329
-#: ../lib/pz-linkcard-cacheman-list.php:455
+#: ../lib/pz-linkcard-oldman-click.php:196
+#: ../lib/pz-linkcard-oldman-edit.php:222
+#: ../lib/pz-linkcard-oldman-edit.php:352
+#: ../lib/pz-linkcard-oldman-edit.php:365
+#: ../lib/pz-linkcard-oldman-list.php:329
+#: ../lib/pz-linkcard-oldman-list.php:455
 #: ../lib/pz-linkcard-file-import-result.php:13
 #: ../lib/pz-linkcard-settings-letter.php:24
 #: ../lib/pz-linkcard-settings-multisite.php:89
@@ -192,7 +192,7 @@ msgstr "タイトル"
 msgid "URL"
 msgstr "URL"
 
-#: ../lib/pz-linkcard-cacheman-click.php:209
+#: ../lib/pz-linkcard-oldman-click.php:209
 #, php-format
 msgid ""
 "To collect click logs, enable click count recording <a href=\"%s\">here</a>."
@@ -200,20 +200,20 @@ msgstr ""
 "クリックログを取得したい場合、<a href=\"%s\">こちら</a>でクリック件数の記録を"
 "有効にしてください。"
 
-#: ../lib/pz-linkcard-cacheman-click.php:216
+#: ../lib/pz-linkcard-oldman-click.php:216
 msgid "Chart period"
 msgstr "グラフの期間"
 
-#: ../lib/pz-linkcard-cacheman-click.php:223
+#: ../lib/pz-linkcard-oldman-click.php:223
 msgid "Remove filter"
 msgstr "解除"
 
-#: ../lib/pz-linkcard-cacheman-click.php:236
+#: ../lib/pz-linkcard-oldman-click.php:236
 #, php-format
 msgid "%s clicks"
 msgstr "%sクリック"
 
-#: ../lib/pz-linkcard-cacheman-click.php:249
+#: ../lib/pz-linkcard-oldman-click.php:249
 #, php-format
 msgid ""
 "The click count is cumulative. Detailed logs are retained <a "
@@ -221,7 +221,7 @@ msgid ""
 msgstr ""
 "クリック件数は累計です。詳細ログは<a href=\"%s\">永久</a>に保存されます。"
 
-#: ../lib/pz-linkcard-cacheman-click.php:256
+#: ../lib/pz-linkcard-oldman-click.php:256
 #, php-format
 msgid ""
 "The click count is cumulative. Detailed logs are retained for <a "
@@ -229,102 +229,102 @@ msgid ""
 msgstr ""
 "クリック件数は累計です。詳細ログは<a href=\"%1$s\">%2$s</a>保存されます。"
 
-#: ../lib/pz-linkcard-cacheman-click.php:263
-#: ../lib/pz-linkcard-cacheman-click.php:343
+#: ../lib/pz-linkcard-oldman-click.php:263
+#: ../lib/pz-linkcard-oldman-click.php:343
 #: ../lib/pz-linkcard-file-export-menu.php:18
 #: ../lib/pz-linkcard-file-import-csv.php:204
 #: ../lib/pz-linkcard-file-import-menu.php:15
 msgid "Return to Cache Manager"
 msgstr "カード管理画面へ戻る"
 
-#: ../lib/pz-linkcard-cacheman-click.php:265
-#: ../lib/pz-linkcard-cacheman-click.php:345
-#: ../lib/pz-linkcard-cacheman.php:158 ../lib/pz-linkcard-settings.php:234
+#: ../lib/pz-linkcard-oldman-click.php:265
+#: ../lib/pz-linkcard-oldman-click.php:345
+#: ../lib/pz-linkcard-oldman.php:158 ../lib/pz-linkcard-settings.php:234
 msgid "Return to Dashboard"
 msgstr "ダッシュボードへ戻る"
 
-#: ../lib/pz-linkcard-cacheman-click.php:271
-#: ../lib/pz-linkcard-cacheman-click.php:335
-#: ../lib/pz-linkcard-cacheman-list.php:242
-#: ../lib/pz-linkcard-cacheman-list.php:251
+#: ../lib/pz-linkcard-oldman-click.php:271
+#: ../lib/pz-linkcard-oldman-click.php:335
+#: ../lib/pz-linkcard-oldman-list.php:242
+#: ../lib/pz-linkcard-oldman-list.php:251
 msgid "&laquo;"
 msgstr "&laquo;"
 
-#: ../lib/pz-linkcard-cacheman-click.php:272
-#: ../lib/pz-linkcard-cacheman-click.php:336
-#: ../lib/pz-linkcard-cacheman-list.php:243
-#: ../lib/pz-linkcard-cacheman-list.php:252
+#: ../lib/pz-linkcard-oldman-click.php:272
+#: ../lib/pz-linkcard-oldman-click.php:336
+#: ../lib/pz-linkcard-oldman-list.php:243
+#: ../lib/pz-linkcard-oldman-list.php:252
 msgid "&lsaquo;"
 msgstr "&lsaquo;"
 
-#: ../lib/pz-linkcard-cacheman-click.php:274
-#: ../lib/pz-linkcard-cacheman-click.php:338
-#: ../lib/pz-linkcard-cacheman-list.php:246
-#: ../lib/pz-linkcard-cacheman-list.php:255
+#: ../lib/pz-linkcard-oldman-click.php:274
+#: ../lib/pz-linkcard-oldman-click.php:338
+#: ../lib/pz-linkcard-oldman-list.php:246
+#: ../lib/pz-linkcard-oldman-list.php:255
 msgid "&rsaquo;"
 msgstr "&rsaquo;"
 
-#: ../lib/pz-linkcard-cacheman-click.php:275
-#: ../lib/pz-linkcard-cacheman-click.php:339
-#: ../lib/pz-linkcard-cacheman-list.php:247
-#: ../lib/pz-linkcard-cacheman-list.php:256
+#: ../lib/pz-linkcard-oldman-click.php:275
+#: ../lib/pz-linkcard-oldman-click.php:339
+#: ../lib/pz-linkcard-oldman-list.php:247
+#: ../lib/pz-linkcard-oldman-list.php:256
 msgid "&raquo;"
 msgstr "&raquo;"
 
-#: ../lib/pz-linkcard-cacheman-click.php:283
-#: ../lib/pz-linkcard-cacheman-edit.php:332
-#: ../lib/pz-linkcard-cacheman-list.php:109
-#: ../lib/pz-linkcard-cacheman-list.php:325
-#: ../lib/pz-linkcard-cacheman-list.php:449
+#: ../lib/pz-linkcard-oldman-click.php:283
+#: ../lib/pz-linkcard-oldman-edit.php:332
+#: ../lib/pz-linkcard-oldman-list.php:109
+#: ../lib/pz-linkcard-oldman-list.php:325
+#: ../lib/pz-linkcard-oldman-list.php:449
 msgid "ID"
 msgstr "ID"
 
-#: ../lib/pz-linkcard-cacheman-click.php:285
+#: ../lib/pz-linkcard-oldman-click.php:285
 msgid "Click Date"
 msgstr "クリック日時"
 
-#: ../lib/pz-linkcard-cacheman-click.php:286
-#: ../lib/pz-linkcard-cacheman-edit.php:261
-#: ../lib/pz-linkcard-cacheman-list.php:111
-#: ../lib/pz-linkcard-cacheman-list.php:326
+#: ../lib/pz-linkcard-oldman-click.php:286
+#: ../lib/pz-linkcard-oldman-edit.php:261
+#: ../lib/pz-linkcard-oldman-list.php:111
+#: ../lib/pz-linkcard-oldman-list.php:326
 #: ../lib/pz-linkcard-settings-error.php:17
 msgid "Post ID"
 msgstr "投稿ID"
 
-#: ../lib/pz-linkcard-cacheman-click.php:287
+#: ../lib/pz-linkcard-oldman-click.php:287
 msgid "IP Hash"
 msgstr "IPハッシュ"
 
-#: ../lib/pz-linkcard-cacheman-click.php:288
+#: ../lib/pz-linkcard-oldman-click.php:288
 msgid "User-Agent"
 msgstr "ユーザーエージェント"
 
-#: ../lib/pz-linkcard-cacheman-click.php:293
+#: ../lib/pz-linkcard-oldman-click.php:293
 msgid "No click logs found."
 msgstr "クリックログはありません。"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:88
-#: ../lib/pz-linkcard-cacheman-edit.php:202
+#: ../lib/pz-linkcard-oldman-edit.php:88
+#: ../lib/pz-linkcard-oldman-edit.php:202
 msgid "Update"
 msgstr "更新"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:88
-#: ../lib/pz-linkcard-cacheman-edit.php:203
+#: ../lib/pz-linkcard-oldman-edit.php:88
+#: ../lib/pz-linkcard-oldman-edit.php:203
 msgid "Cancel"
 msgstr "キャンセル"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:91
+#: ../lib/pz-linkcard-oldman-edit.php:91
 #, php-format
 msgid "%s: "
 msgstr "%s: "
 
-#: ../lib/pz-linkcard-cacheman-edit.php:112
-#: ../lib/pz-linkcard-cacheman-edit.php:120
+#: ../lib/pz-linkcard-oldman-edit.php:112
+#: ../lib/pz-linkcard-oldman-edit.php:120
 #, php-format
 msgid "Character count: %1$s / %2$s"
 msgstr "文字数: %1$s / %2$s"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:118
+#: ../lib/pz-linkcard-oldman-edit.php:118
 msgid ""
 "URLs can contain up to 65,535 bytes. Non-ASCII characters may use more than "
 "one byte."
@@ -332,124 +332,124 @@ msgstr ""
 "URLは最大65,535バイトまで保存できます。日本語などは1文字が複数バイトになりま"
 "す。"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:135
+#: ../lib/pz-linkcard-oldman-edit.php:135
 #: ../lib/pz-linkcard-settings-card.php:64
 msgid "Media"
 msgstr "メディア"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:164
-#: ../lib/pz-linkcard-cacheman-edit.php:165
-#: ../lib/pz-linkcard-cacheman-list.php:277
-#: ../lib/pz-linkcard-cacheman-list.php:278 ../lib/pz-linkcard-settings.php:743
+#: ../lib/pz-linkcard-oldman-edit.php:164
+#: ../lib/pz-linkcard-oldman-edit.php:165
+#: ../lib/pz-linkcard-oldman-list.php:277
+#: ../lib/pz-linkcard-oldman-list.php:278 ../lib/pz-linkcard-settings.php:743
 #: ../lib/pz-linkcard-settings.php:744
 msgid "Screen Options"
 msgstr "表示オプション"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:169
+#: ../lib/pz-linkcard-oldman-edit.php:169
 msgid "Screen elements"
 msgstr "画面上の要素"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:173
-#: ../lib/pz-linkcard-cacheman-edit.php:233
-#: ../lib/pz-linkcard-cacheman-list.php:110
-#: ../lib/pz-linkcard-cacheman-list.php:328
-#: ../lib/pz-linkcard-cacheman-list.php:467
+#: ../lib/pz-linkcard-oldman-edit.php:173
+#: ../lib/pz-linkcard-oldman-edit.php:233
+#: ../lib/pz-linkcard-oldman-list.php:110
+#: ../lib/pz-linkcard-oldman-list.php:328
+#: ../lib/pz-linkcard-oldman-list.php:467
 #: ../lib/pz-linkcard-settings-letter.php:23
 #: ../lib/traits/pz-linkcard-options.php:22
 msgid "Excerpt"
 msgstr "抜粋文"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:174
-#: ../lib/pz-linkcard-cacheman-edit.php:238
+#: ../lib/pz-linkcard-oldman-edit.php:174
+#: ../lib/pz-linkcard-oldman-edit.php:238
 msgid "Site Data"
 msgstr "サイト情報"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:175
-#: ../lib/pz-linkcard-cacheman-edit.php:259
+#: ../lib/pz-linkcard-oldman-edit.php:175
+#: ../lib/pz-linkcard-oldman-edit.php:259
 msgid "Post Data"
 msgstr "投稿情報"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:176
-#: ../lib/pz-linkcard-cacheman-edit.php:268
+#: ../lib/pz-linkcard-oldman-edit.php:176
+#: ../lib/pz-linkcard-oldman-edit.php:268
 msgid "Status"
 msgstr "状態"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:177
-#: ../lib/pz-linkcard-cacheman-edit.php:307
+#: ../lib/pz-linkcard-oldman-edit.php:177
+#: ../lib/pz-linkcard-oldman-edit.php:307
 msgid "Registration Data"
 msgstr "登録情報"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:178
-#: ../lib/pz-linkcard-cacheman-edit.php:348
+#: ../lib/pz-linkcard-oldman-edit.php:178
+#: ../lib/pz-linkcard-oldman-edit.php:348
 msgid "Thumbnail Image"
 msgstr "サムネイル画像"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:179
-#: ../lib/pz-linkcard-cacheman-edit.php:361
+#: ../lib/pz-linkcard-oldman-edit.php:179
+#: ../lib/pz-linkcard-oldman-edit.php:361
 #: ../lib/traits/pz-linkcard-options.php:19
 msgid "Site Icon"
 msgstr "サイトアイコン"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:180
-#: ../lib/pz-linkcard-cacheman-edit.php:374
-#: ../lib/pz-linkcard-cacheman-list.php:116
+#: ../lib/pz-linkcard-oldman-edit.php:180
+#: ../lib/pz-linkcard-oldman-edit.php:374
+#: ../lib/pz-linkcard-oldman-list.php:116
 msgid "SNS"
 msgstr "SNS"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:189
+#: ../lib/pz-linkcard-oldman-edit.php:189
 msgid "Reset positions"
 msgstr "初期位置に戻す"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:193
-#: ../lib/pz-linkcard-cacheman-edit.php:194
-#: ../lib/pz-linkcard-cacheman-list.php:271 ../lib/pz-linkcard-cacheman.php:161
+#: ../lib/pz-linkcard-oldman-edit.php:193
+#: ../lib/pz-linkcard-oldman-edit.php:194
+#: ../lib/pz-linkcard-oldman-list.php:271 ../lib/pz-linkcard-oldman.php:161
 #: ../lib/pz-linkcard-settings.php:236 ../lib/pz-linkcard-settings.php:557
 #: ../lib/pz-linkcard-settings.php:777 ../lib/pz-linkcard-settings.php:778
 msgid "Help"
 msgstr "ヘルプ"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:197
-#: ../lib/pz-linkcard-cacheman-list.php:352 ../lib/pz-linkcard-settings.php:781
+#: ../lib/pz-linkcard-oldman-edit.php:197
+#: ../lib/pz-linkcard-oldman-list.php:352 ../lib/pz-linkcard-settings.php:781
 msgid "Keyboard Shortcuts"
 msgstr "キーボード ショートカット"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:199
-#: ../lib/pz-linkcard-cacheman-list.php:354 ../lib/pz-linkcard-settings.php:783
+#: ../lib/pz-linkcard-oldman-edit.php:199
+#: ../lib/pz-linkcard-oldman-list.php:354 ../lib/pz-linkcard-settings.php:783
 msgid "Show Help"
 msgstr "ヘルプを表示"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:200
+#: ../lib/pz-linkcard-oldman-edit.php:200
 msgid "Edit title"
 msgstr "タイトルを編集"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:201
-#: ../lib/pz-linkcard-cacheman-list.php:357 ../lib/pz-linkcard-settings.php:786
+#: ../lib/pz-linkcard-oldman-edit.php:201
+#: ../lib/pz-linkcard-oldman-list.php:357 ../lib/pz-linkcard-settings.php:786
 msgid "Switch between Card Manager and Settings"
 msgstr "管理画面と設定画面を切り替え"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:226
+#: ../lib/pz-linkcard-oldman-edit.php:226
 msgid "Redirect URL"
 msgstr "転送先URL"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:243
-#: ../lib/pz-linkcard-cacheman-list.php:331
+#: ../lib/pz-linkcard-oldman-edit.php:243
+#: ../lib/pz-linkcard-oldman-list.php:331
 #: ../lib/pz-linkcard-settings-multisite.php:88
 #: ../lib/traits/pz-linkcard-options.php:9
 msgid "Site Name"
 msgstr "サイト名称"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:254
-#: ../lib/pz-linkcard-cacheman-list.php:115
-#: ../lib/pz-linkcard-cacheman-list.php:330
-#: ../lib/pz-linkcard-cacheman-list.php:497
+#: ../lib/pz-linkcard-oldman-edit.php:254
+#: ../lib/pz-linkcard-oldman-list.php:115
+#: ../lib/pz-linkcard-oldman-list.php:330
+#: ../lib/pz-linkcard-oldman-list.php:497
 #: ../lib/pz-linkcard-settings-multisite.php:90
 #: ../lib/traits/pz-linkcard-options.php:10
 msgid "Domain"
 msgstr "ドメイン"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:262
-#: ../lib/pz-linkcard-cacheman-list.php:112
-#: ../lib/pz-linkcard-cacheman-list.php:479
+#: ../lib/pz-linkcard-oldman-edit.php:262
+#: ../lib/pz-linkcard-oldman-list.php:112
+#: ../lib/pz-linkcard-oldman-list.php:479
 #: ../lib/pz-linkcard-settings-display.php:26
 #: ../lib/pz-linkcard-settings-display.php:46
 #: ../lib/traits/pz-linkcard-editor-block.php:46
@@ -457,16 +457,16 @@ msgstr "ドメイン"
 msgid "Post Date"
 msgstr "投稿日"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:263
-#: ../lib/pz-linkcard-cacheman-edit.php:338
-#: ../lib/pz-linkcard-cacheman-list.php:118
-#: ../lib/pz-linkcard-cacheman-list.php:335
+#: ../lib/pz-linkcard-oldman-edit.php:263
+#: ../lib/pz-linkcard-oldman-edit.php:338
+#: ../lib/pz-linkcard-oldman-list.php:118
+#: ../lib/pz-linkcard-oldman-list.php:335
 #: ../lib/pz-linkcard-settings-display.php:27
 #: ../lib/pz-linkcard-settings-display.php:46
 msgid "Update Date"
 msgstr "更新日"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:264 ../lib/pz-linkcard-get-post.php:108
+#: ../lib/pz-linkcard-oldman-edit.php:264 ../lib/pz-linkcard-get-post.php:108
 #: ../lib/pz-linkcard-get-post.php:112
 #: ../lib/pz-linkcard-settings-letter.php:30
 #: ../lib/traits/pz-linkcard-get-html.php:513
@@ -474,323 +474,323 @@ msgstr "更新日"
 msgid "Category"
 msgstr "カテゴリー"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:272
+#: ../lib/pz-linkcard-oldman-edit.php:272
 msgid "Ignore the result code when it indicates an error."
 msgstr "エラーを無視する。"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:276
+#: ../lib/pz-linkcard-oldman-edit.php:276
 msgid "Alive Check Result Code"
 msgstr "リンク切れ確認時の結果コード"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:279
+#: ../lib/pz-linkcard-oldman-edit.php:279
 msgid "Last Alive Check"
 msgstr "前回のリンク切れ確認日時"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:282
+#: ../lib/pz-linkcard-oldman-edit.php:282
 msgid "Next Alive Check"
 msgstr "次回のリンク切れ確認日時"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:302
+#: ../lib/pz-linkcard-oldman-edit.php:302
 msgid "Used Post ID"
 msgstr "使用投稿ID"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:302
+#: ../lib/pz-linkcard-oldman-edit.php:302
 msgid ", "
 msgstr "、"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:302
-#: ../lib/pz-linkcard-cacheman-list.php:408 ../lib/pz-linkcard-cacheman.php:381
+#: ../lib/pz-linkcard-oldman-edit.php:302
+#: ../lib/pz-linkcard-oldman-list.php:408 ../lib/pz-linkcard-oldman.php:381
 msgid "Renew Post ID"
 msgstr "記事IDの再取得"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:309
+#: ../lib/pz-linkcard-oldman-edit.php:309
 msgid "Registered Title"
 msgstr "登録時のタイトル"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:310
+#: ../lib/pz-linkcard-oldman-edit.php:310
 msgid "Registered Excerpt"
 msgstr "登録時の抜粋文"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:311
+#: ../lib/pz-linkcard-oldman-edit.php:311
 msgid "Registered Character Set"
 msgstr "登録時の文字セット"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:314
+#: ../lib/pz-linkcard-oldman-edit.php:314
 msgid "Registered Result Code"
 msgstr "登録時の結果コード"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:316
-#: ../lib/pz-linkcard-cacheman-edit.php:337
-#: ../lib/pz-linkcard-cacheman-list.php:117
-#: ../lib/pz-linkcard-cacheman-list.php:334
+#: ../lib/pz-linkcard-oldman-edit.php:316
+#: ../lib/pz-linkcard-oldman-edit.php:337
+#: ../lib/pz-linkcard-oldman-list.php:117
+#: ../lib/pz-linkcard-oldman-list.php:334
 msgid "Registered Date"
 msgstr "登録日"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:321 ../lib/pz-linkcard-cacheman.php:138
+#: ../lib/pz-linkcard-oldman-edit.php:321 ../lib/pz-linkcard-oldman.php:138
 #: ../lib/pz-linkcard-settings.php:217 ../lib/pz-linkcard-settings.php:752
 msgid "Debug Mode"
 msgstr "デバッグ モード"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:327
+#: ../lib/pz-linkcard-oldman-edit.php:327
 msgid "Reload"
 msgstr "更新"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:328
+#: ../lib/pz-linkcard-oldman-edit.php:328
 msgid "Cache Editor"
 msgstr "キャッシュエディター"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:333
-#: ../lib/pz-linkcard-cacheman-list.php:332
+#: ../lib/pz-linkcard-oldman-edit.php:333
+#: ../lib/pz-linkcard-oldman-list.php:332
 msgid "Character Set"
 msgstr "文字セット"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:335
-#: ../lib/pz-linkcard-cacheman-list.php:338
+#: ../lib/pz-linkcard-oldman-edit.php:335
+#: ../lib/pz-linkcard-oldman-list.php:338
 msgid "Result Code"
 msgstr "結果コード"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:336
-#: ../lib/pz-linkcard-cacheman-list.php:124
-#: ../lib/pz-linkcard-cacheman-list.php:333
+#: ../lib/pz-linkcard-oldman-edit.php:336
+#: ../lib/pz-linkcard-oldman-list.php:124
+#: ../lib/pz-linkcard-oldman-list.php:333
 #: ../lib/pz-linkcard-settings-check.php:104
 msgid "Click Count"
 msgstr "クリック件数"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:350
+#: ../lib/pz-linkcard-oldman-edit.php:350
 msgid "Clear thumbnail image"
 msgstr "サムネイル画像を解除"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:363
+#: ../lib/pz-linkcard-oldman-edit.php:363
 msgid "Clear site icon"
 msgstr "サイトアイコンを解除"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:377
+#: ../lib/pz-linkcard-oldman-edit.php:377
 msgid "X"
 msgstr "𝕏"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:378
+#: ../lib/pz-linkcard-oldman-edit.php:378
 msgid "facebook"
 msgstr "facebook"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:379
+#: ../lib/pz-linkcard-oldman-edit.php:379
 #: ../lib/pz-linkcard-settings-display.php:105
 msgid "Hatena"
 msgstr "はてなブックマーク"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:380
+#: ../lib/pz-linkcard-oldman-edit.php:380
 msgid "Qiita likes"
 msgstr "Qiitaのいいね数"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:381
+#: ../lib/pz-linkcard-oldman-edit.php:381
 msgid "Qiita stocks"
 msgstr "Qiitaのストック数"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:388
+#: ../lib/pz-linkcard-oldman-edit.php:388
 msgid "(Not yet acquired)"
 msgstr "（未取得）"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:398
+#: ../lib/pz-linkcard-oldman-edit.php:398
 msgid "Last SNS Check"
 msgstr "前回のSNS確認日時"
 
-#: ../lib/pz-linkcard-cacheman-edit.php:401
+#: ../lib/pz-linkcard-oldman-edit.php:401
 msgid "Next SNS Check"
 msgstr "次回のSNS確認日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:113
+#: ../lib/pz-linkcard-oldman-list.php:113
 msgid "Post Modified Date"
 msgstr "投稿更新日"
 
-#: ../lib/pz-linkcard-cacheman-list.php:114
-#: ../lib/pz-linkcard-cacheman-list.php:491
+#: ../lib/pz-linkcard-oldman-list.php:114
+#: ../lib/pz-linkcard-oldman-list.php:491
 msgid "Charset"
 msgstr "文字ｾｯﾄ"
 
-#: ../lib/pz-linkcard-cacheman-list.php:119
+#: ../lib/pz-linkcard-oldman-list.php:119
 msgid "SNS Check Date"
 msgstr "シェア数取得日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:120
-#: ../lib/pz-linkcard-cacheman-list.php:336
+#: ../lib/pz-linkcard-oldman-list.php:120
+#: ../lib/pz-linkcard-oldman-list.php:336
 msgid "Next Share Count Retrieval Date"
-msgstr "次回シェア数取得日時"
+msgstr "次回シェア数取得日"
 
-#: ../lib/pz-linkcard-cacheman-list.php:121
+#: ../lib/pz-linkcard-oldman-list.php:121
 msgid "Alive Check Date"
 msgstr "状態チェック日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:122
-#: ../lib/pz-linkcard-cacheman-list.php:337
+#: ../lib/pz-linkcard-oldman-list.php:122
+#: ../lib/pz-linkcard-oldman-list.php:337
 msgid "Next Status Check Date"
-msgstr "次回状態チェック日時"
+msgstr "次回状態チェック日"
 
-#: ../lib/pz-linkcard-cacheman-list.php:123
+#: ../lib/pz-linkcard-oldman-list.php:123
 msgid "Published Post ID"
 msgstr "掲載投稿ID"
 
-#: ../lib/pz-linkcard-cacheman-list.php:125
+#: ../lib/pz-linkcard-oldman-list.php:125
 msgid "Result code"
 msgstr "結果コード"
 
-#: ../lib/pz-linkcard-cacheman-list.php:241
-#: ../lib/pz-linkcard-cacheman-list.php:250
+#: ../lib/pz-linkcard-oldman-list.php:241
+#: ../lib/pz-linkcard-oldman-list.php:250
 #: ../lib/pz-linkcard-file-export-menu.php:6
 #, php-format
 msgid "%s item"
 msgstr "%s個の項目"
 
-#: ../lib/pz-linkcard-cacheman-list.php:241
-#: ../lib/pz-linkcard-cacheman-list.php:250
+#: ../lib/pz-linkcard-oldman-list.php:241
+#: ../lib/pz-linkcard-oldman-list.php:250
 #: ../lib/pz-linkcard-file-export-menu.php:6
 #, php-format
 msgid "%s items"
 msgstr "%s個の項目"
 
-#: ../lib/pz-linkcard-cacheman-list.php:270
-#: ../lib/pz-linkcard-cacheman-list.php:359
-#: ../lib/pz-linkcard-cacheman-list.php:394
+#: ../lib/pz-linkcard-oldman-list.php:270
+#: ../lib/pz-linkcard-oldman-list.php:359
+#: ../lib/pz-linkcard-oldman-list.php:394
 msgid "Search"
 msgstr "検索"
 
-#: ../lib/pz-linkcard-cacheman-list.php:282
+#: ../lib/pz-linkcard-oldman-list.php:282
 msgid "Columns"
 msgstr "カラム"
 
-#: ../lib/pz-linkcard-cacheman-list.php:304
+#: ../lib/pz-linkcard-oldman-list.php:304
 msgid "Pagination"
 msgstr "ページネーション"
 
-#: ../lib/pz-linkcard-cacheman-list.php:306
+#: ../lib/pz-linkcard-oldman-list.php:306
 msgid "Number of items per page:"
 msgstr "ページごとに表示する項目数: "
 
-#: ../lib/pz-linkcard-cacheman-list.php:325 ../pz-linkcard.php:2508
+#: ../lib/pz-linkcard-oldman-list.php:325 ../pz-linkcard.php:2508
 msgid "Pz Card"
 msgstr "Pz カード"
 
-#: ../lib/pz-linkcard-cacheman-list.php:340
+#: ../lib/pz-linkcard-oldman-list.php:340
 msgid "Comparison operators"
 msgstr "比較演算子"
 
-#: ../lib/pz-linkcard-cacheman-list.php:342
+#: ../lib/pz-linkcard-oldman-list.php:342
 msgid "Equal"
 msgstr "一致"
 
-#: ../lib/pz-linkcard-cacheman-list.php:343
+#: ../lib/pz-linkcard-oldman-list.php:343
 msgid "Less than"
 msgstr "より小さい"
 
-#: ../lib/pz-linkcard-cacheman-list.php:344
+#: ../lib/pz-linkcard-oldman-list.php:344
 msgid "Less than or equal to"
 msgstr "以下"
 
-#: ../lib/pz-linkcard-cacheman-list.php:345
+#: ../lib/pz-linkcard-oldman-list.php:345
 msgid "Greater than"
 msgstr "より大きい"
 
-#: ../lib/pz-linkcard-cacheman-list.php:346
+#: ../lib/pz-linkcard-oldman-list.php:346
 msgid "Greater than or equal to"
 msgstr "以上"
 
-#: ../lib/pz-linkcard-cacheman-list.php:347
+#: ../lib/pz-linkcard-oldman-list.php:347
 msgid "Not equal to"
 msgstr "以外"
 
-#: ../lib/pz-linkcard-cacheman-list.php:348
+#: ../lib/pz-linkcard-oldman-list.php:348
 msgid "The colon before a comparison operator can be omitted."
 msgstr "比較演算子の前のコロンは省略できます。"
 
-#: ../lib/pz-linkcard-cacheman-list.php:355 ../lib/pz-linkcard-settings.php:784
+#: ../lib/pz-linkcard-oldman-list.php:355 ../lib/pz-linkcard-settings.php:784
 msgid "Show Screen Options"
 msgstr "表示オプションを表示"
 
-#: ../lib/pz-linkcard-cacheman-list.php:356
-#: ../lib/pz-linkcard-cacheman-list.php:395
+#: ../lib/pz-linkcard-oldman-list.php:356
+#: ../lib/pz-linkcard-oldman-list.php:395
 msgid "Search cards"
 msgstr "カードを検索"
 
-#: ../lib/pz-linkcard-cacheman-list.php:358
+#: ../lib/pz-linkcard-oldman-list.php:358
 msgid "Select All"
 msgstr "すべて選択"
 
-#: ../lib/pz-linkcard-cacheman-list.php:360
+#: ../lib/pz-linkcard-oldman-list.php:360
 msgid "Today"
 msgstr "今日"
 
-#: ../lib/pz-linkcard-cacheman-list.php:361
+#: ../lib/pz-linkcard-oldman-list.php:361
 msgid "Previous page"
 msgstr "前ページ"
 
-#: ../lib/pz-linkcard-cacheman-list.php:361
+#: ../lib/pz-linkcard-oldman-list.php:361
 msgid "Next page"
 msgstr "次ページ"
 
-#: ../lib/pz-linkcard-cacheman-list.php:374
+#: ../lib/pz-linkcard-oldman-list.php:374
 #: ../lib/traits/pz-linkcard-widget.php:117
 msgid "All"
 msgstr "すべて"
 
-#: ../lib/pz-linkcard-cacheman-list.php:375
+#: ../lib/pz-linkcard-oldman-list.php:375
 #: ../lib/traits/pz-linkcard-widget.php:118
 msgid "External"
 msgstr "外部"
 
-#: ../lib/pz-linkcard-cacheman-list.php:376
+#: ../lib/pz-linkcard-oldman-list.php:376
 #: ../lib/traits/pz-linkcard-widget.php:119
 msgid "Internal"
 msgstr "内部"
 
-#: ../lib/pz-linkcard-cacheman-list.php:377
+#: ../lib/pz-linkcard-oldman-list.php:377
 #: ../lib/traits/pz-linkcard-widget.php:120
 msgid "HTTP Status Changed"
 msgstr "HTTP状態の変化"
 
 #: ../lib/pz-linkcard-settings-check.php:129
-#: ../lib/pz-linkcard-cacheman-list.php:378
+#: ../lib/pz-linkcard-oldman-list.php:378
 #: ../lib/traits/pz-linkcard-widget.php:121
 msgid "Broken Link"
 msgstr "リンク切れ"
 
-#: ../lib/pz-linkcard-cacheman-list.php:379
+#: ../lib/pz-linkcard-oldman-list.php:379
 #: ../lib/traits/pz-linkcard-widget.php:122
 msgid "Unregistered"
 msgstr "未登録"
 
-#: ../lib/pz-linkcard-cacheman-list.php:391
+#: ../lib/pz-linkcard-oldman-list.php:391
 msgid "Text or field search. Examples: post:1234, id:10, domain:popozure.info"
 msgstr "検索キーワード（例．post:1234、id:10、domain:popozure.info）"
 
-#: ../lib/pz-linkcard-cacheman-list.php:404
+#: ../lib/pz-linkcard-oldman-list.php:404
 msgid "Bulk Actions"
 msgstr "一括操作"
 
-#: ../lib/pz-linkcard-cacheman-list.php:405 ../lib/pz-linkcard-cacheman.php:309
+#: ../lib/pz-linkcard-oldman-list.php:405 ../lib/pz-linkcard-oldman.php:309
 msgid "Renew Cache"
 msgstr "記事内容の再取得"
 
-#: ../lib/pz-linkcard-cacheman-list.php:406 ../lib/pz-linkcard-cacheman.php:330
+#: ../lib/pz-linkcard-oldman-list.php:406 ../lib/pz-linkcard-oldman.php:330
 msgid "Renew Thumbnail Image"
 msgstr "サムネイル画像を再取得する"
 
-#: ../lib/pz-linkcard-cacheman-list.php:407 ../lib/pz-linkcard-cacheman.php:351
+#: ../lib/pz-linkcard-oldman-list.php:407 ../lib/pz-linkcard-oldman.php:351
 msgid "Renew SNS Count"
 msgstr "ソーシャルカウントを再取得する"
 
-#: ../lib/pz-linkcard-cacheman-list.php:409
+#: ../lib/pz-linkcard-oldman-list.php:409
 msgid "Check Status"
 msgstr "状態チェック"
 
-#: ../lib/pz-linkcard-cacheman-list.php:410
+#: ../lib/pz-linkcard-oldman-list.php:410
 msgid "Delete from Cache"
 msgstr "キャッシュから削除する"
 
-#: ../lib/pz-linkcard-cacheman-list.php:412
+#: ../lib/pz-linkcard-oldman-list.php:412
 msgid "Nothing is selected."
 msgstr "選択されていません。"
 
-#: ../lib/pz-linkcard-cacheman-list.php:412
-#: ../lib/pz-linkcard-cacheman-list.php:748
-#: ../lib/pz-linkcard-cacheman-list.php:749
+#: ../lib/pz-linkcard-oldman-list.php:412
+#: ../lib/pz-linkcard-oldman-list.php:748
+#: ../lib/pz-linkcard-oldman-list.php:749
 #: ../lib/pz-linkcard-file-import-menu.php:12
 #: ../lib/pz-linkcard-settings-admin.php:60
 #: ../lib/pz-linkcard-settings-initialize.php:9
@@ -799,178 +799,178 @@ msgstr "選択されていません。"
 msgid "Are you sure?"
 msgstr "実行しますか？"
 
-#: ../lib/pz-linkcard-cacheman-list.php:412
+#: ../lib/pz-linkcard-oldman-list.php:412
 msgid ""
 "11 or more items are selected. This may take some time. Do you want to "
 "proceed?"
 msgstr "11件以上選択しています。時間がかかる可能性があります。実行しますか？"
 
-#: ../lib/pz-linkcard-cacheman-list.php:412
+#: ../lib/pz-linkcard-oldman-list.php:412
 msgid "Execute"
 msgstr "実施"
 
-#: ../lib/pz-linkcard-cacheman-list.php:418
+#: ../lib/pz-linkcard-oldman-list.php:418
 msgid "All Domains"
 msgstr "すべてのドメイン"
 
-#: ../lib/pz-linkcard-cacheman-list.php:429
+#: ../lib/pz-linkcard-oldman-list.php:429
 msgid "Refine Search"
 msgstr "絞り込み検索"
 
-#: ../lib/pz-linkcard-cacheman-list.php:435 ../lib/pz-linkcard-settings.php:226
+#: ../lib/pz-linkcard-oldman-list.php:435 ../lib/pz-linkcard-settings.php:226
 #: ../lib/traits/pz-linkcard-widget.php:199 ../pz-linkcard.php:2574
 msgid "Manager"
 msgstr "管理"
 
-#: ../lib/pz-linkcard-cacheman-list.php:473
+#: ../lib/pz-linkcard-oldman-list.php:473
 msgid "Post<br>ID"
 msgstr "投稿<br>ID"
 
-#: ../lib/pz-linkcard-cacheman-list.php:485
+#: ../lib/pz-linkcard-oldman-list.php:485
 msgid "Post<br>Modified Date"
 msgstr "投稿<br>更新日"
 
-#: ../lib/pz-linkcard-cacheman-list.php:503
+#: ../lib/pz-linkcard-oldman-list.php:503
 msgid "Tw"
 msgstr "𝕏"
 
-#: ../lib/pz-linkcard-cacheman-list.php:511
+#: ../lib/pz-linkcard-oldman-list.php:511
 msgid "fb"
 msgstr "fb"
 
-#: ../lib/pz-linkcard-cacheman-list.php:519
+#: ../lib/pz-linkcard-oldman-list.php:519
 msgid "B!"
 msgstr "B!"
 
-#: ../lib/pz-linkcard-cacheman-list.php:526
+#: ../lib/pz-linkcard-oldman-list.php:526
 #: ../lib/pz-linkcard-settings-advanced.php:179
 msgid "Qiita"
 msgstr "Qiita"
 
-#: ../lib/pz-linkcard-cacheman-list.php:534
+#: ../lib/pz-linkcard-oldman-list.php:534
 msgid "Registered<br>Date"
 msgstr "登録<br>日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:540
+#: ../lib/pz-linkcard-oldman-list.php:540
 msgid "Update<br>Date"
 msgstr "更新<br>日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:546
+#: ../lib/pz-linkcard-oldman-list.php:546
 msgid "SNS<br>Check<br>Date"
 msgstr "ｼｪｱ数<br>取得<br>日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:553
+#: ../lib/pz-linkcard-oldman-list.php:553
 msgid "Next<br>Share Count<br>Date"
 msgstr "次回<br>ｼｪｱ数<br>日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:560
+#: ../lib/pz-linkcard-oldman-list.php:560
 msgid "Alive<br>Check<br>Date"
 msgstr "状態<br>確認<br>日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:567
+#: ../lib/pz-linkcard-oldman-list.php:567
 msgid "Next<br>Status<br>Date"
 msgstr "次回<br>状態<br>日時"
 
-#: ../lib/pz-linkcard-cacheman-list.php:574
+#: ../lib/pz-linkcard-oldman-list.php:574
 msgid "Published<br>Post<br>ID"
 msgstr "掲載<br>投稿<br>ID"
 
-#: ../lib/pz-linkcard-cacheman-list.php:580
+#: ../lib/pz-linkcard-oldman-list.php:580
 msgid "Click<br>Count"
 msgstr "ｸﾘｯｸ<br>回数"
 
-#: ../lib/pz-linkcard-cacheman-list.php:586
+#: ../lib/pz-linkcard-oldman-list.php:586
 msgid "Result<br>code"
 msgstr "結果<br>コード"
 
-#: ../lib/pz-linkcard-cacheman-list.php:594
+#: ../lib/pz-linkcard-oldman-list.php:594
 msgid "(Last)"
 msgstr "(最新)"
 
-#: ../lib/pz-linkcard-cacheman-list.php:629
+#: ../lib/pz-linkcard-oldman-list.php:629
 msgid "&#x26a0;&#xfe0f;"
 msgstr "&#x26a0;&#xfe0f;"
 
-#: ../lib/pz-linkcard-cacheman-list.php:631
+#: ../lib/pz-linkcard-oldman-list.php:631
 msgid "A recorded HTTP status code indicates an error, but the error is being ignored for this card."
 msgstr "記録されたHTTPステータスコードはエラーを示していますが、このカードではエラーを無視しています。"
 
-#: ../lib/pz-linkcard-cacheman-list.php:633
+#: ../lib/pz-linkcard-oldman-list.php:633
 msgid "&#x26d4;&#xfe0f;"
 msgstr "&#x26d4;&#xfe0f;"
 
-#: ../lib/pz-linkcard-cacheman-list.php:635
+#: ../lib/pz-linkcard-oldman-list.php:635
 msgid "A recorded HTTP status code indicates an error. You can choose to ignore the error on the card editing screen."
 msgstr "記録されたHTTPステータスコードがエラーを示しています。カード編集画面でエラーを無視する設定にできます。"
 
-#: ../lib/pz-linkcard-cacheman-list.php:659 ../pz-linkcard.php:1073
+#: ../lib/pz-linkcard-oldman-list.php:659 ../pz-linkcard.php:1073
 #: ../pz-linkcard.php:2405
 msgid "Retrieving..."
 msgstr "取得中…"
 
-#: ../lib/pz-linkcard-cacheman-list.php:735
+#: ../lib/pz-linkcard-oldman-list.php:735
 msgid "Ignore"
 msgstr "無視"
 
-#: ../lib/pz-linkcard-cacheman-list.php:747 ../pz-linkcard.php:2399
+#: ../lib/pz-linkcard-oldman-list.php:747 ../pz-linkcard.php:2399
 msgid "Edit"
 msgstr "編集"
 
-#: ../lib/pz-linkcard-cacheman-list.php:748
+#: ../lib/pz-linkcard-oldman-list.php:748
 msgid "Renew"
 msgstr "再取得"
 
-#: ../lib/pz-linkcard-cacheman-list.php:749
+#: ../lib/pz-linkcard-oldman-list.php:749
 msgid "Delete"
 msgstr "削除"
 
-#: ../lib/pz-linkcard-cacheman-list.php:787
+#: ../lib/pz-linkcard-oldman-list.php:787
 msgid "History"
 msgstr "履歴"
 
-#: ../lib/pz-linkcard-cacheman.php:139 ../lib/pz-linkcard-settings.php:218
+#: ../lib/pz-linkcard-oldman.php:139 ../lib/pz-linkcard-settings.php:218
 msgid "Admin Mode"
 msgstr "管理者モード"
 
-#: ../lib/pz-linkcard-cacheman.php:140 ../lib/pz-linkcard-settings.php:219
+#: ../lib/pz-linkcard-oldman.php:140 ../lib/pz-linkcard-settings.php:219
 msgid "Development Environment"
 msgstr "開発環境"
 
-#: ../lib/pz-linkcard-cacheman.php:141 ../lib/pz-linkcard-settings.php:220
+#: ../lib/pz-linkcard-oldman.php:141 ../lib/pz-linkcard-settings.php:220
 msgid "Production Environment"
 msgstr "本番環境"
 
-#: ../lib/pz-linkcard-cacheman.php:147 ../lib/traits/pz-linkcard-widget.php:200
+#: ../lib/pz-linkcard-oldman.php:147 ../lib/traits/pz-linkcard-widget.php:200
 #: ../pz-linkcard.php:2511 ../pz-linkcard.php:2575
 msgid "Settings"
 msgstr "設定"
 
-#: ../lib/pz-linkcard-cacheman.php:149
+#: ../lib/pz-linkcard-oldman.php:149
 msgid "Import"
 msgstr "インポート"
 
-#: ../lib/pz-linkcard-cacheman.php:150
+#: ../lib/pz-linkcard-oldman.php:150
 msgid "Export"
 msgstr "エクスポート"
 
-#: ../lib/pz-linkcard-cacheman.php:153 ../pz-linkcard.php:2402
+#: ../lib/pz-linkcard-oldman.php:153 ../pz-linkcard.php:2402
 msgid "Pz-LinkCard Manager"
 msgstr "Pz カード管理"
 
-#: ../lib/pz-linkcard-cacheman.php:158 ../lib/pz-linkcard-settings.php:234
+#: ../lib/pz-linkcard-oldman.php:158 ../lib/pz-linkcard-settings.php:234
 msgid "Return to Previous Page"
 msgstr "元の画面へ戻る"
 
-#: ../lib/pz-linkcard-cacheman.php:217 ../lib/pz-linkcard-settings.php:532
+#: ../lib/pz-linkcard-oldman.php:217 ../lib/pz-linkcard-settings.php:532
 msgid "Invalid URL parameter in "
 msgstr "URLパラメーターの指定が無効です→"
 
-#: ../lib/pz-linkcard-cacheman.php:217 ../lib/pz-linkcard-settings-basic.php:63
+#: ../lib/pz-linkcard-oldman.php:217 ../lib/pz-linkcard-settings-basic.php:63
 #: ../lib/pz-linkcard-settings.php:532
 msgid "*"
 msgstr "※"
 
-#: ../lib/pz-linkcard-cacheman.php:217 ../lib/pz-linkcard-settings.php:532
+#: ../lib/pz-linkcard-oldman.php:217 ../lib/pz-linkcard-settings.php:532
 msgid ""
 "You can dismiss this message from <a href=\"./options-general.php?page=pz-"
 "linkcard-settings&tab=pz-error#pz-error-reset-settings\">the settings "
@@ -980,25 +980,25 @@ msgstr ""
 "settings&tab=pz-error#pz-error-reset-settings\">設定画面</a>から解除できま"
 "す。"
 
-#: ../lib/pz-linkcard-cacheman.php:257
+#: ../lib/pz-linkcard-oldman.php:257
 msgid "The specified link card was not found."
 msgstr "指定されたリンクカードが見つかりません。"
 
-#: ../lib/pz-linkcard-cacheman.php:279
+#: ../lib/pz-linkcard-oldman.php:279
 msgid "Cache Update Result"
 msgstr "キャッシュの更新結果"
 
-#: ../lib/pz-linkcard-cacheman.php:279 ../lib/pz-linkcard-cacheman.php:309
-#: ../lib/pz-linkcard-cacheman.php:330 ../lib/pz-linkcard-cacheman.php:351
-#: ../lib/pz-linkcard-cacheman.php:381 ../lib/pz-linkcard-cacheman.php:407
-#: ../lib/pz-linkcard-cacheman.php:425
+#: ../lib/pz-linkcard-oldman.php:279 ../lib/pz-linkcard-oldman.php:309
+#: ../lib/pz-linkcard-oldman.php:330 ../lib/pz-linkcard-oldman.php:351
+#: ../lib/pz-linkcard-oldman.php:381 ../lib/pz-linkcard-oldman.php:407
+#: ../lib/pz-linkcard-oldman.php:425
 msgid "..."
 msgstr "..."
 
-#: ../lib/pz-linkcard-cacheman.php:279 ../lib/pz-linkcard-cacheman.php:309
-#: ../lib/pz-linkcard-cacheman.php:330 ../lib/pz-linkcard-cacheman.php:351
-#: ../lib/pz-linkcard-cacheman.php:381 ../lib/pz-linkcard-cacheman.php:407
-#: ../lib/pz-linkcard-cacheman.php:425
+#: ../lib/pz-linkcard-oldman.php:279 ../lib/pz-linkcard-oldman.php:309
+#: ../lib/pz-linkcard-oldman.php:330 ../lib/pz-linkcard-oldman.php:351
+#: ../lib/pz-linkcard-oldman.php:381 ../lib/pz-linkcard-oldman.php:407
+#: ../lib/pz-linkcard-oldman.php:425
 #: ../lib/pz-linkcard-file-import-csv.php:11
 #: ../lib/pz-linkcard-file-import-csv.php:121
 #: ../lib/pz-linkcard-file-import-csv.php:128
@@ -1014,19 +1014,19 @@ msgstr "..."
 msgid "("
 msgstr "（"
 
-#: ../lib/pz-linkcard-cacheman.php:279 ../lib/pz-linkcard-cacheman.php:309
-#: ../lib/pz-linkcard-cacheman.php:330 ../lib/pz-linkcard-cacheman.php:351
-#: ../lib/pz-linkcard-cacheman.php:381 ../lib/pz-linkcard-cacheman.php:407
-#: ../lib/pz-linkcard-cacheman.php:425
+#: ../lib/pz-linkcard-oldman.php:279 ../lib/pz-linkcard-oldman.php:309
+#: ../lib/pz-linkcard-oldman.php:330 ../lib/pz-linkcard-oldman.php:351
+#: ../lib/pz-linkcard-oldman.php:381 ../lib/pz-linkcard-oldman.php:407
+#: ../lib/pz-linkcard-oldman.php:425
 #: ../lib/pz-linkcard-file-import-csv.php:199
 #: ../lib/pz-linkcard-file-import.php:111
 msgid "Success:"
 msgstr "成功："
 
-#: ../lib/pz-linkcard-cacheman.php:279 ../lib/pz-linkcard-cacheman.php:309
-#: ../lib/pz-linkcard-cacheman.php:330 ../lib/pz-linkcard-cacheman.php:351
-#: ../lib/pz-linkcard-cacheman.php:381 ../lib/pz-linkcard-cacheman.php:407
-#: ../lib/pz-linkcard-cacheman.php:425
+#: ../lib/pz-linkcard-oldman.php:279 ../lib/pz-linkcard-oldman.php:309
+#: ../lib/pz-linkcard-oldman.php:330 ../lib/pz-linkcard-oldman.php:351
+#: ../lib/pz-linkcard-oldman.php:381 ../lib/pz-linkcard-oldman.php:407
+#: ../lib/pz-linkcard-oldman.php:425
 #: ../lib/pz-linkcard-file-import-csv.php:199
 #: ../lib/pz-linkcard-file-import-csv.php:201
 #: ../lib/pz-linkcard-file-import.php:111
@@ -1034,10 +1034,10 @@ msgstr "成功："
 msgid "Skip:"
 msgstr "スキップ："
 
-#: ../lib/pz-linkcard-cacheman.php:279 ../lib/pz-linkcard-cacheman.php:309
-#: ../lib/pz-linkcard-cacheman.php:330 ../lib/pz-linkcard-cacheman.php:351
-#: ../lib/pz-linkcard-cacheman.php:381 ../lib/pz-linkcard-cacheman.php:407
-#: ../lib/pz-linkcard-cacheman.php:425
+#: ../lib/pz-linkcard-oldman.php:279 ../lib/pz-linkcard-oldman.php:309
+#: ../lib/pz-linkcard-oldman.php:330 ../lib/pz-linkcard-oldman.php:351
+#: ../lib/pz-linkcard-oldman.php:381 ../lib/pz-linkcard-oldman.php:407
+#: ../lib/pz-linkcard-oldman.php:425
 #: ../lib/pz-linkcard-file-import-csv.php:11
 #: ../lib/pz-linkcard-file-import-csv.php:121
 #: ../lib/pz-linkcard-file-import-csv.php:128
@@ -1053,15 +1053,15 @@ msgstr "スキップ："
 msgid ")"
 msgstr "）"
 
-#: ../lib/pz-linkcard-cacheman.php:407
+#: ../lib/pz-linkcard-oldman.php:407
 msgid "Alive check"
 msgstr "リンク先のチェック"
 
-#: ../lib/pz-linkcard-cacheman.php:425
+#: ../lib/pz-linkcard-oldman.php:425
 msgid "Delete Cache"
 msgstr "キャッシュ削除"
 
-#: ../lib/pz-linkcard-cacheman.php:444
+#: ../lib/pz-linkcard-oldman.php:444
 msgid "An undefined action was selected."
 msgstr "未定義の処理を選択しました"
 
@@ -4094,11 +4094,11 @@ msgstr "元URLから再試行"
 msgid "If the saved redirect destination fails with an HTTP error (such as 403) or a connection error, follow redirects again from the original URL."
 msgstr "保存済みのリダイレクト先が403などのHTTPエラーや通信エラーで取得に失敗した場合、元URLからリダイレクトを追跡し直します。"
 
-#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-oldman-edit.php
 msgid "Set thumbnail image"
 msgstr "サムネイル画像を設定"
 
-#: ../lib/pz-linkcard-cacheman-edit.php
+#: ../lib/pz-linkcard-oldman-edit.php
 msgid "Set site icon"
 msgstr "サイトアイコンを設定"
 
@@ -4120,7 +4120,7 @@ msgstr "指定のページが見つかりません。"
 msgid "Use a dedicated User-Agent for Microsoft."
 msgstr "Microsoft向けの専用ユーザーエージェントを使用する。"
 
-#: ../lib/pz-linkcard-cacheman.php
+#: ../lib/pz-linkcard-oldman.php
 msgid "Content retrieval queued"
 msgstr "記事内容の取得を予約しました"
 
@@ -4128,3 +4128,91 @@ msgstr "記事内容の取得を予約しました"
 #: ../lib/ajax/pz-linkcard-ajax-cacheman-pending.php
 msgid "Failed to queue article content retrieval."
 msgstr "記事内容の取得を予約できませんでした。"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "External Links"
+msgstr "外部リンク"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Internal Links"
+msgstr "内部リンク"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Changed"
+msgstr "変更あり"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Errors"
+msgstr "エラー"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "HTTP Status"
+msgstr "HTTPステータス"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Updated"
+msgstr "更新日時"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Link Cards"
+msgstr "リンクカード"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Search Link Cards"
+msgstr "リンクカードを検索"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "(no title)"
+msgstr "（タイトルなし）"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Filter Search"
+msgstr "絞り込み検索"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Post Modified"
+msgstr "投稿更新日"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Registration Date"
+msgstr "登録日"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Share Count Date"
+msgstr "シェア数獲得日"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Next Share Count Date"
+msgstr "次回シェア数取得日"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Status Check Date"
+msgstr "状態チェック日"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Published Post IDs"
+msgstr "掲載投稿ID"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Likes"
+msgstr "いいね"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Stocks"
+msgstr "ストック"
+
+#: ../pz-linkcard.php
+msgid "Use the links above the list to filter cards by link type or status. Search by URL, title or site name, or select a domain to narrow the list."
+msgstr "一覧上のリンクからリンク種別や状態で絞り込めます。URL・タイトル・サイト名で検索したり、ドメインを選択して絞り込んだりできます。"
+
+#: ../pz-linkcard.php
+msgid "Select cards with the checkboxes to run a bulk action. Click a column heading to change the sort order. Screen Options lets you change the number of cards per page (1–200)."
+msgstr "チェックボックスでカードを選択して一括操作を実行できます。見出しをクリックすると並び順を変更できます。「表示オプション」では1ページの表示件数（1～200件）を変更できます。"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Post<br>Date and Time"
+msgstr "投稿<br>日時"
+
+#: ../lib/pz-linkcard-cacheman.php
+msgid "Card<br>ID"
+msgstr "カード<br>ID"

@@ -1130,7 +1130,7 @@ input.pz-admin-only[type="submit"],
 	line-height: 1.7;
 }
 
-/* lib/pz-linkcard-cacheman-edit.php */
+/* lib/pz-linkcard-oldman-edit.php */
 .pz-man-cache-poststuff {
 	margin: 8px 0 32px;
 	position: relative;
@@ -2226,6 +2226,9 @@ input.pz-admin-only[type="submit"],
 	height: 20px;
 	line-height: 20px;
 	font-size: 16px;
+}
+#pz-man-cache-url-status[hidden] {
+	display: none;
 }
 
 .pz-man-body-url-error-ignore {

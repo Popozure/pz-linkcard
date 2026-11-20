@@ -22,7 +22,7 @@ final class pz_LinkCard_Search_Query_Parser {
 		'url'				=>	array('column' => 'url',			'type' => 'text' ),
 		'domain'			=>	array('column' => 'domain',			'type' => 'text' ),
 		'site'				=>	array('column' => 'domain',			'type' => 'text' ),
-		'sitename'			=>	array('column' => 'sitename',		'type' => 'text' ),
+		'sitename'			=>	array('column' => 'site_name',		'type' => 'text' ),
 		'click'				=>	array('column' => 'click_count',	'type' => 'number' ),
 		'post'				=>	array('column' => array('use_post_id1', 'use_post_id2', 'use_post_id3', 'use_post_id4', 'use_post_id5', 'use_post_id6' ), 'type' => 'number' ),
 	);

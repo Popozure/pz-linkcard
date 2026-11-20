@@ -301,6 +301,10 @@ trait Pz_LinkCard_Cache {
 
 		// 登録時情報
 		if ((!isset($data['regist_time'] ) || intval($data['regist_time'] ) === 0 ) && $has_charset ) {
+			// Initial imports may supply only the registration result.
+			if ($data['update_result'] === null && $data['regist_result'] !== null) {
+				$data['update_result'] = $data['regist_result'];
+			}
 			$data['regist_title']	=	$data['title'];
 			$data['regist_excerpt']	=	$data['excerpt'];
 			$data['regist_charset']	=	$data['charset'];

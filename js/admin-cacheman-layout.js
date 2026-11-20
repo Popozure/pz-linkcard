@@ -2,6 +2,23 @@
     function initCachemanLayout() {
         const editor = document.querySelector(".pz-man-cache-poststuff");
         if (!editor) return;
+        const statusIcon = editor.querySelector("#pz-man-cache-url-status");
+        const ignoreError = editor.querySelector('input[type="checkbox"][name="data[no_failure]"]');
+        const resultInput = editor.querySelector('input[name="data[update_result]"]');
+        const updateStatusIcon = () => {
+            if (!statusIcon || !resultInput) return;
+            const status = Number(resultInput.value);
+            const error = resultInput.value.trim() !== "" && Number.isFinite(status) && status !== 0 && (status < 100 || status >= 400);
+            const ignored = !!ignoreError?.checked;
+            statusIcon.hidden = !error;
+            statusIcon.className = ignored ? "pz-man-body-url-error-ignore dashicons dashicons-warning" : "pz-man-body-url-error dashicons dashicons-dismiss";
+            const label = ignored ? statusIcon.dataset.ignoredLabel : statusIcon.dataset.errorLabel;
+            statusIcon.title = label;
+            statusIcon.setAttribute("aria-label", label);
+        };
+        ignoreError?.addEventListener("change", updateStatusIcon);
+        resultInput?.addEventListener("input", updateStatusIcon);
+        updateStatusIcon();
 
         const columns = new Map();
         editor.querySelectorAll(".pz-man-cache-sortables[data-pz-cache-column]").forEach(column => {

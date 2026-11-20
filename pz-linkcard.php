@@ -723,6 +723,10 @@ class class_pz_linkcard {
 
 		// 管理画面のとき
 		if	(is_admin() ) {
+			add_filter('set_screen_option_pz_linkcard_cards_per_page', function ($status, $option, $value) {
+				$value = (int) $value;
+				return in_array($value, array(10, 20, 50, 100), true) ? $value : 10;
+			}, 10, 3);
 			// 現在の管理ページ
 			$request_uri		=	isset($_SERVER['REQUEST_URI'] ) ? wp_unslash($_SERVER['REQUEST_URI'] ) : '';
 			$this->now_page	=	'';
@@ -2201,7 +2205,17 @@ $url_info = $this->Pz_GetURLInfo($url );
 				$menu_manager	.=	'&nbsp;<span class="update-plugins"><span class="update-count lkc-menu-count">'.$result->count.'</span></span>';
 			}
 		}
-		add_management_page	('pz-linkcard-manager',		$menu_manager,		'manage_options', 	self::CACHEMAN_PAGE,	array($this, 'page_cacheman' ) );
+		add_management_page	('pz-linkcard-manager',		$menu_manager,		'manage_options', 	'pz-linkcard-cacheman',	array($this, 'page_linkcards' ) );
+		add_action('load-tools_page_pz-linkcard-cacheman', function () {
+			if (!$this->is_cacheman_detail_request()) require __DIR__.'/lib/pz-linkcard-cacheman-screen.php';
+		});
+		add_submenu_page(null, __('Card Manager', 'pz-linkcard'), __('Card Manager', 'pz-linkcard'), 'manage_options', 'pz-linkcard-oldman', array($this, 'page_oldman'));
+		add_action('load-tools_page_pz-linkcard-oldman', function () {
+			$this->cacheman_url = admin_url('tools.php?page=pz-linkcard-oldman');
+			$this->now_page = 2;
+		});
+
+
 		add_options_page	('pz-linkcard-settings',	$menu_settings,		'manage_options', 	self::SETTINGS_PAGE,	array($this, 'page_settings' ) );
 	}
 
@@ -2250,6 +2264,21 @@ $url_info = $this->Pz_GetURLInfo($url );
 	}
 	
 	// 管理画面＞Pz カード管理
+	private function is_cacheman_detail_request() {
+		$action = $_POST['action'] ?? ($_GET['action'] ?? '');
+		$action = is_string($action) ? sanitize_key(wp_unslash($action)) : '';
+		return in_array($action, array('edit', 'update', 'cancel', 'click-log', 'show-import', 'show-export', 'exec-import'), true);
+	}
+	public function page_linkcards() {
+		require __DIR__.'/lib/pz-linkcard-cacheman.php';
+	}
+	public function page_oldman() {
+		if (!current_user_can('manage_options')) {
+			wp_die(__('Sorry, you are not allowed to access this page.', 'pz-linkcard'));
+		}
+		require __DIR__.'/lib/pz-linkcard-oldman.php';
+	}
+
 	public	function	page_cacheman() {
 
 		if	(!current_user_can('manage_options' ) ) {
@@ -2306,9 +2335,17 @@ $url_info = $this->Pz_GetURLInfo($url );
 			return;
 		}
 
+		if ($hook === 'tools_page_pz-linkcard-cacheman' && !$this->is_cacheman_detail_request()) {
+			wp_enqueue_style('pz-linkcard-cacheman-css', $this->plugin_dir_url.'css/cacheman.css', array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/cacheman.css'));
+			wp_enqueue_script('pz-linkcard-cacheman-ui', $this->plugin_dir_url.'js/cacheman.js', array('jquery', 'common'), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/cacheman.js'), true);
+			wp_localize_script('pz-linkcard-cacheman-ui', 'pzCardList', array('settingsUrl' => $this->settings_url, 'today' => current_time('Y-m-d'), 'pageChoices' => $this->pz_GetCachemanPerPageChoices(), 'ajaxUrl' => admin_url('admin-ajax.php'), 'pendingNonce' => wp_create_nonce('pz_lkc_cacheman_pending'), 'retrieving' => __('Retrieving...', 'pz-linkcard'), 'queueFailed' => __('Failed to queue article content retrieval.', 'pz-linkcard'), 'emptyMessage' => __('Nothing is selected.', 'pz-linkcard'), 'manyMessage' => __('11 or more items are selected. This may take some time. Do you want to proceed?', 'pz-linkcard'), 'selectedItem' => __('%s item selected', 'pz-linkcard'), 'selectedItems' => __('%s items selected', 'pz-linkcard')));
+			return;
+		}
+
 		$allowed_hooks	=	array(
 			'settings_page_'.self::SETTINGS_PAGE,
 			'tools_page_'.self::CACHEMAN_PAGE,
+			'tools_page_pz-linkcard-oldman',
 		);
 		if	(!in_array($hook, $allowed_hooks, true ) ) {
 			return;
@@ -2357,12 +2394,12 @@ $url_info = $this->Pz_GetURLInfo($url );
 			);
 		}
 
-		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
+		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'tools_page_pz-linkcard-oldman' || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			wp_enqueue_media();
 		}
-		if ($hook === 'tools_page_'.self::CACHEMAN_PAGE) {
+		if ($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'tools_page_pz-linkcard-oldman') {
 			$layout_js_version = PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-cacheman-layout.js');
-			wp_enqueue_script('pz-linkcard-cacheman-layout', $this->plugin_dir_url.'js/admin-cacheman-layout.js', array('jquery-ui-sortable'), $layout_js_version, true);
+			wp_enqueue_script('pz-linkcard-oldman-layout', $this->plugin_dir_url.'js/admin-cacheman-layout.js', array('jquery-ui-sortable'), $layout_js_version, true);
 		}
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			$admin_tabs_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-tabs.js' );
