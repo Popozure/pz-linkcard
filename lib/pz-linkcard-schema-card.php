@@ -44,6 +44,7 @@ return "CREATE TABLE $this->db_card (
 				update_time		BIGINT			UNSIGNED				DEFAULT 0,
 				PRIMARY KEY		(id),
 				KEY url_key (url_key),
+				KEY domain_update_time (domain, update_time, regist_time),
 				KEY alive_nexttime (alive_nexttime),
 				KEY sns_nexttime (sns_nexttime)
 			) ".$wpdb->get_charset_collate()." ;";

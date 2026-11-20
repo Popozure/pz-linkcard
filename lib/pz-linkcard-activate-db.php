@@ -3,6 +3,15 @@
 	// DB作成
 	global	$wpdb;
 	$wpdb->hide_errors();
+
+	// Per-site cron timestamps now come from registered card records.
+	$obsolete_cron_keys = $wpdb->get_col($wpdb->prepare(
+		"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
+		$wpdb->esc_like('pz_lkc_cron_site_').'%'
+	));
+	foreach ((array) $obsolete_cron_keys as $obsolete_cron_key) {
+		delete_option($obsolete_cron_key);
+	}
 	require_once(ABSPATH.'wp-admin/includes/upgrade.php' );
 
 	// 新バージョンのカードテーブル名を、旧バージョンへ戻す際に復元する

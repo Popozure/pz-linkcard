@@ -1736,6 +1736,10 @@ input.pz-admin-only[type="submit"],
 	gap: 8px;
 }
 
+.pz-settings-screen-tabs {
+	z-index: 6;
+}
+
 .pz-man-screen-options,
 .pz-man-help,
 .pz-page-help {

@@ -455,14 +455,14 @@
 			case 'ppc': // プリセット: 紙めくれ
 				$file_text	=	str_replace('/*WRAP-AFTER*/',		'z-index: -1; content:""; height: 10px; width: 60%; position: absolute; right: 16px; bottom: 14px; left: auto; transform: skew(5deg) rotate(3deg); -webkit-transform: skew(5deg) rotate(3deg); -moz-transform: skew(5deg) rotate(3deg); box-shadow: 0 16px 16px rgba(0,0,0,1); -webkit-box-shadow: 0 16px 16px rgba(0,0,0,1); -moz-box-shadow: 0 16px 12px rgba(0,0,0,1);', $file_text );
 				$file_text	=	str_replace('/*SHADOW*/',			'box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.8);', $file_text );
-				$file_text	=	str_replace('/*OPTION*/',			'article { position: relative; z-index: 0; } article blockquote { position: relative; z-index: 0; }', $file_text );
+				$file_text	=	str_replace('/*OPTION*/',			'.linkcard { position: relative; z-index: 0; }', $file_text );
 				break;
 			case 'tac': // プリセット: テープと紙めくれ
 				$file_text	=	str_replace('/*MARGIN-LEFT*/',		'padding-left: 24px;', $file_text );
 				$file_text	=	str_replace('/*WRAP-BEFORE*/',		'content: ""; display: block; position: absolute; left:  -24px; top: 0px; width: 200px; height: 25px; z-index: 2; background-color: rgba(243,245,228,0.5); border: 2px solid rgba(255,255,255,0.5); -webkit-box-shadow: 1px 1px 4px rgba(200,200,180,0.8); -moz-box-shadow: 1px 1px 4px rgba(200,200,180,0.8); box-shadow: 1px 1px 4px rgba(200,200,180,0.8); -webkit-transform: rotate(-8deg); -moz-transform: rotate(-8deg); -o-transform: rotate(-8deg);', $file_text );
 				$file_text	=	str_replace('/*WRAP-AFTER*/',		'z-index: -1; content:""; height: 10px; width: 60%; position: absolute; right: 16px; bottom: 14px; left: auto; transform: skew(5deg) rotate(3deg); -webkit-transform: skew(5deg) rotate(3deg); -moz-transform: skew(5deg) rotate(3deg); box-shadow: 0 16px 16px rgba(0,0,0,1); -webkit-box-shadow: 0 16px 16px rgba(0,0,0,1); -moz-box-shadow: 0 16px 12px rgba(0,0,0,1);', $file_text );
 				$file_text	=	str_replace('/*SHADOW*/',			'box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.8);', $file_text );
-				$file_text	=	str_replace('/*OPTION*/',			'article { position: relative; z-index: 0; } article blockquote { position: relative; z-index: 0; }', $file_text );
+				$file_text	=	str_replace('/*OPTION*/',			'.linkcard { position: relative; z-index: 0; }', $file_text );
 				break;
 			case 'sBR': // プリセット: 縫い目 赤系
 				$file_text	=	str_replace('/*EX-BORDER*/',		'border: 2px dashed rgba(255,255,255,0.5);', $file_text );
@@ -633,9 +633,9 @@
 				$item_name			=	strtolower($item.'-underline' );
 				if		(array_key_exists($item_name, $prop ) ) {
 					if	($prop[$item_name] ) {
-						$after		=	'text-decoration: underline;';
+						$after		=	'text-decoration: underline !important;';
 					} else {
-						$after		=	'text-decoration: none;';
+						$after		=	'text-decoration: none !important;';
 					}
 					$file_text		=	str_replace('/*'.strtoupper($item_name ).'*/',		$after,		$file_text );
 				}
@@ -643,9 +643,9 @@
 				$item_name			=	strtolower($item.'-hover' );
 				if		(array_key_exists($item_name, $prop ) ) {
 					if	($prop[$item_name] ) {
-						$after		=	'text-decoration: underline;';
+						$after		=	'text-decoration: underline !important;';
 					} else {
-						$after		=	'text-decoration: none;';
+						$after		=	'text-decoration: none !important;';
 					}
 					$file_text		=	str_replace('/*'.strtoupper($item_name ).'*/',		$after,		$file_text );
 				}

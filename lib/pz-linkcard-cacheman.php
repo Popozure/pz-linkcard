@@ -28,7 +28,8 @@
 	$select_id		=	isset($_POST['select_id'] )		?	$_POST['select_id']							:	null;
 	$bulk_action	=	isset($_POST['bulk_action'] )	?	esc_attr($_POST['bulk_action'] )			:	null;
 	$data			=	(isset($_POST['data'] ) && is_array($_POST['data'] ) )		?	$_POST['data']	:	null;
-	$param_refine	=	isset($_POST['refine'] )		?	esc_attr($_POST['refine'] )					:	null;
+	$param_refine	= isset($_POST['refine'] )		? sanitize_text_field(wp_unslash($_POST['refine'] ) )	:
+						(isset($_GET['refine'] )		? sanitize_text_field(wp_unslash($_GET['refine'] ) )	: null );
 	$keyword		=	isset($_POST['keyword'] ) && is_string($_POST['keyword'] )
 						?	trim(preg_replace('/[\r\n\t ]+/u', ' ', wp_check_invalid_utf8(wp_unslash($_POST['keyword'] ) ) ) )
 						:	(isset($_GET['keyword']) && is_string($_GET['keyword'])
@@ -46,7 +47,8 @@
 	$return_url		=	$return_url ? wp_validate_redirect($return_url, '' ) : '';
 	$page_now		=	(isset($_POST['page_button'] )	?	intval($_POST['page_button'] )				:	
 						(isset($_POST['page_trans'] )	?	intval($_POST['page_trans'] )				:	
-						(isset($_POST['page_now'] )		?	intval($_POST['page_now'] )					:	0 ) ) );
+						(isset($_POST['page_now'] )	? intval($_POST['page_now'] )					:
+						(isset($_GET['page_now'] )	? intval($_GET['page_now'] )					: 0 ) ) ) );
 	$param_url		=	isset($_POST['url'] )			?	esc_attr($_POST['url'] )					:	null;
 	$cache_id		=	isset($_POST['cache_id'] )		?	absint($_POST['cache_id'] )					:
 						(isset($_GET['cache_id'] )		?	absint($_GET['cache_id'] )					:	null );
@@ -86,6 +88,19 @@
 	}
 	if	(!isset($_POST['filter'] ) && !isset($_POST['filter-reset']) && isset($_GET['filter'] ) ) {
 		$filter	= sanitize_key(wp_unslash($_GET['filter'] ) );
+	}
+	if ($single_edit && $action === 'edit') {
+		$return_url = remove_query_arg(array('page_now', 'filter', 'keyword', 'refine', 'orderby', 'order'), $this->cacheman_url);
+		$return_url = add_query_arg('page_now', max(1, intval($page_now)), $return_url);
+		$return_url = add_query_arg('filter', sanitize_key($filter), $return_url);
+		if (null !== $keyword && '' !== $keyword) {
+			$return_url = add_query_arg('keyword', $keyword, $return_url);
+		}
+		if (null !== $param_refine && '' !== $param_refine) {
+			$return_url = add_query_arg('refine', $param_refine, $return_url);
+		}
+		$return_url = add_query_arg('orderby', sanitize_key($orderby), $return_url);
+		$return_url = add_query_arg('order', sanitize_key($order), $return_url);
 	}
 
 	// 表示されている項目名がクリックされたら並び順を逆にする

@@ -3,8 +3,8 @@
 /*
 Plugin Name:	Pz-LinkCard
 Plugin URI:		http://popozure.info/pz-linkcard
-Description:	Displays links in card format.
-Version:		2.6.5
+Description:	リンクをカード形式で表示します。テキストだけのリンクにさようなら！
+Version:		2.6.5.1
 Author:			Poporon
 Author URI:		http://popozure.info
 Text Domain:	pz-linkcard
@@ -442,6 +442,7 @@ class class_pz_linkcard {
 			'multi-count'						=>	['type'	=>	'numeric',				'null'	=>	false,	'default'	=>	0,							],
 
 			'trail-slash'						=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	1,							],
+			'title-remove-site-name'		=>	['type'	=>	'flag',					'null'	=>	true,	'default'	=>	null,						],
 			'class-pc'							=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
 			'class-mobile'						=>	['type'	=>	'string',				'null'	=>	true,	'default'	=>	null,						],
 			'mce-priority'						=>	['type'	=>	'numeric',				'null'	=>	true,	'default'	=>	null,						],
@@ -2131,8 +2132,23 @@ $url_info = $this->Pz_GetURLInfo($url );
 
 	// プラグインを有効化
 	public	function	hook_activate() {
-
-		require_once('lib/pz-linkcard-activate.php' );
+		try {
+			require_once('lib/pz-linkcard-activate.php' );
+		} catch (\Throwable $error) {
+			$diagnostic = sprintf(
+				'Pz-LinkCard activation error: %s in %s on line %d',
+				$error->getMessage(),
+				$error->getFile(),
+				$error->getLine()
+			);
+			error_log($diagnostic);
+			if (function_exists('set_transient')) {
+				set_transient('pz_lkc_activation_error', $diagnostic, HOUR_IN_SECONDS);
+			}
+			if (function_exists('deactivate_plugins')) {
+				deactivate_plugins($this->plugin_basename, true);
+			}
+		}
 	}
 
 	// プラグインを無効化
@@ -2591,6 +2607,11 @@ $url_info = $this->Pz_GetURLInfo($url );
 
 	// 管理画面時の注意書き設定
 	public	function	action_admin_notices() {
+		$activation_error = get_transient('pz_lkc_activation_error');
+		if ($activation_error) {
+			delete_transient('pz_lkc_activation_error');
+			echo '<div class="notice notice-error"><p><strong>'.esc_html(self::PLUGIN_NAME).': '.__('Activation error', 'pz-linkcard').'</strong><br><code>'.esc_html($activation_error).'</code></p></div>';
+		}
 
 		$dbdelta_error	=	$GLOBALS['pz_lkc_dbdelta_error'] ?? '';
 		if	(!$dbdelta_error && function_exists('get_transient' ) ) {

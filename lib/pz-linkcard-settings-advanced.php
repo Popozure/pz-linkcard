@@ -16,6 +16,16 @@
 			echo_list($item_name, $prop[$item_name], $item_list, $item_descript, $item_notice );
 		?>
 		<tr>
+			<th scope="row"><?php esc_html_e('Remove Site Name from Title', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden" name="properties[title-remove-site-name]" value="" />
+					<input type="checkbox" name="properties[title-remove-site-name]" value="1" <?php checked($this->options['title-remove-site-name'] ?? 0 ); ?> />
+					<?php esc_html_e('Remove everything after the "|" in the title.', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
+		<tr>
 			<th scope="row"><?php esc_html_e('CSS Class to Add (Desktop)',	'pz-linkcard' ); ?></th>
 			<td><input name="properties[class-pc]"			type="text" size="40" value="<?php echo	(isset($this->options['class-pc'] ) ? esc_attr($this->options['class-pc'] ) : '' ); ?>" /></td>
 		</tr>
@@ -286,7 +296,8 @@
 				5 => __('5 cards', 'pz-linkcard'), 10 => __('10 cards', 'pz-linkcard'),
 				20 => __('20 cards', 'pz-linkcard'), 50 => __('50 cards', 'pz-linkcard'),
 				100 => __('100 cards', 'pz-linkcard'), 0 => __('Unlimited', 'pz-linkcard'),
-			), ($prop['get-timing'] ?? 'background') === 'display'); echo $pending_label($pending_counts->unregistered ?? 0, add_query_arg('filter', 'unregistered', $this->cacheman_url)); ?></td>
+			), ($prop['get-timing'] ?? 'background') === 'display'); echo $pending_label($pending_counts->unregistered ?? 0, add_query_arg('filter', 'unregistered', $this->cacheman_url)); ?>
+			</td>
 		</tr>
 		<?php $cleanup_disabled = empty($prop['flg-click-count']) || empty($prop['flg-click-log']); ?>
 		<tr>

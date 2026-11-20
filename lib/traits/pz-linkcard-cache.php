@@ -147,26 +147,43 @@ trait Pz_LinkCard_Cache {
 		return $data;
 	}
 
-	// Atomically share the last site access between both cron workers.
-	private function pz_ClaimCronSiteAccess($url, $domain = '') {
+	// Share the interval between cron workers without persistent per-site options.
+	private function pz_ClaimCronSiteAccess($url, $domain = '', &$lock = null) {
 		global $wpdb;
+		static $attempts = array();
+		$lock = null;
 		$host = wp_parse_url((string) $url, PHP_URL_HOST);
 		$site = strtolower(rtrim(trim(is_string($host) && $host !== '' ? $host : (string) $domain), '.'));
-		$key = 'pz_lkc_cron_site_'.md5($site !== '' ? $site : (string) $url);
 		$interval = intval($this->options['cron-site-interval'] ?? 30);
 		if (!in_array($interval, array(10, 30, 60, 180, 300, 600, 1800, 3600, 21600), true)) $interval = 30;
-		$now = time();
-		if (add_option($key, $now, '', false)) return 0;
-		$claimed = $wpdb->query($wpdb->prepare(
-			"UPDATE {$wpdb->options} SET option_value = %s WHERE option_name = %s AND CAST(option_value AS UNSIGNED) <= %d",
-			(string) $now, $key, $now - $interval
+		$lock_name = 'pz_lkc_site_'.md5($wpdb->dbname.':'.$this->db_card.':'.($site !== '' ? $site : (string) $url));
+		if ((string) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', $lock_name)) !== '1') return time() + 1;
+		$lock = $lock_name;
+		$now = current_time('timestamp', false);
+		$last = $wpdb->get_var($wpdb->prepare(
+			"SELECT update_time FROM $this->db_card WHERE domain = %s AND regist_time > 0 ORDER BY update_time DESC LIMIT 1",
+			$site
 		));
-		if ($claimed === 1) {
-			wp_cache_delete($key, 'options');
-			return 0;
+		if ($wpdb->last_error) {
+			$this->pz_ReleaseCronSiteAccess($lock);
+			return time() + $interval;
 		}
-		$last = intval($wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s", $key)));
-		return max($now + 1, $last + $interval);
+		$last = max(intval($last), $attempts[$lock_name] ?? 0);
+		if ($last > 0 && $last + $interval > $now) {
+			$this->pz_ReleaseCronSiteAccess($lock);
+			// Card timestamps are local; WP-Cron expects a UTC Unix timestamp.
+			return time() + ($last + $interval - $now);
+		}
+		// Also space failed retrievals within this cron request.
+		$attempts[$lock_name] = $now;
+		return 0;
+	}
+
+	private function pz_ReleaseCronSiteAccess(&$lock) {
+		if ($lock === null) return;
+		global $wpdb;
+		$wpdb->get_var($wpdb->prepare('SELECT RELEASE_LOCK(%s)', $lock));
+		$lock = null;
 	}
 
 	private function pz_ScheduleCronRetry($hook, $timestamp) {
@@ -339,7 +356,7 @@ trait Pz_LinkCard_Cache {
 		}
 
 		// 最終更新日時
-		$data['update_time']		=	$this->now;
+		$data['update_time']		=	current_time('timestamp', false );
 
 		// DB更新キー取得
 		if	(!$is_pending && (!isset($data['id'] ) || !$data['id']) ) {

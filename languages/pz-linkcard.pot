@@ -1107,6 +1107,14 @@ msgid "Trailing Slash"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-advanced.php:19
+msgid "Remove Site Name from Title"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:24
+msgid "Remove everything after the \"|\" in the title."
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-advanced.php:19
 msgid "CSS Class to Add (Desktop)"
 msgstr ""
 

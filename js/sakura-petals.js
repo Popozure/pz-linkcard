@@ -23,8 +23,10 @@
             const size = randomBetween(8, 17);
             const petalHeight = size * 4 / 3;
             const duration = randomBetween(8, 16);
-            const startY = randomBetween(-petalHeight, height);
-            const travelY = height + petalHeight - startY;
+            // Keep the entire rotating petal outside the card at both loop boundaries.
+            const clearance = Math.hypot(size, petalHeight) + 2;
+            const startY = -clearance;
+            const travelY = height + clearance - startY;
             const driftX = randomBetween(-width * 0.22, width * 0.22);
             const sway = randomBetween(8, Math.max(14, Math.min(44, width * 0.1)));
             const direction = Math.random() < 0.5 ? -1 : 1;

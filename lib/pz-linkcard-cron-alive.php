@@ -28,62 +28,67 @@
 	$retry_at = null;
 	if (isset($proc_datas ) && is_array($proc_datas ) && count($proc_datas) > 0) {
 		foreach($proc_datas as $data ) {
-			$next_access = $this->pz_ClaimCronSiteAccess($data->url, $data->domain ?? '');
+			$next_access = $this->pz_ClaimCronSiteAccess($data->url, $data->domain ?? '', $site_lock);
 			if ($next_access > 0) {
 				$retry_at = $retry_at === null ? $next_access : min($retry_at, $next_access);
+				$next_check = current_time('timestamp', false) + max(1, $next_access - time());
 				$wpdb->update(
 					$this->db_card,
-					array('alive_nexttime' => $next_access ),
+					array('alive_nexttime' => $next_check ),
 					array('id' => intval($data->id ) ),
 					array('%d' ),
 					array('%d' )
 				);
 				$message	=	sprintf(__('[SKIP] URL=%s', 'pz-linkcard' ), $data->url ).PHP_EOL;
 				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) ).PHP_EOL;
-				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;Skipping this URL because its domain is the same as the previous one. The next check is scheduled for %s.', 'pz-linkcard' ), date('Y-m-d H:i', $next_access ) );
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;Skipping this URL because its domain is the same as the previous one. The next check is scheduled for %s.', 'pz-linkcard' ), date('Y-m-d H:i', $next_check ) );
 				$log		.=	$message.PHP_EOL;
 				continue;
 			}
-			$proc_count++;
-			$message	=	sprintf(__('[%1$d] URL=%2$s', 'pz-linkcard' ), $proc_count, $data->url ).PHP_EOL;
-			$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) );
-			$log		.=	$message.PHP_EOL;
-
-			// リンク先を取得
-			if (isset($data ) && isset($data->id ) ) {
-				$before	=	$this->pz_GetCache(array('id' => intval($data->id ) ) );
-				$url_info = $this->pz_GetURLInfo($before['url']);
-				if (!empty($url_info['is_internal'])) {
-					$recorded_post_id = intval($before['post_id'] ?? 0);
-					$recorded_post = $recorded_post_id > 0 ? get_post($recorded_post_id) : null;
-					if ($recorded_post_id > 0 && (!$recorded_post || $recorded_post->post_status === 'trash')) {
-						$after = array('alive_result' => 404);
-					} else {
-						$after = $this->pz_GetPost($before);
-					}
-				} else {
-					$after = $this->pz_GetRemote($before, true);
-				}
-				$after_result	=	isset($after['alive_result'] ) ? intval($after['alive_result'] ) : 0;
-				$before['alive_nexttime'] = (!empty($url_info['is_internal']) ? null : ($after['alive_nexttime'] ?? null)) ?? $this->pz_GetNextAliveTime($after_result, $this->now);
-				$before['alive_result']		=	$after['alive_result'];
-				$before['alive_time']		=	$this->now;
-
-				// if	(!$before['thumbnail'] ) {
-				// 	$before['thumbnail']	=	$after['thumbnail'];
-				// }
-				// if	(!$before['favicon'] ) {
-				// 	$before['favicon']		=	$after['favicon'];
-				// }
-				$result		=	$this->pz_SetCache($before );
-
-				// 実行ログ
-				$message	=	sprintf(__('&ensp;&ensp;&ensp;&ensp;HTTP status code %1$d was returned. The next check is scheduled for %2$s.', 'pz-linkcard' ), intval($result['alive_result'] ), date('Y-m-d H:i', intval($result['alive_nexttime'] ) ) );
+			try {
+				$proc_count++;
+				$message	=	sprintf(__('[%1$d] URL=%2$s', 'pz-linkcard' ), $proc_count, $data->url ).PHP_EOL;
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) );
 				$log		.=	$message.PHP_EOL;
-			}
 
-			if	($proc_count >= $max_count ) {
-				break;
+				// リンク先を取得
+				if (isset($data ) && isset($data->id ) ) {
+					$before	=	$this->pz_GetCache(array('id' => intval($data->id ) ) );
+					$url_info = $this->pz_GetURLInfo($before['url']);
+					if (!empty($url_info['is_internal'])) {
+						$recorded_post_id = intval($before['post_id'] ?? 0);
+						$recorded_post = $recorded_post_id > 0 ? get_post($recorded_post_id) : null;
+						if ($recorded_post_id > 0 && (!$recorded_post || $recorded_post->post_status === 'trash')) {
+							$after = array('alive_result' => 404);
+						} else {
+							$after = $this->pz_GetPost($before);
+						}
+					} else {
+						$after = $this->pz_GetRemote($before, true);
+					}
+					$after_result	=	isset($after['alive_result'] ) ? intval($after['alive_result'] ) : 0;
+					$before['alive_nexttime'] = (!empty($url_info['is_internal']) ? null : ($after['alive_nexttime'] ?? null)) ?? $this->pz_GetNextAliveTime($after_result, $this->now);
+					$before['alive_result']		=	$after['alive_result'];
+					$before['alive_time']		=	$this->now;
+
+					// if	(!$before['thumbnail'] ) {
+					// 	$before['thumbnail']	=	$after['thumbnail'];
+					// }
+					// if	(!$before['favicon'] ) {
+					// 	$before['favicon']		=	$after['favicon'];
+					// }
+					$result		=	$this->pz_SetCache($before );
+
+					// 実行ログ
+					$message	=	sprintf(__('&ensp;&ensp;&ensp;&ensp;HTTP status code %1$d was returned. The next check is scheduled for %2$s.', 'pz-linkcard' ), intval($result['alive_result'] ), date('Y-m-d H:i', intval($result['alive_nexttime'] ) ) );
+					$log		.=	$message.PHP_EOL;
+				}
+
+				if	($proc_count >= $max_count ) {
+					break;
+				}
+			} finally {
+				$this->pz_ReleaseCronSiteAccess($site_lock);
 			}
 		}
 	}

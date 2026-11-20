@@ -2,7 +2,7 @@
 Contributors: Poporon
 Tags: LinkCard, BlogCard, Internal Link, External Link
 Requires at least: 6.0
-Tested up to: 7.1.5
+Tested up to: 7.1
 Requires PHP: 8.2
 Stable tag: trunk
 License: GPLv2 or later
@@ -154,15 +154,19 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 
 = 2.6.5.1 =
 * [Tested] WordPress 7.1.5 での動作確認を行いました。
+* [Tested] WordPress 7.1.6 での動作確認を行いました。
 * [Fixed] リンクカードが表示される速度を改善しました。
+* [Fixed] WordPressテーマによっては文字に下線が出ていたものを設定どおりに表示されるように修正しました。
 * 
 * 
 * 
 * カード設定の上の部分をカード管理に移植する
+* 
 
 
 
-
+= 2.6.5.1 =
+* [Fixed] 一部のファイルがBOM付UTF-8形式になっていたのを修正しました。
 
 = 2.6.5 =
 * [Tested] WordPress 7.1.4 での動作確認を行いました。
@@ -177,7 +181,8 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 * [Added] 設定画面の基本タブのかんたん書式設定に「ハートが登っていく」「星が降ってくる」「雪が降ってくる」「桜の花びらが舞う」「3D追跡」を追加しました。
 * [Added] 設定画面の表示タブのソーシャルカウントにQiitaのいいね数を追加しました。
 * [Added] 設定画面の外部リンク/内部リンクタブにサイト情報の表示項目と記事内容の表示項目を追加しました。表示する項目を個別で選べるようになりました。
-* [Added] 設定画面の上級者向けタブにAmazon、X.com、ジモティー、note.com、qiita、Yahoo!オークション、FANATEC、Microsoft、OGPの専用処理を追加しました。対応したサイトの投稿日等を取得します。
+* [Added] 設定画面の上級者向けタブにAmazon、X.com、ジモティー、note.com、qiita、Yahoo!オークション、Microsoft、OGPの専用処理を追加しました。対応したサイトの投稿日等を取得します。
+* [Added] 設定画面の上級者向けタブにFANATECの専用処理を追加しました。対応したサイトの投稿日等を取得します。（Thanks さくら工作室/工作系YouTuber @skrdtrt on x.com）
 * [Modified] 設定画面のプレビューに左ドッキングを追加しました。
 * [Modified] 設定画面の表示タブに投稿日・更新日に関する項目を追加・修正しました。
 * [Modified] 設定画面の外部リンクタブにも投稿日の項目を追加しました。外部リンクでも投稿日と更新日が表示されるようになります。

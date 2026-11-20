@@ -1,4 +1,4 @@
-﻿<?php defined('ABSPATH' ) || wp_die; ?>
+<?php defined('ABSPATH' ) || wp_die; ?>
 <?php
 	define('LIST_ENCLOSE_TAG',	array(
 		'div'			=>		__('DIV Tag',			'pz-linkcard' ),

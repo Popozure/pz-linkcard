@@ -12,6 +12,8 @@ $counts = $this->pz_GetSchedulePendingCounts();
 if (!$counts) {
 	wp_send_json_error(null, 500);
 }
-wp_send_json_success(array_map(static function($count) {
-	return number_format_i18n(intval($count));
-}, array($counts->sns, $counts->alive, $counts->unregistered)));
+wp_send_json_success(array(
+	'counts' => array_map(static function($count) {
+		return number_format_i18n(intval($count));
+	}, array($counts->sns, $counts->alive, $counts->unregistered)),
+));

@@ -735,6 +735,12 @@ REGEX;
         $siteicon_url		=	$this->pz_EncodeImageURL($siteicon_url );
 
         // タイトル整形
+        if (!empty($this->options['title-remove-site-name'])) {
+            $site_name_separator = strrpos($title, '|');
+            if ($site_name_separator !== false) {
+                $title = rtrim(substr($title, 0, $site_name_separator));
+            }
+        }
         $title				=	mb_strimwidth($title, 0, 500, '...' );		// 500文字制限
 
         // 抜粋文整形

@@ -71,10 +71,10 @@
 	}
 
 	window.addEventListener('load', fitAll);
-	window.addEventListener('resize', requestFit);
+	window.addEventListener('resize', () => requestFit());
 
 	if (document.fonts && document.fonts.ready) {
-		document.fonts.ready.then(requestFit);
+		document.fonts.ready.then(() => requestFit());
 	}
 
 	if ('MutationObserver' in window) {

@@ -39,8 +39,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.status === 403) stopped = true;
                 if (!response.ok) return;
                 const result = await response.json();
-                if (result.success && Array.isArray(result.data) && result.data.length === counts.length) {
-                    counts.forEach((element, index) => { element.textContent = result.data[index]; });
+                if (result.success && Array.isArray(result.data?.counts) && result.data.counts.length === counts.length) {
+                    counts.forEach((element, index) => { element.textContent = result.data.counts[index]; });
                 }
             } catch (_) {
                 // Keep the last known counts and retry on the next interval.

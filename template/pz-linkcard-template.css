@@ -9,6 +9,14 @@
 .linkcard a {
 	text-decoration: none;
 }
+.linkcard a.lkc-link,
+.linkcard a.lkc-link:link,
+.linkcard a.lkc-link:visited,
+.linkcard a.lkc-link:hover,
+.linkcard a.lkc-link:focus,
+.linkcard a.lkc-link:active {
+	text-decoration: none !important;
+}
 .linkcard img {
 	/*RESET-IMG*/
 }
@@ -181,12 +189,12 @@
 .lkc-url:hover {
 	/*URL-HOVER*/
 }
-.lkc-url > a.lkc-link,
-.lkc-url-info > a.lkc-link {
+.linkcard .lkc-url > a.lkc-link,
+.linkcard .lkc-url-info > a.lkc-link {
 	/*URL-UNDERLINE*/
 }
-.lkc-url:hover > a.lkc-link,
-.lkc-url-info:hover > a.lkc-link {
+.linkcard .lkc-url:hover > a.lkc-link,
+.linkcard .lkc-url-info:hover > a.lkc-link {
 	/*URL-HOVER*/
 }
 .lkc-date {
