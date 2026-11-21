@@ -1,11 +1,11 @@
 <?php
-defined('ABSPATH') || exit;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if (!current_user_can('manage_options')) {
 	wp_die(esc_html__('Sorry, you are not allowed to access this page.', 'pz-linkcard'));
 }
 if ($this->is_cacheman_detail_request()) {
-	require __DIR__.'/pz-linkcard-oldman.php';
+	require __DIR__.'/pz-linkcard-cacheman-detail.php';
 	return;
 }
 if (!class_exists('WP_List_Table')) {
@@ -84,7 +84,7 @@ if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST' &
 
 $list = new class($this->db_card, $this->domain, function ($timestamp) {
 	return wp_kses($this->pz_Date($this->options['date-format-man'], $timestamp), array('br' => array()));
-}, $this->plugin_dir_url.'img/') extends WP_List_Table {
+}, $this->plugin_dir_url.'img/', !empty($this->options['debug-mode'])) extends WP_List_Table {
 	private $card_table;
 	private $site_domain;
 	private $conditions;
@@ -94,14 +94,16 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 	private $domain_filter;
 	private $format_date;
 	private $sort_icon_url;
+	private $debug_mode;
 
-	public function __construct($table, $domain, $format_date, $sort_icon_url) {
+	public function __construct($table, $domain, $format_date, $sort_icon_url, $debug_mode) {
 		parent::__construct(array('singular' => 'linkcard', 'plural' => 'linkcards', 'ajax' => false));
 		global $wpdb;
 		$this->card_table = $table;
 		$this->site_domain = $domain;
 		$this->format_date = $format_date;
 		$this->sort_icon_url = $sort_icon_url;
+		$this->debug_mode = $debug_mode;
 		$this->conditions = array(
 			'all' => '1=1',
 			'external' => $wpdb->prepare('domain <> %s', $domain),
@@ -118,27 +120,29 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 	}
 
 	public function get_columns() {
-		return array(
+		$columns = array(
 			'cb' => '<input type="checkbox">',
 			'id' => __('Card<br>ID', 'pz-linkcard'),
 			'title' => __('URL', 'pz-linkcard').' / '.__('Title', 'pz-linkcard'),
 			'excerpt' => __('Excerpt', 'pz-linkcard'),
 			'post_id' => __('Post<br>ID', 'pz-linkcard'),
-			'post_date' => __('Post<br>Date and Time', 'pz-linkcard'),
-			'post_modified' => __('Post<br>Modified Date', 'pz-linkcard'),
+			'post_date' => __('Post<br>Date', 'pz-linkcard'),
+			'post_modified' => __('Post<br>Modified<br>Date', 'pz-linkcard'),
 			'charset' => __('Charset', 'pz-linkcard'),
 			'domain' => __('Domain', 'pz-linkcard'),
 			'sns' => __('SNS', 'pz-linkcard'),
 			'regist_time' => __('Registered<br>Date', 'pz-linkcard'),
 			'update_time' => __('Update<br>Date', 'pz-linkcard'),
 			'sns_time' => __('SNS<br>Check<br>Date', 'pz-linkcard'),
-			'sns_nexttime' => __('Next<br>Share Count<br>Date', 'pz-linkcard'),
+			'sns_nexttime' => __('Next<br>SNS<br>Check<br>Date', 'pz-linkcard'),
 			'alive_time' => __('Alive<br>Check<br>Date', 'pz-linkcard'),
-			'alive_nexttime' => __('Next<br>Status<br>Date', 'pz-linkcard'),
+			'alive_nexttime' => __('Next<br>Alive<br>Check<br>Date', 'pz-linkcard'),
 			'use_post_id1' => __('Published<br>Post<br>ID', 'pz-linkcard'),
 			'click_count' => __('Click<br>Count', 'pz-linkcard'),
 			'update_result' => __('Result<br>code', 'pz-linkcard'),
 		);
+		if (!$this->debug_mode) { unset($columns['sns_nexttime'], $columns['alive_nexttime']); }
+		return $columns;
 	}
 
 	public function print_column_headers($with_id = true) {
@@ -150,7 +154,7 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 				$html = '';
 			} elseif ($column === 'cb') {
 				$checkbox_id = 'cb-select-all-'.(++$checkbox_index);
-				$html = '<input type="checkbox" id="'.esc_attr($checkbox_id).'"><label class="screen-reader-text" for="'.esc_attr($checkbox_id).'">'.esc_html__('Select All').'</label>';
+				$html = '<input type="checkbox" id="'.esc_attr($checkbox_id).'"><label class="screen-reader-text" for="'.esc_attr($checkbox_id).'">'.esc_html__('Select All', 'default').'</label>';
 			} elseif ($column === 'title') {
 				$html = $this->card_sort_heading('url', __('URL', 'pz-linkcard')).' / '.$this->card_sort_heading('title', __('Title', 'pz-linkcard'));
 			} elseif ($column === 'sns') {
@@ -181,7 +185,7 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 			'order' => $next_order,
 		), admin_url('tools.php'));
 		$icon = !$active ? 'sort_none.svg' : ($order === 'asc' ? 'sort_asc.svg' : 'sort_desc.svg');
-		return '<a class="pz-card-list-sort" href="'.esc_url($url).'" aria-label="'.esc_attr(wp_strip_all_tags($label).' — '.($next_order === 'asc' ? __('Ascending') : __('Descending'))).'"'.($active ? ' aria-current="true"' : '').'><span>'.wp_kses($label, array('br' => array())).'</span><img src="'.esc_url($this->sort_icon_url.$icon).'" alt="" width="16" height="16"></a>';
+		return '<a class="pz-card-list-sort" href="'.esc_url($url).'" aria-label="'.esc_attr(wp_strip_all_tags($label).' — '.($next_order === 'asc' ? __('Ascending', 'default') : __('Descending', 'default'))).'"'.($active ? ' aria-current="true"' : '').'><span>'.wp_kses($label, array('br' => array())).'</span><img src="'.esc_url($this->sort_icon_url.$icon).'" alt="" width="16" height="16"></a>';
 	}
 
 	public function column_cb($item) {
@@ -189,7 +193,7 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 	}
 
 	public function single_row($item) {
-		echo '<tr data-pz-card-id="'.esc_attr($item['id']).'" data-pz-regist-title="'.esc_attr($item['regist_title'] ?? '').'"'.(!empty($item['_pending']) ? ' data-pz-pending-id="'.esc_attr($item['id']).'"' : '').'>';
+		echo '<tr data-pz-card-id="'.esc_attr($item['id']).'"'.(!empty($item['_async_images']) ? ' data-pz-async-images="1"' : '').' data-pz-regist-title="'.esc_attr($item['regist_title'] ?? '').'"'.(!empty($item['_pending']) ? ' data-pz-pending-id="'.esc_attr($item['id']).'"' : '').'>';
 		$this->single_row_columns($item);
 		echo '</tr>';
 	}
@@ -198,7 +202,8 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 		ob_start();
 		parent::pagination($which);
 		// WordPress hides navigation controls with this class when there is one page.
-		echo str_replace(' one-page', '', ob_get_clean());
+		$html = str_replace(' one-page', '', ob_get_clean());
+		echo preg_replace('/(<span class="displaying-num">.*?<\/span>)/s', '$1<span class="pz-card-list-selected-count" aria-live="polite"></span>', $html, 1);
 	}
 
 	public function search_box($text, $input_id) {
@@ -414,8 +419,10 @@ $list->prepare_items();
 // Resolve display-only thumbnails and internal post IDs in the plugin's scope.
 foreach ($list->items as &$item) {
 	$item['_pending'] = $this->pz_IsCardRetrievalPending($item);
+	$item['_async_images'] = false;
 	$item['_display_url'] = $this->pz_DecodeURL($item['url']);
-	$item['_favicon_url'] = !empty($item['favicon']) ? $this->pz_GetImage($item['favicon']) : '';
+	$item['_favicon_url'] = !empty($item['favicon']) ? $this->pz_GetImage($item['favicon'], false, false, true) : '';
+	$item['_async_images'] = !empty($item['favicon']) && empty($item['_favicon_url']);
 	$url_info = $this->Pz_GetURLInfo($item['url']);
 	$item['_thumbnail_url'] = '';
 	if (!empty($url_info['is_internal'])) {
@@ -428,7 +435,8 @@ foreach ($list->items as &$item) {
 	} else {
 		$item['post_id'] = 0;
 		if (!empty($item['thumbnail'])) {
-			$item['_thumbnail_url'] = $this->pz_GetImage($item['thumbnail']);
+			$item['_thumbnail_url'] = $this->pz_GetImage($item['thumbnail'], false, false, true);
+			$item['_async_images'] = $item['_async_images'] || empty($item['_thumbnail_url']);
 		}
 	}
 }
@@ -444,7 +452,7 @@ require __DIR__.'/pz-linkcard-cacheman-infobar.php';
 <div class="wrap pz-card-list">
 	<div id="pz-overlay-proc" style="display: none;" role="status" aria-live="polite">
 		<div class="pz-loader" aria-hidden="true"></div>
-		<span class="screen-reader-text"><?php esc_html_e('Loading…'); ?></span>
+		<span class="screen-reader-text"><?php esc_html_e('Loading…', 'default'); ?></span>
 	</div>
 	<div class="pz-header">
 		<h1><span class="pz-header-title"><a class="pz-header-title-link" href="<?php echo esc_url(admin_url('tools.php?page=pz-linkcard-cacheman')); ?>"><span class="pz-header-title-icon dashicons dashicons-archive" aria-hidden="true"></span><span class="pz-header-title-text"><?php esc_html_e('Pz-LinkCard Manager', 'pz-linkcard'); ?></span></a><a class="pz-help-icon" href="<?php echo esc_url(self::AUTHOR_URL.'/pz-linkcard-manager'); ?>" rel="external noopener noreferrer help" referrerpolicy="no-referrer" target="_blank"><img src="<?php echo esc_url($this->plugin_dir_url.'img/help.png'); ?>" width="16" height="16" title="<?php esc_attr_e('Help', 'pz-linkcard'); ?>" alt="<?php esc_attr_e('Help', 'pz-linkcard'); ?>"></a></span></h1>

@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH') || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if (!current_user_can('manage_options')) {
 	wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard'), 403);

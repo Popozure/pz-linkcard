@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	// DB作成
 	global	$wpdb;

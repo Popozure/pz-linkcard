@@ -1,11 +1,12 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
-<div class="pz-page<?php echo $pz_page_active('pz-display' ); ?>" id="pz-display">
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-display' )); ?>" id="pz-display">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Display Settings', 'pz-linkcard' ).$help_open.'display'.$help_close; ?></h2>
+	<h2><?php echo wp_kses_post(__('Display Settings', 'pz-linkcard' ).$help_open.'display'.$help_close); ?></h2>
 
-	<table class="form-table" style="width: 100%;">
+	<section class="pz-display-section" aria-labelledby="pz-display-styles">
+		<h3 id="pz-display-styles"><?php esc_html_e('Stylesheet', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-display-table">
 		<tr>
-			<th scope="row" rowspan="2"><?php esc_html_e('Stylesheet', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Reset Image', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Checkbox($prop, 'flg-style-reset', __('Resetting image styles may help if an unwanted border appears around an image.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ) ); ?>
@@ -17,8 +18,12 @@
 				<?php pz_Checkbox($prop, 'flg-style-important', __('If the style is not applied due to the theme or plugin, you can apply it forcibly.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ) ); ?>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-display-section" aria-labelledby="pz-display-dates">
+		<h3 id="pz-display-dates"><?php esc_html_e('Publication and Update Dates', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-display-table">
 		<tr>
-			<th scope="row" rowspan="5"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Publication and Update Dates', 'pz-linkcard' ); ?></th>
 			<td>
 				<?php pz_Option($prop, 'date-pattern', '', array(
@@ -32,7 +37,7 @@
 			<th scope="row"><?php esc_html_e('Date Format', 'pz-linkcard'); ?></th>
 			<td>
 				<?php foreach (array('Y.m.d', 'Y-m-d', 'Y年n月j日', 'F j, Y') as $date_format) : ?>
-				<label class="pz-date-format-option" style="margin-right:1em"><input type="radio" name="properties[date-format]" value="<?php echo esc_attr($date_format); ?>" <?php checked($prop['date-format'], $date_format); ?> <?php disabled(empty($prop['date-pattern'])); ?> /><?php echo esc_html($date_format); ?></label>
+				<label class="pz-date-format-option"><input type="radio" name="properties[date-format]" value="<?php echo esc_attr($date_format); ?>" <?php checked($prop['date-format'], $date_format); ?> <?php disabled(empty($prop['date-pattern'])); ?> /><?php echo esc_html($date_format); ?></label>
 				<?php endforeach; ?>
 				<label class="pz-date-format-custom"><input type="radio" name="properties[date-format]" value="custom" <?php checked($prop['date-format'], 'custom'); ?> aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern'])); ?> /><input type="text" name="properties[date-format-custom]" value="<?php echo esc_attr($prop['date-format-custom']); ?>" size="20" aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern']) || $prop['date-format'] !== 'custom'); ?> /></label>
 			</td>
@@ -45,7 +50,7 @@
 			<td>
 				<?php foreach (array('date-icon-post' => __('Post Date', 'pz-linkcard'), 'date-icon-update' => __('Update Date', 'pz-linkcard')) as $icon_key => $icon_label) : ?>
 				<?php $selected_icon = html_entity_decode((string) $prop[$icon_key], ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>
-				<label style="display:inline-block;margin-right:2em">
+				<label class="pz-display-date-icon">
 				<?php echo esc_html($icon_label); ?>：
 				<select name="properties[<?php echo esc_attr($icon_key); ?>]" <?php disabled(!in_array((string) $prop['date-pattern'], $icon_key === 'date-icon-post' ? array('p', 'pu') : array('u', 'pu'), true)); ?>>
 					<option value="" <?php selected($prop[$icon_key], ''); ?>><?php esc_html_e('None', 'pz-linkcard'); ?></option>
@@ -59,6 +64,11 @@
 				<?php endforeach; ?>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-display-section" aria-labelledby="pz-display-card">
+		<h3 id="pz-display-card"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-display-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Separator Line', 'pz-linkcard'); ?></th>
 			<td>
@@ -74,8 +84,12 @@
 				</div>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-display-section" aria-labelledby="pz-display-sns">
+		<h3 id="pz-display-sns"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-display-table">
 		<tr>
-			<th scope="row" rowspan="2"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Display', 'pz-linkcard' ); ?></th>
 			<td>
 				<ul>
@@ -83,33 +97,33 @@
 						<label>
 							<input type="hidden"   name="properties[sns-tw]" value="" />
 							<input type="checkbox" name="properties[sns-tw]" value="1" <?php checked($prop['sns-tw'] ); ?> />
-							<?php echo __('X (Twitter)', 'pz-linkcard' ).__('* The count is not updated', 'pz-linkcard' ); ?>
+							<?php echo wp_kses_post(__('X (Twitter)', 'pz-linkcard' ).__('* The count is not updated', 'pz-linkcard' )); ?>
 						</label>
 						<label>
 							<input type="hidden"   name="properties[sns-tw-x]" value="" />
 							<input type="checkbox" name="properties[sns-tw-x]" value="1" <?php checked($prop['sns-tw-x'] ); ?> />
-							<?php echo __('Use "Tweet" instead of "Post" as the count label.', 'pz-linkcard' ); ?>
+							<?php echo wp_kses_post(__('Use "Tweet" instead of "Post" as the count label.', 'pz-linkcard' )); ?>
 						</label>
 					</li>
 					<li>
 						<label>
 							<input type="hidden"   name="properties[sns-fb]" value="" />
 							<input type="checkbox" name="properties[sns-fb]" value="1" <?php checked($prop['sns-fb'] ); ?> />
-							<?php echo __('Facebook', 'pz-linkcard' ).__('* The count is not updated', 'pz-linkcard' ); ?>
+							<?php echo wp_kses_post(__('Facebook', 'pz-linkcard' ).__('* The count is not updated', 'pz-linkcard' )); ?>
 						</label>
 					</li>
 					<li>
 						<label>
 							<input type="hidden"   name="properties[sns-hb]" value="" />
 							<input type="checkbox" name="properties[sns-hb]" value="1" <?php checked($prop['sns-hb'] ); ?> />
-							<?php echo __('Hatena', 'pz-linkcard' ); ?>
+							<?php echo wp_kses_post(__('Hatena', 'pz-linkcard' )); ?>
 						</label>
 					</li>
 					<li>
 						<label>
 							<input type="hidden"   name="properties[sns-qiita]" value="" />
 							<input type="checkbox" name="properties[sns-qiita]" value="1" <?php checked($prop['sns-qiita'] ); ?> />
-							<?php echo __('Qiita likes and stocks', 'pz-linkcard' ); ?>
+							<?php echo wp_kses_post(__('Qiita likes and stocks', 'pz-linkcard' )); ?>
 						</label>
 					</li>
 				</ul>
@@ -123,6 +137,7 @@
 				?>
 			</td>
 		</tr>
-	</table>
+		</table>
+	</section>
 	<?php submit_button(); ?>
 </div>

@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	// Error
 	$flg_error					=	false;

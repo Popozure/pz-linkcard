@@ -617,7 +617,7 @@ msgid "Post<br>ID"
 msgstr ""
 
 #: ../lib/pz-linkcard-oldman-list.php:444
-msgid "Post<br>Modified Date"
+msgid "Post<br>Modified<br>Date"
 msgstr ""
 
 #: ../lib/pz-linkcard-oldman-list.php:462
@@ -645,7 +645,7 @@ msgid "SNS<br>Check<br>Date"
 msgstr ""
 
 #: ../lib/pz-linkcard-oldman-list.php:505
-msgid "Next<br>Share Count<br>Date"
+msgid "Next<br>SNS<br>Check<br>Date"
 msgstr ""
 
 #: ../lib/pz-linkcard-oldman-list.php:512
@@ -653,7 +653,7 @@ msgid "Alive<br>Check<br>Date"
 msgstr ""
 
 #: ../lib/pz-linkcard-oldman-list.php:519
-msgid "Next<br>Status<br>Date"
+msgid "Next<br>Alive<br>Check<br>Date"
 msgstr ""
 
 #: ../lib/pz-linkcard-oldman-list.php:526
@@ -4148,9 +4148,25 @@ msgid "Select cards with the checkboxes to run a bulk action. Click a column hea
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman.php
-msgid "Post<br>Date and Time"
+msgid "Post<br>Date"
 msgstr ""
 
 #: ../lib/pz-linkcard-cacheman.php
 msgid "Card<br>ID"
+msgstr ""
+
+#: lib/pz-linkcard-settings-position.php
+msgid "Margin"
+msgstr ""
+
+#: lib/pz-linkcard-settings-position.php
+msgid "Padding"
+msgstr ""
+
+#: lib/pz-linkcard-settings-check.php
+msgid "Retrieval Settings"
+msgstr ""
+
+#: lib/pz-linkcard-settings-advanced.php
+msgid "Compatibility Settings"
 msgstr ""

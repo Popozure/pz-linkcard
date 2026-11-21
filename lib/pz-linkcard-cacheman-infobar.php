@@ -1,4 +1,4 @@
-<?php defined('ABSPATH') || exit; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <div id="pz-infobar">
 	<div class="pz-infobar-left">
 		<a href="<?php echo esc_url(admin_url('tools.php?page=pz-linkcard-cacheman')); ?>" class="pz-infobar-plugin-logo"><img src="<?php echo esc_url($this->plugin_dir_url.'img/pz-linkcard_logo.svg'); ?>" width="156" height="28" alt="<?php echo esc_attr(self::PLUGIN_NAME); ?>"></a>

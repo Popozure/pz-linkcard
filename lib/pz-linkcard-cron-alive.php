@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	// WP-CRONスケジュール（存在チェック）
 	// DBの宣言
@@ -40,15 +40,15 @@
 					array('%d' )
 				);
 				$message	=	sprintf(__('[SKIP] URL=%s', 'pz-linkcard' ), $data->url ).PHP_EOL;
-				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) ).PHP_EOL;
-				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;Skipping this URL because its domain is the same as the previous one. The next check is scheduled for %s.', 'pz-linkcard' ), date('Y-m-d H:i', $next_check ) );
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), gmdate('Y-m-d H:i', intval($data->alive_nexttime ) ) ).PHP_EOL;
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;Skipping this URL because its domain is the same as the previous one. The next check is scheduled for %s.', 'pz-linkcard' ), gmdate('Y-m-d H:i', $next_check ) );
 				$log		.=	$message.PHP_EOL;
 				continue;
 			}
 			try {
 				$proc_count++;
 				$message	=	sprintf(__('[%1$d] URL=%2$s', 'pz-linkcard' ), $proc_count, $data->url ).PHP_EOL;
-				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), date('Y-m-d H:i', intval($data->alive_nexttime ) ) );
+				$message	.=	sprintf(__('&ensp;&ensp;&ensp;&ensp;The scheduled check time (%s) has passed.', 'pz-linkcard' ), gmdate('Y-m-d H:i', intval($data->alive_nexttime ) ) );
 				$log		.=	$message.PHP_EOL;
 
 				// リンク先を取得
@@ -81,7 +81,7 @@
 					$result		=	$this->pz_SetCache($before );
 
 					// 実行ログ
-					$message	=	sprintf(__('&ensp;&ensp;&ensp;&ensp;HTTP status code %1$d was returned. The next check is scheduled for %2$s.', 'pz-linkcard' ), intval($result['alive_result'] ), date('Y-m-d H:i', intval($result['alive_nexttime'] ) ) );
+					$message	=	sprintf(__('&ensp;&ensp;&ensp;&ensp;HTTP status code %1$d was returned. The next check is scheduled for %2$s.', 'pz-linkcard' ), intval($result['alive_result'] ), gmdate('Y-m-d H:i', intval($result['alive_nexttime'] ) ) );
 					$log		.=	$message.PHP_EOL;
 				}
 

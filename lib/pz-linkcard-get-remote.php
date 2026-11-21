@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die;
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; }
 
     // リンク先URL
     $url			=	isset($data['url']) ? $data['url'] : '' ;

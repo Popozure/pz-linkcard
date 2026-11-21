@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH') || exit;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 $screen = get_current_screen();
 if (!$screen) { return; }
@@ -24,6 +24,7 @@ $columns = array(
 	'click_count' => __('Click Count', 'pz-linkcard'),
 	'update_result' => __('Result code', 'pz-linkcard'),
 );
+if (empty($this->options['debug-mode'])) { unset($columns['sns_nexttime'], $columns['alive_nexttime']); }
 add_filter('manage_'.$screen->id.'_columns', function () use ($columns) { return $columns; });
 add_filter('default_hidden_columns', function ($hidden, $current_screen) {
 	if ($current_screen->id !== 'tools_page_pz-linkcard-cacheman') { return $hidden; }

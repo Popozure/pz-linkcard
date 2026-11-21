@@ -1,9 +1,11 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
-<div class="pz-page<?php echo $pz_page_active('pz-advanced' ); ?>" id="pz-advanced">
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-advanced' )); ?>" id="pz-advanced">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 
-	<h2><?php echo __('Advanced Settings', 'pz-linkcard' ).$help_open.'advanced'.$help_close; ?></h2>
-	<table class="form-table">
+	<h2><?php echo wp_kses_post(__('Advanced Settings', 'pz-linkcard' ).$help_open.'advanced'.$help_close); ?></h2>
+	<section class="pz-advanced-section" aria-labelledby="pz-advanced-retrieval-heading">
+		<h3 id="pz-advanced-retrieval-heading"><?php esc_html_e('Retrieval Settings', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-advanced-table">
 		<?php
 			// 末尾のスラッシュの除去
 			$item_name		=	'trail-slash';
@@ -26,21 +28,27 @@
 			</td>
 		</tr>
 		<tr>
+			<th scope="row"><?php esc_html_e('Only retrieve publicly viewable posts', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input type="hidden"   name="properties[flg-public-only]" value="" />
+					<input type="checkbox" name="properties[flg-public-only]" value="1" <?php checked($this->options['flg-public-only'] ?? null ); ?> />
+					<?php echo esc_html__('Do not retrieve non-public or password-protected internal posts, even when the current user can view them.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
+		</table>
+	</section>
+	<section class="pz-advanced-section" aria-labelledby="pz-advanced-stylesheet-heading">
+		<h3 id="pz-advanced-stylesheet-heading"><?php esc_html_e('Stylesheet', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-advanced-table">
+		<tr>
 			<th scope="row"><?php esc_html_e('CSS Class to Add (Desktop)',	'pz-linkcard' ); ?></th>
 			<td><input name="properties[class-pc]"			type="text" size="40" value="<?php echo	(isset($this->options['class-pc'] ) ? esc_attr($this->options['class-pc'] ) : '' ); ?>" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('CSS Class to Add (Mobile)',	'pz-linkcard' ); ?></th>
-			<td><input name="properties[class-mobile]"		type="text" size="40" value="<?php echo	(isset($this->options['class-mobile'] ) ? esc_attr($this->options['class-mobile'] ) : '' ); ?>" /><br>
-		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Visual Editor Filter Priority', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input name="properties[mce-priority]" type="number" min="0" max="9999" size="80" value="<?php echo esc_attr($this->options['mce-priority'] ); ?>" /><?php esc_html_e('(Null or 0-9999)',  'pz-linkcard' ); ?>
-					<?php esc_html_e('If the insert button does not appear in the editor, setting this value to 11 or higher may help.', 'pz-linkcard' ); ?>
-				</label>
-			</td>
+			<td><input name="properties[class-mobile]"		type="text" size="40" value="<?php echo	(isset($this->options['class-mobile'] ) ? esc_attr($this->options['class-mobile'] ) : '' ); ?>" /></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('CSS Compression', 'pz-linkcard' ); ?></th>
@@ -52,10 +60,29 @@
 				</label>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-advanced-section" aria-labelledby="pz-advanced-editor-heading">
+		<h3 id="pz-advanced-editor-heading"><?php esc_html_e('Editor Settings', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-advanced-table">
+		<tr>
+			<th scope="row"><?php esc_html_e('Visual Editor Filter Priority', 'pz-linkcard' ); ?></th>
+			<td>
+				<label>
+					<input name="properties[mce-priority]" type="number" min="0" max="9999" size="80" value="<?php echo esc_attr($this->options['mce-priority'] ); ?>" /><?php esc_html_e('(Null or 0-9999)',  'pz-linkcard' ); ?>
+					<?php esc_html_e('If the insert button does not appear in the editor, setting this value to 11 or higher may help.', 'pz-linkcard' ); ?>
+				</label>
+			</td>
+		</tr>
+		</table>
+	</section>
+	<section class="pz-advanced-section" aria-labelledby="pz-advanced-display-heading">
+		<h3 id="pz-advanced-display-heading"><?php esc_html_e('Display Settings', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-advanced-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Date Format (Manager)',	'pz-linkcard' ); ?></th>
-			<td><input name="properties[date-format-man]"		type="text" size="40" value="<?php echo	(isset($this->options['date-format-man'] ) ? esc_attr($this->options['date-format-man'] ) : '' ); ?>" list="date-dormat-man-default" /></td>
-			<datalist id="date-dormat-man-default"><option value="Y\<\b\r\/\>m/d\<\b\r\/\>H:i">Y\<\b\r\/\>m/d\<\b\r\/\>H:i</option><option value="d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a">d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a</option></datalist>
+			<td><input name="properties[date-format-man]"		type="text" size="40" value="<?php echo	(isset($this->options['date-format-man'] ) ? esc_attr($this->options['date-format-man'] ) : '' ); ?>" list="date-dormat-man-default" />
+			<datalist id="date-dormat-man-default"><option value="Y\<\b\r\/\>m/d\<\b\r\/\>H:i">Y\<\b\r\/\>m/d\<\b\r\/\>H:i</option><option value="d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a">d-M\<\b\r\/\>Y\<\b\r\/\>h:i\<\b\r\/\>a</option></datalist></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Input Lock', 'pz-linkcard' ); ?></th>
@@ -87,7 +114,11 @@
 				</label>
 			</td>
 		</tr>
-
+		</table>
+	</section>
+	<section class="pz-advanced-section" aria-labelledby="pz-advanced-compatibility-heading">
+		<h3 id="pz-advanced-compatibility-heading"><?php esc_html_e('Compatibility Settings', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-advanced-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Google AMP Detection', 'pz-linkcard' ); ?></th>
 			<td>
@@ -95,7 +126,7 @@
 					<label>
 						<input type="hidden"   name="properties[flg-amp-url]" value="" />
 						<input type="checkbox" name="properties[flg-amp-url]" value="1" <?php checked($this->options['flg-amp-url'] ); ?> />
-						<?php echo __('Use a simplified display if the URL ends with "/amp", "/amp/", or "/?amp=1".', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' ); ?>
+						<?php echo wp_kses_post(__('Use a simplified display if the URL ends with "/amp", "/amp/", or "/?amp=1".', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' )); ?>
 					</label>
 				</p>
 			</td>
@@ -106,25 +137,15 @@
 				<label>
 					<input type="hidden"   name="properties[error-mode-hide]" value="" />
 					<input type="checkbox" name="properties[error-mode-hide]" value="1" class="pz-tab-show" <?php checked($this->options['error-mode-hide'] ); ?> />
-					<?php echo __('Do not display an error on the admin page.', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Do not display an error on the admin page.', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
-		<tr>
-			<th scope="row"><?php esc_html_e('Only retrieve publicly viewable posts', 'pz-linkcard' ); ?></th>
-			<td>
-				<label>
-					<input type="hidden"   name="properties[flg-public-only]" value="" />
-					<input type="checkbox" name="properties[flg-public-only]" value="1" <?php checked($this->options['flg-public-only'] ?? null ); ?> />
-					<?php echo esc_html__('Do not retrieve non-public or password-protected internal posts, even when the current user can view them.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
-				</label>
-			</td>
-		</tr>
-	</table>
-	<?php submit_button(); ?>
-
-	<h2><?php echo	__('Individual Processing', 'pz-linkcard' ).$help_open.'deprecation'.$help_close; ?></h2>
-	<table class="form-table">
+		</table>
+	</section>
+	<section class="pz-advanced-section">
+<h3><?php echo wp_kses_post(__('Individual Processing', 'pz-linkcard' ).$help_open.'deprecation'.$help_close); ?></h3>
+	<table class="form-table pz-advanced-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('OGP', 'pz-linkcard' ); ?></th>
 			<td>
@@ -144,7 +165,7 @@
 					<label>
 						<input type="hidden"   name="properties[flg-special-amazon]" value="" />
 						<input type="checkbox" name="properties[flg-special-amazon]" value="1" <?php checked($this->options['flg-special-amazon'] ); ?> />
-						<?php echo __('Retrieve Product Images.', 'pz-linkcard' ); ?>
+						<?php echo wp_kses_post(__('Retrieve Product Images.', 'pz-linkcard' )); ?>
 					</label>
 				</p>
 			</td>
@@ -230,9 +251,11 @@
 			</td>
 		</tr>
 	</table>
-	<?php submit_button(); ?>
+	</section>
 
-	<h2 id="pz-schedule"><?php echo	__('Schedule', 'pz-linkcard' ).$help_open.'schedule'.$help_close; ?></h2>
+
+	<section class="pz-advanced-section">
+	<h3 id="pz-schedule"><?php echo wp_kses_post(__('Schedule', 'pz-linkcard' ).$help_open.'schedule'.$help_close); ?></h3>
 	<?php
 	$pending_counts = $this->pz_GetSchedulePendingCounts();
 	$pending_label = static function($count, $url = '') {
@@ -253,9 +276,10 @@
 		return '<span class="pz-schedule-next-run">'.esc_html($text).'</span>';
 	};
 	?>
-	<table class="form-table pz-schedule-table">
-		<tr id="pz-sns-recurrence-settings">
-			<th rowspan="2"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></th>
+
+		<h4 class="pz-advanced-schedule-heading"><?php esc_html_e('SNS Count', 'pz-linkcard' ); ?></h4>
+<table class="form-table pz-schedule-table pz-advanced-table">
+<tr id="pz-sns-recurrence-settings">
 			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
 			<td><?php pz_echo_schedule_select('sns-period', $prop['sns-period'], LIST_PERIOD ); echo $next_run_label(self::CRON_CHECK); ?></td>
 		</tr>
@@ -263,8 +287,10 @@
 			<th scope="row"><?php esc_html_e('Items per Run', 'pz-linkcard' ); ?></th>
 			<td><?php pz_echo_schedule_select('sns-period-num', $prop['sns-period-num'], LIST_PERIOD_NUMBER, empty($prop['sns-period']) ); echo $pending_label($pending_counts->sns ?? 0, add_query_arg(array('filter' => 'all', 'keyword' => rawurlencode('sns_nexttime<=now')), $this->cacheman_url)); ?></td>
 		</tr>
-		<tr id="pz-alive-recurrence-settings">
-			<th rowspan="2"><?php esc_html_e('Link Availability Check', 'pz-linkcard' ); ?></th>
+		</table>
+<h4 class="pz-advanced-schedule-heading"><?php esc_html_e('Link Availability Check', 'pz-linkcard' ); ?></h4>
+<table class="form-table pz-schedule-table pz-advanced-table">
+<tr id="pz-alive-recurrence-settings">
 			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard' ); ?></th>
 			<td><?php pz_echo_schedule_select('alive-period', $prop['alive-period'], LIST_PERIOD ); echo $next_run_label(self::CRON_ALIVE); ?></td>
 		</tr>
@@ -272,8 +298,10 @@
 			<th scope="row"><?php esc_html_e('Items per Run', 'pz-linkcard' ); ?></th>
 			<td><?php pz_echo_schedule_select('alive-period-num', $prop['alive-period-num'], LIST_PERIOD_NUMBER, empty($prop['alive-period']) ); echo $pending_label($pending_counts->alive ?? 0, add_query_arg(array('filter' => 'all', 'keyword' => rawurlencode('alive_nexttime<=now')), $this->cacheman_url)); ?></td>
 		</tr>
-		<tr>
-			<th rowspan="3"><?php esc_html_e('Article Content Retrieval', 'pz-linkcard'); ?></th>
+		</table>
+<h4 class="pz-advanced-schedule-heading"><?php esc_html_e('Article Content Retrieval', 'pz-linkcard'); ?></h4>
+<table class="form-table pz-schedule-table pz-advanced-table">
+<tr>
 			<th scope="row"><?php esc_html_e('Recurrence', 'pz-linkcard'); ?></th>
 			<td><?php pz_echo_schedule_select('get-timing', $prop['get-timing'], array(
 				'display' => __('On display (not recommended)', 'pz-linkcard'),
@@ -300,8 +328,10 @@
 			</td>
 		</tr>
 		<?php $cleanup_disabled = empty($prop['flg-click-count']) || empty($prop['flg-click-log']); ?>
-		<tr>
-			<th rowspan="3"><?php esc_html_e('Click Log Cleanup', 'pz-linkcard'); ?></th>
+		</table>
+<h4 class="pz-advanced-schedule-heading"><?php esc_html_e('Click Log Cleanup', 'pz-linkcard'); ?></h4>
+<table class="form-table pz-schedule-table pz-advanced-table">
+<tr>
 			<th scope="row"><?php esc_html_e('Log Recording', 'pz-linkcard'); ?></th>
 			<td><span><?php echo sprintf(esc_html__('The %s are on the “Link Check” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-click-log-record-target">'.esc_html__('settings', 'pz-linkcard').'</a>'); ?></span></td>
 		</tr>
@@ -356,10 +386,12 @@
 			</td>
 		</tr>
 	</table>
-	<?php submit_button(); ?>
+	</section>
 
-	<h2><?php echo	__('Extension Settings', 'pz-linkcard' ).$help_open.'extension'.$help_close; ?></h2>
-	<table class="form-table">
+
+	<section class="pz-advanced-section">
+	<h3><?php echo wp_kses_post(__('Extension Settings', 'pz-linkcard' ).$help_open.'extension'.$help_close); ?></h3>
+	<table class="form-table pz-advanced-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Admin Bar', 'pz-linkcard' ); ?></th>
 			<td>
@@ -381,5 +413,7 @@
 			</td>
 		</tr>
 	</table>
+	</section>
+
 	<?php submit_button(); ?>
 </div>

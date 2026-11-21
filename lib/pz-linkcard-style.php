@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	// スタイルシート出力先を準備
 	$css_dir			=	PZLKC_DIR_STYLE;

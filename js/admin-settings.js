@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     let processingOverlayTimer = null;
     let cachemanPendingMonitor = null;
-	const processingOverlayDelay = 800;
+	const processingOverlayDelay = 500;
 	initInfobarPosition();
 	initTargetHighlightLinks();
 	initAdminScreenSwitchAnimation();
@@ -111,8 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 if (submitter?.dataset?.noOverlay === "1") return;
-                const isRunNow = submitter?.name === "action" && String(submitter.value || "").startsWith("run-");
-                showProcessingOverlay(isRunNow ? 0 : processingOverlayDelay);
+                showProcessingOverlay(processingOverlayDelay);
             });
         });
 
@@ -1055,7 +1054,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const confirmMessage = e.currentTarget?.dataset?.pzConfirm;
         if (confirmMessage && !window.confirm(confirmMessage)) return;
 
-        showProcessingOverlay(0);
+        showProcessingOverlay(processingOverlayDelay);
         await new Promise(resolve => {
             window.requestAnimationFrame(() => window.requestAnimationFrame(resolve));
         });
@@ -1125,13 +1124,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function errorModeNoticeDismiss(e) {
         const notice = e.target.closest(".pz-lkc-error-mode-notice");
-        if (!notice || !e.target.closest(".notice-dismiss, .pz-toast-dismiss")) return;
+        const resetButton = e.target.closest('#pz-error-reset-settings button[name="action"][value="clear-error"]');
+        if (!resetButton && (!notice || !e.target.closest(".notice-dismiss, .pz-toast-dismiss"))) return;
+        if (resetButton) {
+            e.preventDefault();
+            document.querySelectorAll(".pz-lkc-error-mode-notice").forEach(element => element.remove());
+        }
 
         const checkbox = document.querySelector('input[type=checkbox][name="properties[error-mode]"]');
         if (checkbox) {
             checkbox.checked = false;
             checkbox.dispatchEvent(new Event("change", { bubbles: true }));
         }
+
+        document.querySelector('.pz-tab[name="pz-basic"]')?.click();
 
         if (!window.pzLinkCardAdmin?.ajaxUrl || !window.pzLinkCardAdmin?.noticeNonce) return;
 
@@ -2598,6 +2604,23 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    function slideSettingsPanel(panel, toggle, open) {
+        const $panel = jQuery(panel);
+        $panel.stop(true, true);
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) {
+            window.scrollTo(0, 0);
+            panel.hidden = false;
+            panel.classList.add("is-open");
+            $panel.hide().slideDown("fast");
+        } else {
+            $panel.slideUp("fast", () => {
+                panel.hidden = true;
+                panel.classList.remove("is-open");
+            });
+        }
+    }
+
     function initPageHelp() {
         document.querySelectorAll(".pz-page-help").forEach(root => {
             const toggle = root.querySelector(".pz-page-help-toggle");
@@ -2610,6 +2633,11 @@ document.addEventListener("DOMContentLoaded", () => {
             const setOpen = nextOpen => {
                 window.clearTimeout(hideTimer);
                 open = nextOpen;
+
+                if (scrollOnOpen) {
+                    slideSettingsPanel(panel, toggle, open);
+                    return;
+                }
 
                 if (open) {
 					if (scrollOnOpen) window.scrollTo(0, 0);
@@ -2662,20 +2690,7 @@ document.addEventListener("DOMContentLoaded", () => {
 			window.clearTimeout(hideTimer);
 			open = nextOpen;
 
-			if (open) {
-				window.scrollTo(0, 0);
-				panel.hidden = false;
-				window.requestAnimationFrame(() => {
-					if (open) panel.classList.add("is-open");
-				});
-			} else {
-				panel.classList.remove("is-open");
-				hideTimer = window.setTimeout(() => {
-					if (!open) panel.hidden = true;
-				}, 160);
-			}
-
-			toggle.setAttribute("aria-expanded", open ? "true" : "false");
+			slideSettingsPanel(panel, toggle, open);
 		};
 
 		toggle.addEventListener("click", event => {
@@ -2819,7 +2834,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 const loader = document.createElement('span');
                 loader.className = 'pz-man-pending-loader';
                 loader.setAttribute('aria-hidden', 'true');
-                title.append(loader);
+                window.setTimeout(() => {
+                    if (title.isConnected && row.hasAttribute('data-pz-pending-id')) title.append(loader);
+                }, 500);
             }
             try {
                 const body = new URLSearchParams({ action: 'pz_lkc_cacheman_pending', nonce: config.cachemanPendingNonce, queue_card_id: String(cardId) });
@@ -3197,3 +3214,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+
+// Keep the site information placement diagram in sync with its selector.
+(function () {
+	function initSiteInfoPositionPreview() {
+		[
+			['info-position', '.pz-position-info-preview'],
+			['thumbnail-position', '.pz-position-thumbnail-preview']
+		].forEach(([name, selector]) => {
+			const select = document.querySelector(`select[name='properties[${name}]']`);
+			const preview = document.querySelector(selector);
+			if (!select || !preview) { return; }
+			const update = () => { preview.dataset.position = select.value; };
+			select.addEventListener('change', update);
+			update();
+		});
+	}
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', initSiteInfoPositionPreview);
+	} else {
+		initSiteInfoPositionPreview();
+	}
+})();

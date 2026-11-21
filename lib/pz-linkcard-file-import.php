@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	// DBの宣言
 	global	$wpdb;
@@ -6,7 +6,7 @@
 	// DBの列名取得
 	$col_name	=	$wpdb->get_col("DESC $this->db_name" );
 	if	(!$col_name || $wpdb->last_error ) {
-		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('DB Access Error.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html($wpdb->last_error).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
 	}
 
@@ -24,20 +24,20 @@
 
 	// アップロードされたファイルの存在チェック
 	if	(!is_uploaded_file($temp_path ) ) {
-		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import File Not Found.', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Import File Not Found.', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
 	}
 
 	// ファイルを開く（読み込み）
 	$handle			=	fopen($temp_path, 'r');
 	if	(!$handle ) {
-		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import File Open Error.', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Import File Open Error.', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
 	}
 
 	// ヘッダー行入力
 	if	(($csv_header = fgetcsv($handle ) ) == false ) {
-		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import File Read Error.', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Import File Read Error.', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
 	}
 
@@ -49,14 +49,14 @@
 		// DBクリア
 		$result	=	$wpdb->query("DELETE FROM $this->db_name" );
 		if	($wpdb->last_error ) {
-			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
+			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('DB Access Error.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html($wpdb->last_error).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;
 		}
 
 		// AUTO INCLIMENTのリセット
 		$result	=	$wpdb->query("ALTER TABLE $this->db_name AUTO_INCREMENT=1;" );
 		if	($wpdb->last_error ) {
-			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('DB Access Error.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).$wpdb->last_error.__(')', 'pz-linkcard' ).'</strong></p></div>';
+			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('DB Access Error.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html($wpdb->last_error).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;
 		}
 	}
@@ -86,10 +86,10 @@
 			if	(!isset($result['url'] ) || $result['url'] <> $import['url'] ) {
 				$skip_count++;
 				$reason	=	$save_error ?: (isset($result['url'] )
-					? sprintf(__('The saved URL differs from the imported URL: %s', 'pz-linkcard' ), $result['url'] )
-					: __('The cache record could not be saved.', 'pz-linkcard' ) );
+					? sprintf(esc_html__('The saved URL differs from the imported URL: %s', 'pz-linkcard' ), $result['url'] )
+					: esc_html__('The cache record could not be saved.', 'pz-linkcard' ) );
 				if	(!array_key_exists('url', $import ) ) {
-					$reason	=	__('No URL column was found.', 'pz-linkcard' );
+					$reason	=	esc_html__('No URL column was found.', 'pz-linkcard' );
 				}
 				$skipped_records[]	=	array('row' => $read_count, 'url' => $import['url'] ?? '', 'reason' => $reason );
 			} else {
@@ -100,7 +100,7 @@
 			$skipped_records[]	=	array(
 				'row' => $read_count,
 				'url' => '',
-				'reason' => sprintf(__('CSV column count differs from the header (expected %1$d, found %2$d).', 'pz-linkcard' ), $item_count, count($record ) ),
+				'reason' => sprintf(esc_html__('CSV column count differs from the header (expected %1$d, found %2$d).', 'pz-linkcard' ), $item_count, count($record ) ),
 			);
 		}
 	}
@@ -108,8 +108,8 @@
 	fclose($handle );
 
 	if	($success_count ) {
-		echo	'<div class="notice notice-success is-dismissible"><p><strong>'.__('Import Successful.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Read:', 'pz-linkcard' ).$read_count.' '.__('Success:', 'pz-linkcard' ).$success_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-success is-dismissible"><p><strong>'.esc_html__('Import Successful.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html__('Read:', 'pz-linkcard' ).intval($read_count).' '.esc_html__('Success:', 'pz-linkcard' ).intval($success_count).' '.esc_html__('Skip:', 'pz-linkcard' ).intval($skip_count).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 	} else {
-		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.__('Import Failure.', 'pz-linkcard' ).__('(', 'pz-linkcard' ).__('Read:', 'pz-linkcard' ).$read_count.' '.__('Skip:', 'pz-linkcard' ).$skip_count.__(')', 'pz-linkcard' ).'</strong></p></div>';
+		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Import Failure.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html__('Read:', 'pz-linkcard' ).intval($read_count).' '.esc_html__('Skip:', 'pz-linkcard' ).intval($skip_count).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 	}
 	require __DIR__.'/pz-linkcard-file-import-result.php';

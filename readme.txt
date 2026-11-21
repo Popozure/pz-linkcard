@@ -4,12 +4,12 @@ Tags: LinkCard, BlogCard, Internal Link, External Link
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: trunk
+Stable tag: 2.6.5.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.amazon.co.jp/gp/registry/wishlist/2KIBQLC1VLA9X
 
-このプラグインはリンクをカード形式で表示します。テキストだけのリンクにさようなら！
+Display internal and external links as customizable cards with titles, excerpts, and thumbnails.
 
 This plugin is intended to display a link in a blog card format. The goodbye to the text-only link.
 
@@ -269,7 +269,7 @@ Ver.2.1.2から200px四方に変更、Ver.2.4.1から自由に指定出来るよ
 * [Added] 設定画面の「表示」タブにスタイルの重要度を追加しました。リンクカードのCSSを優先させます。
 * [Added] 設定画面の「リンク先の検査」タブに「robots.txtを参照する」を追加。外部リンクを取得するときにrobots.txtに従います。[Pz3]
 * [Added] 設定画面の「リンク先の検査」タブに「ローカルIPアドレスをブロック」を追加。外部リンクを取得するときにローカルIPをブロックします。[Pz3]
-* [Added] 設定画面の「その他」タブをデバグモードで開いたときログファイル全削除ボタンでログを削除出来るようにしました。
+* [Added] 設定画面の「その他」タブをデバッグモードで開いたときログファイル全削除ボタンでログを削除出来るようにしました。
 * [Added] 設定画面の「初期化」タブに「書式の初期化」を追加しました。カードの見た目にかかる設定だけ初期状態に戻せます。
 * [Added] 管理画面の一覧で「記事ID」の数値の右側にリンクボタンを追加しました。投稿を開き、該当のリンクカードを青枠で表示します。
 * [Added] 設定画面、管理画面、編集画面の右上にヘルプを追加しました。使用出来るショートカットキーなどが表示されます。

@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 	// nonce チェック
 	if	(!check_ajax_referer('pz_lkc_nonce', 'nonce', false ) ) {

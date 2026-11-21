@@ -1,14 +1,15 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 $error_post_id    = intval($prop['error-postid'] ?? 0);
 $error_post_title = $error_post_id ? get_the_title($error_post_id ) : '';
 $error_post_edit_url = $error_post_id ? get_edit_post_link($error_post_id, '' ) : '';
 $error_post_url = isset($prop['error-url'] ) ? (string) $prop['error-url'] : '';
 ?>
-<div class="pz-page<?php echo $pz_page_active('pz-error' ); ?>" id="pz-error">
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-error' )); ?>" id="pz-error">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Error Settings', 'pz-linkcard' ).$help_open.'error'.$help_close; ?></h2>
+	<section class="pz-settings-detail-section">
+	<h2><?php echo wp_kses_post(__('Error Settings', 'pz-linkcard' ).$help_open.'error'.$help_close); ?></h2>
 	<div class="pz-error-text">
 		<?php esc_html_e('The shortcode syntax is incorrect. Open the linked post and correct it.', 'pz-linkcard' ); ?>
 	</div>
@@ -54,14 +55,20 @@ $error_post_url = isset($prop['error-url'] ) ? (string) $prop['error-url'] : '';
 				<span><?php echo is_numeric($prop['error-time'] ) ? esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, esc_attr($prop['error-time'] ) ) ) : esc_attr($prop['error-time'] ); ?></span>
 			</td>
 		</tr>
+	</table>
+	</section>
+	<section class="pz-settings-detail-section">
+		<h3><?php esc_html_e('Error Reset', 'pz-linkcard' ); ?></h3>
+	<table class="pz-set-table form-table">
 		<tr id="pz-error-reset-settings">
 			<th scope="row"><?php esc_html_e('Error Reset', 'pz-linkcard' ); ?></th>
 			<td>
-				<button type="submit" name="action" value="clear-error" class="pz-button"><?php esc_html_e('Reset', 'pz-linkcard' ); ?></button>
+				<button type="button" name="action" value="clear-error" class="pz-button"><?php esc_html_e('Reset', 'pz-linkcard' ); ?></button>
 				&ensp;<span><?php esc_html_e('Clear the error state.', 'pz-linkcard' ); ?></span>
 				<br><span class="pz-warning"><?php esc_html_e('* If you have not corrected the error, viewing the post may trigger the error again.', 'pz-linkcard' ); ?></span>
 			</td>
 		</tr>
 	</table>
+	</section>
 	<?php submit_button(); ?>
 </div>

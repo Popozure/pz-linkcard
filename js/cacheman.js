@@ -7,7 +7,64 @@
             if (link.scrollWidth > link.clientWidth) link.title = link.textContent;
             else link.removeAttribute("title");
         };
-        const updateUrlTooltips = () => root.querySelectorAll(".pz-card-list-url").forEach(updateUrlTooltip);
+        const imageQueue = [];
+        const queuedImages = new WeakSet();
+        let activeImages = 0;
+        const loadImages = () => {
+            root.querySelectorAll('tr[data-pz-async-images="1"]').forEach(row => {
+                if (!queuedImages.has(row)) {
+                    queuedImages.add(row);
+                    imageQueue.push(row);
+                }
+            });
+            while (activeImages < 2 && imageQueue.length) {
+                const row = imageQueue.shift();
+                if (!row.isConnected) continue;
+                activeImages++;
+                (async () => {
+                    try {
+                        const response = await fetch(pzCardList.ajaxUrl, {
+                            method: "POST", credentials: "same-origin",
+                            body: new URLSearchParams({ action: "pz_lkc_cacheman_pending", nonce: pzCardList.pendingNonce, image_card_id: row.dataset.pzCardId })
+                        });
+                        const result = await response.json();
+                        if (!response.ok || !result?.success || !row.isConnected) return;
+                        if (result.data.thumbnail && !row.querySelector('.pz-card-list-thumbnail')) {
+                            const cell = row.querySelector('td.column-id');
+                            if (cell) {
+                                const link = document.createElement('a');
+                                link.className = 'pz-card-list-thumbnail';
+                                link.href = result.data.thumbnail;
+                                link.target = '_blank';
+                                link.rel = 'noopener noreferrer';
+                                const image = document.createElement('img');
+                                image.src = result.data.thumbnail;
+                                image.alt = '';
+                                image.loading = 'lazy';
+                                link.append(image);
+                                cell.append(link);
+                            }
+                        }
+                        const domain = row.querySelector('.pz-card-list-domain-line > a');
+                        if (domain && result.data.favicon && !domain.querySelector('img')) {
+                            const icon = document.createElement('img');
+                            icon.className = 'pz-card-list-site-icon';
+                            icon.src = result.data.favicon;
+                            icon.alt = '';
+                            icon.width = icon.height = 14;
+                            icon.loading = 'lazy';
+                            domain.prepend(icon);
+                        }
+                        row.removeAttribute('data-pz-async-images');
+                    } catch (_) { /* Keep the list usable when image retrieval fails. */ }
+                    finally { activeImages--; loadImages(); }
+                })();
+            }
+        };
+        const updateUrlTooltips = () => {
+            root.querySelectorAll(".pz-card-list-url").forEach(updateUrlTooltip);
+            loadImages();
+        };
         ["pointerover", "focusin"].forEach(type => root.addEventListener(type, event => {
             const link = event.target instanceof Element ? event.target.closest(".pz-card-list-url") : null;
             if (link) updateUrlTooltip(link);
@@ -97,7 +154,9 @@
                 const spinner = document.createElement("span");
                 spinner.className = "pz-man-pending-loader";
                 spinner.setAttribute("aria-hidden", "true");
-                title.appendChild(spinner);
+                window.setTimeout(() => {
+                    if (title.isConnected && row.hasAttribute('data-pz-pending-id')) title.appendChild(spinner);
+                }, 500);
             }
             try {
                 const result = await pendingRequest({ queue_card_id: String(id) });
@@ -114,13 +173,7 @@
         schedulePending();
         const actionForm = document.getElementById("pz-linkcard-actions");
         const rowChecks = () => [...root.querySelectorAll('tbody input[name="card_ids[]"]')];
-        const counters = [...root.querySelectorAll(".displaying-num")].map(total => {
-            const counter = document.createElement("span");
-            counter.style.marginInlineStart = "1em";
-            counter.setAttribute("aria-live", "polite");
-            total.after(counter);
-            return counter;
-        });
+        const counters = [...root.querySelectorAll(".pz-card-list-selected-count")];
         const updateSelectedCount = () => {
             const count = rowChecks().filter(input => input.checked).length;
             const label = count === 1 ? pzCardList.selectedItem : pzCardList.selectedItems;
@@ -130,19 +183,23 @@
         root.addEventListener("click", () => requestAnimationFrame(updateSelectedCount));
         window.addEventListener("pageshow", updateSelectedCount);
         updateSelectedCount();
-        const scrollKey = `pz-card-list-scroll:${location.pathname}${location.search}`;
+        // Share the saved position across pagination, sorting and filtering URLs.
+        const scrollKey = "pz-card-list-scroll:" + location.pathname + ":pz-linkcard-cacheman";
+        const listScroll = root.querySelector(".pz-card-list-scroll");
         const saveScroll = () => {
-            try { sessionStorage.setItem(scrollKey, JSON.stringify({ x: scrollX, y: scrollY })); } catch (error) { /* Storage may be unavailable. */ }
-        };
-        window.addEventListener("pagehide", saveScroll);
-        const restoreScroll = () => {
             try {
-                const position = JSON.parse(sessionStorage.getItem(scrollKey));
-                if (position) requestAnimationFrame(() => window.scrollTo({ left: position.x, top: position.y, behavior: "instant" }));
-            } catch (error) { /* Ignore unavailable or invalid storage. */ }
+                sessionStorage.setItem(scrollKey, JSON.stringify({
+                    x: scrollX, y: scrollY,
+                    listX: listScroll?.scrollLeft || 0,
+                    listY: listScroll?.scrollTop || 0
+                }));
+            } catch (error) { /* Storage may be unavailable. */ }
         };
-        restoreScroll();
-        window.addEventListener("pageshow", restoreScroll);
+        root.addEventListener("click", event => {
+            const control = event.target instanceof Element ? event.target.closest("a[href], button, input[type=submit], input[type=button]") : null;
+            if (control && event.button === 0 && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey) saveScroll();
+        }, true);
+        window.addEventListener("pagehide", saveScroll);
         actionForm?.addEventListener("submit", event => {
             const name = event.submitter?.name;
             if (name === "single_renew") {
@@ -167,22 +224,19 @@
         });
         document.addEventListener("submit", event => { if (!event.defaultPrevented) saveScroll(); });
         const loader = document.getElementById("pz-overlay-proc");
-        let loaderTimer = null;
-        const showLoader = () => {
-            if (loaderTimer !== null) clearTimeout(loaderTimer);
+        const showLoader = (delay = 30000) => {
             root.setAttribute("aria-busy", "true");
-            loaderTimer = setTimeout(() => {
-                loaderTimer = null;
-                if (loader) {
-                    const menu = document.getElementById("adminmenuwrap");
-                    const bar = document.getElementById("pz-infobar") || document.getElementById("wpadminbar");
-                    loader.style.setProperty("--pz-overlay-top", `${Math.max(0, bar?.getBoundingClientRect().bottom || 0)}px`);
-                    loader.style.setProperty("--pz-overlay-left", `${menu && getComputedStyle(menu).display !== "none" ? Math.max(0, menu.getBoundingClientRect().right) : 0}px`);
-                    loader.classList.remove("hidden");
-                    loader.style.display = "flex";
-                    loader.classList.add("pz-overlay-proc-active");
-                }
-                }, 500);
+            if (!loader) return;
+            const menu = document.getElementById("adminmenuwrap");
+            const bar = document.getElementById("pz-infobar") || document.getElementById("wpadminbar");
+            loader.style.setProperty("--pz-overlay-top", Math.max(0, bar?.getBoundingClientRect().bottom || 0) + "px");
+            loader.style.setProperty("--pz-overlay-left", (menu && getComputedStyle(menu).display !== "none" ? Math.max(0, menu.getBoundingClientRect().right) : 0) + "px");
+            loader.style.setProperty("--pz-overlay-delay", delay + "ms");
+            loader.classList.remove("hidden", "pz-overlay-proc-active");
+            loader.style.display = "flex";
+            // Install the animation before navigation can suspend JavaScript timers.
+            void loader.offsetWidth;
+            loader.classList.add("pz-overlay-proc-active");
         };
         document.addEventListener("submit", event => {
             if (event.defaultPrevented || !event.target.matches("#pz-linkcard-actions, .pz-card-list-form, #adv-settings")) return;
@@ -190,14 +244,20 @@
         });
         root.addEventListener("click", event => {
             if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-            const link = event.target instanceof Element ? event.target.closest(".subsubsub a") : null;
-            if (link && !link.hasAttribute("download") && (!link.target || link.target === "_self")) showLoader();
+            const link = event.target instanceof Element ? event.target.closest("a[href]") : null;
+            if (!link || link.dataset.noOverlay === "1" || link.hasAttribute("download") || (link.target && link.target !== "_self")) return;
+            const href = link.getAttribute("href");
+            if (!href || href.startsWith("#")) return;
+            const destination = new URL(link.href, location.href);
+            if (!["http:", "https:"].includes(destination.protocol)) return;
+            if (destination.pathname === location.pathname && destination.search === location.search && destination.hash) return;
+            showLoader();
         });
+        // Count initial loading time from the start of navigation.
+        if (document.readyState !== "complete") {
+            showLoader(Math.max(0, 500 - performance.now()));
+        }
         window.addEventListener("pageshow", () => {
-            if (loaderTimer !== null) {
-                clearTimeout(loaderTimer);
-                loaderTimer = null;
-            }
             if (loader) {
                 loader.classList.remove("pz-overlay-proc-active");
                 loader.style.display = "none";

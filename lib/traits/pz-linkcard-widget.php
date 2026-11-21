@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 trait Pz_LinkCard_Widget {
 
@@ -158,7 +158,7 @@ trait Pz_LinkCard_Widget {
 							'return_url'	=> $dashboard_return_url,
 						), $this->cacheman_url );
 					?>
-						<li><time datetime="<?php echo esc_attr(date('c', intval($registration->regist_time ) ) ); ?>"><?php echo esc_html(date_i18n(__('M j, H:i', 'pz-linkcard' ), intval($registration->regist_time ) ) ); ?></time><a href="<?php echo esc_url($edit_url ); ?>" title="<?php echo esc_attr($title ); ?>" class="pz-dashboard-widget-item-link"><span class="pz-dashboard-widget-item-title"><?php echo esc_html($title ); ?></span><span class="dashicons dashicons-welcome-write-blog" aria-hidden="true"></span></a></li>
+						<li><time datetime="<?php echo esc_attr(gmdate('c', intval($registration->regist_time ) ) ); ?>"><?php echo esc_html(date_i18n(__('M j, H:i', 'pz-linkcard' ), intval($registration->regist_time ) ) ); ?></time><a href="<?php echo esc_url($edit_url ); ?>" title="<?php echo esc_attr($title ); ?>" class="pz-dashboard-widget-item-link"><span class="pz-dashboard-widget-item-title"><?php echo esc_html($title ); ?></span><span class="dashicons dashicons-welcome-write-blog" aria-hidden="true"></span></a></li>
 					<?php } ?>
 				</ul>
 			<?php } else { ?>
@@ -188,7 +188,7 @@ trait Pz_LinkCard_Widget {
 							'return_url'	=> $dashboard_return_url,
 						), $this->cacheman_url );
 					?>
-						<li><time datetime="<?php echo esc_attr(date('c', intval($click->click_time ) ) ); ?>"><?php echo esc_html(date_i18n(__('M j, H:i', 'pz-linkcard' ), intval($click->click_time ) ) ); ?></time><a href="<?php echo esc_url($click_url ); ?>" title="<?php echo esc_attr($title ); ?>" class="pz-dashboard-widget-item-link"><span class="pz-dashboard-widget-item-title"><?php echo esc_html($title ); ?></span><span class="dashicons dashicons-chart-bar" aria-hidden="true"></span></a></li>
+						<li><time datetime="<?php echo esc_attr(gmdate('c', intval($click->click_time ) ) ); ?>"><?php echo esc_html(date_i18n(__('M j, H:i', 'pz-linkcard' ), intval($click->click_time ) ) ); ?></time><a href="<?php echo esc_url($click_url ); ?>" title="<?php echo esc_attr($title ); ?>" class="pz-dashboard-widget-item-link"><span class="pz-dashboard-widget-item-title"><?php echo esc_html($title ); ?></span><span class="dashicons dashicons-chart-bar" aria-hidden="true"></span></a></li>
 					<?php } ?>
 				</ul>
 			<?php } else { ?>
@@ -196,9 +196,9 @@ trait Pz_LinkCard_Widget {
 			<?php } ?>
 		</div>
 		<div class="pz-dashboard-widget-actions">
-			<span class="pz-dashboard-widget-action"><span class="dashicons dashicons-archive" aria-hidden="true"></span><a href="<?php echo esc_url(add_query_arg('return_url', $dashboard_return_url, $this->cacheman_url ) ); ?>"><?php esc_html_e('Manager', 'pz-linkcard' ); ?></a></span>
-			<span class="pz-dashboard-widget-action"><span class="dashicons dashicons-admin-generic" aria-hidden="true"></span><a href="<?php echo esc_url(add_query_arg('return_url', $dashboard_return_url, $this->settings_url ) ); ?>"><?php esc_html_e('Settings', 'pz-linkcard' ); ?></a></span>
-			<a class="pz-dashboard-widget-credit" href="https://popozure.info/pz-linkcard" target="_blank" rel="noopener">popozure.info</a>
+			<a class="pz-dashboard-widget-action" href="<?php echo esc_url(add_query_arg('return_url', $dashboard_return_url, $this->cacheman_url ) ); ?>"><span class="dashicons dashicons-archive" aria-hidden="true"></span><?php esc_html_e('Manager', 'pz-linkcard' ); ?></a>
+			<a class="pz-dashboard-widget-action" href="<?php echo esc_url(add_query_arg('return_url', $dashboard_return_url, $this->settings_url ) ); ?>"><span class="dashicons dashicons-admin-generic" aria-hidden="true"></span><?php esc_html_e('Settings', 'pz-linkcard' ); ?></a>
+			<a class="pz-dashboard-widget-credit" href="https://popozure.info/pz-linkcard" target="_blank" rel="noopener">Pz-LinkCard</a>
 		</div>
 		<?php
 	}

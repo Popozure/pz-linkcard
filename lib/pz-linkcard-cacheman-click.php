@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	global	$wpdb;
 
@@ -51,8 +51,8 @@
 				"SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
 				FROM $this->db_click AS click_log
 				LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click_log.url_key
-				" . ($post_filter_id ? "WHERE click_log.post_id = %d " : "") . "ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
-				...($post_filter_id ? array($post_filter_id, $page_limit, $offset) : array($page_limit, $offset))
+				WHERE (%d = 0 OR click_log.post_id = %d) ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
+				$post_filter_id, $post_filter_id, $page_limit, $offset
 			) );
 			if (!$click_logs && $count_now > 0) {
 				$click_logs = (array) $wpdb->get_results($wpdb->prepare(
@@ -269,9 +269,9 @@
 		<p class="pz-click-log-item-count"><?php echo esc_html(sprintf(_n('%s item', '%s items', $count_now, 'pz-linkcard' ), number_format_i18n($count_now ) ) ); ?></p>
 		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>">
 			<button type="submit" name="click-page" value="1" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&laquo;', 'pz-linkcard' ) ); ?></button>
-			<button type="submit" name="click-page" value="<?php echo max(1, $click_page - 1 ); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo esc_attr((string) max(1, $click_page - 1 )); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
 			<span class="paging-input"><?php echo esc_html(number_format_i18n($click_page ).' / '.number_format_i18n($page_max ) ); ?></span>
-			<button type="submit" name="click-page" value="<?php echo min($page_max, $click_page + 1 ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo esc_attr((string) min($page_max, $click_page + 1 )); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
 			<button type="submit" name="click-page" value="<?php echo intval($page_max ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&raquo;', 'pz-linkcard' ) ); ?></button>
 		</nav>
 	</div>
@@ -333,9 +333,9 @@
 		<div class="pz-click-log-bottom-navigation">
 		<nav class="tablenav-pages" aria-label="<?php echo esc_attr__('Click Log', 'pz-linkcard' ); ?>">
 			<button type="submit" name="click-page" value="1" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&laquo;', 'pz-linkcard' ) ); ?></button>
-			<button type="submit" name="click-page" value="<?php echo max(1, $click_page - 1 ); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo esc_attr((string) max(1, $click_page - 1 )); ?>" class="button"<?php disabled($click_page <= 1 ); ?>><?php echo wp_kses_post(__('&lsaquo;', 'pz-linkcard' ) ); ?></button>
 			<span class="paging-input"><?php echo esc_html(number_format_i18n($click_page ).' / '.number_format_i18n($page_max ) ); ?></span>
-			<button type="submit" name="click-page" value="<?php echo min($page_max, $click_page + 1 ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
+			<button type="submit" name="click-page" value="<?php echo esc_attr((string) min($page_max, $click_page + 1 )); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&rsaquo;', 'pz-linkcard' ) ); ?></button>
 			<button type="submit" name="click-page" value="<?php echo intval($page_max ); ?>" class="button"<?php disabled($click_page >= $page_max ); ?>><?php echo wp_kses_post(__('&raquo;', 'pz-linkcard' ) ); ?></button>
 		</nav>
 	</div>

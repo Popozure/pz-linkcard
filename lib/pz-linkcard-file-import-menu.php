@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <h2><?php esc_html_e('Import LinkCard Data', 'pz-linkcard' ); ?></h2>
 <p><?php esc_html_e('Import files exported from the Pz-LinkCard series and load them into the cache manager.', 'pz-linkcard' ); ?></p>
 <table class="pz-man-filemenu" style="width: 100%;">

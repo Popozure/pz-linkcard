@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 return "CREATE TABLE $this->db_card (
 				id				BIGINT			UNSIGNED	NOT NULL	AUTO_INCREMENT,

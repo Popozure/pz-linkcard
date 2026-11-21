@@ -25,7 +25,7 @@ if ( ! empty( $settings['flg-delete-image'] ) ) {
 			foreach ( $iterator as $entry ) {
 				$path = $entry->getPathname();
 				if ( $entry->isLink() ) {
-					@unlink( $path );
+					wp_delete_file( $path );
 					continue;
 				}
 

@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	global	$wpdb;
 	$export_count	=	intval($wpdb->get_var("SELECT COUNT(*) FROM $this->db_card" ) );

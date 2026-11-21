@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 
 	$thumbnail_url = $this->pz_EncodeImageURL($thumbnail_url ?? null );
@@ -35,12 +35,14 @@
 				return	null;
 			} else {
 				if	($stamp === true ) {
-					$file_url	.=	'?'.date('yyyymmdd-his', filemtime($file_path ) );
+					$file_url	.=	'?'.gmdate('yyyymmdd-his', filemtime($file_path ) );
 				}
 				return	$file_url;
 			}
 		}
 	}
+
+	if ($cache_only) { return null; }
 
 	if	($this->pz_ShouldBlockLocalAddress($thumbnail_url ) ) {
 		$create_null_file();
@@ -244,6 +246,20 @@
 		return	null;
 	}
 
+	// Inspect headers before GD allocates the uncompressed image buffer.
+	$image_info = @getimagesizefromstring($body);
+	$image_width = is_array($image_info) ? (int) ($image_info[0] ?? 0) : 0;
+	$image_height = is_array($image_info) ? (int) ($image_info[1] ?? 0) : 0;
+	$max_image_pixels = 16000000;
+	$memory_limit = wp_convert_hr_to_bytes(ini_get('memory_limit'));
+	$available_memory = $memory_limit > 0 ? max(0, $memory_limit - memory_get_usage(true) - 16 * 1024 * 1024) : null;
+	if ($image_width <= 0 || $image_height <= 0 || $image_width > 8192 || $image_height > 8192
+		|| $image_width > intdiv($max_image_pixels, max(1, $image_height))
+		|| ($available_memory !== null && $image_width * $image_height > intdiv($available_memory, 8))) {
+		$create_null_file();
+		return null;
+	}
+
 	$image	=	@imagecreatefromstring($body );
 	if	($image === false ) {
 		$create_null_file();
@@ -322,6 +338,6 @@
 		return	null;
 	}
 	if	($stamp === true ) {
-		$file_url	.=	'?'.date('yyyymmdd-his', filemtime($file_path ) );
+		$file_url	.=	'?'.gmdate('yyyymmdd-his', filemtime($file_path ) );
 	}
 	return	$file_url;

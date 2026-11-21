@@ -1,18 +1,19 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	check_admin_referer('pz_export_file_action' );
 
 	global	$wpdb;
+	$pz_sql_table = '`'.str_replace('`', '``', $this->db_card).'`';
 
 	$column_omit	=	array('id', 'scheme', 'domain' );
-	$result	=	$wpdb->get_results($wpdb->prepare('SELECT * FROM %i LIMIT 1', $this->db_card ), ARRAY_A );
+	$result	=	$wpdb->get_results('SELECT * FROM '.$pz_sql_table.' LIMIT 1', ARRAY_A );
 	if	(!$result ) {
 		wp_die(esc_html__('No export data was found.', 'pz-linkcard' ) );
 	}
 
 	$column_all	=	array_keys($result[0] );
 	$column_output	=	array_values(array_diff($column_all, $column_omit ) );
-	$data_all	=	$wpdb->get_results($wpdb->prepare('SELECT * FROM %i ORDER BY domain, url', $this->db_card ), ARRAY_A );
+	$data_all	=	$wpdb->get_results('SELECT * FROM '.$pz_sql_table.' ORDER BY domain, url', ARRAY_A );
 
 	$filename	=	'pz_linkcard_export_utf8_'.gmdate('Ymd_His').'.csv';
 	$wp_filesystem	=	$this->pz_GetFilesystem();

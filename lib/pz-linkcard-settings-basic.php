@@ -1,5 +1,5 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
-<div class="pz-page<?php echo $pz_page_active('pz-basic' ); ?>" id="pz-basic">
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-basic' )); ?>" id="pz-basic">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 
 	<div class="pz-tips" style="
@@ -14,8 +14,9 @@
 		color: #444;">
 	</div>
 
+	<section class="pz-settings-detail-section">
+	<h2><?php echo wp_kses_post(__('Basic Settings', 'pz-linkcard' ).$help_open.'basic'.$help_close); ?></h2>
 	<table class="form-table">
-	<h2><?php echo	__('Basic Settings', 'pz-linkcard' ).$help_open.'basic'.$help_close; ?></h2>
 <?php
 	// 簡単書式設定
 	$item_name			=	'special-format';
@@ -77,13 +78,19 @@
 	</table>
 	<?php submit_button(); ?>
 
-	<h2><?php echo	__('Changelog', 'pz-linkcard' ); ?></h2>
+
+	</section>
+	<section class="pz-settings-detail-section">
+	<h2><?php echo wp_kses_post(__('Changelog', 'pz-linkcard' )); ?></h2>
 	<div class="pz-changelog">
 		<?php echo	$changelog; ?>
 	</div>
 	<?php submit_button(); ?>
 
-	<h2><?php echo	__('Related Information', 'pz-linkcard' ); ?></h2>
+
+	</section>
+	<section class="pz-settings-detail-section">
+	<h2><?php echo wp_kses_post(__('Related Information', 'pz-linkcard' )); ?></h2>
 	<table class="form-table">
 <?php
 	$plugin_support_url	=	'https://wordpress.org/support/plugin/pz-linkcard/';
@@ -99,7 +106,7 @@
 	};
 ?>
 		<tr>
-			<th scope="row"><?php echo	__('How to Use', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('Japanese Only', 'pz-linkcard' ).__(')', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php echo wp_kses_post(__('How to Use', 'pz-linkcard' ).' '.__('(', 'pz-linkcard' ).__('Japanese Only', 'pz-linkcard' ).__(')', 'pz-linkcard' )); ?></th>
 			<td>
 				<?php $intro_card($plugin_url, $this->plugin_dir_url.'img/logo_pz-linkcard.png', self::PLUGIN_NAME, 'Version '.PZLKC_PLUGIN_VERSION, 'pz-introduction-pzlkc' ); ?>
 			</td>
@@ -136,4 +143,6 @@
 
 	</table>
 	<?php submit_button(); ?>
-</div>
+
+	</section>
+	</div>

@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	if	(!isset($cacheman_allowed_html ) || !is_array($cacheman_allowed_html ) ) {
 		$cacheman_allowed_html	=	wp_kses_allowed_html('post' );
@@ -197,7 +197,7 @@
 			<?php esc_html_e('Help', 'pz-linkcard' ); ?><span class="dashicons dashicons-arrow-down-alt2"></span>
 		</button>
 		<div id="pz-cache-edit-help-panel" class="pz-page-help-panel" hidden>
-			<h3><?php esc_html_e('Keyboard Shortcuts'); ?></h3>
+			<h3><?php esc_html_e('Keyboard Shortcuts', 'default'); ?></h3>
 			<dl class="pz-man-shortcut-list">
 				<div><dt><kbd>F1</kbd></dt><dd><?php esc_html_e('Show Help', 'pz-linkcard' ); ?></dd></div>
 				<div><dt><kbd>F2</kbd></dt><dd><?php esc_html_e('Edit title', 'pz-linkcard' ); ?></dd></div>
@@ -222,12 +222,12 @@
 					<?php echo wp_kses($cacheman_character_counter('title', 'pz-man-cache-title', 200), $cacheman_allowed_html); ?>
 					<div class="inside pz-man-cache-permalink">
 						<div class="pz-man-cache-permalink-row">
-							<strong><?php echo $cacheman_field_label(esc_html__('URL', 'pz-linkcard')); ?></strong>
+							<strong><?php echo wp_kses_post($cacheman_field_label(esc_html__('URL', 'pz-linkcard'))); ?></strong>
 							<span id="pz-man-cache-url-status" class="<?php echo esc_attr($cacheman_error_ignored ? 'pz-man-body-url-error-ignore dashicons dashicons-warning' : 'pz-man-body-url-error dashicons dashicons-dismiss'); ?>" role="img" aria-label="<?php echo esc_attr($cacheman_error_ignored ? $cacheman_ignored_label : $cacheman_error_label); ?>" title="<?php echo esc_attr($cacheman_error_ignored ? $cacheman_ignored_label : $cacheman_error_label); ?>" data-error-label="<?php echo esc_attr($cacheman_error_label); ?>" data-ignored-label="<?php echo esc_attr($cacheman_ignored_label); ?>"<?php if (!$cacheman_update_error) { echo ' hidden'; } ?>></span>
 							<?php echo wp_kses($cacheman_static_value('url', array('class' => 'pz-monospace', 'display' => $this->pz_DecodeURL($cacheman_get_value('url' ) ), 'title' => $this->pz_DecodeURL($cacheman_get_value('url' ) ), 'href' => $cacheman_get_value('url' ) ) ), $cacheman_allowed_html ); ?>
 						</div>
 						<div class="pz-man-cache-permalink-row">
-							<strong><?php echo $cacheman_field_label(esc_html__('Redirect URL', 'pz-linkcard')); ?></strong>
+							<strong><?php echo wp_kses_post($cacheman_field_label(esc_html__('Redirect URL', 'pz-linkcard'))); ?></strong>
 							<?php echo wp_kses($cacheman_static_value('url_redir', array('class' => 'pz-monospace', 'display' => $this->pz_DecodeURL($cacheman_get_value('url_redir' ) ), 'title' => $this->pz_DecodeURL($cacheman_get_value('url_redir' ) ), 'href' => $cacheman_get_value('url_redir' ) ) ), $cacheman_allowed_html ); ?>
 						</div>
 					</div>
@@ -277,10 +277,10 @@
 							echo wp_kses('<tr class="pz-man-cache-side-meta-row"><td colspan="2"><strong>'.$cacheman_field_label(esc_html__('Alive Check Result Code', 'pz-linkcard' )).'</strong> '.esc_html($rs ).' '.esc_html($this->pz_HTTPMessage($rs ) ).'<br class="pz-debug-only"><input name="data[alive_result]" type="text" value="'.esc_attr($cacheman_get_value('alive_result' ) ).'" class="pz-debug-only" size="2" readonly="readonly"'.$cacheman_admin_edit_attr().'></td></tr>', $cacheman_allowed_html );
 						?>
 						<tr class="pz-man-cache-side-meta-row">
-							<td colspan="2"><strong><?php echo $cacheman_field_label(esc_html__('Last Alive Check', 'pz-linkcard' )); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('alive_time' ) ) ); ?><br class="pz-debug-only"><input name="data[alive_time]" type="text" value="<?php echo esc_attr($cacheman_get_value('alive_time' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
+							<td colspan="2"><strong><?php echo wp_kses_post($cacheman_field_label(esc_html__('Last Alive Check', 'pz-linkcard' ))); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('alive_time' ) ) ); ?><br class="pz-debug-only"><input name="data[alive_time]" type="text" value="<?php echo esc_attr($cacheman_get_value('alive_time' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
 						</tr>
 						<tr class="pz-debug-only pz-man-cache-side-meta-row">
-							<td colspan="2"><strong><?php echo $cacheman_field_label(esc_html__('Next Alive Check', 'pz-linkcard' )); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('alive_nexttime' ) ) ); ?><br><input name="data[alive_nexttime]" type="text" value="<?php echo esc_attr($cacheman_get_value('alive_nexttime' ) ); ?>" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
+							<td colspan="2"><strong><?php echo wp_kses_post($cacheman_field_label(esc_html__('Next Alive Check', 'pz-linkcard' ))); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('alive_nexttime' ) ) ); ?><br><input name="data[alive_nexttime]" type="text" value="<?php echo esc_attr($cacheman_get_value('alive_nexttime' ) ); ?>" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
 						</tr>
 
 						<?php
@@ -330,14 +330,14 @@
 				?>
 					<div class="pz-man-cache-submit-meta">
 						<input name="data[id]" type="hidden" value="<?php echo esc_attr($cacheman_get_value('id' ) ); ?>" />
-						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('ID', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('id' ) ); ?></span></div>
-						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Character Set', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('regist_charset' ) ); ?></span></div>
+						<div class="pz-man-cache-submit-meta-row"><span><?php echo wp_kses_post($cacheman_field_label(esc_html__('ID', 'pz-linkcard' ))); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('id' ) ); ?></span></div>
+						<div class="pz-man-cache-submit-meta-row"><span><?php echo wp_kses_post($cacheman_field_label(esc_html__('Character Set', 'pz-linkcard' ))); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($cacheman_get_value('regist_charset' ) ); ?></span></div>
 						<div class="pz-debug-only"><input name="data[charset]" type="text" value="<?php echo esc_attr($cacheman_get_value('charset')); ?>" class="pz-debug-only" readonly="readonly"<?php echo $cacheman_admin_edit_attr(); ?>></div>
 						<div class="pz-man-cache-submit-meta-row pz-man-cache-ignore-error"><label><input name="data[no_failure]" type="hidden" value="0" /><input name="data[no_failure]" type="checkbox" value="1" <?php checked(!empty($data['no_failure']), true); ?> accesskey="4" /><?php esc_html_e('Ignore the result code when it indicates an error.', 'pz-linkcard'); ?></label></div>
-						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Result Code', 'pz-linkcard')); ?></span> <span class="pz-man-cache-submit-meta-value"><?php $rs = $cacheman_get_value('update_result'); echo esc_html($rs).' '.esc_html($this->pz_HTTPMessage($rs)); ?><br class="pz-debug-only"><input name="data[update_result]" type="text" value="<?php echo esc_attr($rs); ?>" class="pz-debug-only" size="5" readonly="readonly"<?php echo $cacheman_admin_edit_attr(); ?>></span></div>
-						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Click Count', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html(number_format_i18n(intval($cacheman_get_value('click_count' ) ) ) ); ?><br class="pz-debug-only"><input name="data[click_count]" type="text" value="<?php echo esc_attr($cacheman_get_value('click_count' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly" ondblclick="this.readOnly=false;" /></span></div>
-						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Registered Date', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('regist_time' ) ) ); ?></span></div>
-						<div class="pz-man-cache-submit-meta-row"><span><?php echo $cacheman_field_label(esc_html__('Update Date', 'pz-linkcard' )); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('update_time' ) ) ); ?><br class="pz-debug-only"><input name="data[update_time]" type="text" value="<?php echo esc_attr($cacheman_get_value('update_time' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></span></div>
+						<div class="pz-man-cache-submit-meta-row"><span><?php echo wp_kses_post($cacheman_field_label(esc_html__('Result Code', 'pz-linkcard'))); ?></span> <span class="pz-man-cache-submit-meta-value"><?php $rs = $cacheman_get_value('update_result'); echo esc_html($rs).' '.esc_html($this->pz_HTTPMessage($rs)); ?><br class="pz-debug-only"><input name="data[update_result]" type="text" value="<?php echo esc_attr($rs); ?>" class="pz-debug-only" size="5" readonly="readonly"<?php echo $cacheman_admin_edit_attr(); ?>></span></div>
+						<div class="pz-man-cache-submit-meta-row"><span><?php echo wp_kses_post($cacheman_field_label(esc_html__('Click Count', 'pz-linkcard' ))); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html(number_format_i18n(intval($cacheman_get_value('click_count' ) ) ) ); ?><br class="pz-debug-only"><input name="data[click_count]" type="text" value="<?php echo esc_attr($cacheman_get_value('click_count' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly" ondblclick="this.readOnly=false;" /></span></div>
+						<div class="pz-man-cache-submit-meta-row"><span><?php echo wp_kses_post($cacheman_field_label(esc_html__('Registered Date', 'pz-linkcard' ))); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('regist_time' ) ) ); ?></span></div>
+						<div class="pz-man-cache-submit-meta-row"><span><?php echo wp_kses_post($cacheman_field_label(esc_html__('Update Date', 'pz-linkcard' ))); ?></span> <span class="pz-man-cache-submit-meta-value"><?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('update_time' ) ) ); ?><br class="pz-debug-only"><input name="data[update_time]" type="text" value="<?php echo esc_attr($cacheman_get_value('update_time' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></span></div>
 					</div>
 					<div id="major-publishing-actions">
 						<div class="pz-man-cache-actions">
@@ -352,7 +352,7 @@
 					<?php echo wp_kses($cacheman_set_image_link('data[thumbnail]', __('Set thumbnail image', 'pz-linkcard'), $cacheman_get_value('thumbnail') !== ''), $cacheman_allowed_html); ?>
 					<?php echo wp_kses($cacheman_clear_image_button('data[thumbnail]', __('Clear thumbnail image', 'pz-linkcard' ), $cacheman_get_value('thumbnail' ) !== '' ), $cacheman_allowed_html ); ?>
 					<div class="pz-man-cache-image-url">
-						<label><?php echo $cacheman_field_label(esc_html__('URL', 'pz-linkcard')); ?></label>
+						<label><?php echo wp_kses_post($cacheman_field_label(esc_html__('URL', 'pz-linkcard'))); ?></label>
 						<div class="pz-man-cache-image-url-control">
 							<input id="pz-man-cache-thumbnail-url" name="data[thumbnail]" type="text" value="<?php echo esc_attr($cacheman_get_value('thumbnail' ) ); ?>" size="80" class="pz-monospace" readonly="readonly" ondblclick="this.readOnly=false;" />
 						</div>
@@ -365,7 +365,7 @@
 					<?php echo wp_kses($cacheman_set_image_link('data[favicon]', __('Set site icon', 'pz-linkcard'), $cacheman_get_value('favicon') !== ''), $cacheman_allowed_html); ?>
 					<?php echo wp_kses($cacheman_clear_image_button('data[favicon]', __('Clear site icon', 'pz-linkcard' ), $cacheman_get_value('favicon' ) !== '' ), $cacheman_allowed_html ); ?>
 					<div class="pz-man-cache-image-url">
-						<label><?php echo $cacheman_field_label(esc_html__('URL', 'pz-linkcard')); ?></label>
+						<label><?php echo wp_kses_post($cacheman_field_label(esc_html__('URL', 'pz-linkcard'))); ?></label>
 						<div class="pz-man-cache-image-url-control">
 							<input id="pz-man-cache-favicon-url" name="data[favicon]" type="text" value="<?php echo esc_attr($cacheman_get_value('favicon' ) ); ?>" size="80" class="pz-monospace" readonly="readonly" ondblclick="this.readOnly=false;" />
 						</div>
@@ -397,10 +397,10 @@
 						?>
 
 						<tr class="pz-man-cache-side-meta-row">
-							<td colspan="2"><strong><?php echo $cacheman_field_label(esc_html__('Last SNS Check', 'pz-linkcard' )); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('sns_time' ) ) ); ?><br class="pz-debug-only"><input name="data[sns_time]" type="text" value="<?php echo esc_attr($cacheman_get_value('sns_time' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
+							<td colspan="2"><strong><?php echo wp_kses_post($cacheman_field_label(esc_html__('Last SNS Check', 'pz-linkcard' ))); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('sns_time' ) ) ); ?><br class="pz-debug-only"><input name="data[sns_time]" type="text" value="<?php echo esc_attr($cacheman_get_value('sns_time' ) ); ?>" class="pz-debug-only" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
 						</tr>
 						<tr class="pz-debug-only pz-man-cache-side-meta-row">
-							<td colspan="2"><strong><?php echo $cacheman_field_label(esc_html__('Next SNS Check', 'pz-linkcard' )); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('sns_nexttime' ) ) ); ?><br><input name="data[sns_nexttime]" type="text" value="<?php echo esc_attr($cacheman_get_value('sns_nexttime' ) ); ?>" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
+							<td colspan="2"><strong><?php echo wp_kses_post($cacheman_field_label(esc_html__('Next SNS Check', 'pz-linkcard' ))); ?></strong> <?php echo esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $cacheman_get_value('sns_nexttime' ) ) ); ?><br><input name="data[sns_nexttime]" type="text" value="<?php echo esc_attr($cacheman_get_value('sns_nexttime' ) ); ?>" size="9" readonly="readonly"<?php if (!empty($this->options['admin-mode'] ) ) : ?> ondblclick="this.readOnly=false;"<?php endif; ?> /></td>
 						</tr>
 					</table>
 				<?php echo wp_kses($cacheman_postbox_close(), $cacheman_allowed_html ); ?>

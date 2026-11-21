@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH') || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 // Build and verify a replacement before atomically swapping the live table.
 return function($table, $sql, $old_card_table = null) use ($wpdb) {

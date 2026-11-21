@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	global	$wpdb;
 
@@ -12,10 +12,11 @@
 		$db_table_exists	=	($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_card ) ) === $this->db_card );
 	}
 ?>
-<div class="pz-page<?php echo $pz_page_active('pz-multisite' ); ?>" id="pz-multisite">
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-multisite' )); ?>" id="pz-multisite">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Multisite Information', 'pz-linkcard' ).$help_open.'multisite'.$help_close; ?></h2>
-	<div class="pz-multi-notice"><?php echo __('*** Cannot be changed ***', 'pz-linkcard' ); ?></div>
+	<section class="pz-settings-detail-section">
+	<h2><?php echo wp_kses_post(__('Multisite Information', 'pz-linkcard' ).$help_open.'multisite'.$help_close); ?></h2>
+	<div class="pz-multi-notice"><?php echo wp_kses_post(__('*** Cannot be changed ***', 'pz-linkcard' )); ?></div>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Multisite', 'pz-linkcard' ); ?></th>
@@ -76,11 +77,13 @@
 			</td>
 		</tr>
 	</table>
+	</section>
 
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Site List', 'pz-linkcard' ).$help_open.'multisite'.$help_close; ?></h2>
-	<div class="pz-multi-notice"><?php echo __('*** Cannot be changed ***', 'pz-linkcard' ); ?></div>
-	<table class="form-table pz-multi-list widefat striped">
+	<section class="pz-settings-detail-section">
+	<h2><?php echo wp_kses_post(__('Site List', 'pz-linkcard' ).$help_open.'multisite'.$help_close); ?></h2>
+	<div class="pz-multi-notice"><?php echo wp_kses_post(__('*** Cannot be changed ***', 'pz-linkcard' )); ?></div>
+	<div class="pz-multisite-table-scroll"><table class="form-table pz-multi-list widefat striped">
 		<thead>
 			<tr>
 				<th scope="col" class="pz-multi-head-current"><?php esc_html_e('Current', 'pz-linkcard' ); ?></th>
@@ -104,5 +107,6 @@
 			</tr>
 			<?php } ?>
 		</tbody>
-	</table>
+	</table></div>
+	</section>
 </div>

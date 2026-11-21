@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 /*
 Plugin Name:	Pz-LinkCard
@@ -721,6 +721,9 @@ class class_pz_linkcard {
 		$this->pz_SyncCronSchedules();
 		$this->pz_ScheduleClickLogCleanup();
 
+		// 管理バーは管理画面・サイト表示の両方で登録
+		add_action('wp_before_admin_bar_render', array($this, 'action_wp_before_admin_bar_render' ), 11 );
+
 		// 管理画面のとき
 		if	(is_admin() ) {
 			add_filter('set_screen_option_pz_linkcard_cards_per_page', function ($status, $option, $value) {
@@ -1082,7 +1085,7 @@ $url_info = $this->Pz_GetURLInfo($url );
 			return $html;
 		}
 		$data_id = !empty($data['id'] ) ? intval($data['id'] ) : 0;
-		$force = isset($atts['force'] ) && $atts['force'] == true;
+		$force = isset($atts['force'] ) && $atts['force'] == true && current_user_can('manage_options');
 
 		if (!empty($url_info['is_internal'] ) ) {
 			if ($this->options['in-get-from'] == 2 ) {
@@ -1683,13 +1686,13 @@ $url_info = $this->Pz_GetURLInfo($url );
 		if	(mb_substr($url, 0, mb_strlen($domain_url ) ) == $domain_url ) {
 			$is_external	=	false;
 			$is_internal	=	true;		// 内部リンク
-			$url_m			=	parse_url($domain_url );							// URLパース（ドメイン名などを抽出）
+			$url_m			=	wp_parse_url($domain_url );							// URLパース（ドメイン名などを抽出）
 			$scheme			=	isset($url_m['scheme'] ) ? $url_m['scheme']	: null;	// スキーム
 			$domain			=	mb_substr($domain_url, mb_strlen($scheme ) + 3 );	// ドメイン
 		} else {
 			$is_external	=	true;		// 外部リンク
 			$is_internal	=	false;
-			$url_m			=	parse_url($url );									// URLパース（ドメイン名などを抽出）
+			$url_m			=	wp_parse_url($url );									// URLパース（ドメイン名などを抽出）
 			$scheme			=	isset($url_m['scheme'] )	? $url_m['scheme']				: null;		// スキーム
 			$scheme_c		=	$scheme						? $scheme.':'					: null;
 			$domain			=	isset($url_m['host'] )		? $url_m['host']				: null;		// ドメイン名
@@ -1949,7 +1952,7 @@ $url_info = $this->Pz_GetURLInfo($url );
 	// ローカルアドレスかどうかの判定
 	private	function	pz_IsLocalAddress($url ) {
 
-		$parts	=	parse_url($url );
+		$parts	=	wp_parse_url($url );
 		if	(!is_array($parts ) || empty($parts['host'] ) ) {
 			return	true;
 		}
@@ -2060,7 +2063,7 @@ $url_info = $this->Pz_GetURLInfo($url );
 	}
 
 	// サムネイル取得（外部リンクOGP画像取得）
-	private	function	pz_GetImage($thumbnail_url, $force = false, $stamp = false ) {
+	private	function	pz_GetImage($thumbnail_url, $force = false, $stamp = false, $cache_only = false ) {
 		return require('lib/pz-linkcard-get-image.php' );
 	}
 	// 書式に関する設定を初期化する
@@ -2109,7 +2112,7 @@ $url_info = $this->Pz_GetURLInfo($url );
 		return		$style;
 	}
 
-	// デバグ用の文字列表示
+	// デバッグ用の文字列表示
 	private	function	pz_HTTPMessage($result ) {
 
 		$http_message	=	array();
@@ -2127,7 +2130,7 @@ $url_info = $this->Pz_GetURLInfo($url );
 			return	null;
 		}
 		$format	=	preg_replace('/<br\s*\/?>/', '\<\b\r\>', $format );
-		$temp	=	date($format, $value );
+		$temp	=	gmdate($format, $value );
 		$temp	=	preg_replace('/<br\s*\/?>/', PHP_EOL, $temp );
 		$temp	=	esc_html($temp );
 		$temp	=	str_replace(PHP_EOL, '<br>', $temp );
@@ -2183,7 +2186,6 @@ $url_info = $this->Pz_GetURLInfo($url );
 		add_action		('admin_print_scripts',							array($this, 'action_admin_print_scripts' ) );				// スクリプトの追加
 		add_action		('admin_notices',								array($this, 'action_admin_notices' ) );					// 注意書き
 		add_action		('admin_print_footer_scripts',					array($this, 'action_admin_print_footer_scripts' ) );		// テキストエディタ用クイックタグ
-		add_action		('wp_before_admin_bar_render',					array($this, 'action_wp_before_admin_bar_render' ), 11 );	// 管理バー
 	}
 
 	// 管理画面のサブメニュー追加
@@ -2208,11 +2210,6 @@ $url_info = $this->Pz_GetURLInfo($url );
 		add_management_page	('pz-linkcard-manager',		$menu_manager,		'manage_options', 	'pz-linkcard-cacheman',	array($this, 'page_linkcards' ) );
 		add_action('load-tools_page_pz-linkcard-cacheman', function () {
 			if (!$this->is_cacheman_detail_request()) require __DIR__.'/lib/pz-linkcard-cacheman-screen.php';
-		});
-		add_submenu_page(null, __('Card Manager', 'pz-linkcard'), __('Card Manager', 'pz-linkcard'), 'manage_options', 'pz-linkcard-oldman', array($this, 'page_oldman'));
-		add_action('load-tools_page_pz-linkcard-oldman', function () {
-			$this->cacheman_url = admin_url('tools.php?page=pz-linkcard-oldman');
-			$this->now_page = 2;
 		});
 
 
@@ -2271,12 +2268,6 @@ $url_info = $this->Pz_GetURLInfo($url );
 	}
 	public function page_linkcards() {
 		require __DIR__.'/lib/pz-linkcard-cacheman.php';
-	}
-	public function page_oldman() {
-		if (!current_user_can('manage_options')) {
-			wp_die(__('Sorry, you are not allowed to access this page.', 'pz-linkcard'));
-		}
-		require __DIR__.'/lib/pz-linkcard-oldman.php';
 	}
 
 	public	function	page_cacheman() {
@@ -2337,6 +2328,7 @@ $url_info = $this->Pz_GetURLInfo($url );
 
 		if ($hook === 'tools_page_pz-linkcard-cacheman' && !$this->is_cacheman_detail_request()) {
 			wp_enqueue_style('pz-linkcard-cacheman-css', $this->plugin_dir_url.'css/cacheman.css', array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'css/cacheman.css'));
+			wp_enqueue_script('pz-linkcard-cacheman-scroll', $this->plugin_dir_url.'js/cacheman-scroll.js', array(), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/cacheman-scroll.js'), false);
 			wp_enqueue_script('pz-linkcard-cacheman-ui', $this->plugin_dir_url.'js/cacheman.js', array('jquery', 'common'), PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/cacheman.js'), true);
 			wp_localize_script('pz-linkcard-cacheman-ui', 'pzCardList', array('settingsUrl' => $this->settings_url, 'today' => current_time('Y-m-d'), 'pageChoices' => $this->pz_GetCachemanPerPageChoices(), 'ajaxUrl' => admin_url('admin-ajax.php'), 'pendingNonce' => wp_create_nonce('pz_lkc_cacheman_pending'), 'retrieving' => __('Retrieving...', 'pz-linkcard'), 'queueFailed' => __('Failed to queue article content retrieval.', 'pz-linkcard'), 'emptyMessage' => __('Nothing is selected.', 'pz-linkcard'), 'manyMessage' => __('11 or more items are selected. This may take some time. Do you want to proceed?', 'pz-linkcard'), 'selectedItem' => __('%s item selected', 'pz-linkcard'), 'selectedItems' => __('%s items selected', 'pz-linkcard')));
 			return;
@@ -2345,7 +2337,6 @@ $url_info = $this->Pz_GetURLInfo($url );
 		$allowed_hooks	=	array(
 			'settings_page_'.self::SETTINGS_PAGE,
 			'tools_page_'.self::CACHEMAN_PAGE,
-			'tools_page_pz-linkcard-oldman',
 		);
 		if	(!in_array($hook, $allowed_hooks, true ) ) {
 			return;
@@ -2394,12 +2385,12 @@ $url_info = $this->Pz_GetURLInfo($url );
 			);
 		}
 
-		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'tools_page_pz-linkcard-oldman' || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
+		if	($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			wp_enqueue_media();
 		}
-		if ($hook === 'tools_page_'.self::CACHEMAN_PAGE || $hook === 'tools_page_pz-linkcard-oldman') {
+		if ($hook === 'tools_page_'.self::CACHEMAN_PAGE) {
 			$layout_js_version = PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-cacheman-layout.js');
-			wp_enqueue_script('pz-linkcard-oldman-layout', $this->plugin_dir_url.'js/admin-cacheman-layout.js', array('jquery-ui-sortable'), $layout_js_version, true);
+			wp_enqueue_script('pz-linkcard-cacheman-layout', $this->plugin_dir_url.'js/admin-cacheman-layout.js', array('jquery-ui-sortable'), $layout_js_version, true);
 		}
 		if	($hook === 'settings_page_'.self::SETTINGS_PAGE ) {
 			$admin_tabs_version	=	PZLKC_PLUGIN_VERSION.'.'.filemtime($this->plugin_dir_path.'js/admin-tabs.js' );
@@ -2700,19 +2691,23 @@ $url_info = $this->Pz_GetURLInfo($url );
 				'</svg>';
 	}
 
-	// 管理バーのメニュー追加（記述エラーやリンク切れなど）（未実装）
+	// 管理画面・サイト表示の管理バーにメニューを追加
 	public	function	action_wp_before_admin_bar_render() {
+
+		if (!current_user_can('manage_options' ) ) {
+			return;
+		}
 
 		if	(empty($this->pz_GetRequestOption('flg-adminbar', $this->options['flg-adminbar'] ) ) ) {
 			return;
 		}
 
 		global $wp_admin_bar;
-		echo '<style>#wpadminbar #wp-admin-bar-pz-lkc .ab-icon:before { color: inherit; }</style>';
-		$wp_admin_bar->add_menu(array('id' => 'pz-lkc',									'title' => $this->pz_GetAdminBarIconSvg().esc_html__('Pz Card', 'pz-linkcard' ),				'href' => '#' ) );
-		$wp_admin_bar->add_menu(array('id' => 'pz-settings',	'parent' => 'pz-lkc',	'title' => '<span class="ab-icon dashicons dashicons-archive" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Card Manager', 'pz-linkcard'),	'href' => $this->cacheman_url,	'meta' => array('target' => '_parent' ) ) );
-		$wp_admin_bar->add_menu(array('id' => 'pz-logman',		'parent' => 'pz-lkc',	'title' => '<span class="ab-icon dashicons dashicons-chart-bar" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Log Manager', 'pz-linkcard'),	'href' => add_query_arg('action', 'click-log', $this->cacheman_url),	'meta' => array('target' => '_parent' ) ) );
-		$wp_admin_bar->add_menu(array('id' => 'pz-cacheman',	'parent' => 'pz-lkc',	'title' => '<span class="ab-icon dashicons dashicons-admin-generic" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Settings', 'pz-linkcard'),	'href' => $this->settings_url,	'meta' => array('target' => '_parent' ) ) );
+		echo '<style>#wpadminbar #wp-admin-bar-pz .ab-icon:before { color: inherit; }</style>';
+		$wp_admin_bar->add_menu(array('id' => 'pz',										'title' => $this->pz_GetAdminBarIconSvg().esc_html__('Pz', 'pz-linkcard' ),				'href' => '#' ) );
+		$wp_admin_bar->add_menu(array('id' => 'pz-lkc-settings',	'parent' => 'pz',	'title' => '<span class="ab-icon dashicons dashicons-archive" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Card/Manager', 'pz-linkcard'),		'href' => $this->cacheman_url,	'meta' => array('target' => '_parent' ) ) );
+		$wp_admin_bar->add_menu(array('id' => 'pz-lkc-logman',		'parent' => 'pz',	'title' => '<span class="ab-icon dashicons dashicons-chart-bar" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Card/Log', 'pz-linkcard'),			'href' => add_query_arg('action', 'click-log', $this->cacheman_url),	'meta' => array('target' => '_parent' ) ) );
+		$wp_admin_bar->add_menu(array('id' => 'pz-lkc-cacheman',	'parent' => 'pz',	'title' => '<span class="ab-icon dashicons dashicons-admin-generic" aria-hidden="true" style="font-size: 16px; margin-right: 4px; color: inherit;"></span>'.esc_html__('Card/Settings', 'pz-linkcard'),	'href' => $this->settings_url,	'meta' => array('target' => '_parent' ) ) );
 	}
 
 	// 現在のリクエストで送信された設定値を優先して返す

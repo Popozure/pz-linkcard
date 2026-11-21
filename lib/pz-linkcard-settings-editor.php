@@ -1,8 +1,10 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
-<div class="pz-page<?php echo $pz_page_active('pz-editor' ); ?>" id="pz-editor">
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-editor' )); ?>" id="pz-editor">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Convert Settings', 'pz-linkcard' ).$help_open.'editor'.$help_close; ?></h2>
-	<table class="form-table">
+	<h2><?php echo wp_kses_post(__('Editor Settings', 'pz-linkcard' ).$help_open.'editor'.$help_close ); ?></h2>
+	<section class="pz-editor-section" aria-labelledby="pz-editor-convert-heading">
+		<h3 id="pz-editor-convert-heading"><?php esc_html_e('Convert Settings', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-editor-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Convert from Text Link', 'pz-linkcard' ); ?></th>
 			<td>
@@ -57,13 +59,13 @@
 				<textarea name="properties[exclude-url]" rows="5" cols="80" class="large-text code"><?php echo	esc_textarea($this->options['exclude-url'] ); ?></textarea>
 			</td>
 		</tr>
-	</table>
-	<?php submit_button(); ?>
-
-	<h2><?php echo	__('Editor Settings', 'pz-linkcard' ).$help_open.'editor'.$help_close; ?></h2>
-	<table class="form-table pz-editor-visual-table">
+		</table>
+	</section>
+	<section class="pz-editor-section" aria-labelledby="pz-editor-block-heading">
+		<h3 id="pz-editor-block-heading"><?php esc_html_e('Add Block', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-editor-table">
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Add Block', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Add Block', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-edit-block]" value="0" />
@@ -72,9 +74,13 @@
 				</label>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-editor-section" aria-labelledby="pz-editor-visual-heading">
+		<h3 id="pz-editor-visual-heading"><?php esc_html_e('Visual Editor', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-editor-table">
 		<tr>
-			<th scope="row" rowspan="2" class="pz-editor-visual-heading"><?php esc_html_e('Visual Editor', 'pz-linkcard' ); ?></th>
-			<th scope="row" class="pz-editor-visual-subheading"><?php esc_html_e('Insert Button', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Insert Button', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-edit-insert]" value="" />
@@ -84,7 +90,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" class="pz-editor-visual-subheading"><?php esc_html_e('Preview', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Preview', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-edit-preview]" value="" />
@@ -93,8 +99,13 @@
 				</label>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-editor-section" aria-labelledby="pz-editor-text-heading">
+		<h3 id="pz-editor-text-heading"><?php esc_html_e('Add Quick Tag', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-editor-table">
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Add Quick Tag', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Add Quick Tag', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-edit-qtag]" value="" />
@@ -104,10 +115,10 @@
 			</td>
 		</tr>
 		</table>
-	<?php submit_button(); ?>
-
-	<h2><?php echo	__('Shortcode Settings', 'pz-linkcard' ).$help_open.'editor'.$help_close; ?></h2>
-	<table class="form-table pz-editor-shortcode-table">
+	</section>
+	<section class="pz-editor-section" aria-labelledby="pz-editor-shortcodes-heading">
+		<h3 id="pz-editor-shortcodes-heading"><?php esc_html_e('Shortcode Settings', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-editor-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Shortcode 1', 'pz-linkcard' ); ?></th>
 			<td>[<input name="properties[code1]" type="text" class="pz-shortcode pz-shortcode-1" value="<?php echo	esc_attr($prop['code1'] ); ?>" /> url="http://popozure.info" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]<p><?php esc_html_e('Case-sensitive', 'pz-linkcard' ); ?></p></td>
@@ -123,7 +134,6 @@
 				</select>
 				[/<span class="pz-shortcode-copy"><?php echo	esc_attr($prop['code1'] ); ?></span>]
 				<p><?php esc_html_e('This setting applies only to Shortcode 1.', 'pz-linkcard' ); ?></p></td>
-			</td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Clear Excerpt', 'pz-linkcard' ); ?></th>
@@ -143,15 +153,21 @@
 			<th scope="row"><?php esc_html_e('Shortcode 3', 'pz-linkcard' ); ?></th>
 			<td>[<input name="properties[code3]" type="text" class="pz-shortcode" value="<?php echo	esc_attr($prop['code3'] ); ?>" /> url="http://popozure.info" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]<p><?php esc_html_e('Case-sensitive', 'pz-linkcard' ); ?></p></td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-editor-section" aria-labelledby="pz-editor-examples-heading">
+		<h3 id="pz-editor-examples-heading"><?php esc_html_e('Example Entry', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-editor-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Example Entry', 'pz-linkcard' ); ?></th>
 			<td>
-				<p><?php echo __('ex1.', 'pz-linkcard' ).'&ensp;'.__('Specify only URL parameters.', 'pz-linkcard' ); ?><div class="pz-shortcode-example pz-click-all-select">[<span class="pz-shortcode-copy"><?php echo esc_attr($prop['code1'] ); ?></span> url="https://xxx"]</div></p>
-				<p><?php echo __('ex2.', 'pz-linkcard' ).'&ensp;'.__('Specify URL and title parameters.', 'pz-linkcard' ); ?><div class="pz-shortcode-example pz-click-all-select">[<span class="pz-shortcode-copy"><?php echo esc_attr($prop['code1'] ); ?></span> url="https://xxx" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span>]</div></p>
-				<p><?php echo __('ex3.', 'pz-linkcard' ).'&ensp;'.__('Specify URL, title and content parameters.', 'pz-linkcard' ); ?><div class="pz-shortcode-example pz-click-all-select">[<span class="pz-shortcode-copy"><?php echo esc_attr($prop['code1'] ); ?></span> url="https://xxx" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]</div></p>
+				<div class="pz-editor-example-item"><?php echo wp_kses_post(__('ex1.', 'pz-linkcard' ).'&ensp;'.__('Specify only URL parameters.', 'pz-linkcard' )); ?><div class="pz-shortcode-example pz-click-all-select">[<span class="pz-shortcode-copy"><?php echo esc_attr($prop['code1'] ); ?></span> url="https://xxx"]</div></div>
+				<div class="pz-editor-example-item"><?php echo wp_kses_post(__('ex2.', 'pz-linkcard' ).'&ensp;'.__('Specify URL and title parameters.', 'pz-linkcard' )); ?><div class="pz-shortcode-example pz-click-all-select">[<span class="pz-shortcode-copy"><?php echo esc_attr($prop['code1'] ); ?></span> url="https://xxx" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span>]</div></div>
+				<div class="pz-editor-example-item"><?php echo wp_kses_post(__('ex3.', 'pz-linkcard' ).'&ensp;'.__('Specify URL, title and content parameters.', 'pz-linkcard' )); ?><div class="pz-shortcode-example pz-click-all-select">[<span class="pz-shortcode-copy"><?php echo esc_attr($prop['code1'] ); ?></span> url="https://xxx" <span class="pz-shortcode-title"><span class="pz-shortcode-parameter">title</span>="xxxxxx"</span> <span class="pz-shortcode-content"><span class="pz-shortcode-parameter">content</span>="xxxxxx"</span>]</div></div>
 				<p><?php esc_html_e('For any LinkCard shortcode, use the `title` parameter to set the title and the `content` parameter to set the excerpt.', 'pz-linkcard' ); ?></p>
 			</td>
 		</tr>
-	</table>
+		</table>
+	</section>
 	<?php submit_button(); ?>
 </div>

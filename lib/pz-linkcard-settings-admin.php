@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	global $wpdb;
 	$card_table_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $wpdb->esc_like($this->db_card ))) === $this->db_card);
@@ -54,7 +54,7 @@
 					'key'			=>	$timestamp,
 					'hook'			=>	esc_html($hook ),
 					'myjob'			=>	$myjob,
-					'next_time'		=>	esc_html(get_date_from_gmt( date( 'Y-m-d H:i:s', $timestamp ), PZLKC_DATETIME_FORMAT ) ),
+					'next_time'		=>	esc_html(get_date_from_gmt( gmdate( 'Y-m-d H:i:s', $timestamp ), PZLKC_DATETIME_FORMAT ) ),
 					'schedule'		=>	esc_html($schedule ),
 					'interval'		=>	$interval,
 					'button'		=>	'<button type="submit" name="action" '.$button.' onclick="return confirm(\''.esc_js(__('Are you sure?', 'pz-linkcard' ) ).'\' );">'.esc_html__('Run Now', 'pz-linkcard' ).'</button>',
@@ -69,10 +69,11 @@
 	} );
 
 ?>
-<div class="pz-page pz-page-admin<?php echo $pz_page_active('pz-admin' ); ?>" id="pz-admin">
+<div class="pz-page pz-page-admin<?php echo esc_attr($pz_page_active('pz-admin' )); ?>" id="pz-admin">
 	<div class="pz-admin-notice"><?php esc_html_e('Do not use this mode for normal operation, as some settings can prevent the plugin from working.', 'pz-linkcard' ); ?></div>
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
 
+	<section class="pz-maintenance-section">
 	<h2><?php esc_html_e('Plugin Information', 'pz-linkcard' ); ?></h2>
 	<table class="form-table pz-admin-info-table">
 		<tr>
@@ -118,8 +119,10 @@
 			<td><span class="pz-monospace"><?php echo is_numeric($this->options['saved-date'] ) ? esc_html($this->pz_Date(PZLKC_DATETIME_FORMAT, $this->options['saved-date'] ) ) : esc_html($this->options['saved-date'] ); ?></span></td>
 		</tr>
 	</table>
+	</section>
 	<?php submit_button(); ?>
 
+	<section class="pz-maintenance-section">
 	<h2><?php esc_html_e('Environmental Information', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
 		<tr>
@@ -135,7 +138,9 @@
 			<td><span class="pz-monospace"><?php global $wpdb; echo esc_html($wpdb->db_version() ); ?></span></td>
 		</tr>
 	</table>
+	</section>
 
+	<section class="pz-maintenance-section">
 	<h2><?php esc_html_e('For Debugging', 'pz-linkcard' ); ?></h2>
 	<table class="form-table">
 		<tr>
@@ -149,7 +154,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row"><?php esc_html_e('DB Update Mode', 'pz-linkcard' ); ?></span></th>
+			<th scope="row"><?php esc_html_e('DB Update Mode', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[debug-nocache]" value="" />
@@ -159,6 +164,7 @@
 			</td>
 		</tr>
 	</table>
+	</section>
 	<?php submit_button(); ?>
 
 	<?php if (isset($cron_log ) ) { ?>
@@ -171,6 +177,7 @@
 		</div>
 	<?php } ?>
 
+	<section class="pz-maintenance-section">
 	<h2><?php esc_html_e('WP-Cron Information', 'pz-linkcard' ); ?></h2>
 	<div class="pz-cron-margin">
 		<label>
@@ -184,7 +191,7 @@
 				<tr>
 					<th scope="col" class="pz-cron-head-run"><?php esc_html_e('Run', 'pz-linkcard' ); ?></th>
 					<th scope="col" class="pz-cron-head-hook"><?php esc_html_e('Hook', 'pz-linkcard' ); ?></th>
-					<th scope="col" class="pz-cron-head-next-time"><?php echo __('Next Time', 'pz-linkcard' ).__('🔺', 'pz-linkcard' ); ?></th>
+					<th scope="col" class="pz-cron-head-next-time"><?php echo wp_kses_post(__('Next Time', 'pz-linkcard' ).__('🔺', 'pz-linkcard' )); ?></th>
 					<th scope="col" class="pz-cron-head-schedule"><?php esc_html_e('Schedule', 'pz-linkcard' ); ?></th>
 				</tr>
 			</thead>
@@ -200,4 +207,5 @@
 			</tbody>
 		</table>
 	</div>
+	</section>
 </div>

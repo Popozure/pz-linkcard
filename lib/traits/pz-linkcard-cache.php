@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 trait Pz_LinkCard_Cache {
 	private function pz_IsCardRetrievalPending($data) {
@@ -269,7 +269,7 @@ trait Pz_LinkCard_Cache {
 		}
 
 		// スキームとドメイン
-		$url_m = parse_url($url);
+		$url_m = wp_parse_url($url);
 		$data['scheme']				=	isset($url_m['scheme'])			?	$url_m['scheme']		: null;
 		$data['domain']				=	isset($url_m['host'])			?	$url_m['host']			: null;
 

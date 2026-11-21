@@ -1,30 +1,32 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
-<div class="pz-page<?php echo $pz_page_active('pz-check' ); ?>" id="pz-check">
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-check' )); ?>" id="pz-check">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Link Check Settings', 'pz-linkcard' ).$help_open.'link-check'.$help_close; ?></h2>
-	<table class="form-table">
+	<h2><?php echo wp_kses_post(__('Link Check Settings', 'pz-linkcard' ).$help_open.'link-check'.$help_close); ?></h2>
+	<section class="pz-check-section" aria-labelledby="pz-check-links-heading">
+		<h3 id="pz-check-links-heading"><?php esc_html_e('Link Card', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-check-table">
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Set No-Follow', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Set No-Follow', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-nofollow]" value="" />
 					<input type="checkbox" name="properties[flg-nofollow]" value="1" <?php checked($this->options['flg-nofollow'] ); ?> />
-					<?php	echo __('Add "nofollow" to links to external sites.', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Add "nofollow" to links to external sites.', 'pz-linkcard' ).__('(Deprecated)', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Set No-Opener', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Set No-Opener', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-noopener]" value="" />
 					<input type="checkbox" name="properties[flg-noopener]" value="1" <?php checked($this->options['flg-noopener'] ); ?> />
-					<?php	echo __('Add "noopener" to links to external sites.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Add "noopener" to links to external sites.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Relative URL', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Relative URL', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-relative-url]" value="" />
@@ -33,8 +35,12 @@
 				</label>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-check-section" aria-labelledby="pz-check-missing-heading">
+		<h3 id="pz-check-missing-heading"><?php esc_html_e('When Not Found', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-check-table">
 		<tr>
-			<th scope="row" rowspan="2"><?php esc_html_e('When Not Found', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Disable Link', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
@@ -50,38 +56,43 @@
 				<?php esc_html_e('The settings are located on the “Display” tab.', 'pz-linkcard' ); ?>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-check-section" aria-labelledby="pz-check-retrieval-heading">
+		<h3 id="pz-check-retrieval-heading"><?php esc_html_e('Retrieval Settings', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-check-table">
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('SSL Certificate Verification', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('SSL Certificate Verification', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-sslverify]" value="" />
 					<input type="checkbox" name="properties[flg-sslverify]" value="1" <?php checked($this->options['flg-sslverify'] ); ?> />
-					<?php echo __('Verify the certificate when using SSL/TLS communication.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Verify the certificate when using SSL/TLS communication.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Refer to robots.txt', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Refer to robots.txt', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-robots]" value="" />
 					<input type="checkbox" name="properties[flg-robots]" value="1" <?php checked($this->options['flg-robots'] ); ?> />
-					<?php echo __('Follow robots.txt when retrieving external link information.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Follow robots.txt when retrieving external link information.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Block local IP addresses', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Block local IP addresses', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-local-check]" value="" />
 					<input type="checkbox" name="properties[flg-local-check]" value="1" <?php checked($this->options['flg-local-check'] ); ?> />
-					<?php echo __('Blocking local IP addresses prevents SSRF.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Blocking local IP addresses prevents SSRF.', 'pz-linkcard' ).__('(Recommended)', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Follow Location', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Follow Location', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
 					<input type="hidden"   name="properties[flg-redir]" value="" />
@@ -91,7 +102,7 @@
 			</td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Retry from Original URL', 'pz-linkcard'); ?></th>
+			<th scope="row"><?php esc_html_e('Retry from Original URL', 'pz-linkcard'); ?></th>
 			<td><label>
 				<input type="hidden" name="properties[flg-redir-retry]" value="" />
 				<input type="checkbox" name="properties[flg-redir-retry]" value="1" <?php checked($this->options['flg-redir-retry']); ?> />
@@ -99,7 +110,7 @@
 			</label></td>
 		</tr>
 		<tr>
-			<th scope="row" colspan="2"><?php esc_html_e('Use User-Agent', 'pz-linkcard' ); ?></th>
+			<th scope="row"><?php esc_html_e('Use User-Agent', 'pz-linkcard' ); ?></th>
 			<td>
 				<select name="properties[user-agent]" class="pz-sync pz-user-agent">
 					<?php foreach (LIST_USER_AGENT as $key => $value ) { ?>
@@ -108,8 +119,12 @@
 				</select>
 			</td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-check-section" aria-labelledby="pz-check-clicks-heading">
+		<h3 id="pz-check-clicks-heading"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-check-table">
 		<tr id="pz-click-count-settings">
-			<th scope="row" rowspan="3"><?php esc_html_e('Click Count', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Count', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
@@ -133,8 +148,12 @@
 			<th scope="row"><?php esc_html_e('Retention Period', 'pz-linkcard' ); ?></th>
 			<td><?php echo sprintf(esc_html__('The %s are on the “Advanced” tab.', 'pz-linkcard'), '<a class="pz-schedule-setting-link" href="#pz-click-cleanup-retention-settings">'.esc_html__('settings', 'pz-linkcard').'</a>'); ?></td>
 		</tr>
+		</table>
+	</section>
+	<section class="pz-check-section" aria-labelledby="pz-check-broken-heading">
+		<h3 id="pz-check-broken-heading"><?php esc_html_e('Broken Link', 'pz-linkcard' ); ?></h3>
+		<table class="form-table pz-check-table">
 		<tr>
-			<th scope="row" rowspan="2"><?php esc_html_e('Broken Link', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Display', 'pz-linkcard' ); ?></th>
 			<td>
 				<label>
@@ -152,6 +171,7 @@
 				?>
 			</td>
 		</tr>
-	</table>
+		</table>
+	</section>
 	<?php submit_button(); ?>
 </div>

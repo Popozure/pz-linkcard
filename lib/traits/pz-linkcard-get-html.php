@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 trait Pz_LinkCard_Get_HTML {
 	private function pz_GetSettingsPreviewCard($prefix, $index = 1) {
@@ -221,7 +221,7 @@ trait Pz_LinkCard_Get_HTML {
 
 		// 繧ｿ繧､繝医Ν謨ｴ蠖｢
 		$temp			=	$title;												// 繧ｿ繧､繝医Ν
-		$temp			=	strip_tags($temp );									// HTML繧ｿ繧ｰ髯､蜴ｻ
+		$temp			=	wp_strip_all_tags($temp );									// HTML繧ｿ繧ｰ髯､蜴ｻ
 		$temp			=	str_replace(array("\r", "\n"), '', $temp );			// 謾ｹ陦後ｒ髯､蜴ｻ
 		$temp			=	mb_strimwidth($temp, 0, 200 , '...' );
 		$title			=	esc_html($temp );
@@ -229,7 +229,7 @@ trait Pz_LinkCard_Get_HTML {
 
 		// 謚懃ｲ区枚謨ｴ蠖｢・郁｡ｨ遉ｺ縺ｯ險倅ｺ句・螳ｹ縺ｮ驕ｸ謚槭〒蛻ｶ蠕｡縺吶ｋ・・
 		$temp		=	$excerpt;											// 謚懃ｲ区枚
-		$temp		=	strip_tags($temp );									// HTML繧ｿ繧ｰ髯､蜴ｻ
+		$temp		=	wp_strip_all_tags($temp );									// HTML繧ｿ繧ｰ髯､蜴ｻ
 		$temp		=	str_replace(array("\r", "\n"), '', $temp );			// 謾ｹ陦後ｒ髯､蜴ｻ
 		$temp		=	preg_replace('/<!--more-->.+/is', '', $temp );		// more繧ｿ繧ｰ莉･髯榊炎髯､
 		$temp		=	preg_replace('/\[[^]]*\]/', '', $temp );			// 繧ｷ繝ｧ繝ｼ繝医さ繝ｼ繝峨☆縺ｹ縺ｦ髯､蜴ｻ

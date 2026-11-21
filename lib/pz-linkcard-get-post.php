@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die;
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 	// 初期化
 	$url			=	'';
@@ -153,7 +153,7 @@
 
 	// タイトル整形
 	if				($str	=	$title ) {										// 代入しながら判定
-		if			($str	=	strip_tags($str ) ) {							// HTMLタグ除去
+		if			($str	=	wp_strip_all_tags($str ) ) {							// HTMLタグ除去
 			if		($str	=	esc_html($str ) ) {								// HTMLエスケープ
 				if	($str	=	str_replace(array("\r", "\n"), '', $str ) ) {	// 改行を除去
 					$str	=	mb_strimwidth($str, 0, 200, '...' );			// 200文字制限
@@ -165,7 +165,7 @@
 
 	// 抜粋文整形
 	if						($str	=	$excerpt ) {										// 代入しながら判定
-		if					($str	=	strip_tags($str ) ) {								// HTMLタグ除去
+		if					($str	=	wp_strip_all_tags($str ) ) {								// HTMLタグ除去
 			if				($str	=	esc_html($str ) ) {									// HTMLエスケープ
 				if			($str	=	str_replace(array("\r", "\n"), '', $str ) ) {		// 改行を除去
 					if		($str	=	preg_replace('/<!--more-->.+/is', '', $str ) ) {	// moreタグ以降削除

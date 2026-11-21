@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || exit;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 final class pz_LinkCard_Search_Query_Parser {
 

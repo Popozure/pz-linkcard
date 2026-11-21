@@ -1,7 +1,8 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
-<div class="pz-page<?php echo $pz_page_active('pz-initialize' ); ?>" id="pz-initialize">
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-initialize' )); ?>" id="pz-initialize">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Initialize', 'pz-linkcard' ).$help_open.'initialize'.$help_close; ?></h2>
+	<section class="pz-maintenance-section">
+	<h2><?php echo wp_kses_post(__('Initialize', 'pz-linkcard' ).$help_open.'initialize'.$help_close); ?></h2>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Initialize Formatting', 'pz-linkcard' ); ?></th>
@@ -29,15 +30,17 @@
 			<th scope="row"><?php esc_html_e('Reboot This Plugin', 'pz-linkcard' ); ?></th>
 			<td>
 				<button type="submit" name="action" value="init-plugin" class="pz-button-sure" onclick="return confirm('<?php echo esc_js(__('Are you sure?', 'pz-linkcard' ) ); ?>');"><?php esc_html_e('Run', 'pz-linkcard' ); ?></button>
-				&ensp;<span><?php echo __('Perform initial setup.', 'pz-linkcard' ).'&nbsp;'.__('"Settings" will not be initialized.', 'pz-linkcard' ); ?></span>
+				&ensp;<span><?php echo wp_kses_post(__('Perform initial setup.', 'pz-linkcard' ).'&nbsp;'.__('"Settings" will not be initialized.', 'pz-linkcard' )); ?></span>
 			</td>
 		</tr>
 	</table>
+	</section>
 	<div class="pz-admin-only">
 		<?php submit_button(); ?>
 	</div>
 
-	<h2><?php echo	__('Deletion Settings', 'pz-linkcard' ); ?></h2>
+	<section class="pz-maintenance-section">
+	<h2><?php echo wp_kses_post(__('Deletion Settings', 'pz-linkcard' )); ?></h2>
 	<table class="form-table">
 		<tr>
 			<th scope="row"><?php esc_html_e('Delete Settings', 'pz-linkcard' ); ?></th>
@@ -45,7 +48,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-delete-settings]" value="" />
 					<input type="checkbox" name="properties[flg-delete-settings]" value="1" <?php checked($this->options['flg-delete-settings'] ); ?> />
-					<?php echo __('Delete the settings when deleting the plugin.', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Delete the settings when deleting the plugin.', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
@@ -55,7 +58,7 @@
 				<label>
 					<input type="hidden"   name="properties[flg-delete-image]" value="" />
 					<input type="checkbox" name="properties[flg-delete-image]" value="1" <?php checked($this->options['flg-delete-image'] ); ?> />
-					<?php echo __('Delete the image cache when deleting the plugin.', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Delete the image cache when deleting the plugin.', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
@@ -65,10 +68,11 @@
 				<label>
 					<input type="hidden"   name="properties[flg-delete-db]" value="" />
 					<input type="checkbox" name="properties[flg-delete-db]" value="1" <?php checked($this->options['flg-delete-db'] ); ?> />
-					<?php echo __('Delete the LinkCard data when deleting the plugin.', 'pz-linkcard' ); ?>
+					<?php echo wp_kses_post(__('Delete the LinkCard data when deleting the plugin.', 'pz-linkcard' )); ?>
 				</label>
 			</td>
 		</tr>
 	</table>
+	</section>
 	<?php submit_button(); ?>
 </div>

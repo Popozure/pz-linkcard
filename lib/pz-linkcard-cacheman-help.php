@@ -1,4 +1,4 @@
-<?php defined('ABSPATH') || exit; $search_help_label = __('Search', 'pz-linkcard').__('Help', 'pz-linkcard'); $search_help_date = current_time('Y-m-d'); ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } $search_help_label = __('Search', 'pz-linkcard').__('Help', 'pz-linkcard'); $search_help_date = current_time('Y-m-d'); ?>
 <h3><?php echo esc_html($search_help_label ); ?></h3>
 				<dl class="pz-man-search-command-list">
 					<div><dt><code>id:123</code></dt><dd><?php echo esc_html(__('Pz Card', 'pz-linkcard' ).' '.__('ID', 'pz-linkcard' ) ); ?></dd></div>
@@ -28,14 +28,14 @@
 						</dd>
 					</div>
 			</dl>
-			<h3 class="pz-man-shortcut-title"><?php echo esc_html(__('Keyboard Shortcuts' ) ); ?></h3>
+			<h3 class="pz-man-shortcut-title"><?php echo esc_html(__('Keyboard Shortcuts' , 'default') ); ?></h3>
 			<dl class="pz-man-shortcut-list">
 				<div><dt><kbd>F1</kbd></dt><dd><?php echo esc_html__('Show Help', 'pz-linkcard' ); ?></dd></div>
 				<div><dt><kbd>F2</kbd></dt><dd><?php echo esc_html__('Show Screen Options', 'pz-linkcard' ); ?></dd></div>
 				<div><dt><kbd>F3</kbd></dt><dd><?php echo esc_html(__('Search cards', 'pz-linkcard' ) ); ?></dd></div>
 				<div><dt><kbd>F4</kbd></dt><dd><?php echo esc_html__('Switch between Card Manager and Settings', 'pz-linkcard' ); ?></dd></div>
-				<div><dt><kbd>Ctrl</kbd>+<kbd>A</kbd></dt><dd><?php echo esc_html(__('Select All' ) ); ?></dd></div>
+				<div><dt><kbd>Ctrl</kbd>+<kbd>A</kbd></dt><dd><?php echo esc_html(__('Select All' , 'default') ); ?></dd></div>
 				<div><dt><kbd>Ctrl</kbd>+<kbd>F</kbd> / <kbd>Alt</kbd>+<kbd>Q</kbd></dt><dd><?php echo esc_html(__('Search', 'pz-linkcard' ) ); ?></dd></div>
-				<div><dt><kbd>Ctrl</kbd>+<kbd>;</kbd></dt><dd><?php echo esc_html(__('Today' ).' (yyyy-mm-dd)' ); ?></dd></div>
-				<div><dt><kbd>Ctrl</kbd>+<kbd>←</kbd> / <kbd>Ctrl</kbd>+<kbd>→</kbd></dt><dd><?php echo esc_html(__('Previous page' ).' / '.__('Next page' ) ); ?></dd></div>
+				<div><dt><kbd>Ctrl</kbd>+<kbd>;</kbd></dt><dd><?php echo esc_html(__('Today' , 'default').' (yyyy-mm-dd)' ); ?></dd></div>
+				<div><dt><kbd>Ctrl</kbd>+<kbd>←</kbd> / <kbd>Ctrl</kbd>+<kbd>→</kbd></dt><dd><?php echo esc_html(__('Previous page' , 'default').' / '.__('Next page' , 'default') ); ?></dd></div>
 			</dl>

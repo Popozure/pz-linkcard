@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 	if	(!current_user_can('manage_options' ) ) {
 		wp_send_json_error(__('You do not have permission to update LinkCard data.', 'pz-linkcard' ), 403 );
@@ -7,6 +7,17 @@ defined('ABSPATH' ) || wp_die;
 	if	(!check_ajax_referer('pz_lkc_cacheman_pending', 'nonce', false ) ) {
 		wp_send_json_error(__('Invalid request.', 'pz-linkcard' ), 403 );
 	}
+
+	if (isset($_POST['image_card_id'])) {
+        $card_id = is_scalar($_POST['image_card_id']) ? absint(wp_unslash($_POST['image_card_id'])) : 0;
+        if (!$card_id) wp_send_json_error(__('Invalid card ID', 'pz-linkcard'), 400);
+        $data = $this->pz_GetCache(array('id' => $card_id));
+        if (!is_array($data) || empty($data['url'])) wp_send_json_error(__('Not selected', 'pz-linkcard'), 404);
+        $info = $this->pz_GetURLInfo($data['url']);
+        $thumbnail = empty($info['is_internal']) && !empty($data['thumbnail']) ? $this->pz_GetImage($data['thumbnail']) : '';
+        $favicon = !empty($data['favicon']) ? $this->pz_GetImage($data['favicon']) : '';
+        wp_send_json_success(array('thumbnail' => esc_url_raw($thumbnail ?: ''), 'favicon' => esc_url_raw($favicon ?: '')));
+    }
 
 	if (isset($_POST['queue_card_id'])) {
 		$card_id = is_scalar($_POST['queue_card_id']) ? absint(wp_unslash($_POST['queue_card_id'])) : 0;

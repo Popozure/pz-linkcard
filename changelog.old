@@ -201,7 +201,7 @@
 * 欠番。
 
 = 2.5.1 =
-* デバグ用の機能（強制リンク先取得）を追加。
+* デバッグ用の機能（強制リンク先取得）を追加。
   Added: Added function for debugging.
 * 文字コードの判定に失敗すると異常終了になってしまう不具合を修正。（Thanks 足じゃんけん @ASHIJANKEN on x.com）
   Fixed: Fixed a bug that caused abnormal termination when character code determination failed.

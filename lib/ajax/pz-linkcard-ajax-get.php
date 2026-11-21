@@ -1,5 +1,5 @@
 <?php
-defined('ABSPATH' ) || wp_die;
+if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 if (!check_ajax_referer('pz_lkc_ajax_get', 'nonce', false ) ) {
 	wp_send_json_error(array('message' => 'Invalid nonce.' ), 403 );

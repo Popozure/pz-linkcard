@@ -824,7 +824,6 @@ body.folded #pz-infobar {
 }
 
 .pz-debug-only, .pz-debug-only * {
-	color: #06f !important;
 	color: #087f9c !important;
 }
 
@@ -850,7 +849,7 @@ input.pz-admin-only[type="submit"],
 }
 
 .pz-cacheman th.pz-debug-only button[type="submit"] {
-	color: #06f !important;
+	color: #087f9c !important;
 }
 
 .pz-develop-only, .pz-develop-only * {
@@ -1130,7 +1129,7 @@ input.pz-admin-only[type="submit"],
 	line-height: 1.7;
 }
 
-/* lib/pz-linkcard-oldman-edit.php */
+/* lib/pz-linkcard-cacheman-edit.php */
 .pz-man-cache-poststuff {
 	margin: 8px 0 32px;
 	position: relative;
@@ -1829,6 +1828,27 @@ input.pz-admin-only[type="submit"],
 .pz-man-help-toggle[aria-expanded="true"] .dashicons,
 .pz-page-help-toggle[aria-expanded="true"] .dashicons {
 	transform: rotate(180deg);
+}
+
+.pz-settings-screen-tabs .pz-man-screen-options-panel,
+.pz-settings-screen-tabs .pz-page-help-panel {
+	transition: none;
+}
+
+.pz-settings-screen-tabs .dashicons-arrow-down {
+	width: 20px;
+	height: 20px;
+	font-size: 20px;
+	line-height: 1;
+	transition: none;
+}
+
+.pz-settings-screen-tabs [aria-expanded="true"] .dashicons-arrow-down {
+	transform: none;
+}
+
+.pz-settings-screen-tabs [aria-expanded="true"] .dashicons-arrow-down::before {
+	content: "\f142";
 }
 
 .pz-man-screen-options-panel,
@@ -5416,4 +5436,846 @@ body.pz-settings-preview-left-docked-active #wpbody-content {
 /* Hide row actions throughout initial retrieval and inline refresh. */
 .pz-cacheman tr[data-pz-pending-id] .pz-man-body-menu {
 	display: none;
+}
+
+.pz-settings-screen-options-panel .pz-settings-debug-dependent .pz-screen-option-name,
+.pz-settings-screen-options-panel .pz-settings-debug-dependent .pz-screen-option-description {
+	color: #087f9c;
+}
+
+/* Text settings: group controls by card text element. */
+.pz-letter-sections {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+	gap: 16px;
+	margin: 16px 0;
+}
+.pz-letter-section {
+	min-width: 0;
+	padding: 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+.pz-letter-section h3 {
+	margin: 0 0 16px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+.pz-letter-fields {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 14px 12px;
+}
+.pz-letter-field {
+	min-width: 0;
+}
+.pz-letter-field > label {
+	display: block;
+	margin-bottom: 6px;
+}
+#pz-admin .pz-letter-field input[type="text"] {
+	width: 100%;
+	min-width: 0;
+}
+#pz-admin .pz-letter-field input[type="number"] {
+	width: 65px;
+	min-width: 0;
+	max-width: 100%;
+}
+.pz-letter-field .wp-picker-container {
+	max-width: 100%;
+}
+.pz-letter-styles {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px 16px;
+	margin-top: 16px;
+	padding-top: 12px;
+	border-top: 1px solid #f0f0f1;
+}
+.pz-letter-styles label {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+@media screen and (max-width: 480px) {
+	.pz-letter-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* Display settings: separate dates, card appearance, and social counts. */
+.pz-display-section {
+	margin: 16px 0;
+	padding: 16px 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+.pz-display-section h3 {
+	margin: 0 0 8px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+#pz-admin .pz-display-table {
+	width: 100%;
+	margin-top: 0;
+	table-layout: auto;
+}
+#pz-admin .pz-display-table th {
+	width: 180px;
+	min-width: 0;
+	padding: 14px 16px 14px 0;
+}
+#pz-admin .pz-display-table td {
+	width: auto;
+	padding: 14px 0;
+}
+.pz-display-section .pz-date-format-option,
+.pz-display-section .pz-date-format-custom,
+.pz-display-date-icon {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	margin: 4px 16px 4px 0;
+}
+.pz-display-table ul { margin: 0; }
+.pz-display-table li { margin: 0 0 12px; }
+.pz-display-table li:last-child { margin-bottom: 0; }
+.pz-display-table li > label { display: block; }
+.pz-display-table li > label + label { margin: 8px 0 0 24px; }
+@media screen and (max-width: 782px) {
+	.pz-display-section { padding: 14px; }
+	#pz-admin .pz-display-table th,
+	#pz-admin .pz-display-table td {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+		padding: 8px 0;
+	}
+	#pz-admin .pz-display-table td { padding-bottom: 16px; }
+	.pz-display-section .pz-date-format-custom { flex-wrap: wrap; }
+}
+
+/* Position settings: related controls and directional spacing. */
+.pz-position-sections,
+.pz-position-spacing-sections {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+	gap: 16px;
+	margin: 16px 0;
+}
+.pz-position-section {
+	min-width: 0;
+	padding: 16px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+.pz-position-section h3 {
+	margin: 0 0 16px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+.pz-position-fields { display: flex; flex-wrap: wrap; gap: 14px 20px; }
+.pz-position-fields > label > span:first-child,
+.pz-position-spacing-grid label > span { display: block; margin-bottom: 6px; }
+#pz-admin .pz-position-section input[type="number"] { width: 80px; min-width: 0; max-width: 100%; }
+.pz-position-check { margin-top: 16px; }
+.pz-position-spacing-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-areas: ". top ." "left center right" ". bottom .";
+	gap: 12px;
+	align-items: center;
+	text-align: center;
+}
+.pz-position-spacing-top { grid-area: top; }
+.pz-position-spacing-right { grid-area: right; }
+.pz-position-spacing-bottom { grid-area: bottom; }
+.pz-position-spacing-left { grid-area: left; }
+.pz-position-spacing-center { grid-area: center; padding: 24px 4px; border: 2px dashed #8c8f94; background: #f6f7f7; overflow-wrap: anywhere; }
+#pz-admin .pz-position-spacing-grid select { width: 100%; min-width: 0; max-width: 100%; }
+#pz-admin .pz-position-section > .form-table { width: 100%; margin: 0; }
+@media screen and (max-width: 480px) {
+	.pz-position-spacing-grid { gap: 8px; font-size: 12px; }
+	.pz-position-section { padding: 12px; }
+}
+
+.pz-position-spacing-padding {
+	padding: 12px;
+	border: 2px dashed #8c8f94;
+	background: #f6f7f7;
+}
+.pz-position-spacing-padding .pz-position-spacing-center {
+	border: none;
+	background: transparent;
+}
+
+/* Site information placement diagram. */
+section[aria-labelledby="pz-position-info-heading"] {
+	display: grid;
+	grid-template-columns: minmax(120px, 1fr) minmax(160px, 2fr);
+	column-gap: 20px;
+	align-content: start;
+}
+section[aria-labelledby="pz-position-info-heading"] > h3 { grid-column: 1 / -1; }
+section[aria-labelledby="pz-position-info-heading"] > .pz-position-check { grid-column: 1; }
+.pz-position-info-preview {
+	grid-column: 2;
+	grid-row: 2 / 4;
+	position: relative;
+	min-height: 142px;
+	border: 1px dashed #1d2327;
+	background: #f0f0f1;
+}
+.pz-position-info-preview > span {
+	position: absolute;
+	top: 9px;
+	left: 20px;
+	right: 20px;
+	height: 40px;
+	border: 1px solid #1d2327;
+	background: #fff;
+	transition: top .2s ease;
+}
+.pz-position-info-preview[data-position="2"] > span { top: calc(100% - 51px); }
+.pz-position-info-preview[data-position=""] > span { display: none; }
+@media (prefers-reduced-motion: reduce) {
+	.pz-position-info-preview > span { transition: none; }
+}
+/* Thumbnail placement diagram, matching the site information diagram. */
+section[aria-labelledby="pz-position-thumbnail-heading"] {
+	display: grid;
+	grid-template-columns: minmax(120px, 1fr) minmax(160px, 2fr);
+	column-gap: 20px;
+	align-content: start;
+}
+section[aria-labelledby="pz-position-thumbnail-heading"] > h3 { grid-column: 1 / -1; }
+section[aria-labelledby="pz-position-thumbnail-heading"] > .pz-position-fields {
+	min-width: 0;
+	flex-direction: column;
+	gap: 12px;
+}
+#pz-position section[aria-labelledby="pz-position-thumbnail-heading"] input[type="number"] { width: 85px; min-width: 0; max-width: 85px; box-sizing: border-box; }
+.pz-position-thumbnail-preview {
+	position: relative;
+	min-width: 0;
+	min-height: 142px;
+	border: 1px dashed #1d2327;
+	background: #f0f0f1;
+}
+.pz-position-thumbnail-preview > span {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	width: 48px;
+	height: 48px;
+	box-sizing: border-box;
+	border: 1px solid #1d2327;
+	background: #fff;
+	transition: left .2s ease;
+}
+.pz-position-thumbnail-preview[data-position="1"] > span { left: calc(100% - 20px - min(84px, 30%)); }
+.pz-position-thumbnail-preview[data-position="3"] > span { top: 9px; left: 20px; width: calc(100% - 40px); height: 68%; }
+.pz-position-thumbnail-preview[data-position="0"] > span { display: none; }
+@media (prefers-reduced-motion: reduce) {
+	.pz-position-thumbnail-preview > span { transition: none; }
+}
+
+.pz-position-info-preview-label {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+}
+
+.pz-position-thumbnail-preview {
+	height: 142px;
+	align-self: center;
+}
+.pz-position-thumbnail-preview > span {
+	top: calc(50% - 42px);
+	left: 20px;
+	width: min(84px, 30%);
+	height: 84px;
+	transition: top .2s ease, left .2s ease, width .2s ease, height .2s ease;
+}
+.pz-position-thumbnail-preview-label {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.pz-position-thumbnail-preview > span { transition: none; }
+}
+
+#pz-position section[aria-labelledby="pz-position-thumbnail-heading"] .pz-position-fields > label {
+	min-width: 0;
+	max-width: 100%;
+}
+#pz-position section[aria-labelledby="pz-position-thumbnail-heading"] .pz-position-fields > label > span:last-child {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	white-space: nowrap;
+}
+
+/* Card dimensions arranged around the card diagram. */
+section[aria-labelledby="pz-position-card-heading"] {
+	display: grid;
+	grid-template-columns: minmax(0, 2fr) minmax(100px, 1fr);
+	gap: 12px 20px;
+	align-content: start;
+	align-items: center;
+}
+section[aria-labelledby="pz-position-card-heading"] > h3 { grid-column: 1 / -1; margin-bottom: 4px; }
+section[aria-labelledby="pz-position-card-heading"] > .pz-position-fields { display: contents; }
+section[aria-labelledby="pz-position-card-heading"] .pz-position-fields > label:first-child { grid-column: 1; grid-row: 2; text-align: center; }
+section[aria-labelledby="pz-position-card-heading"] .pz-position-fields > label:last-child { grid-column: 2; grid-row: 3; text-align: center; }
+#pz-position section[aria-labelledby="pz-position-card-heading"] input[type="number"] { width: 85px; min-width: 0; max-width: 100%; box-sizing: border-box; }
+.pz-position-card-preview {
+	margin-left: 16px;
+	grid-column: 1;
+	grid-row: 3;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 150px;
+	box-sizing: border-box;
+}
+section[aria-labelledby="pz-position-card-heading"] > .pz-position-check { grid-column: 1 / -1; margin-top: 0; }
+@media screen and (max-width: 480px) {
+	section[aria-labelledby="pz-position-card-heading"] { column-gap: 12px; grid-template-columns: minmax(0, 1fr) 90px; }
+}
+
+.pz-position-info-preview {
+	height: 142px;
+	align-self: center;
+}
+
+section[aria-labelledby="pz-position-info-heading"] {
+	grid-template-rows: auto 1fr 1fr;
+	align-content: stretch;
+}
+section[aria-labelledby="pz-position-info-heading"] > .pz-position-fields,
+section[aria-labelledby="pz-position-info-heading"] > .pz-position-check {
+	align-self: start;
+}
+
+section[aria-labelledby="pz-position-thumbnail-heading"] {
+	grid-template-rows: auto 1fr;
+	align-content: stretch;
+}
+section[aria-labelledby="pz-position-thumbnail-heading"] > .pz-position-fields {
+	align-self: start;
+}
+
+/* Use the thumbnail diagram's rendered dimensions for the other card boxes. */
+#pz-position .pz-position-card-preview,
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-center {
+	width: var(--pz-position-diagram-width, 180px);
+	height: var(--pz-position-diagram-height, 144px);
+	min-height: 0;
+	padding: 0;
+	box-sizing: border-box;
+	border: 1px dashed #1d2327;
+	background: #f0f0f1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+#pz-position section[aria-labelledby="pz-position-card-heading"] {
+	grid-template-columns: calc(var(--pz-position-diagram-width, 180px) + 16px) minmax(0, 1fr);
+}
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-grid {
+	grid-template-columns: minmax(0, 1fr) var(--pz-position-diagram-width, 180px) minmax(0, 1fr);
+}
+
+/* Align the card diagram and its controls with the position tab layout. */
+#pz-position section[aria-labelledby="pz-position-card-heading"] {
+	grid-template-columns: calc(var(--pz-position-diagram-width, 180px) + 40px) minmax(0, 1fr);
+}
+#pz-position .pz-position-card-preview { margin-left: 40px; }
+#pz-position section[aria-labelledby="pz-position-card-heading"] > .pz-position-check { margin-left: 40px; }
+#pz-position section[aria-labelledby="pz-position-card-heading"] .pz-position-fields > label:first-child {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	margin-left: 40px;
+}
+#pz-position section[aria-labelledby="pz-position-card-heading"] .pz-position-fields > label:first-child > span:first-child {
+	margin-bottom: 0;
+}
+
+/* Resolve diagram dimensions before the first paint, including hidden tabs. */
+#pz-position { container-type: inline-size; }
+#pz-position > .pz-position-sections,
+#pz-position > .pz-position-spacing-sections {
+	--pz-position-section-width: 100cqw;
+	--pz-position-diagram-width: max(160px, min(calc((var(--pz-position-section-width) - 54px) * 0.6666667), calc(var(--pz-position-section-width) - 174px)));
+	--pz-position-diagram-height: 144px;
+}
+@container (min-width: 696px) {
+	#pz-position > .pz-position-sections,
+	#pz-position > .pz-position-spacing-sections {
+		--pz-position-section-width: calc((100cqw - 16px) / 2);
+	}
+}
+@container (min-width: 1052px) {
+	#pz-position > .pz-position-sections { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+	#pz-position > .pz-position-sections,
+	#pz-position > .pz-position-spacing-sections {
+		--pz-position-section-width: calc((100cqw - 32px) / 3);
+	}
+}
+#pz-position .pz-position-thumbnail-preview,
+#pz-position .pz-position-info-preview {
+	width: var(--pz-position-diagram-width);
+	height: var(--pz-position-diagram-height);
+	min-height: 0;
+	box-sizing: border-box;
+}
+@media screen and (max-width: 480px) {
+	#pz-position > .pz-position-sections,
+	#pz-position > .pz-position-spacing-sections {
+		--pz-position-diagram-width: max(160px, min(calc((var(--pz-position-section-width) - 46px) * 0.6666667), calc(var(--pz-position-section-width) - 166px)));
+	}
+}
+
+/* Give padding labels more horizontal space. */
+#pz-position > .pz-position-spacing-sections {
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 480px), 1fr));
+}
+#pz-position .pz-position-spacing-padding {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+#pz-position .pz-position-spacing-padding > label > span {
+	white-space: nowrap;
+}
+
+/* Padding controls surround the card label inside a wide dashed frame. */
+#pz-position .pz-position-padding-section { display: block; }
+#pz-position .pz-position-spacing-padding {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	grid-template-rows: auto auto auto;
+	gap: 8px 16px;
+	padding: 12px;
+}
+#pz-position .pz-position-spacing-padding > label {
+	width: 100%;
+	min-width: 0;
+	justify-self: center;
+}
+#pz-position .pz-position-spacing-padding > label > span {
+	margin-bottom: 8px;
+	white-space: nowrap;
+}
+#pz-position .pz-position-spacing-padding select {
+	width: 100%;
+	max-width: 170px;
+	min-width: 0;
+}
+#pz-position .pz-position-spacing-padding .pz-position-spacing-center {
+	padding: 24px 0;
+	border: none;
+	background: transparent;
+	white-space: nowrap;
+}
+
+#pz-position .pz-position-padding-section {
+	grid-column: 1 / -1;
+	width: 748px;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+#pz-position .pz-position-spacing-padding {
+	width: 690px;
+	max-width: 100%;
+	box-sizing: border-box;
+}
+
+/* Reserve space for both margin controls around the card diagram. */
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-grid {
+	grid-template-columns: minmax(108px, 1fr) minmax(0, 2.4fr) minmax(108px, 1fr);
+}
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-center {
+	width: 100%;
+	min-width: 0;
+}
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-grid > label {
+	min-width: 0;
+}
+@media screen and (max-width: 480px) {
+	#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-grid {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+	}
+}
+
+/* Place padding beside margin; stack only when the screen is narrow. */
+#pz-position > .pz-position-spacing-sections {
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+	align-items: start;
+}
+#pz-position .pz-position-padding-section {
+	grid-column: auto;
+	width: 100%;
+}
+#pz-position .pz-position-spacing-padding { width: 500px; max-width: 100%; box-sizing: border-box; }
+@container (max-width: 900px) {
+	#pz-position > .pz-position-spacing-sections { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Keep every position settings block at the same height. */
+#pz-position .pz-position-section {
+	height: 320px;
+	box-sizing: border-box;
+}
+
+/* Fit the margin diagram and all four controls inside the 320px block. */
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-grid {
+	row-gap: 8px;
+}
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-center {
+	height: 88px;
+	min-height: 0;
+}
+
+/* Align the card width input and its unit selector. */
+#pz-position section[aria-labelledby="pz-position-card-heading"] .pz-position-fields > label:first-child > span:last-child {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+#pz-position input[name="properties[width]"],
+#pz-position select[name="properties[width-unit]"] {
+	height: 40px;
+	min-height: 40px;
+	margin: 0;
+	box-sizing: border-box;
+	vertical-align: middle;
+}
+
+/* Match every card diagram outline to the padding diagram. */
+#pz-position .pz-position-card-preview,
+#pz-position .pz-position-thumbnail-preview,
+#pz-position .pz-position-info-preview,
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-center,
+#pz-position .pz-position-spacing-padding {
+	border: 2px dashed #8c8f94;
+}
+
+#pz-position .pz-position-spacing-padding {
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* Use the same control width for outer and inner spacing. */
+#pz-position section[aria-labelledby="pz-position-margin-heading"] .pz-position-spacing-grid select,
+#pz-position .pz-position-spacing-padding select {
+	width: 108px;
+	max-width: 100%;
+	min-width: 0;
+	box-sizing: border-box;
+}
+
+/* Give the outer and inner spacing blocks equal widths. */
+#pz-position > .pz-position-spacing-sections {
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@container (max-width: 900px) {
+	#pz-position > .pz-position-spacing-sections {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+/* Link check settings grouped by purpose. */
+#pz-check .pz-check-section {
+	margin: 16px 0;
+	padding: 16px 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+#pz-check .pz-check-section h3 {
+	margin: 0 0 8px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+#pz-check .pz-check-table { width: 100%; margin-top: 0; table-layout: auto; }
+#pz-check .pz-check-table th { width: 200px; min-width: 0; padding: 14px 20px 14px 0; }
+#pz-check .pz-check-table td { width: auto; padding: 14px 0; }
+#pz-check .pz-check-table select { max-width: 100%; }
+#pz-check .pz-check-table tr + tr > th,
+#pz-check .pz-check-table tr + tr > td { border-top: 1px solid #f0f0f1; }
+@media screen and (max-width: 782px) {
+	#pz-check .pz-check-section { padding: 14px; }
+	#pz-check .pz-check-table th,
+	#pz-check .pz-check-table td { display: block; width: 100%; max-width: 100%; box-sizing: border-box; padding: 8px 0; }
+	#pz-check .pz-check-table tr + tr > td { border-top: none; }
+	#pz-check .pz-check-table td { padding-bottom: 16px; }
+}
+
+/* Editor settings grouped by conversion, editor, and shortcode usage. */
+#pz-editor .pz-editor-section {
+	margin: 16px 0;
+	padding: 16px 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+#pz-editor .pz-editor-section h3 {
+	margin: 0 0 8px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+#pz-editor .pz-editor-table { width: 100%; margin: 0; table-layout: fixed; }
+#pz-editor .pz-editor-table th { width: 180px; min-width: 0; padding: 14px 20px 14px 0; }
+#pz-editor .pz-editor-table td { width: auto; padding: 14px 0; overflow-wrap: anywhere; }
+#pz-editor .pz-editor-table tr + tr > th,
+#pz-editor .pz-editor-table tr + tr > td { border-top: 1px solid #f0f0f1; }
+#pz-editor .pz-editor-table textarea { width: 100%; max-width: 100%; box-sizing: border-box; }
+#pz-editor .pz-editor-table input,
+#pz-editor .pz-editor-table select { max-width: 100%; box-sizing: border-box; }
+#pz-editor .pz-autoconv-example-wrap { margin: 12px 0 0; }
+#pz-editor .pz-autoconv-example,
+#pz-editor .pz-shortcode-example {
+	width: 100%;
+	max-width: 640px;
+	min-width: 0;
+	box-sizing: border-box;
+	white-space: normal;
+	overflow-wrap: anywhere;
+	background: #f6f7f7;
+}
+#pz-editor .pz-editor-example-item + .pz-editor-example-item { margin-top: 16px; }
+#pz-editor .pz-editor-example-item .pz-shortcode-example { margin-top: 6px; }
+@media screen and (max-width: 782px) {
+	#pz-editor .pz-editor-section { padding: 14px; }
+	#pz-editor .pz-editor-table th,
+	#pz-editor .pz-editor-table td { display: block; width: 100%; max-width: 100%; box-sizing: border-box; padding: 8px 0; }
+	#pz-editor .pz-editor-table tr + tr > td { border-top: none; }
+	#pz-editor .pz-editor-table td { padding-bottom: 16px; }
+}
+
+/* Advanced settings grouped by purpose, with individual schedule tables. */
+#pz-advanced .pz-advanced-section {
+	margin: 16px 0;
+	padding: 16px 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+#pz-advanced .pz-advanced-section h3 {
+	margin: 0 0 8px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+#pz-advanced .pz-advanced-schedule-heading { margin: 20px 0 8px; font-size: 13px; }
+#pz-advanced .pz-advanced-table { width: 100%; margin: 0; table-layout: fixed; }
+#pz-advanced .pz-advanced-table th,
+#pz-advanced .pz-schedule-table > tbody > tr > th {
+	width: 200px;
+	min-width: 0;
+	max-width: none;
+	padding: 14px 20px 14px 0;
+}
+#pz-advanced .pz-advanced-table td { width: auto; padding: 14px 0; overflow-wrap: anywhere; }
+#pz-advanced .pz-advanced-table tr + tr > th,
+#pz-advanced .pz-advanced-table tr + tr > td { border-top: 1px solid #f0f0f1; }
+#pz-advanced .pz-advanced-table input,
+#pz-advanced .pz-advanced-table select { max-width: 100%; box-sizing: border-box; }
+#pz-advanced .pz-advanced-table input[type="number"] { width: 90px; }
+#pz-advanced .pz-advanced-table td > p:first-child { margin-top: 0; }
+#pz-advanced .pz-advanced-table td > p:last-child { margin-bottom: 0; }
+@media screen and (max-width: 782px) {
+	#pz-advanced .pz-advanced-section { padding: 14px; }
+	#pz-advanced .pz-advanced-table th,
+	#pz-advanced .pz-advanced-table td,
+	#pz-advanced .pz-schedule-table > tbody > tr > th {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		box-sizing: border-box;
+		padding: 8px 0;
+	}
+	#pz-advanced .pz-advanced-table tr + tr > td { border-top: none; }
+	#pz-advanced .pz-advanced-table td { padding-bottom: 16px; }
+	#pz-advanced .pz-schedule-pending { white-space: normal; }
+}
+
+/* Additional, initialization, and administrator settings. */
+#pz-etc .pz-maintenance-section,
+#pz-initialize .pz-maintenance-section,
+#pz-admin .pz-maintenance-section {
+	margin: 16px 0;
+	padding: 16px 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+.pz-maintenance-section > h2 {
+	margin: 0 0 12px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+.pz-maintenance-section > .form-table { width: 100%; margin: 0; table-layout: fixed; }
+#pz-etc .pz-maintenance-section > .form-table th,
+#pz-initialize .pz-maintenance-section > .form-table th,
+#pz-admin .pz-maintenance-section > .form-table:not(.pz-admin-info-table) th {
+	width: 200px;
+	min-width: 0;
+	padding: 14px 20px 14px 0;
+}
+.pz-maintenance-section > .form-table td { padding: 14px 0; overflow-wrap: anywhere; }
+.pz-maintenance-section > .form-table tr + tr > th,
+.pz-maintenance-section > .form-table tr + tr > td { border-top: 1px solid #f0f0f1; }
+.pz-maintenance-section input[type="text"],
+.pz-maintenance-section input[type="url"],
+.pz-maintenance-section textarea { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; }
+.pz-maintenance-section input[readonly] { background: #f6f7f7; }
+#pz-etc .pz-maintenance-section .pz-css-add { min-height: 220px; resize: vertical; }
+#pz-initialize .pz-maintenance-section td > button { display: block; margin: 0 0 10px; }
+#pz-initialize .pz-maintenance-section td > span { display: inline-block; }
+#pz-admin .pz-maintenance-section .pz-cron-list-wrap { max-width: 100%; overflow-x: auto; }
+#pz-admin .pz-maintenance-section .pz-cron-list { width: 100%; min-width: 640px; }
+.pz-maintenance-section .pz-destructive-action,
+.pz-maintenance-section .pz-image-cache-delete { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+@media screen and (max-width: 782px) {
+	#pz-etc .pz-maintenance-section,
+	#pz-initialize .pz-maintenance-section,
+	#pz-admin .pz-maintenance-section { padding: 14px; }
+	#pz-etc .pz-maintenance-section > .form-table th,
+	#pz-initialize .pz-maintenance-section > .form-table th,
+	#pz-admin .pz-maintenance-section > .form-table:not(.pz-admin-info-table) th,
+	.pz-maintenance-section > .form-table td {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		box-sizing: border-box;
+		padding: 8px 0;
+	}
+	.pz-maintenance-section > .form-table tr + tr > td { border-top: none; }
+	.pz-maintenance-section > .form-table td { padding-bottom: 16px; }
+}
+
+/* External and internal card settings share the same section layout. */
+.pz-card-settings-section {
+	margin: 16px 0;
+	padding: 16px 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+.pz-card-settings-section > h3 {
+	margin: 0 0 12px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+#pz-external .pz-card-settings-table,
+#pz-internal .pz-card-settings-table { width: 100%; margin: 0; table-layout: fixed; }
+#pz-external .pz-card-settings-table th,
+#pz-internal .pz-card-settings-table th { width: 180px; min-width: 0; padding: 14px 20px 14px 0; }
+.pz-card-settings-table td { padding: 14px 0; overflow-wrap: anywhere; }
+.pz-card-settings-table tr + tr > th,
+.pz-card-settings-table tr + tr > td { border-top: 1px solid #f0f0f1; }
+.pz-card-settings-table input,
+.pz-card-settings-table select { max-width: 100%; box-sizing: border-box; }
+.pz-card-settings-table .pz-card-prop-media { display: flex; flex-wrap: wrap; gap: 6px; max-width: 100%; }
+.pz-card-settings-table .pz-card-prop-media > input { flex: 1 1 200px; min-width: 0; }
+.pz-card-settings-table .pz-card-prop-bulk { min-width: 0; max-width: 100%; }
+.pz-card-settings-table .pz-card-item-selects { gap: 10px; }
+.pz-card-settings-table .pz-card-item-selects > label > span { font-weight: 600; color: #646970; }
+@media screen and (max-width: 782px) {
+	.pz-card-settings-section { padding: 14px; }
+	#pz-external .pz-card-settings-table th,
+	#pz-internal .pz-card-settings-table th,
+	.pz-card-settings-table td {
+		display: block;
+		width: 100%;
+		min-width: 0;
+		max-width: 100%;
+		box-sizing: border-box;
+		padding: 8px 0;
+	}
+	.pz-card-settings-table tr + tr > td { border-top: none; }
+	.pz-card-settings-table td { padding-bottom: 16px; }
+}
+
+/* Basic, error, and multisite settings grouped by task. */
+.pz-settings-detail-section {
+	margin: 16px 0;
+	padding: 16px 20px;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	background: #fff;
+}
+.pz-settings-detail-section > h2,
+.pz-settings-detail-section > h3 {
+	margin: 0 0 12px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #dcdcde;
+	font-size: 14px;
+}
+.pz-settings-detail-section > .form-table { width: 100%; margin: 0; table-layout: fixed; }
+#pz-basic .pz-settings-detail-section > .form-table th,
+#pz-error .pz-settings-detail-section > .form-table th,
+#pz-multisite .pz-settings-detail-section > .form-table th {
+	width: 180px;
+	min-width: 0;
+	padding: 14px 20px 14px 0;
+}
+.pz-settings-detail-section > .form-table td { padding: 14px 0; overflow-wrap: anywhere; }
+.pz-settings-detail-section input,
+.pz-settings-detail-section select { max-width: 100%; box-sizing: border-box; }
+#pz-error .pz-settings-detail-section input[type="url"] { width: 100%; }
+#pz-error .pz-error-post-link { max-width: 100%; overflow-wrap: anywhere; }
+#pz-basic .pz-settings-detail-section .pz-changelog { width: 100%; box-sizing: border-box; }
+#pz-basic .pz-settings-detail-section .pz-introduction-base { max-width: 100%; }
+.pz-multisite-table-scroll { max-width: 100%; overflow-x: auto; }
+#pz-multisite .pz-multisite-table-scroll .pz-multi-list { min-width: 640px; width: 100%; margin: 0; }
+@media screen and (max-width: 782px) {
+	.pz-settings-detail-section { padding: 14px; }
+	#pz-basic .pz-settings-detail-section > .form-table th,
+	#pz-error .pz-settings-detail-section > .form-table th,
+	#pz-multisite .pz-settings-detail-section > .form-table th,
+	.pz-settings-detail-section > .form-table td {
+		display: block;
+		width: 100%;
+		max-width: 100%;
+		min-width: 0;
+		box-sizing: border-box;
+		padding: 8px 0;
+	}
+	.pz-settings-detail-section > .form-table td { padding-bottom: 16px; }
+}
+
+/* Reserve space for the fixed infobar above the settings heading. */
+.pz-dashboard.pz-settings {
+	padding-top: var(--pz-infobar-height, 40px);
+	margin-top: 2px;
+}
+.pz-settings > .pz-settings-screen-tabs {
+	top: 2px;
+}
+
+/* Keep space between settings labels and their controls. */
+.pz-dashboard.pz-settings :is(#pz-error, #pz-basic, #pz-position, #pz-display, #pz-letter, #pz-external, #pz-internal, #pz-check, #pz-editor, #pz-multisite, #pz-advanced, #pz-etc, #pz-initialize, #pz-admin) table.form-table > tbody > tr > td {
+	padding-left: 16px;
 }

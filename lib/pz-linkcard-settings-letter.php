@@ -1,145 +1,73 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
-<div class="pz-page<?php echo $pz_page_active('pz-letter' ); ?>" id="pz-letter">
+<?php
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+$letter_rows = array(
+	'title'   => __('Title', 'pz-linkcard' ),
+	'excerpt' => __('Excerpt', 'pz-linkcard' ),
+	'url'     => __('URL', 'pz-linkcard' ),
+	'date'    => __('Date', 'pz-linkcard' ),
+	'heading' => __('Header Text', 'pz-linkcard' ),
+	'more'    => __('More Button', 'pz-linkcard' ),
+	'info'    => __('Site Information', 'pz-linkcard' ),
+	'added'   => __('Added Text', 'pz-linkcard' ),
+	'cat'     => __('Category', 'pz-linkcard' ),
+);
+$letter_colors = array(
+	'color'         => __('Text Color', 'pz-linkcard' ),
+	'outline-color' => __('Outline Color', 'pz-linkcard' ),
+	'bg-color'      => __('Background Color', 'pz-linkcard' ),
+);
+$letter_numbers = array(
+	'size'    => array('label' => __('Size', 'pz-linkcard' ), 'max' => 999, 'unit' => __('px', 'pz-linkcard' ) ),
+	'height'  => array('label' => __('Line Height', 'pz-linkcard' ), 'max' => 999, 'unit' => __('px', 'pz-linkcard' ) ),
+	'maxline' => array('label' => __('Line Limit', 'pz-linkcard' ), 'max' => 99, 'unit' => '' ),
+);
+$letter_styles = array(
+	'bold'      => __('Bold', 'pz-linkcard' ),
+	'italic'    => __('Italic', 'pz-linkcard' ),
+	'underline' => __('Underline', 'pz-linkcard' ),
+	'hover'     => str_replace('<br>', ' ', __('Underline<br>On Hover', 'pz-linkcard' ) ),
+);
+?>
+<div class="pz-page<?php echo esc_attr($pz_page_active('pz-letter' )); ?>" id="pz-letter">
 	<div class="pz-submit-float"><?php submit_button(); ?></div>
-	<h2><?php echo	__('Text Settings', 'pz-linkcard' ).$help_open.'letter'.$help_close; ?></h2>
-	<div class="pz-letter-scroll">
-	<table class="pz-letter-table form-table">
-		<tr class="pz-letter-head">
-			<th></th>
-			<th><?php esc_html_e('Text Color',		'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Outline Color',		'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Background Color',	'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Size',				'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Line Height',			'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Line Limit',			'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Bold',				'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Italic',				'pz-linkcard' ); ?></th>
-			<th><?php esc_html_e('Underline',			'pz-linkcard' ); ?></th>
-			<th><?php echo wp_kses_post(__('Underline<br>On Hover', 'pz-linkcard' ) ); ?></th>
-		</tr>
-		<?php
-		$table	=	array(
-			array( 'name' => 'title'	,	'title' => __('Title',				'pz-linkcard' ) ),
-			array( 'name' => 'excerpt'	,	'title' => __('Excerpt',			'pz-linkcard' ) ),
-			array( 'name' => 'url'		,	'title' => __('URL',				'pz-linkcard' ) ),
-			array( 'name' => 'date'		,	'title' => __('Date',				'pz-linkcard' ) ),
-			array( 'name' => 'heading'	,	'title' => __('Header Text',		'pz-linkcard' ) ),
-			array( 'name' => 'more'		,	'title' => __('More Button',		'pz-linkcard' ) ),
-			array( 'name' => 'info'		,	'title' => __('Site Information',	'pz-linkcard' ) ),
-			array( 'name' => 'added'	,	'title' => __('Added Text',			'pz-linkcard' ) ),
-			array( 'name' => 'cat'		,	'title' => __('Category',			'pz-linkcard' ) ),
-		);
-		foreach ($table as $t) {
-			echo	'<tr>';
-			echo	'<th>'.$t['title'].'</th>';
-			echo	'<td>';
-			$key		=		$t['name'].'-color';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=		$prop[$key];
-				echo	'<input type="text"     name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
-			} else {
-				echo	'<input type="text"     name="" value="" disabled="disabled" readonly="readonly" class="pz-color-dummy" />';
-			}
-			echo		'</td>';
-
-			echo		'<td>';
-			$key		=		$t['name'].'-outline-color';
-			if			(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=		$prop[$key];
-				echo	'<input type="text"     name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
-			} else {
-				echo	'<input type="text"     name="" value="" disabled="disabled" readonly="readonly" class="pz-color-dummy" />';
-			}
-			echo		'</td>';
-
-			echo		'<td>';
-			$key		=		$t['name'].'-bg-color';
-			if			(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=		$prop[$key];
-				echo	'<input type="text"     name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-sync-text pz-color pz-monospace pz-color-picker" />';
-			} else {
-				echo	'<input type="text"     name="" value="" disabled="disabled" readonly="readonly" class="pz-color-dummy" />';
-			}
-			echo		'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-size';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="number"   name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
-			} else {
-				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
-			}
-			echo	'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-height';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="number"   name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
-			} else {
-				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="999" />'.__('px', 'pz-linkcard' );
-			}
-			echo	'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-maxline';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="number"   name="properties['.$key.']" value="'.esc_attr($value ).'" class="pz-letter-box-r" min="0" max="99" />';
-			} else {
-				echo	'<input type="number"   name="" value="" disabled="disabled" readonly="readonly" class="pz-letter-box-r" min="0" max="99" />';
-			}
-			echo	'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-bold';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="hidden"   name="properties['.$key.']" value="" />';
-				echo	'<input type="checkbox" name="properties['.$key.']" value="1" '.($value ? 'checked="checked"' : '' ).' />';
-			} else {
-				echo	'<input type="checkbox" name="" value="" disabled="disabled" readonly="readonly" />';
-			}
-			echo	'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-italic';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="hidden"   name="properties['.$key.']" value="" />';
-				echo	'<input type="checkbox" name="properties['.$key.']" value="1" '.($value ? 'checked="checked"' : '' ).' />';
-			} else {
-				echo	'<input type="checkbox" name="" value="" disabled="disabled" readonly="readonly" />';
-			}
-			echo	'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-underline';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="hidden"   name="properties['.$key.']" value="" />';
-				echo	'<input type="checkbox" name="properties['.$key.']" value="1" '.($value ? 'checked="checked"' : '' ).' />';
-			} else {
-				echo	'<input type="checkbox" name="" value="" disabled="disabled" readonly="readonly" />';
-			}
-			echo	'</td>';
-
-			echo	'<td>';
-			$key		=		$t['name'].'-hover';
-			if		(array_key_exists($key, self::DEFAULTS ) ) {
-				$value	=	preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
-				echo	'<input type="hidden"   name="properties['.$key.']" value="" />';
-				echo	'<input type="checkbox" name="properties['.$key.']" value="1" '.($value ? 'checked="checked"' : '' ).' />';
-			} else {
-				echo	'<input type="checkbox" name="" value="" disabled="disabled" readonly="readonly" />';
-			}
-			echo	'</td>';
-
-			echo	'</tr>';
-		};
-	echo	'</table>';
-	echo	'</div>';
-
-	submit_button();
-	echo	'</div>';
+	<h2><?php echo wp_kses_post(__('Text Settings', 'pz-linkcard' ).$help_open.'letter'.$help_close ); ?></h2>
+	<div class="pz-letter-sections">
+		<?php foreach ($letter_rows as $letter_name => $letter_label ) { ?>
+		<section class="pz-letter-section" aria-labelledby="pz-letter-heading-<?php echo esc_attr($letter_name ); ?>">
+			<h3 id="pz-letter-heading-<?php echo esc_attr($letter_name ); ?>"><?php echo esc_html($letter_label ); ?></h3>
+			<div class="pz-letter-fields">
+				<?php foreach ($letter_colors as $suffix => $label ) {
+					$key = $letter_name.'-'.$suffix;
+					if (!array_key_exists($key, self::DEFAULTS ) ) { continue; }
+				?>
+				<div class="pz-letter-field">
+					<label for="pz-letter-<?php echo esc_attr($key ); ?>"><?php echo esc_html($label ); ?></label>
+					<input type="text" id="pz-letter-<?php echo esc_attr($key ); ?>" name="properties[<?php echo esc_attr($key ); ?>]" value="<?php echo esc_attr($prop[$key] ?? '' ); ?>" class="pz-sync-text pz-color pz-monospace pz-color-picker" />
+				</div>
+				<?php } ?>
+				<?php foreach ($letter_numbers as $suffix => $field ) {
+					$key = $letter_name.'-'.$suffix;
+					if (!array_key_exists($key, self::DEFAULTS ) ) { continue; }
+					$value = preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
+				?>
+				<div class="pz-letter-field">
+					<label for="pz-letter-<?php echo esc_attr($key ); ?>"><?php echo esc_html($field['label'] ); ?></label>
+					<span><input type="number" id="pz-letter-<?php echo esc_attr($key ); ?>" name="properties[<?php echo esc_attr($key ); ?>]" value="<?php echo esc_attr($value ); ?>" class="pz-letter-box-r" min="0" max="<?php echo esc_attr($field['max'] ); ?>" /> <?php echo esc_html($field['unit'] ); ?></span>
+				</div>
+				<?php } ?>
+			</div>
+			<div class="pz-letter-styles">
+				<?php foreach ($letter_styles as $suffix => $label ) {
+					$key = $letter_name.'-'.$suffix;
+					if (!array_key_exists($key, self::DEFAULTS ) ) { continue; }
+					$value = preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
+				?>
+				<label><input type="hidden" name="properties[<?php echo esc_attr($key ); ?>]" value="" /><input type="checkbox" name="properties[<?php echo esc_attr($key ); ?>]" value="1" <?php checked((bool) $value ); ?> /> <?php echo esc_html($label ); ?></label>
+				<?php } ?>
+			</div>
+		</section>
+		<?php } ?>
+	</div>
+	<?php submit_button(); ?>
+</div>

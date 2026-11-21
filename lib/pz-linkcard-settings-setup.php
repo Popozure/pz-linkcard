@@ -1,4 +1,4 @@
-<?php defined('ABSPATH' ) || wp_die; ?>
+<?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
 	// サムネイルのキャッシュディレクトリの用意
 	$dir			=	PZLKC_DIR_UPLOAD.'cache/';
