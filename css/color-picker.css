@@ -339,6 +339,11 @@
   user-select: none;
 }
 
+.pz-color-button:focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 2px;
+}
+
 .pz-color-swatch {
   width: 24px;
   height: 24px;
@@ -363,4 +368,12 @@
 .pz-color-button.is-disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.pz-sv-area:focus-visible,
+.pz-hue-slider:focus-visible,
+.pz-alpha-slider:focus-visible,
+.pz-palette-color:focus-visible {
+  outline: 2px solid #2271b1;
+  outline-offset: 3px;
 }

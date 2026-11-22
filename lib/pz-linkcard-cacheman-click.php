@@ -1,9 +1,12 @@
 <?php if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 <?php
+	// This view is included by pz-linkcard-cacheman-detail.php, which verifies pz-cacheman for every POST.
+	// Its GET parameters only filter the read-only click-log view.
+	// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.NonceVerification.Recommended
 	global	$wpdb;
 
 	$card_id		=	intval($data['id'] ?? 0 );
-	$card_url_key	= $card_id ? (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $card_id)) : '';
+	$card_url_key	= $card_id ? (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM %i WHERE id = %d", $this->db_card, $card_id)) : '';
 	$post_filter_id	= isset($_REQUEST['click-post-id']) ? absint(wp_unslash($_REQUEST['click-post-id'])) : 0;
 	$post_filter = $post_filter_id ? get_post($post_filter_id) : null;
 	$click_page	=	isset($_POST['click-page'] ) ? max(1, absint($_POST['click-page'] ) ) : 1;
@@ -29,39 +32,25 @@
 
 	if	($db_click_exists ) {
 		$count_now	=	$card_id
-			?	intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click WHERE url_key = %s", $card_url_key ) ) )
-			:	intval($wpdb->get_var("SELECT COUNT(*) FROM $this->db_click" ) );
+			?	intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i WHERE url_key = %s", $this->db_click, $card_url_key) ) )
+			:	intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i", $this->db_click)) );
 		$page_max	=	max(1, intval(ceil($count_now / $page_limit ) ) );
 		$click_page	=	min($click_page, $page_max );
 		$offset		=	($click_page - 1 ) * $page_limit;
 		if	($card_id ) {
-			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare(
-				"SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
-				FROM $this->db_click AS click_log
-				LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click_log.url_key
-				WHERE click_log.url_key = %s AND (%d = 0 OR click_log.post_id = %d) ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
-				$card_url_key,
-				$post_filter_id,
-				$post_filter_id,
-				$page_limit,
-				$offset
-			) );
+			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare("SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				FROM %i AS click_log
+				LEFT JOIN %i AS card ON BINARY card.url_key = BINARY click_log.url_key
+				WHERE click_log.url_key = %s AND (%d = 0 OR click_log.post_id = %d) ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d", $this->db_click, $this->db_card, $card_url_key, $post_filter_id, $post_filter_id, $page_limit, $offset) );
 		} else {
-			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare(
-				"SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
-				FROM $this->db_click AS click_log
-				LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click_log.url_key
-				WHERE (%d = 0 OR click_log.post_id = %d) ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
-				$post_filter_id, $post_filter_id, $page_limit, $offset
-			) );
+			$click_logs	=	(array) $wpdb->get_results($wpdb->prepare("SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+				FROM %i AS click_log
+				LEFT JOIN %i AS card ON BINARY card.url_key = BINARY click_log.url_key
+				WHERE (%d = 0 OR click_log.post_id = %d) ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d", $this->db_click, $this->db_card, $post_filter_id, $post_filter_id, $page_limit, $offset) );
 			if (!$click_logs && $count_now > 0) {
-				$click_logs = (array) $wpdb->get_results($wpdb->prepare(
-					"SELECT click_id,click_time,0 AS card_id,post_id,ip_hash,user_agent,'' AS card_title
-					FROM $this->db_click
-					ORDER BY click_id DESC LIMIT %d OFFSET %d",
-					$page_limit,
-					$offset
-				) );
+				$click_logs = (array) $wpdb->get_results($wpdb->prepare("SELECT click_id,click_time,0 AS card_id,post_id,ip_hash,user_agent,'' AS card_title
+					FROM %i
+					ORDER BY click_id DESC LIMIT %d OFFSET %d", $this->db_click, $page_limit, $offset) );
 			}
 		}
 
@@ -108,14 +97,17 @@
 			$chart_query_args[]	= $range['start'];
 			$chart_query_args[]	= $range['end'];
 		}
+		$chart_query_args[] = $this->db_click;
 		if	($card_id ) {
-			array_unshift($chart_query_args, $card_url_key);
-			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE url_key = %s AND click_time >= %d AND click_time < %d";
+			$chart_query_args[] = $card_url_key;
+			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM %i WHERE url_key = %s AND click_time >= %d AND click_time < %d";
 		} else {
-			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM $this->db_click WHERE click_time >= %d AND click_time < %d";
+			$chart_sql	= "SELECT ".implode(', ', $chart_selects )." FROM %i WHERE click_time >= %d AND click_time < %d";
 		}
 		$chart_query_args[]	= $chart_ranges[0]['start'];
 		$chart_query_args[]	= $chart_ranges[count($chart_ranges ) - 1]['end'];
+		// One aggregate query avoids a query per bucket. SQL structure uses generated indexes; values use %d/%s/%i.
+		// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 		$chart_counts	= $wpdb->get_row($wpdb->prepare($chart_sql, $chart_query_args ) );
 		if	($chart_counts ) {
 			foreach	($chart_ranges as $index => $range ) {
@@ -132,24 +124,25 @@
 			}
 		}
 		if	($selected_range ) {
-			$where_sql	= 'click_log.click_time >= %d AND click_log.click_time < %d';
-			$where_args	= array($selected_range['start'], $selected_range['end'] );
-			if	($card_id ) {
-				$where_sql	= 'click_log.url_key = %s AND '.$where_sql;
-				array_unshift($where_args, $card_url_key );
+			if ($card_id) {
+				$count_now = intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i AS click_log WHERE click_log.url_key = %s AND click_log.click_time >= %d AND click_log.click_time < %d", $this->db_click, $card_url_key, $selected_range['start'], $selected_range['end'])));
+			} else {
+				$count_now = intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i AS click_log WHERE click_log.click_time >= %d AND click_log.click_time < %d", $this->db_click, $selected_range['start'], $selected_range['end'])));
 			}
-			$count_now	= intval($wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $this->db_click AS click_log WHERE $where_sql", $where_args ) ) );
-			$page_max	= max(1, intval(ceil($count_now / $page_limit ) ) );
-			$click_page	= min($click_page, $page_max );
-			$offset	= ($click_page - 1 ) * $page_limit;
-			$list_args	= array_merge($where_args, array($page_limit, $offset ) );
-			$click_logs	= (array) $wpdb->get_results($wpdb->prepare(
-				"SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
-				FROM $this->db_click AS click_log
-				LEFT JOIN $this->db_card AS card ON BINARY card.url_key = BINARY click_log.url_key
-				WHERE $where_sql ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d",
-				$list_args
-			) );
+			$page_max = max(1, intval(ceil($count_now / $page_limit)));
+			$click_page = min($click_page, $page_max);
+			$offset = ($click_page - 1) * $page_limit;
+			if ($card_id) {
+				$click_logs = (array) $wpdb->get_results($wpdb->prepare("SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+					FROM %i AS click_log
+					LEFT JOIN %i AS card ON BINARY card.url_key = BINARY click_log.url_key
+					WHERE click_log.url_key = %s AND click_log.click_time >= %d AND click_log.click_time < %d ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d", $this->db_click, $this->db_card, $card_url_key, $selected_range['start'], $selected_range['end'], $page_limit, $offset));
+			} else {
+				$click_logs = (array) $wpdb->get_results($wpdb->prepare("SELECT click_log.click_id,click_log.click_time,card.id AS card_id,click_log.post_id,click_log.ip_hash,click_log.user_agent,card.title AS card_title
+					FROM %i AS click_log
+					LEFT JOIN %i AS card ON BINARY card.url_key = BINARY click_log.url_key
+					WHERE click_log.click_time >= %d AND click_log.click_time < %d ORDER BY click_log.click_id DESC LIMIT %d OFFSET %d", $this->db_click, $this->db_card, $selected_range['start'], $selected_range['end'], $page_limit, $offset));
+			}
 		} else {
 			$click_range	= '';
 		}

@@ -39,25 +39,19 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	// 同じカード・記事・IPハッシュの30秒以内のクリックは重複とする
 	if	($click_log_enabled ) {
 		$wpdb->query('START TRANSACTION' );
-		$url_key	= (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d FOR UPDATE", $lkc_id ) );
+		$url_key	= (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM %i WHERE id = %d FOR UPDATE", $this->db_card, $lkc_id) );
 		if	(!$url_key ) {
 			$wpdb->query('ROLLBACK' );
 			wp_send_json_error('DB update failed');
 			return;
 		}
-		$duplicate_click_id	=	$wpdb->get_var($wpdb->prepare(
-			"SELECT click_id FROM $this->db_click
+		$duplicate_click_id	=	$wpdb->get_var($wpdb->prepare("SELECT click_id FROM %i
 			WHERE url_key = %s
 				AND click_time >= %d
 				AND COALESCE(post_id, 0) = %d
 				AND COALESCE(ip_hash, '') = %s
 			ORDER BY click_time DESC
-			LIMIT 1 FOR UPDATE",
-			$url_key,
-			$click_time - 30,
-			$post_id,
-			$ip_hash
-		) );
+			LIMIT 1 FOR UPDATE", $this->db_click, $url_key, $click_time - 30, $post_id, $ip_hash) );
 		if	($duplicate_click_id ) {
 			$wpdb->query('COMMIT' );
 			wp_send_json_success('Click already counted');
@@ -65,7 +59,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 		}
 	}
 
-	$updated = $wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + 1 WHERE id = %d;", $lkc_id ) );
+	$updated = $wpdb->query($wpdb->prepare("UPDATE %i SET click_count = click_count + 1 WHERE id = %d;", $this->db_card, $lkc_id) );
 	if	($updated && $click_log_enabled ) {
 		$logged		=	$wpdb->insert(
 			$this->db_click,

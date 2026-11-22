@@ -209,6 +209,7 @@ function hslToRgb(h, s, l) {
 const state = { h: 120, s: 0.3, v: 0.96, a: 1 };
 let inputMode = 0;
 let activeColorInput = null;
+let focusBeforePicker = null;
 let originalColorValue = "";
 let pickerDragging = false;
 let isColorEmpty = false;
@@ -331,6 +332,43 @@ const moveAlphaSlider = e => {
     updateUI();
   });
 };
+
+// Keyboard access to the saturation/brightness area, hue and alpha controls.
+[svArea, hueSlider, alphaSlider].forEach(control => {
+  control.tabIndex = 0;
+  control.addEventListener("keydown", e => {
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const direction = e.key === "ArrowRight" || e.key === "ArrowUp" ? 1 : -1;
+    const step = e.shiftKey ? 10 : 1;
+    if (control === svArea) {
+      const key = e.key === "ArrowLeft" || e.key === "ArrowRight" ? "s" : "v";
+      state[key] = clamp(state[key] + direction * step / 100, 0, 1);
+    } else if (control === hueSlider) {
+      state.h = clamp(state.h + direction * step, 0, 359);
+    } else {
+      state.a = clamp(state.a + direction * step / 100, 0, 1);
+    }
+    isColorEmpty = false;
+    updateUI();
+  });
+});
+
+picker.addEventListener("keydown", e => {
+  if (e.key !== "Tab") return;
+  const controls = Array.from(picker.querySelectorAll('input, button, [tabindex="0"]'))
+    .filter(control => !control.disabled && control.getClientRects().length && getComputedStyle(control).visibility !== "hidden");
+  const current = controls.indexOf(document.activeElement);
+  if (!controls.length) return;
+  if (e.shiftKey && current === 0) {
+    e.preventDefault();
+    controls[controls.length - 1].focus({ preventScroll: true });
+  } else if (!e.shiftKey && current === controls.length - 1) {
+    e.preventDefault();
+    controls[0].focus({ preventScroll: true });
+  }
+});
 
 dragHandler(svArea, moveSvArea);
 dragHandler(hueSlider, moveHueSlider);
@@ -654,6 +692,35 @@ function addPaletteColor(color) {
   div.className = "pz-palette-color";
   div.style.backgroundColor = color;
   div.dataset.color = color;
+  div.tabIndex = palette.children.length === 0 ? 0 : -1;
+  div.setAttribute("role", "button");
+  div.setAttribute("aria-label", color);
+  div.addEventListener("focus", () => {
+    Array.from(palette.children).forEach(slot => { slot.tabIndex = slot === div ? 0 : -1; });
+  });
+  div.addEventListener("keydown", e => {
+    if (e.key === "Tab" && !e.shiftKey) {
+      e.preventDefault();
+      e.stopPropagation();
+      svArea.focus({ preventScroll: true });
+      return;
+    }
+    const offsets = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -8, ArrowDown: 8 };
+    if (Object.hasOwn(offsets, e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
+      const slots = Array.from(palette.children);
+      const index = clamp(slots.indexOf(div) + offsets[e.key], 0, slots.length - 1);
+      const next = slots[index];
+      next.focus({ preventScroll: true });
+      next.click();
+      return;
+    }
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (!e.repeat) div.click();
+  });
 
   div.addEventListener("click", () => {
     const parsed = hexToRgbaSafe(div.dataset.color);
@@ -739,6 +806,7 @@ saveColorItem.addEventListener("click", e => {
   if (index >= 0) {
     paletteColors[index] = color;
     selectedPaletteSlot.dataset.color = color;
+    selectedPaletteSlot.setAttribute("aria-label", color);
     selectedPaletteSlot.style.backgroundColor = color;
     try {
       localStorage.setItem(savedColorsKey, JSON.stringify(paletteColors));
@@ -765,6 +833,7 @@ resetColorItem.addEventListener("click", e => {
   if (color) {
     paletteColors[index] = color;
     selectedPaletteSlot.dataset.color = color;
+    selectedPaletteSlot.setAttribute("aria-label", color);
     selectedPaletteSlot.style.backgroundColor = color;
     try {
       localStorage.setItem(savedColorsKey, JSON.stringify(paletteColors));
@@ -782,6 +851,7 @@ resetColorItem.addEventListener("click", e => {
 document.querySelectorAll(".pz-color-picker").forEach(input => {
   const wrapper = document.createElement("div");
   wrapper.className = "pz-color-button";
+  wrapper.setAttribute("role", "button");
 
   // disabled の場合は見た目用クラス（CSSは任意）
   if (input.disabled) {
@@ -812,6 +882,7 @@ document.querySelectorAll(".pz-color-picker").forEach(input => {
     const disabled = Boolean(isDisabled());
     wrapper.classList.toggle("is-disabled", disabled);
     wrapper.setAttribute("aria-disabled", disabled ? "true" : "false");
+    wrapper.tabIndex = disabled ? -1 : 0;
   };
 
   const syncSwatch = () => {
@@ -826,6 +897,13 @@ document.querySelectorAll(".pz-color-picker").forEach(input => {
   observer.observe(input, { attributes: true, attributeFilter: ["class", "disabled", "readonly", "aria-disabled"] });
   syncSwatch();
 
+  wrapper.addEventListener("keydown", e => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (!e.repeat && !isDisabled()) wrapper.click();
+  });
+
   wrapper.addEventListener("click", () => {
     // disabledならクリック無効
     if (isDisabled()) return;
@@ -835,6 +913,7 @@ document.querySelectorAll(".pz-color-picker").forEach(input => {
       return;
     }
 
+    focusBeforePicker = document.activeElement;
     activeTriggerWrap = wrapper;
 
     activeColorInput = input;
@@ -876,6 +955,7 @@ document.querySelectorAll(".pz-color-picker").forEach(input => {
     }
 
     renderInputFields();
+    inputWrap.querySelector("input")?.focus({ preventScroll: true });
   });
 });
 
@@ -887,6 +967,9 @@ function closeColorPicker() {
   hideColorMenu();
   activeColorInput = null;
   activeTriggerWrap = null;
+  const previousFocus = focusBeforePicker;
+  focusBeforePicker = null;
+  if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true });
 }
 
 document.addEventListener("pointerdown", e => {
@@ -914,7 +997,10 @@ window.addEventListener("keydown", e => {
     closeColorPicker();
   }
 
-  if (e.key === "Enter") closeColorPicker();
+  if (e.key === "Enter") {
+    e.preventDefault();
+    closeColorPicker();
+  }
 });
 
 // ダブルクリックで閉じる

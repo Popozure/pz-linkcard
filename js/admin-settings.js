@@ -182,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.querySelectorAll(".pz-copy-link-settings").forEach(el =>
             el.addEventListener("click", copyLinkSettings)
         );
+        initCardItemDrag();
         initCardEnabledSwitches();
         updateCardRangeFills();
 
@@ -462,6 +463,31 @@ document.addEventListener("DOMContentLoaded", () => {
             importButton.disabled = !fileInput.files?.length;
         };
         fileInput.addEventListener("change", updateImportButton);
+        const dropArea = fileInput.closest(".pz-man-filemenu");
+        if (dropArea) {
+            const isFileDrag = event => Array.from(event.dataTransfer?.types || []).includes("Files");
+            dropArea.addEventListener("dragover", event => {
+                if (!isFileDrag(event)) return;
+                event.preventDefault();
+                event.dataTransfer.dropEffect = "copy";
+                dropArea.classList.add("pz-import-dragover");
+            });
+            dropArea.addEventListener("dragleave", event => {
+                if (!dropArea.contains(event.relatedTarget)) dropArea.classList.remove("pz-import-dragover");
+            });
+            dropArea.addEventListener("drop", event => {
+                if (!isFileDrag(event)) return;
+                event.preventDefault();
+                event.stopPropagation();
+                dropArea.classList.remove("pz-import-dragover");
+                const file = event.dataTransfer.files[0];
+                if (!file) return;
+                const transfer = new DataTransfer();
+                transfer.items.add(file);
+                fileInput.files = transfer.files;
+                fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+            });
+        }
         updateImportButton();
     }
 
@@ -668,7 +694,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		const dateFormat = document.querySelector("input[name='properties[date-format]']:checked")?.value;
 		setDisabled("input[name='properties[date-format]']", !dateMode);
 		setDisabled("input[name='properties[date-format-custom]']", !dateMode || dateFormat !== "custom");
-		setDisabled("select[name='properties[date-icon-post]']", dateMode !== "p" && dateMode !== "pu");
+		setDisabled("select[name='properties[date-icon-post]']", !dateMode);
 		setDisabled("select[name='properties[date-icon-update]']", dateMode !== "u" && dateMode !== "pu");
         setDisabled("input[name='properties[in-field-title]']", inGet != "3");
         setDisabled("input[name='properties[in-field-excerpt]']", inGet != "3");
@@ -689,6 +715,11 @@ document.addEventListener("DOMContentLoaded", () => {
 		// クリック件数を記録しない場合、詳細ログも記録しない
 		const clickCountEl = document.querySelector("input[name='properties[flg-click-count]'][type=checkbox]");
 		const clickLogDisabled = clickCountEl ? !clickCountEl.checked : false;
+		const clickLogCheckbox = document.querySelector("input[name='properties[flg-click-log]'][type=checkbox]");
+		const clickLogHidden = clickLogCheckbox?.previousElementSibling;
+		if (clickLogHidden?.type === "hidden" && clickLogHidden.name === clickLogCheckbox.name) {
+			clickLogHidden.value = clickLogDisabled && clickLogCheckbox.checked ? clickLogCheckbox.value : "";
+		}
 		setDisabled("input[name='properties[flg-click-log]'][type=checkbox]", clickLogDisabled, false, clickLogDisabled ? "#ddd" : "#444");
 
 		// 自動変換関連
@@ -715,6 +746,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 		const infoPositionEl = document.querySelector("select[name='properties[info-position]']");
 		const siteNameDisabled = infoPositionEl ? infoPositionEl.value === "" : false;
+		const siteNameCheckbox = document.querySelector("input[name='properties[flg-use-sitename]'][type=checkbox]");
+		const siteNameHidden = siteNameCheckbox?.previousElementSibling;
+		if (siteNameHidden?.type === "hidden" && siteNameHidden.name === siteNameCheckbox.name) {
+			siteNameHidden.value = siteNameDisabled && siteNameCheckbox.checked ? siteNameCheckbox.value : "";
+		}
 		setDisabled("input[name='properties[flg-use-sitename]'][type=checkbox]", siteNameDisabled, false, siteNameDisabled ? "#ddd" : "#444");
 	}
 
@@ -1120,6 +1156,94 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function restoreLockedCheckbox(e) {
         e.target.checked = e.target.dataset.pzLockedState === "1";
+    }
+
+    function initCardItemDrag() {
+        document.querySelectorAll("#pz-external .pz-card-item-selects, #pz-internal .pz-card-item-selects").forEach(list => {
+            list.addEventListener("pointerdown", event => {
+                const handle = event.target.closest("label > span");
+                const item = handle?.parentElement;
+                if (!item || item.parentElement !== list || event.button !== 0) return;
+                event.preventDefault();
+                const original = Array.from(list.children);
+                const names = original.map(label => label.querySelector("select").name);
+                const start = item.getBoundingClientRect();
+                const offsetX = event.clientX - start.left;
+                const offsetY = event.clientY - start.top;
+                let ghost = null;
+                const animations = new Map();
+                handle.setPointerCapture(event.pointerId);
+                const move = e => {
+                    if (e.pointerId !== event.pointerId) return;
+                    if (!ghost && Math.hypot(e.clientX - event.clientX, e.clientY - event.clientY) < 5) return;
+                    if (!ghost) {
+                        ghost = item.cloneNode(true);
+                        ghost.querySelector("select").value = item.querySelector("select").value;
+                        ghost.classList.add("pz-card-item-drag-ghost");
+                        ghost.setAttribute("aria-hidden", "true");
+                        ghost.querySelectorAll("select").forEach(select => { select.removeAttribute("name"); select.tabIndex = -1; });
+                        ghost.style.width = `${start.width}px`;
+                        document.body.append(ghost);
+                        item.classList.add("pz-card-item-dragging");
+                    }
+                    ghost.style.left = `${e.clientX - offsetX}px`;
+                    ghost.style.top = `${e.clientY - offsetY}px`;
+                    const bounds = list.getBoundingClientRect();
+                    if (e.clientX < bounds.left || e.clientX > bounds.right || e.clientY < bounds.top || e.clientY > bounds.bottom) return;
+                    const labels = Array.from(list.children);
+                    let nearest = null;
+                    let distance = Infinity;
+                    labels.forEach(label => {
+                        const r = label.getBoundingClientRect();
+                        const d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+                        if (d < distance) { distance = d; nearest = label; }
+                    });
+                    if (!nearest || nearest === item) return;
+                    animations.forEach(animation => animation.cancel());
+                    animations.clear();
+                    const positions = new Map(labels.map(label => [label, label.getBoundingClientRect()]));
+                    const forward = labels.indexOf(item) < labels.indexOf(nearest);
+                    list.insertBefore(item, forward ? nearest.nextSibling : nearest);
+                    handle.setPointerCapture(event.pointerId);
+                    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+                        labels.filter(label => label !== item).forEach(label => {
+                            const before = positions.get(label);
+                            const after = label.getBoundingClientRect();
+                            if (before.left === after.left && before.top === after.top) return;
+                            animations.set(label, label.animate([
+                                { transform: `translate(${before.left - after.left}px, ${before.top - after.top}px)` },
+                                { transform: "translate(0, 0)" }
+                            ], { duration: 160, easing: "ease-out" }));
+                        });
+                    }
+                };
+                const finish = e => {
+                    if (e.pointerId !== event.pointerId) return;
+                    handle.removeEventListener("pointermove", move);
+                    handle.removeEventListener("pointerup", finish);
+                    handle.removeEventListener("pointercancel", finish);
+                    if (handle.hasPointerCapture(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+                    animations.forEach(animation => animation.cancel());
+                    ghost?.remove();
+                    item.classList.remove("pz-card-item-dragging");
+                    if (e.type === "pointercancel") {
+                        original.forEach(label => list.append(label));
+                        return;
+                    }
+                    const ordered = Array.from(list.children);
+                    ordered.forEach((label, index) => {
+                        label.querySelector("span").textContent = String(index + 1);
+                        label.querySelector("select").name = names[index];
+                    });
+                    if (ordered.some((label, index) => label !== original[index])) {
+                        ordered.forEach(label => label.querySelector("select").dispatchEvent(new Event("change", { bubbles: true })));
+                    }
+                };
+                handle.addEventListener("pointermove", move);
+                handle.addEventListener("pointerup", finish);
+                handle.addEventListener("pointercancel", finish);
+            });
+        });
     }
 
     function errorModeNoticeDismiss(e) {
@@ -2070,6 +2194,50 @@ document.addEventListener("DOMContentLoaded", () => {
             e.stopPropagation();
         }, { passive: false });
 
+        let suppressTabClickUntil = 0;
+        tabbar.addEventListener("click", e => {
+            if (performance.now() >= suppressTabClickUntil) return;
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }, true);
+        tabbar.addEventListener("dragstart", e => e.preventDefault());
+        tabbar.addEventListener("pointerdown", e => {
+            if (e.button !== 0 || e.pointerType === "touch" || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+            if (tabbar.scrollWidth <= tabbar.clientWidth + 1) return;
+            const pointerId = e.pointerId;
+            const startX = e.clientX;
+            const startScroll = tabbar.scrollLeft;
+            let dragging = false;
+            const move = event => {
+                if (event.pointerId !== pointerId) return;
+                const distance = event.clientX - startX;
+                if (!dragging && Math.abs(distance) < 5) return;
+                if (!dragging) {
+                    dragging = true;
+                    tabbar.setPointerCapture(pointerId);
+                    tabbar.classList.add("pz-tabs-dragging");
+                }
+                event.preventDefault();
+                suppressTabClickUntil = performance.now() + 400;
+                tabbar.scrollLeft = startScroll - distance;
+                updateButtons();
+            };
+            const finish = event => {
+                if (event.type !== "blur" && event.pointerId !== pointerId) return;
+                document.removeEventListener("pointermove", move);
+                document.removeEventListener("pointerup", finish);
+                document.removeEventListener("pointercancel", finish);
+                window.removeEventListener("blur", finish);
+                if (tabbar.hasPointerCapture(pointerId)) tabbar.releasePointerCapture(pointerId);
+                tabbar.classList.remove("pz-tabs-dragging");
+                if (dragging) suppressTabClickUntil = performance.now() + 400;
+            };
+            document.addEventListener("pointermove", move, { passive: false });
+            document.addEventListener("pointerup", finish);
+            document.addEventListener("pointercancel", finish);
+            window.addEventListener("blur", finish);
+        });
+
         tabbar.addEventListener("click", e => {
             const tab = e.target.closest(".pz-tab");
             if (!tab || !tabbar.contains(tab)) return;
@@ -2181,6 +2349,8 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.ResizeObserver) {
             new ResizeObserver(syncFixedTabbar).observe(tabbar);
             new ResizeObserver(syncFixedTabbar).observe(wrapper);
+            // A fixed tabbar does not resize with its parent when a docked preview changes width.
+            new ResizeObserver(syncFixedTabbar).observe(tabbarSpacer);
         }
 
         const activeTab = tabbar.querySelector(".pz-tab-active") || getTabs()[0];

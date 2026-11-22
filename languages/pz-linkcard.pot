@@ -1001,6 +1001,14 @@ msgstr ""
 msgid "Table Name"
 msgstr ""
 
+#: ../lib/pz-linkcard-settings-multisite.php
+msgid "Link Card Table"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-multisite.php
+msgid "Click Information Table"
+msgstr ""
+
 #: ../lib/pz-linkcard-settings-admin.php:93 ../lib/pz-linkcard-settings-admin.php:102
 msgid "Hash"
 msgstr ""
@@ -1595,7 +1603,7 @@ msgid "Inner Shadow"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-card.php:94
-msgid "Transition Speed"
+msgid "Change Duration"
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-card.php:97
@@ -2481,6 +2489,14 @@ msgstr ""
 
 #: ../lib/pz-linkcard-settings-letter.php:29
 msgid "Added Text"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-letter.php
+msgid "Domain / Site Name"
+msgstr ""
+
+#: ../lib/pz-linkcard-settings-letter.php
+msgid "* The displayed text can be configured on the “External Link” and “Internal Link” tabs."
 msgstr ""
 
 #: ../lib/pz-linkcard-settings-letter.php:69 ../lib/pz-linkcard-settings-letter.php:71 ../lib/pz-linkcard-settings-letter.php:79

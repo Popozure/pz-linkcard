@@ -87,9 +87,11 @@ trait Pz_LinkCard_Cache {
 		$post_ids = array();
 		$before_id = PHP_INT_MAX;
 		do {
+			// Conditions contain only repeated LIKE placeholders; patterns are esc_like()d and passed as values.
 			$posts = $wpdb->get_results($wpdb->prepare(
-				"SELECT ID, post_content FROM {$wpdb->posts} WHERE post_type = 'post' AND post_status = 'publish' AND (".implode(' OR ', $conditions).") AND ID < %d ORDER BY ID DESC LIMIT 100",
-				array_merge($search_values, array($before_id))
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber
+				"SELECT ID, post_content FROM %i WHERE post_type = 'post' AND post_status = 'publish' AND (".implode(' OR ', $conditions).") AND ID < %d ORDER BY ID DESC LIMIT 100",
+				array_merge(array($wpdb->posts), $search_values, array($before_id))
 			));
 			if ($wpdb->last_error) return null;
 			foreach ($posts as $post) {
@@ -160,10 +162,7 @@ trait Pz_LinkCard_Cache {
 		if ((string) $wpdb->get_var($wpdb->prepare('SELECT GET_LOCK(%s, 0)', $lock_name)) !== '1') return time() + 1;
 		$lock = $lock_name;
 		$now = current_time('timestamp', false);
-		$last = $wpdb->get_var($wpdb->prepare(
-			"SELECT update_time FROM $this->db_card WHERE domain = %s AND regist_time > 0 ORDER BY update_time DESC LIMIT 1",
-			$site
-		));
+		$last = $wpdb->get_var($wpdb->prepare("SELECT update_time FROM %i WHERE domain = %s AND regist_time > 0 ORDER BY update_time DESC LIMIT 1", $this->db_card, $site));
 		if ($wpdb->last_error) {
 			$this->pz_ReleaseCronSiteAccess($lock);
 			return time() + $interval;
@@ -209,14 +208,14 @@ trait Pz_LinkCard_Cache {
 			if	(array_key_exists($cache_key, $this->request_cache ) ) {
 				return	$this->request_cache[$cache_key];
 			}
-			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_card WHERE url_key=%s AND url=%s", md5($url ), $url ) );
+			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM %i WHERE url_key=%s AND url=%s", $this->db_card, md5($url ), $url) );
 		} elseif	(isset($data['id'] ) && !is_null($data['id'] ) ) {
 			$data_id	=	intval($data['id'] );
 			$cache_key	=	'id:'.$data_id;
 			if	(array_key_exists($cache_key, $this->request_cache ) ) {
 				return	$this->request_cache[$cache_key];
 			}
-			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM $this->db_card WHERE id=%d", $data_id ) );
+			$data		=	$wpdb->get_row($wpdb->prepare("SELECT * FROM %i WHERE id=%d", $this->db_card, $data_id) );
 		} else {
 			return	null;
 		}
@@ -374,7 +373,7 @@ trait Pz_LinkCard_Cache {
 		global	$wpdb;
 		static	$columns_by_table	=	array();
 		if	(!array_key_exists($this->db_card, $columns_by_table ) ) {
-			$columns_by_table[$this->db_card]	=	$wpdb->get_results("DESCRIBE $this->db_card", ARRAY_A );
+			$columns_by_table[$this->db_card]	=	$wpdb->get_results($wpdb->prepare("DESCRIBE %i", $this->db_card), ARRAY_A );
 		}
 		$columns	=	$columns_by_table[$this->db_card];
 		if	(isset($columns ) && is_array($columns ) ) {
@@ -472,7 +471,7 @@ trait Pz_LinkCard_Cache {
 		}
 		if	(isset($data['url'] ) ) {
 			$url		=	$this->pz_EncodeURL($data['url'], true );
-			$card_id	=	intval($wpdb->get_var($wpdb->prepare("SELECT id FROM $this->db_card WHERE url = %s LIMIT 1", $url ) ) );
+			$card_id	=	intval($wpdb->get_var($wpdb->prepare("SELECT id FROM %i WHERE url = %s LIMIT 1", $this->db_card, $url) ) );
 			$result		=	$wpdb->delete($this->db_card, array('url' => $url ), array('%s' ) );
 			if	($result ) {
 				delete_option('pz_lkc_refresh_'.$card_id);

@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 	}
 
 	$original_options	=	$this->options;
-	$properties			=	isset($_POST['properties'] ) && is_array($_POST['properties'] ) ? wp_unslash($_POST['properties'] ) : array();
+	$properties			=	$this->pz_GetSubmittedProperties() ?? array();
 	$definitions		=	self::pz_GetOptionDefinitions();
 	$preview_options	=	array_merge(self::pz_GetDefaultOptions(), is_array($this->options ) ? $this->options : array() );
 

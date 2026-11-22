@@ -3457,6 +3457,9 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 
 .pz-card-prop-number > span:last-child > span {
 	grid-column: 3;
+	white-space: nowrap;
+	word-break: keep-all;
+	overflow-wrap: normal;
 }
 
 .pz-card-prop-number input[type="range"] {
@@ -3708,7 +3711,7 @@ body.pz-settings-preview-right-docked-active .pz-indicator {
 .pz-page input.pz-multi-normal-control[readonly]:not(:disabled) {
 	color: #2c3338;
 	border: 1px solid #8c8f94;
-	background-color: #fff;
+	background-color: #f0f0f1;
 	opacity: 1;
 }
 
@@ -5471,6 +5474,9 @@ body.pz-settings-preview-left-docked-active #wpbody-content {
 .pz-letter-field {
 	min-width: 0;
 }
+.pz-letter-field-size {
+	grid-column: 1;
+}
 .pz-letter-field > label {
 	display: block;
 	margin-bottom: 6px;
@@ -5499,6 +5505,10 @@ body.pz-settings-preview-left-docked-active #wpbody-content {
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
+}
+.pz-letter-text-location-note {
+	margin: 12px 0 0;
+	color: #e65100;
 }
 @media screen and (max-width: 480px) {
 	.pz-letter-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -6278,4 +6288,87 @@ section[aria-labelledby="pz-position-thumbnail-heading"] > .pz-position-fields {
 /* Keep space between settings labels and their controls. */
 .pz-dashboard.pz-settings :is(#pz-error, #pz-basic, #pz-position, #pz-display, #pz-letter, #pz-external, #pz-internal, #pz-check, #pz-editor, #pz-multisite, #pz-advanced, #pz-etc, #pz-initialize, #pz-admin) table.form-table > tbody > tr > td {
 	padding-left: 16px;
+}
+
+/* Use the link-check heading width throughout the settings screen. */
+.pz-dashboard.pz-settings :is(#pz-error, #pz-basic, #pz-position, #pz-display, #pz-letter, #pz-external, #pz-internal, #pz-check, #pz-editor, #pz-multisite, #pz-advanced, #pz-etc, #pz-initialize, #pz-admin) table.form-table > tbody > tr > th {
+	padding-left: 8px;
+	padding-right: 8px;
+}
+@media screen and (min-width: 783px) {
+	.pz-dashboard.pz-settings :is(#pz-error, #pz-basic, #pz-position, #pz-display, #pz-letter, #pz-external, #pz-internal, #pz-check, #pz-editor, #pz-multisite, #pz-advanced, #pz-etc, #pz-initialize, #pz-admin) table.form-table > tbody > tr > th {
+		box-sizing: border-box;
+		width: 200px;
+		min-width: 0;
+		max-width: none;
+	}
+	.pz-dashboard.pz-settings #pz-admin .pz-admin-info-table > tbody > tr > th[scope="row"] {
+		width: 100px !important;
+		min-width: 100px !important;
+		max-width: 100px !important;
+	}
+	.pz-dashboard.pz-settings #pz-admin .pz-admin-info-table > tbody > tr > th[scope="row"][colspan="2"] {
+		width: 200px !important;
+		min-width: 200px !important;
+		max-width: 200px !important;
+	}
+}
+
+/* Display-item insertion drag handles and floating preview. */
+.pz-card-item-selects > label > span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	text-align: center;
+	cursor: grab;
+	touch-action: none;
+	user-select: none;
+}
+.pz-card-item-selects > .pz-card-item-dragging {
+	opacity: 0.3;
+	outline: 2px dashed #2271b1;
+	outline-offset: 2px;
+}
+.pz-card-item-drag-ghost {
+	position: fixed;
+	z-index: 100001;
+	display: flex;
+	flex-direction: column;
+	padding: 4px;
+	box-sizing: border-box;
+	background: #fff;
+	box-shadow: 0 3px 12px #0003;
+	pointer-events: none;
+}
+
+.pz-card-item-selects > label > span::before,
+.pz-card-item-selects > label > span::after {
+	content: "";
+	width: 8px;
+	height: 12px;
+	flex: 0 0 8px;
+	background: radial-gradient(circle, #8c8f94 1px, transparent 1.5px) 0 0 / 4px 4px;
+}
+.pz-card-item-selects > .pz-card-item-dragging > span {
+	cursor: grabbing;
+}
+
+.pz-tabbar-overflow .pz-tabs,
+.pz-tabbar-overflow .pz-tabs .pz-tab {
+	cursor: grab;
+	user-select: none;
+}
+.pz-tabbar-overflow .pz-tabs.pz-tabs-dragging,
+.pz-tabbar-overflow .pz-tabs.pz-tabs-dragging .pz-tab {
+	cursor: grabbing;
+}
+
+
+.pz-man-filemenu.pz-import-dragover {
+	outline: 2px dashed #2271b1;
+	outline-offset: 2px;
+}
+.pz-man-filemenu.pz-import-dragover td {
+	background-color: #f0f6fc;
 }

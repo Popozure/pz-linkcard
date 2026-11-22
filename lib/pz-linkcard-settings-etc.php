@@ -88,8 +88,7 @@
 			$table_status	= $wpdb->get_row($wpdb->prepare('SHOW TABLE STATUS LIKE %s', $wpdb->esc_like($table_name ) ) );
 			$data_size		= $table_status ? intval($table_status->Data_length ) : 0;
 			$index_size		= $table_status ? intval($table_status->Index_length ) : 0;
-			$safe_table_name	= str_replace('`', '``', $table_name );
-			$record_count	= $table_status ? intval($wpdb->get_var("SELECT COUNT(*) FROM `$safe_table_name`" ) ) : 0;
+			$record_count	= $table_status ? intval($wpdb->get_var($wpdb->prepare('SELECT COUNT(*) FROM %i', $table_name) ) ) : 0;
 			return array(
 				'count'	=> $record_count,
 				'data'	=> $data_size,

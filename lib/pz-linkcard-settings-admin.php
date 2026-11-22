@@ -54,7 +54,7 @@
 					'key'			=>	$timestamp,
 					'hook'			=>	esc_html($hook ),
 					'myjob'			=>	$myjob,
-					'next_time'		=>	esc_html(get_date_from_gmt( gmdate( 'Y-m-d H:i:s', $timestamp ), PZLKC_DATETIME_FORMAT ) ),
+					'next_time'		=>	esc_html(wp_date(get_option('date_format' ).' '.get_option('time_format' ), $timestamp ) ),
 					'schedule'		=>	esc_html($schedule ),
 					'interval'		=>	$interval,
 					'button'		=>	'<button type="submit" name="action" '.$button.' onclick="return confirm(\''.esc_js(__('Are you sure?', 'pz-linkcard' ) ).'\' );">'.esc_html__('Run Now', 'pz-linkcard' ).'</button>',
@@ -86,18 +86,18 @@
 			<td><span class="pz-monospace"><?php echo esc_html(PZLKC_PLUGIN_VERSION ); ?></span></td>
 		</tr>
 		<tr>
-			<th scope="row" rowspan="2"><?php esc_html_e('Link-Card', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="2"><?php esc_html_e('Link Card Table', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span> (<?php echo $card_table_exists ? esc_html__('&#x2714;&#xFE0F;Exists', 'pz-linkcard' ) : esc_html__('&#x2718;&#xFE0F;Does not exist', 'pz-linkcard' ); ?>)</td>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_card ); ?></span> <span class="pz-table-exists-badge <?php echo $card_table_exists ? 'pz-table-exists' : 'pz-table-missing'; ?>"><?php echo $card_table_exists ? wp_kses_post(__('&#x2705;&#xFE0F;', 'pz-linkcard' ) ).esc_html__('Exists', 'pz-linkcard' ) : wp_kses_post(__('&#x1F6AB;&#xFE0F;', 'pz-linkcard' ) ).esc_html__('Not Found.', 'pz-linkcard' ); ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>
 			<td><span class="pz-monospace"><?php echo esc_html($prop['db-version'] ); ?></span></td>
 		</tr>
 		<tr>
-			<th scope="row" rowspan="2"><?php esc_html_e('Count Information', 'pz-linkcard' ); ?></th>
+			<th scope="row" rowspan="2"><?php esc_html_e('Click Information Table', 'pz-linkcard' ); ?></th>
 			<th scope="row"><?php esc_html_e('Table Name', 'pz-linkcard' ); ?></th>
-			<td><span class="pz-monospace"><?php echo esc_html($this->db_click ); ?></span> (<?php echo $click_table_exists ? esc_html__('&#x2714;&#xFE0F;Exists', 'pz-linkcard' ) : esc_html__('&#x2718;&#xFE0F;Does not exist', 'pz-linkcard' ); ?>)</td>
+			<td><span class="pz-monospace"><?php echo esc_html($this->db_click ); ?></span> <span class="pz-table-exists-badge <?php echo $click_table_exists ? 'pz-table-exists' : 'pz-table-missing'; ?>"><?php echo $click_table_exists ? wp_kses_post(__('&#x2705;&#xFE0F;', 'pz-linkcard' ) ).esc_html__('Exists', 'pz-linkcard' ) : wp_kses_post(__('&#x1F6AB;&#xFE0F;', 'pz-linkcard' ) ).esc_html__('Not Found.', 'pz-linkcard' ); ?></span></td>
 		</tr>
 		<tr>
 			<th scope="row"><?php esc_html_e('Hash', 'pz-linkcard' ); ?></th>

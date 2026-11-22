@@ -108,11 +108,11 @@
 			return clone.textContent;
 		}
 		const text = String(value || "");
-		const doc = window.document;
-		const element = doc.createElement("div");
-		element.innerHTML = text;
-		element.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
-		return element.textContent || text;
+		const template = window.document.createElement("template");
+		template.innerHTML = text;
+		const content = template.content;
+		content.querySelectorAll("br").forEach((br) => br.replaceWith("\n"));
+		return content.textContent || text;
 	};
 	const parseShortcode = (text) => {
 		const shortcodeText = getTextContent(text)
@@ -134,10 +134,11 @@
 	};
 	const parseShortcodes = (text) => {
 		const html = String(text || "");
-		const element = window.document.createElement("div");
-		element.innerHTML = html;
-		const nodes = element.children.length
-			? Array.from(element.children)
+		// Keep parsed HTML inert; only text is used for shortcode conversion.
+		const template = window.document.createElement("template");
+		template.innerHTML = html;
+		const nodes = template.content.children.length
+			? Array.from(template.content.children)
 			: getTextContent(html).split(/\r?\n/);
 
 		const parseShortcodesText = (value) => {

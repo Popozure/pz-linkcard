@@ -1,6 +1,9 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
+// List filters and sorting use read-only GET parameters. Mutating POST actions verify pz-linkcard-list-action below.
+// phpcs:disable WordPress.Security.NonceVerification.Recommended
+
 if (!current_user_can('manage_options')) {
 	wp_die(esc_html__('Sorry, you are not allowed to access this page.', 'pz-linkcard'));
 }
@@ -114,9 +117,11 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 		);
 		$filter = isset($_GET['filter']) && is_string($_GET['filter']) ? sanitize_key(wp_unslash($_GET['filter'])) : 'all';
 		$this->filter = isset($this->conditions[$filter]) ? $filter : 'all';
+		// Keep URL punctuation for the query parser; values become esc_like()d prepared parameters.
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		$this->search = isset($_GET['s']) && is_string($_GET['s']) ? trim(preg_replace('/[\r\n\t ]+/u', ' ', wp_check_invalid_utf8(wp_unslash($_GET['s'])))) : '';
-		$refine = $_GET['refine'] ?? ($_GET['domain'] ?? '');
-		$this->domain_filter = is_string($refine) ? sanitize_text_field(wp_unslash($refine)) : '';
+		$this->domain_filter = isset($_GET['refine']) && is_string($_GET['refine']) ? sanitize_text_field(wp_unslash($_GET['refine']))
+			: (isset($_GET['domain']) && is_string($_GET['domain']) ? sanitize_text_field(wp_unslash($_GET['domain'])) : '');
 	}
 
 	public function get_columns() {
@@ -173,7 +178,7 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 
 	private function card_sort_heading($column, $label) {
 		$current = isset($_GET['orderby']) && is_string($_GET['orderby']) ? sanitize_key(wp_unslash($_GET['orderby'])) : 'id';
-		$order = isset($_GET['order']) && is_string($_GET['order']) && strtolower(wp_unslash($_GET['order'])) === 'asc' ? 'asc' : 'desc';
+		$order = isset($_GET['order']) && is_string($_GET['order']) && sanitize_key(wp_unslash($_GET['order'])) === 'asc' ? 'asc' : 'desc';
 		$active = $current === $column;
 		$next_order = !$active || $order === 'asc' ? 'desc' : 'asc';
 		$url = add_query_arg(array(
@@ -226,7 +231,7 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 		if ($which !== 'top') { return; }
 		global $wpdb;
 		$condition = $this->conditions[$this->filter];
-		$domains = $wpdb->get_results("SELECT domain, COUNT(*) AS card_count FROM `{$this->card_table}` WHERE ($condition) AND domain IS NOT NULL AND domain <> '' GROUP BY domain ORDER BY domain", ARRAY_A);
+		$domains = $wpdb->get_results($wpdb->prepare("SELECT domain, COUNT(*) AS card_count FROM %i WHERE ($condition) AND domain IS NOT NULL AND domain <> '' GROUP BY domain ORDER BY domain", $this->card_table), ARRAY_A);
 		echo '<div class="alignleft actions"><label class="screen-reader-text" for="pz-linkcard-domain">'.esc_html__('All Domains', 'pz-linkcard').'</label><select name="refine" id="pz-linkcard-domain"><option value="">'.esc_html__('All Domains', 'pz-linkcard').'</option>';
 		foreach ($domains as $domain) {
 			echo '<option value="'.esc_attr($domain['domain']).'"'.selected($this->domain_filter, $domain['domain'], false).'>'.esc_html($domain['domain'].' ('.number_format_i18n((int) $domain['card_count']).')').'</option>';
@@ -255,11 +260,16 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 
 	public function prepare_items() {
 		global $wpdb;
-		$aggregates = array();
-		foreach ($this->conditions as $key => $condition) {
-			$aggregates[] = "COUNT(CASE WHEN $condition THEN 1 END) AS `$key`";
-		}
-		$this->counts = (array) $wpdb->get_row('SELECT '.implode(', ', $aggregates)." FROM `{$this->card_table}`");
+		$this->counts = (array) $wpdb->get_row($wpdb->prepare(
+			'SELECT COUNT(*) AS `all`,
+			COUNT(CASE WHEN domain <> %s THEN 1 END) AS `external`,
+			COUNT(CASE WHEN domain = %s THEN 1 END) AS `internal`,
+			COUNT(CASE WHEN alive_result <> update_result THEN 1 END) AS `modified`,
+			COUNT(CASE WHEN alive_result IS NOT NULL AND alive_result <> 0 AND (alive_result < 100 OR alive_result >= 400) THEN 1 END) AS `error`,
+			COUNT(CASE WHEN regist_time IS NULL OR regist_time = 0 THEN 1 END) AS `unregistered`
+			FROM %i',
+			$this->site_domain, $this->site_domain, $this->card_table
+		));
 		$this->counts = array_merge(array_fill_keys(array_keys($this->conditions), 0), $this->counts);
 		$where = $this->conditions[$this->filter];
 		if ($this->domain_filter !== '') {
@@ -274,6 +284,8 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 			$parser = new pz_LinkCard_Search_Query_Parser($wpdb);
 			$parsed = $parser->parse($query);
 			if ($parsed['where'] !== '') {
+				// The parser uses fixed column/operator allowlists; all search values are prepared separately.
+				// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare
 				$where .= ' AND ('.($parsed['params'] ? $wpdb->prepare($parsed['where'], $parsed['params']) : $parsed['where']).')';
 			}
 		}
@@ -285,27 +297,27 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 		if (!in_array($orderby, $allowed_orderby, true)) {
 			$orderby = 'id';
 		}
-		$order = isset($_GET['order']) && is_string($_GET['order']) && strtolower(wp_unslash($_GET['order'])) === 'asc' ? 'ASC' : 'DESC';
+		$order = isset($_GET['order']) && is_string($_GET['order']) && sanitize_key(wp_unslash($_GET['order'])) === 'asc' ? 'ASC' : 'DESC';
 		if (isset($_GET['pz_refresh_ids']) && is_string($_GET['pz_refresh_ids'])) {
-			$refresh_ids = array_slice(array_filter(array_map('absint', explode(',', wp_unslash($_GET['pz_refresh_ids'])))), 0, 100);
+			$refresh_ids = array_slice(array_filter(array_map('absint', explode(',', sanitize_text_field(wp_unslash($_GET['pz_refresh_ids']))))), 0, 100);
 			$where = $refresh_ids ? 'id IN ('.implode(',', $refresh_ids).')' : '1=0';
 		}
 		if ($orderby === 'post_id') {
-			$missing = $wpdb->get_results($wpdb->prepare("SELECT id, url FROM `{$this->card_table}` WHERE domain = %s AND (post_id IS NULL OR post_id = 0)", $this->site_domain));
+			$missing = $wpdb->get_results($wpdb->prepare("SELECT id, url FROM %i WHERE domain = %s AND (post_id IS NULL OR post_id = 0)", $this->card_table, $this->site_domain));
 			foreach ($missing as $card) {
 				$post_id = url_to_postid($card->url);
 				if ($post_id) { $wpdb->update($this->card_table, array('post_id' => $post_id), array('id' => $card->id), array('%d'), array('%d')); }
 			}
 		}
-		$total = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$this->card_table}` WHERE $where");
+		$total = (int) $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %i WHERE $where", $this->card_table));
 		$per_page = (int) (get_user_option('pz_linkcard_cards_per_page') ?: get_user_meta(get_current_user_id(), 'pz_lkc_cacheman_per_page', true));
 		if (!in_array($per_page, array(10, 20, 50, 100), true)) { $per_page = 10; }
 		if (isset($refresh_ids)) { $per_page = 100; }
 		$page = min(max(1, $this->get_pagenum()), max(1, (int) ceil($total / $per_page)));
 		if (isset($refresh_ids)) { $page = 1; }
-		$sort_expression = $orderby === 'sns_qiita_likes' ? 'CASE WHEN sns_qiita_likes IS NULL AND sns_qiita_stock IS NULL THEN NULL ELSE COALESCE(sns_qiita_likes, 0) + COALESCE(sns_qiita_stock, 0) END' : "`$orderby`";
+		$sort_expression = $orderby === 'sns_qiita_likes' ? 'CASE WHEN sns_qiita_likes IS NULL AND sns_qiita_stock IS NULL THEN NULL ELSE COALESCE(sns_qiita_likes, 0) + COALESCE(sns_qiita_stock, 0) END' : $wpdb->prepare('%i', $orderby);
 		if ($orderby === 'post_id') { $sort_expression = $wpdb->prepare('CASE WHEN domain = %s THEN COALESCE(post_id, 0) ELSE 0 END', $this->site_domain); }
-		$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM `{$this->card_table}` WHERE $where ORDER BY $sort_expression $order, id $order LIMIT %d OFFSET %d", $per_page, ($page - 1) * $per_page), ARRAY_A);
+		$this->items = $wpdb->get_results($wpdb->prepare("SELECT * FROM %i WHERE $where ORDER BY $sort_expression $order, id $order LIMIT %d OFFSET %d", $this->card_table, $per_page, ($page - 1) * $per_page), ARRAY_A);
 		$this->_column_headers = array($this->get_columns(), get_hidden_columns($this->screen), $this->get_sortable_columns(), 'title');
 		$this->set_pagination_args(array('total_items' => $total, 'per_page' => $per_page));
 	}
@@ -326,7 +338,7 @@ $list = new class($this->db_card, $this->domain, function ($timestamp) {
 				'refine' => rawurlencode($this->domain_filter),
 				'paged' => max(1, $this->get_pagenum()),
 				'orderby' => isset($_GET['orderby']) && is_string($_GET['orderby']) ? sanitize_key(wp_unslash($_GET['orderby'])) : 'id',
-				'order' => isset($_GET['order']) && is_string($_GET['order']) && strtolower(wp_unslash($_GET['order'])) === 'asc' ? 'asc' : 'desc',
+				'order' => isset($_GET['order']) && is_string($_GET['order']) && sanitize_key(wp_unslash($_GET['order'])) === 'asc' ? 'asc' : 'desc',
 			), admin_url('tools.php'));
 			$url = add_query_arg(array('page' => 'pz-linkcard-cacheman', 'action' => 'edit', 'cache_id' => (int) $item['id'], 'return_url' => rawurlencode($return_url)), admin_url('tools.php'));
 			$actions = array(

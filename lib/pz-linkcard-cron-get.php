@@ -2,15 +2,13 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 global $wpdb;
-$pending_rows = $wpdb->get_results(
-	"SELECT id, url, url_key, domain
-	FROM $this->db_card
-	WHERE regist_time IS NULL OR regist_time = 0 OR EXISTS (SELECT 1 FROM {$wpdb->options} refresh_queue WHERE refresh_queue.option_name = CONCAT('pz_lkc_refresh_', {$this->db_card}.id))
+$pending_rows = $wpdb->get_results($wpdb->prepare("SELECT id, url, url_key, domain
+	FROM %i
+	WHERE regist_time IS NULL OR regist_time = 0 OR EXISTS (SELECT 1 FROM %i refresh_queue WHERE refresh_queue.option_name = CONCAT('pz_lkc_refresh_', %i.id))
 	ORDER BY CASE
 		WHEN domain IS NULL OR domain = '' OR LOWER(domain) = '(unknown)' THEN COALESCE(NULLIF(url, ''), url_key)
 		ELSE domain
-	END ASC, id ASC"
-);
+	END ASC, id ASC", $this->db_card, $wpdb->options, $this->db_card));
 $retry_at = null;
 $limit = intval($this->options['get-period-num'] ?? 50);
 if (!in_array($limit, array(0, 5, 10, 20, 50, 100), true)) $limit = 50;

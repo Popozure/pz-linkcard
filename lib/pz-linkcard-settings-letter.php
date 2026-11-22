@@ -8,8 +8,8 @@ $letter_rows = array(
 	'date'    => __('Date', 'pz-linkcard' ),
 	'heading' => __('Header Text', 'pz-linkcard' ),
 	'more'    => __('More Button', 'pz-linkcard' ),
-	'info'    => __('Site Information', 'pz-linkcard' ),
-	'added'   => __('Added Text', 'pz-linkcard' ),
+	'info'    => __('Domain / Site Name', 'pz-linkcard' ),
+	'added'   => __('Site Information', 'pz-linkcard' ),
 	'cat'     => __('Category', 'pz-linkcard' ),
 );
 $letter_colors = array(
@@ -51,7 +51,7 @@ $letter_styles = array(
 					if (!array_key_exists($key, self::DEFAULTS ) ) { continue; }
 					$value = preg_replace('/[^0-9]/', '', ($prop[$key] ?? '') );
 				?>
-				<div class="pz-letter-field">
+				<div class="pz-letter-field pz-letter-field-<?php echo esc_attr($suffix ); ?>">
 					<label for="pz-letter-<?php echo esc_attr($key ); ?>"><?php echo esc_html($field['label'] ); ?></label>
 					<span><input type="number" id="pz-letter-<?php echo esc_attr($key ); ?>" name="properties[<?php echo esc_attr($key ); ?>]" value="<?php echo esc_attr($value ); ?>" class="pz-letter-box-r" min="0" max="<?php echo esc_attr($field['max'] ); ?>" /> <?php echo esc_html($field['unit'] ); ?></span>
 				</div>
@@ -66,6 +66,9 @@ $letter_styles = array(
 				<label><input type="hidden" name="properties[<?php echo esc_attr($key ); ?>]" value="" /><input type="checkbox" name="properties[<?php echo esc_attr($key ); ?>]" value="1" <?php checked((bool) $value ); ?> /> <?php echo esc_html($label ); ?></label>
 				<?php } ?>
 			</div>
+			<?php if (in_array($letter_name, array('heading', 'more', 'added'), true ) ) { ?>
+			<p class="pz-letter-text-location-note"><?php esc_html_e('* The displayed text can be configured on the “External Link” and “Internal Link” tabs.', 'pz-linkcard' ); ?></p>
+			<?php } ?>
 		</section>
 		<?php } ?>
 	</div>

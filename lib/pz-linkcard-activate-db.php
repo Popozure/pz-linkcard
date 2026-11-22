@@ -5,10 +5,7 @@
 	$wpdb->hide_errors();
 
 	// Per-site cron timestamps now come from registered card records.
-	$obsolete_cron_keys = $wpdb->get_col($wpdb->prepare(
-		"SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE %s",
-		$wpdb->esc_like('pz_lkc_cron_site_').'%'
-	));
+	$obsolete_cron_keys = $wpdb->get_col($wpdb->prepare("SELECT option_name FROM %i WHERE option_name LIKE %s", $wpdb->options, $wpdb->esc_like('pz_lkc_cron_site_').'%'));
 	foreach ((array) $obsolete_cron_keys as $obsolete_cron_key) {
 		delete_option($obsolete_cron_key);
 	}
@@ -19,9 +16,7 @@
 	$old_card_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $this->db_card)) === $this->db_card);
 	$future_card_exists = ($wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $future_card_table)) === $future_card_table);
 	if (!$old_card_exists && $future_card_exists) {
-		$old_card_sql = str_replace('`', '``', $this->db_card);
-		$future_card_sql = str_replace('`', '``', $future_card_table);
-		$wpdb->query("RENAME TABLE `$future_card_sql` TO `$old_card_sql`");
+$wpdb->query($wpdb->prepare('RENAME TABLE %i TO %i', $future_card_table, $this->db_card));
 	}
 
 	// CREATE TABLE
@@ -43,21 +38,21 @@
 	}
 	if	($db_card_exists ) {
 		// Rename the legacy Qiita likes column without discarding its counts.
-		$legacy_qiita_column = $wpdb->get_var("SHOW COLUMNS FROM $this->db_card LIKE 'sns_qiita'");
+		$legacy_qiita_column = $wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM %i LIKE %s", $this->db_card, $wpdb->esc_like('sns_qiita')));
 		if ($legacy_qiita_column) {
-			$qiita_likes_column = $wpdb->get_var("SHOW COLUMNS FROM $this->db_card LIKE 'sns_qiita_likes'");
+			$qiita_likes_column = $wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM %i LIKE %s", $this->db_card, $wpdb->esc_like('sns_qiita_likes')));
 			if (!$qiita_likes_column) {
-				$qiita_renamed = $wpdb->query("ALTER TABLE $this->db_card CHANGE COLUMN sns_qiita sns_qiita_likes INT DEFAULT NULL");
+				$qiita_renamed = $wpdb->query($wpdb->prepare("ALTER TABLE %i CHANGE COLUMN sns_qiita sns_qiita_likes INT DEFAULT NULL", $this->db_card));
 				if ($qiita_renamed === false) return;
 			} else {
-				$qiita_copied = $wpdb->query("UPDATE $this->db_card SET sns_qiita_likes = sns_qiita WHERE sns_qiita_likes IS NULL AND sns_qiita IS NOT NULL");
+				$qiita_copied = $wpdb->query($wpdb->prepare("UPDATE %i SET sns_qiita_likes = sns_qiita WHERE sns_qiita_likes IS NULL AND sns_qiita IS NOT NULL", $this->db_card));
 				if ($qiita_copied === false) return;
-				if ($wpdb->query("ALTER TABLE $this->db_card DROP COLUMN sns_qiita") === false) return;
+				if ($wpdb->query($wpdb->prepare("ALTER TABLE %i DROP COLUMN sns_qiita", $this->db_card)) === false) return;
 			}
 		}
-		$column_url_key = $wpdb->get_row("SHOW COLUMNS FROM $this->db_card LIKE 'url_key'", ARRAY_A );
+		$column_url_key = $wpdb->get_row($wpdb->prepare("SHOW COLUMNS FROM %i LIKE %s", $this->db_card, $wpdb->esc_like('url_key')), ARRAY_A );
 		$binary_url_key = isset($column_url_key['Type'] ) && preg_match('/^(?:var)?binary\b/i', $column_url_key['Type'] );
-		$url_key_index = $wpdb->get_row("SHOW INDEX FROM $this->db_card WHERE Key_name = 'url_key'" );
+		$url_key_index = $wpdb->get_row($wpdb->prepare("SHOW INDEX FROM %i WHERE Key_name = 'url_key'", $this->db_card));
 		$unique_url_key = isset($url_key_index->Non_unique ) && intval($url_key_index->Non_unique ) === 0;
 		if ($this->options['db-version'] == $db_version && !$binary_url_key && !$unique_url_key ) {
 			return;
@@ -65,19 +60,19 @@
 
 		// dbDelta does not remove an existing UNIQUE index.
 		if ($unique_url_key ) {
-			$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key" );
+			$wpdb->query($wpdb->prepare("ALTER TABLE %i DROP INDEX url_key", $this->db_card));
 		}
 
 		// Remove obsolete modification flags.
 		foreach	(array('mod_title', 'mod_excerpt' ) as $obsolete_column ) {
-			$column_exists	=	$wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM $this->db_card LIKE %s", $obsolete_column ) );
+			$column_exists	=	$wpdb->get_var($wpdb->prepare("SHOW COLUMNS FROM %i LIKE %s", $this->db_card, $wpdb->esc_like($obsolete_column)) );
 			if	($column_exists ) {
-				$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN `$obsolete_column`" );
+				$wpdb->query($wpdb->prepare("ALTER TABLE %i DROP COLUMN %i", $this->db_card, $obsolete_column) );
 			}
 		}
 
 		// 同じURLは最も古いIDへ統合し、クリック数とクリックログを引き継ぐ
-		$result_datas	=	(array) $wpdb->get_results("SELECT id,url,click_count FROM $this->db_card WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC" );
+		$result_datas	=	(array) $wpdb->get_results($wpdb->prepare("SELECT id,url,click_count FROM %i WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC", $this->db_card));
 		$kept_ids		=	array();
 		$db_click_exists	=	($wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $this->db_click ) ) === $this->db_click );
 		foreach	($result_datas as $data ) {
@@ -90,14 +85,14 @@
 			$keep_id	=	$kept_ids[$url];
 			$delete_id	=	intval($data->id );
 			if	($db_click_exists ) {
-				$keep_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $keep_id));
-				$delete_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM $this->db_card WHERE id = %d", $delete_id));
+				$keep_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM %i WHERE id = %d", $this->db_card, $keep_id));
+				$delete_key = (string) $wpdb->get_var($wpdb->prepare("SELECT url_key FROM %i WHERE id = %d", $this->db_card, $delete_id));
 				if ($keep_key && $delete_key) {
 					$wpdb->update($this->db_click, array('url_key' => $keep_key), array('url_key' => $delete_key), array('%s'), array('%s'));
 				}
 			}
 			if	(intval($data->click_count ) !== 0 ) {
-				$wpdb->query($wpdb->prepare("UPDATE $this->db_card SET click_count = click_count + %d WHERE id = %d", intval($data->click_count ), $keep_id ) );
+				$wpdb->query($wpdb->prepare("UPDATE %i SET click_count = click_count + %d WHERE id = %d", $this->db_card, intval($data->click_count ), $keep_id) );
 			}
 			$wpdb->delete($this->db_card, array('id' => $delete_id ), array('%d' ) );
 		}
@@ -106,20 +101,19 @@
 	// DBテーブル作成・更新
 	if (!empty($binary_url_key ) ) {
 		// Recreate the derived key after reading the old keys above.
-		$wpdb->query("ALTER TABLE $this->db_card DROP COLUMN url_key" );
+		$wpdb->query($wpdb->prepare("ALTER TABLE %i DROP COLUMN url_key", $this->db_card));
 	}
 
 	$result		=	dbDelta($sql, true );
 
 	// 旧定義の NOT NULL DEFAULT 0 を外し、取得待ちをNULLで保存できるようにする
-	$regist_time_column = $wpdb->get_row("SHOW COLUMNS FROM $this->db_card LIKE 'regist_time'", ARRAY_A );
+	$regist_time_column = $wpdb->get_row($wpdb->prepare("SHOW COLUMNS FROM %i LIKE %s", $this->db_card, $wpdb->esc_like('regist_time')), ARRAY_A );
 	if (isset($regist_time_column['Null'] ) && strtoupper($regist_time_column['Null'] ) !== 'YES' ) {
-		$wpdb->query("ALTER TABLE $this->db_card MODIFY regist_time BIGINT UNSIGNED NULL DEFAULT NULL" );
+		$wpdb->query($wpdb->prepare("ALTER TABLE %i MODIFY regist_time BIGINT UNSIGNED NULL DEFAULT NULL", $this->db_card));
 	}
 
 	// 旧仕様で未取得を表していた負数をNULLへ統一
-	$wpdb->query(
-		"UPDATE $this->db_card SET
+	$wpdb->query($wpdb->prepare("UPDATE %i SET
 			sns_twitter = CASE WHEN sns_twitter < 0 THEN NULL ELSE sns_twitter END,
 			sns_facebook = CASE WHEN sns_facebook < 0 THEN NULL ELSE sns_facebook END,
 			sns_hatena = CASE WHEN sns_hatena < 0 THEN NULL ELSE sns_hatena END,
@@ -135,16 +129,13 @@
 			OR sns_qiita_stock < 0
 			OR alive_result < 0
 			OR regist_result < 0
-			OR update_result < 0"
-	);
+			OR update_result < 0", $this->db_card));
 
 	// 内部リンクはリンク先投稿のID・投稿日・更新日を取得する。
 	// コンストラクターから更新処理が呼ばれた場合、url_to_postid() が使用する
 	// $wp_rewrite はまだ生成されていないため、初期化後までこの処理だけ遅延する。
 	$update_internal_posts	=	function() use ($wpdb ) {
-		$internal_link_cards	=	(array) $wpdb->get_results(
-			"SELECT id, url FROM $this->db_card WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC"
-		);
+		$internal_link_cards	=	(array) $wpdb->get_results($wpdb->prepare("SELECT id, url FROM %i WHERE url IS NOT NULL AND url <> '' ORDER BY id ASC", $this->db_card));
 		foreach	($internal_link_cards as $internal_link_card ) {
 			$url_info	=	$this->Pz_GetURLInfo($internal_link_card->url );
 			if	(empty($url_info['is_internal'] ) ) {
@@ -202,16 +193,16 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 	// URL検索用のハッシュキーを32文字のテキスト形式で揃える
-	$wpdb->query("UPDATE $this->db_card SET url_key = MD5(url) WHERE url IS NOT NULL AND (url_key IS NULL OR url_key <> MD5(url))" );
-	$url_key_index	=	$wpdb->get_row("SHOW INDEX FROM $this->db_card WHERE Key_name = 'url_key'" );
+	$wpdb->query($wpdb->prepare("UPDATE %i SET url_key = MD5(url) WHERE url IS NOT NULL AND (url_key IS NULL OR url_key <> MD5(url))", $this->db_card));
+	$url_key_index	=	$wpdb->get_row($wpdb->prepare("SHOW INDEX FROM %i WHERE Key_name = 'url_key'", $this->db_card));
 	if	(isset($url_key_index->Non_unique ) && intval($url_key_index->Non_unique ) === 0 ) {
-		$wpdb->query("ALTER TABLE $this->db_card DROP INDEX url_key, ADD KEY url_key (url_key)" );
+		$wpdb->query($wpdb->prepare("ALTER TABLE %i DROP INDEX url_key, ADD KEY url_key (url_key)", $this->db_card));
 	}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 	// バグデータのメンテナンス（ドメイン名が空欄のもの）
-	$result_datas	=	(array) $wpdb->get_results("SELECT id,url,domain FROM $this->db_card WHERE domain = '' ORDER BY id" );
+	$result_datas	=	(array) $wpdb->get_results($wpdb->prepare("SELECT id,url,domain FROM %i WHERE domain = '' ORDER BY id", $this->db_card));
 	if	(isset($result_datas ) && is_array($result_datas ) && count($result_datas ) > 0 ) {
 		foreach($result_datas as $data ) {
 			$domain		=	'(Unknown)';
@@ -220,11 +211,11 @@
 	}
 
 	// 文字コードの表記ぶれを修正
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'UTF-8'      WHERE charset like 'UTF-8%'" );
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'EUC-JP'     WHERE charset like 'EUC-JP%'" );
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'ISO-8859-1' WHERE charset like 'ISO-8859-1%'" );
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'JIS'        WHERE charset like 'JIS%'" );
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'Shift_JIS'  WHERE charset like 'SJIS%'" );
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'Shift_JIS'  WHERE charset like 'Shift_JIS%'" );
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'US-ASCII'   WHERE charset like 'US-ASCII%'" );
-	$result		=	$wpdb->get_results("UPDATE $this->db_card SET charset = 'Unknown'    WHERE charset IS NULL" );
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'UTF-8'      WHERE charset LIKE %s", $this->db_card, 'UTF-8%'));
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'EUC-JP'     WHERE charset LIKE %s", $this->db_card, 'EUC-JP%'));
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'ISO-8859-1' WHERE charset LIKE %s", $this->db_card, 'ISO-8859-1%'));
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'JIS'        WHERE charset LIKE %s", $this->db_card, 'JIS%'));
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'Shift_JIS'  WHERE charset LIKE %s", $this->db_card, 'SJIS%'));
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'Shift_JIS'  WHERE charset LIKE %s", $this->db_card, 'Shift_JIS%'));
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'US-ASCII'   WHERE charset LIKE %s", $this->db_card, 'US-ASCII%'));
+	$result		=	$wpdb->get_results($wpdb->prepare("UPDATE %i SET charset = 'Unknown'    WHERE charset IS NULL", $this->db_card));

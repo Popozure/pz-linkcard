@@ -105,7 +105,7 @@
 			echo				'<label class="pz-card-prop-switch"><span>'.esc_html__('Inner Shadow', 'pz-linkcard' ).'</span><input type="hidden" name="properties['.esc_attr($item_name).']" value="" /><input type="checkbox" name="properties['.esc_attr($item_name).']" value="1" '.checked($item_value, 1, false ).' /><span class="pz-card-switch-ui"></span></label>';
 			echo				'</span></td></tr>';
 
-			echo				'<tr><th scope="row">'.esc_html__('Transition Speed', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
+			echo				'<tr><th scope="row">'.esc_html__('Change Duration', 'pz-linkcard' ).'</th><td><span class="pz-card-prop-row">';
 			$item_name			=	$prefix.'-transition';
 			$item_value			=	number_format(isset($prop[$item_name] ) ? floatval($prop[$item_name] ) : 0, 1, '.', '' );
 			echo				'<label class="pz-card-prop-number"><span>'.esc_html__('Seconds', 'pz-linkcard' ).'</span><span><input type="number" name="properties['.esc_attr($item_name).']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /><span>s</span><input type="range" class="pz-card-range" data-target="properties['.esc_attr($item_name).']" value="'.esc_attr($item_value ).'" min="0" max="10" step="0.1" /></span></label>';

@@ -6,11 +6,7 @@
 
 	// SNS次回取得日時を越えているものを古い順に必要件数だけ抽出
 	$max_count	=	max(1, intval($this->options['sns-period-num'] ) );
-	$proc_datas	=	$wpdb->get_results($wpdb->prepare(
-		"SELECT id,sns_nexttime FROM $this->db_card WHERE sns_nexttime < %d ORDER BY sns_nexttime ASC, id ASC LIMIT %d",
-		$this->now,
-		$max_count
-	) );
+	$proc_datas	=	$wpdb->get_results($wpdb->prepare("SELECT id,sns_nexttime FROM %i WHERE sns_nexttime < %d ORDER BY sns_nexttime ASC, id ASC LIMIT %d", $this->db_card, $this->now, $max_count) );
 
 	// SNSカウント取得
 	$proc_count	=	0;

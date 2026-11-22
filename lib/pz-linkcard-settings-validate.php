@@ -134,11 +134,15 @@
 			break;
 
 		case	'color':
-			$temp_value				=	preg_replace('/^#([0-9a-f])([0-9a-f])([0-9a-f])$/i', '#$1$1$2$2$3$3', $temp_value );
-			if	(preg_match('/^#[0-9a-f]{6}$/i', $temp_value ) ) {
-				$temp_value			=	strtolower($temp_value );
+			$temp_value = is_string($temp_value) ? trim($temp_value) : '';
+			if (!preg_match('/\A#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})\z/i', $temp_value)) {
+				$this->options[$key] = null;
+				break;
 			}
-			$this->options[$key]	=	$temp_value;
+			if (strlen($temp_value) === 4 || strlen($temp_value) === 5) {
+				$temp_value = '#'.preg_replace('/([0-9a-f])/i', '$1$1', substr($temp_value, 1));
+			}
+			$this->options[$key] = strtolower($temp_value);
 			break;
 
 		case	'border':

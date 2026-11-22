@@ -21,10 +21,16 @@ trait Pz_LinkCard_Editor_Visual {
 		}
 
 		$post_type	=	$screen->post_type;
+		// The post ID only selects the current read-only editor context.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if	(!$post_type && isset($_GET['post'] ) ) {
-			$post_type	=	get_post_type((int)$_GET['post'] );
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			$post_type	=	get_post_type(absint(wp_unslash($_GET['post'] ) ) );
 		}
+		// The post type only selects the current read-only editor context.
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if	(!$post_type && isset($_GET['post_type'] ) ) {
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 			$post_type	=	sanitize_key(wp_unslash($_GET['post_type'] ) );
 		}
 		if	(!$post_type ) {

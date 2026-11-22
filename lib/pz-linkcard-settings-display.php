@@ -36,10 +36,12 @@
 		<tr>
 			<th scope="row"><?php esc_html_e('Date Format', 'pz-linkcard'); ?></th>
 			<td>
-				<?php foreach (array('Y.m.d', 'Y-m-d', 'Y年n月j日', 'F j, Y') as $date_format) : ?>
-				<label class="pz-date-format-option"><input type="radio" name="properties[date-format]" value="<?php echo esc_attr($date_format); ?>" <?php checked($prop['date-format'], $date_format); ?> <?php disabled(empty($prop['date-pattern'])); ?> /><?php echo esc_html($date_format); ?></label>
+				<?php $selected_date_format = $prop['date-format'] === 'Y年n月j日' ? 'custom' : $prop['date-format']; ?>
+				<?php $custom_date_format = $prop['date-format'] === 'Y年n月j日' ? $prop['date-format'] : $prop['date-format-custom']; ?>
+				<?php foreach (array('Y.m.d', 'Y-m-d', 'F j, Y') as $date_format) : ?>
+				<label class="pz-date-format-option"><input type="radio" name="properties[date-format]" value="<?php echo esc_attr($date_format); ?>" <?php checked($selected_date_format, $date_format); ?> <?php disabled(empty($prop['date-pattern'])); ?> /><?php echo esc_html($date_format); ?></label>
 				<?php endforeach; ?>
-				<label class="pz-date-format-custom"><input type="radio" name="properties[date-format]" value="custom" <?php checked($prop['date-format'], 'custom'); ?> aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern'])); ?> /><input type="text" name="properties[date-format-custom]" value="<?php echo esc_attr($prop['date-format-custom']); ?>" size="20" aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern']) || $prop['date-format'] !== 'custom'); ?> /></label>
+				<label class="pz-date-format-custom"><input type="radio" name="properties[date-format]" value="custom" <?php checked($selected_date_format, 'custom'); ?> aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern'])); ?> /><input type="text" name="properties[date-format-custom]" value="<?php echo esc_attr($custom_date_format); ?>" size="20" aria-label="<?php esc_attr_e('Custom Date Format', 'pz-linkcard'); ?>" <?php disabled(empty($prop['date-pattern']) || $selected_date_format !== 'custom'); ?> /></label>
 			</td>
 		</tr>
 		<?php
@@ -52,9 +54,9 @@
 				<?php $selected_icon = html_entity_decode((string) $prop[$icon_key], ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>
 				<label class="pz-display-date-icon">
 				<?php echo esc_html($icon_label); ?>：
-				<select name="properties[<?php echo esc_attr($icon_key); ?>]" <?php disabled(!in_array((string) $prop['date-pattern'], $icon_key === 'date-icon-post' ? array('p', 'pu') : array('u', 'pu'), true)); ?>>
+				<select name="properties[<?php echo esc_attr($icon_key); ?>]" <?php disabled(!in_array((string) $prop['date-pattern'], $icon_key === 'date-icon-post' ? array('p', 'u', 'pu') : array('u', 'pu'), true)); ?>>
 					<option value="" <?php selected($prop[$icon_key], ''); ?>><?php esc_html_e('None', 'pz-linkcard'); ?></option>
-					<?php foreach ($date_icons as $date_icon) : ?>
+					<?php foreach (array_merge($date_icons, array($icon_label.':')) as $date_icon) : ?>
 					<?php $date_icon_value = html_entity_decode($date_icon, ENT_QUOTES | ENT_HTML5, 'UTF-8'); ?>
 					<option value="<?php echo esc_attr(str_replace('&', '&amp;', $date_icon)); ?>" <?php selected($selected_icon, $date_icon_value); ?>><?php echo esc_html($date_icon_value); ?></option>
 					<?php endforeach; ?>

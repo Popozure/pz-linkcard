@@ -4,10 +4,9 @@
 
 	// DBの宣言
 	global	$wpdb;
-	$pz_sql_table = '`'.str_replace('`', '``', $this->db_card).'`';
 
 	// DBの列名取得
-	$col_name	=	$wpdb->get_col('DESC '.$pz_sql_table, 0 );
+	$col_name	=	$wpdb->get_col($wpdb->prepare('DESC %i', $this->db_card), 0 );
 	if	(!$col_name || $wpdb->last_error ) {
 		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('DB Access Error.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html($wpdb->last_error).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
@@ -78,7 +77,7 @@
 	// アップロードされたファイルの一時保存先を取得
 	$upload_error	=	isset($_FILES['import_file']['error'] ) ? absint($_FILES['import_file']['error'] ) : UPLOAD_ERR_NO_FILE;
 	$temp_path		=	(isset($_FILES['import_file']['tmp_name'] ) && is_string($_FILES['import_file']['tmp_name'] ) )
-		?	$_FILES['import_file']['tmp_name']
+		?	sanitize_text_field($_FILES['import_file']['tmp_name'] )
 		:	'';
 
 	// キャッシュDBクリア
@@ -97,14 +96,16 @@
 	}
 
 	// ファイルを開く（読み込み）
-	$handle			=	fopen($temp_path, 'r');
-	if	(!$handle ) {
+	try {
+		$handle = new SplFileObject($temp_path, 'r');
+		$csv_size = $handle->getSize();
+	} catch (RuntimeException $exception) {
 		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Import File Open Error.', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
 	}
 
 	// ヘッダー行入力
-	if	(($csv_header = fgetcsv($handle ) ) == false ) {
+	if	(($csv_header = ($handle->ftell() < $csv_size ? $handle->fgetcsv() : false) ) == false ) {
 		echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Import File Read Error.', 'pz-linkcard' ).'</strong></p></div>';
 		return	null;
 	}
@@ -117,14 +118,14 @@
 	// DBの削除
 	if	($clear ) {
 		// DBクリア
-		$result	=	$wpdb->query('DELETE FROM '.$pz_sql_table );
+		$result	=	$wpdb->query($wpdb->prepare('DELETE FROM %i', $this->db_card) );
 		if	($wpdb->last_error ) {
 			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('DB Access Error.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html($wpdb->last_error).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;
 		}
 
 		// AUTO INCRIMENTのリセット
-		$result	=	$wpdb->query('ALTER TABLE '.$pz_sql_table.' AUTO_INCREMENT = 1' );
+		$result	=	$wpdb->query($wpdb->prepare('ALTER TABLE %i AUTO_INCREMENT = 1', $this->db_card) );
 		if	($wpdb->last_error ) {
 			echo	'<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('DB Access Error.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html($wpdb->last_error).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';
 			return	null;
@@ -134,7 +135,7 @@
 	$date_columns	=	array('post_date', 'post_modified', 'alive_time', 'alive_nexttime', 'sns_time', 'sns_nexttime', 'regist_time', 'update_time' );
 
 	// データ行入力
-	while	(($record = fgetcsv($handle ) ) !== false ) {
+	while	(($record = ($handle->ftell() < $csv_size ? $handle->fgetcsv() : false) ) !== false ) {
 		$read_count++;
 		$csv_record	=	array();
 		foreach	($csv_columns as $key => $value ) {
@@ -194,7 +195,7 @@
 		}
 	}
 	// ファイルを閉じる
-	fclose($handle );
+	unset($handle );
 
 	if	($success_count ) {
 		echo	'<div class="notice notice-success is-dismissible"><p><strong>'.esc_html__('Import Successful.', 'pz-linkcard' ).esc_html__('(', 'pz-linkcard' ).esc_html__('Read:', 'pz-linkcard' ).intval($read_count).' '.esc_html__('Success:', 'pz-linkcard' ).intval($success_count).' '.esc_html__('Skip:', 'pz-linkcard' ).intval($skip_count).esc_html__(')', 'pz-linkcard' ).'</strong></p></div>';

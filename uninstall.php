@@ -6,6 +6,12 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 $settings = get_option( 'pz_linkcard_options', array() );
 
 if ( ! empty( $settings['flg-delete-image'] ) ) {
+	// Work on the already verified local upload paths without requesting FTP credentials.
+	if ( ! class_exists( 'WP_Filesystem_Direct', false ) ) {
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+		require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+	}
+	$delete_filesystem = new WP_Filesystem_Direct( null );
 	$upload_dir = wp_upload_dir();
 	$upload_root = isset( $upload_dir['basedir'] ) ? realpath( $upload_dir['basedir'] ) : false;
 	$target_dir = $upload_root ? realpath( trailingslashit( $upload_root ) . 'pz-linkcard' ) : false;
@@ -35,13 +41,13 @@ if ( ! empty( $settings['flg-delete-image'] ) ) {
 				}
 
 				if ( $entry->isDir() ) {
-					@rmdir( $real_path );
+					$delete_filesystem->rmdir( $real_path, false );
 				} elseif ( $entry->isFile() ) {
 					wp_delete_file( $real_path );
 				}
 			}
 
-			@rmdir( $target_dir );
+			$delete_filesystem->rmdir( $target_dir, false );
 		}
 	}
 }
@@ -54,8 +60,7 @@ if ( ! empty( $settings['flg-delete-db'] ) ) {
 	);
 
 	foreach ( $tables as $table ) {
-		$quoted_table = '`' . str_replace( '`', '``', $table ) . '`';
-		$wpdb->query( "DROP TABLE IF EXISTS {$quoted_table}" );
+		$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i', $table ) );
 	}
 }
 

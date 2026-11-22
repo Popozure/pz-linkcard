@@ -21,9 +21,9 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 	global	$wpdb;
 	$type_placeholders	=	implode(', ', array_fill(0, count($post_types ), '%s' ) );
-	$sql	=	"SELECT ID FROM {$wpdb->posts} WHERE post_status = 'publish' AND post_type IN ({$type_placeholders}) AND post_title LIKE %s ORDER BY post_date DESC LIMIT 50";
+
 	$query_args	=	array_merge($post_types, array('%'.$wpdb->esc_like($keyword ).'%' ) );
-	$post_ids	=	$wpdb->get_col($wpdb->prepare($sql, $query_args ) );
+	$post_ids	=	$wpdb->get_col($wpdb->prepare("SELECT ID FROM %i WHERE post_status = 'publish' AND post_type IN ({$type_placeholders}) AND post_title LIKE %s ORDER BY post_date DESC LIMIT 50", array_merge(array($wpdb->posts), $query_args) ) );
 	$results	=	array();
 	foreach	($post_ids as $post_id ) {
 		$results[]	=	array(

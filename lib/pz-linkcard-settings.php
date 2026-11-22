@@ -81,14 +81,15 @@
 	if	(isset($_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] === 'POST' ) {
 		check_admin_referer('pz-settings' );
 	}
-	$action				=	isset($_POST['action'] )					?	esc_attr($_POST['action'] )					:	null ;
-	$submit				=	isset($_POST['submit'] )					?	esc_attr($_POST['submit'] )					:	null ;
+	$action				=	isset($_POST['action'] )					?	sanitize_key(wp_unslash($_POST['action'] ) )					:	null ;
+	$submit				=	isset($_POST['submit'] )					?	sanitize_text_field(wp_unslash($_POST['submit'] ) )					:	null ;
 	$tab_now			=	isset($_POST['tab-now'] )					?	sanitize_key(wp_unslash($_POST['tab-now'] ) )	:
 						(isset($_GET['tab'] )						?	sanitize_key(wp_unslash($_GET['tab'] ) )		:	'pz-error' );
-	$scroll_now			=	isset($_POST['scroll-now'] )				?	esc_attr($_POST['scroll-now'] )				:	null ;
+	$scroll_now			=	isset($_POST['scroll-now'] )				?	absint(wp_unslash($_POST['scroll-now'] ) )				:	null ;
 	$return_url			=	isset($_POST['return_url'] )				?	esc_url_raw(wp_unslash($_POST['return_url'] ) )	:
 						(isset($_GET['return_url'] )				?	esc_url_raw(wp_unslash($_GET['return_url'] ) )	:	'' );
 	$return_url			=	$return_url ? wp_validate_redirect($return_url, '' ) : '';
+	$submitted_properties = $this->pz_GetSubmittedProperties();
 
 	// 変更の保存ボタンを押したとき
 	if	(!$action	&&	$submit ) {
@@ -106,12 +107,12 @@
 
 	// 入力値
 	$prop		=	null;
-	if	(isset($_POST['properties'] ) ) {
+	if	(is_array($submitted_properties ) ) {
 		$prop		=	array_merge(self::pz_GetDefaultOptions(), is_array($this->options ) ? $this->options : array() );
-		foreach	($_POST['properties']	as	$key => $value ) {
-			$prop[$key]	=	stripslashes($value );
+		foreach	($submitted_properties as $key => $value ) {
+			$prop[$key]	=	$value;
 		}
-		if	(!array_key_exists('enclose-tag', $_POST['properties'] ) ) {
+		if	(!array_key_exists('enclose-tag', $submitted_properties ) ) {
 			$prop['enclose-tag']	=	!empty($this->options['blockquote'] ) ? 'blockquote' : 'div';
 		}
 		ksort($prop );
@@ -290,10 +291,10 @@
 		switch	($action ) {
 		case	'save-changed':								// 変更を保存ボタン
 			$flg_change			=	false;
-			if	(isset($_POST['properties'] ) ) {
+			if	(is_array($submitted_properties ) ) {
 				$prop	=	array_merge(self::pz_GetDefaultOptions(), is_array($this->options ) ? $this->options : array() );
-				foreach	($_POST['properties']	as	$key => $value ) {
-					$prop[$key]	=	stripslashes($value );
+				foreach	($submitted_properties as $key => $value ) {
+					$prop[$key]	=	$value;
 					if	(array_key_exists($key, $this->options ) ) {
 						if	($value		!==	$this->options[$key] ) {
 							$flg_change	=	true;			// 変更あり
@@ -328,19 +329,19 @@
 							wp_cache_delete('alloptions', 'options' );
 						}
 						global	$wpdb;
-						$saved_value	=	$wpdb->get_var($wpdb->prepare("SELECT option_value FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", self::OPTION_NAME ) );
+						$saved_value	=	$wpdb->get_var($wpdb->prepare("SELECT option_value FROM %i WHERE option_name = %s LIMIT 1", $wpdb->options, self::OPTION_NAME) );
 						$saved_options	=	($saved_value !== null ) ? maybe_unserialize($saved_value ) : array();
 						if	($saved_options != $this->options ) {
 							$save_debug = $GLOBALS['pz_lkc_option_save_debug'] ?? array();
 							$db_error = trim((string) ($save_debug['direct_write_error'] ?? $wpdb->last_error));
-							$diagnostic = 'WP update='.var_export($save_debug['update_option_result'] ?? null, true).'; direct DB write='.var_export($save_debug['direct_write_result'] ?? null, true).'; option row exists='.(!empty($save_debug['option_exists']) ? 'yes' : 'no').'; submitted/saved keys='.($save_debug['submitted_keys'] ?? '?').'/'.($save_debug['saved_keys'] ?? '?').'; DB error='.($db_error !== '' ? $db_error : __('none', 'pz-linkcard'));
+							$diagnostic = 'WP update='.wp_json_encode($save_debug['update_option_result'] ?? null).'; direct DB write='.wp_json_encode($save_debug['direct_write_result'] ?? null).'; option row exists='.(!empty($save_debug['option_exists']) ? 'yes' : 'no').'; submitted/saved keys='.($save_debug['submitted_keys'] ?? '?').'/'.($save_debug['saved_keys'] ?? '?').'; DB error='.($db_error !== '' ? $db_error : __('none', 'pz-linkcard'));
 							$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.__('Failed to save the settings.', 'pz-linkcard').'</strong><br><code>'.esc_html($diagnostic).'</code></p></div>';
 						} else {
 							$html_notice	.=	'<div class="notice notice-info is-dismissible"><p><strong>'.__('The settings have not changed.', 'pz-linkcard' ).'</strong></p></div>';
 						}
 					}
 				}
-			} elseif (isset($_POST['properties'] ) ) {
+			} elseif (null !== $submitted_properties ) {
 				$html_notice	.=	'<div class="notice notice-info is-dismissible"><p><strong>'.__('The settings have not changed.', 'pz-linkcard' ).'</strong></p></div>';
 			}
 			$flg_style			=	true;				// スタイルシートの再生成
@@ -417,7 +418,7 @@
 				break;
 			}
 			global	$wpdb;
-			$deleted_count	= $wpdb->query("DELETE FROM $this->db_card" );
+			$deleted_count	= $wpdb->query($wpdb->prepare("DELETE FROM %i", $this->db_card));
 			if	(false === $deleted_count ) {
 				$html_notice	.= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Failed to delete all LinkCard data.', 'pz-linkcard' ).'</strong></p></div>';
 			} else {
@@ -428,7 +429,7 @@
 
 		case	'delete-invalid-click-records':
 			global	$wpdb;
-			$deleted_count = $wpdb->query("DELETE click_log FROM $this->db_click AS click_log WHERE NOT EXISTS (SELECT 1 FROM $this->db_card AS card WHERE card.url_key = click_log.url_key)" );
+			$deleted_count = $wpdb->query($wpdb->prepare("DELETE click_log FROM %i AS click_log WHERE NOT EXISTS (SELECT 1 FROM %i AS card WHERE card.url_key = click_log.url_key)", $this->db_click, $this->db_card));
 			if	(false === $deleted_count ) {
 				$html_notice .= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Failed to delete invalid click records.', 'pz-linkcard' ).'</strong></p></div>';
 			} else {
@@ -443,7 +444,7 @@
 				break;
 			}
 			global	$wpdb;
-			$deleted_count	= $wpdb->query("DELETE FROM $this->db_click" );
+			$deleted_count	= $wpdb->query($wpdb->prepare("DELETE FROM %i", $this->db_click));
 			if	(false === $deleted_count ) {
 				$html_notice	.= '<div class="notice notice-error is-dismissible"><p><strong>'.esc_html__('Failed to delete all click data.', 'pz-linkcard' ).'</strong></p></div>';
 			} else {
@@ -507,7 +508,8 @@
 		'preview-left', 'preview-top', 'preview-width', 'preview-height',
 		'preview-two-cards',
 		'preview-window-left', 'preview-window-top', 'preview-window-width', 'preview-window-height',
-		'preview-docked-width', 'preview-last-bottom-docked-height', 'preview-left-docked-width',
+		'preview-docked-width', 'preview-docked-height', 'preview-last-bottom-docked-height',
+		'preview-right-docked-width', 'preview-left-docked-width',
 	) as $temp_name ) {
 		$temp_value		=	array_key_exists($temp_name, $this->options ) ? $this->options[$temp_name] : null;
 		$html_input		.=	'<input type="hidden" name="properties['.$temp_name.']" value="'.esc_attr($temp_value ?? '' ).'" data-pz-preview-state="'.esc_attr($temp_name ).'" />';
@@ -544,7 +546,7 @@
 	}
 
 	global	$wpdb;
-	$option_id	=	$wpdb->get_var($wpdb->prepare("SELECT option_id FROM {$wpdb->options} WHERE option_name = %s LIMIT 1", self::OPTION_NAME ) );
+	$option_id	=	$wpdb->get_var($wpdb->prepare("SELECT option_id FROM %i WHERE option_name = %s LIMIT 1", $wpdb->options, self::OPTION_NAME) );
 	if	(!$option_id ) {
 		$html_notice	.=	'<div class="notice notice-warning is-dismissible"><p><strong>'.esc_html(self::PLUGIN_NAME).': '.esc_html__('Settings option was not found in the database.', 'pz-linkcard' ).'</strong><br>'.
 			esc_html__('Option name', 'pz-linkcard' ).': <code>'.esc_html(self::OPTION_NAME).'</code><br>'.

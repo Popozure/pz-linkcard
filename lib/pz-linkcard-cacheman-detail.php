@@ -17,12 +17,15 @@
 	if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
 		check_admin_referer('pz-cacheman');
 	}
-	$action = $_POST['action'] ?? ($_GET['action'] ?? '');
-	$action = is_string($action) ? sanitize_key(wp_unslash($action)) : '';
-	$data = isset($_POST['data']) && is_array($_POST['data']) ? $_POST['data'] : null;
+	$action = isset($_POST['action']) && is_string($_POST['action']) ? sanitize_key(wp_unslash($_POST['action']))
+		: (isset($_GET['action']) && is_string($_GET['action']) ? sanitize_key(wp_unslash($_GET['action'])) : '');
+	// Card fields need their original text; pz_SetCache() normalizes URLs, types, lengths, and database columns.
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+	$data = isset($_POST['data']) && is_array($_POST['data']) ? wp_unslash($_POST['data']) : null;
 	$scroll_now = isset($_POST['scroll_now']) ? absint($_POST['scroll_now']) : 0;
-	$return_url = $_POST['return_url'] ?? ($_GET['return_url'] ?? '');
-	$return_url = is_string($return_url) ? wp_validate_redirect(esc_url_raw(wp_unslash($return_url)), '') : '';
+	$return_url = isset($_POST['return_url']) && is_string($_POST['return_url']) ? esc_url_raw(wp_unslash($_POST['return_url']))
+		: (isset($_GET['return_url']) && is_string($_GET['return_url']) ? esc_url_raw(wp_unslash($_GET['return_url'])) : '');
+	$return_url = wp_validate_redirect($return_url, '');
 	$cache_id = absint($_POST['cache_id'] ?? ($_GET['cache_id'] ?? 0));
 	if (isset($_POST['click-period']) || isset($_POST['click-page']) || isset($_POST['click-range-select'])) {
 		$action = 'click-log';
@@ -149,7 +152,7 @@
 				break;
 			}
 			foreach	($data			as	$key => $value ) {
-				$data[$key]			=	stripslashes($value );
+				if (!is_string($value)) { unset($data[$key]); }
 			}
 			$data	=	$this->pz_SetCache($data );
 			if	(isset($data ) && is_array($data ) && isset($data['id'] ) ) {

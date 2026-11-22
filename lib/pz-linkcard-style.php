@@ -110,6 +110,71 @@
 				$file_text = str_replace('/*OPTION*/', $css, $file_text );
 				break;
 			case 'falling-stars':
+				$falling_shape_path = 'M12 1 15.4 8.2 23 9.3 17.5 14.7 18.8 22.5 12 18.8 5.2 22.5 6.5 14.7 1 9.3 8.6 8.2Z';
+				$trail_lifetime = 3;
+				$falling_shapes_svg = '<svg xmlns="http://www.w3.org/2000/svg" width="480" height="600" viewBox="0 0 480 600"><style>@keyframes pz-lkc-star-spin{to{transform:rotate(-360deg)}}.star-core,.star-tail{transform-origin:12px 12px;animation:pz-lkc-star-spin 4.8s linear infinite}@keyframes pz-lkc-star-particle{0%{transform:translate(var(--trail-origin-x),var(--trail-origin-y)) scale(var(--trail-scale));opacity:var(--trail-opacity)}70%{opacity:var(--trail-opacity)}100%{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:0}}.star-particle{transform:translate(var(--trail-x),var(--trail-y)) scale(var(--trail-scale));opacity:var(--trail-opacity);animation:pz-lkc-star-particle '.$trail_lifetime.'s linear infinite}@media(prefers-reduced-motion:reduce){.star-core,.star-tail,.star-particle{animation:none/*IMPORTANT*/}}</style><defs><path id="shape" d="'.$falling_shape_path.'"/>';
+				$falling_star_templates = array(
+					array(16, 14, 1, 6, -1 ), array(442, 124, .7, 8, -3 ), array(90, 52, .85, 7, -2 ),
+					array(132, 90, .9, 6.5, -.5 ), array(323, 8, .75, 7.5, -5 ),
+					array(203, 134, .8, 8.5, -2.5 ), array(292, 178, .55, 9.5, -6 ),
+				);
+				$star_layout_seed = 2719;
+				$next_star_random = function() use (&$star_layout_seed ) {
+					$star_layout_seed = ($star_layout_seed * 251 + 19 ) % 65521;
+					return $star_layout_seed / 65521;
+				};
+				$falling_stars = array();
+				$falling_star_count = (int) round(count($falling_star_templates ) * 3 * .49 );
+				for ($layout_index = 0; $layout_index < $falling_star_count; $layout_index++ ) {
+					$star = $falling_star_templates[$layout_index % count($falling_star_templates )];
+					// Separate the diagonal paths, then scatter positions along them in a taller tile.
+					$star_route = ($layout_index + .5 + ($next_star_random() - .5 ) * .4 ) * 480 / $falling_star_count;
+					$star[1] = round(16 + $next_star_random() * 552, 2 );
+					$star[0] = round(fmod($star_route - .8 * $star[1] - 21.6 * $star[2] + 480, 480 ), 2 );
+					$star[4] = round(-$next_star_random() * $star[3], 2 );
+					$falling_stars[] = $star;
+				}
+				$trail_particle_count = 8;
+				foreach ($falling_stars as $star_index => $star ) {
+					// Give each star a distinct, repeatable tail without changing patterns on preview refresh.
+					$trail_seed = 1069 + $star_index * 997;
+					$next_trail_random = function() use (&$trail_seed ) {
+						$trail_seed = ($trail_seed * 251 + 19 ) % 65521;
+						return $trail_seed / 65521;
+					};
+					$falling_shapes_svg .= '<g id="trail-'.$star_index.'" fill="white">';
+					for ($trail_index = 0; $trail_index < $trail_particle_count; $trail_index++ ) {
+						$trail_distance = 20 + $next_trail_random() * 110;
+						$trail_angle = deg2rad(-51.34 + ($next_trail_random() - .5 ) * 70 );
+						$trail_fade = ($trail_distance - 20 ) / 110;
+						$trail_distance *= $trail_lifetime / 5;
+						$trail_scale = round((.20 + $next_trail_random() * .36 ) * 1.5, 3 );
+						$trail_origin_x = round(20 + ($next_trail_random() - .5 ) * 12 - 12 * $trail_scale, 3 );
+						$trail_origin_y = round(2 + ($next_trail_random() - .5 ) * 12 - 12 * $trail_scale, 3 );
+						// Offset the falling tile so each emitted particle drifts up and right on screen.
+						$trail_x = round($trail_origin_x + 480 / 27 * $trail_lifetime / $star[2] + cos($trail_angle ) * $trail_distance, 2 );
+						$trail_y = round($trail_origin_y - 600 / 27 * $trail_lifetime / $star[2] + sin($trail_angle ) * $trail_distance, 2 );
+						$trail_opacity = round(.88 - $trail_fade * .65, 2 );
+						$trail_spin_duration = round(2.8 + $next_trail_random() * 1.92, 2 );
+						$trail_spin_delay = round(-$next_trail_random() * 8, 2 );
+						$trail_emission_delay = round(-($trail_index + $next_trail_random() ) * $trail_lifetime / $trail_particle_count, 3 );
+						$falling_shapes_svg .= '<g class="star-particle" style="--trail-origin-x:'.$trail_origin_x.'px;--trail-origin-y:'.$trail_origin_y.'px;--trail-x:'.$trail_x.'px;--trail-y:'.$trail_y.'px;--trail-scale:'.$trail_scale.';--trail-opacity:'.$trail_opacity.';animation-delay:'.$trail_emission_delay.'s"><g class="star-tail" style="animation-duration:'.$trail_spin_duration.'s;animation-delay:'.$trail_spin_delay.'s"><use href="#shape"/></g></g>';
+					}
+					$falling_shapes_svg .= '</g>';
+				}
+				$falling_shapes_svg .= '</defs>';
+				foreach ($falling_stars as $star_index => $star ) {
+					// Wrap stars and their tails across the repeating tile edges.
+					foreach (array(-480, 0, 480 ) as $horizontal_offset ) {
+						foreach (array(0, 600 ) as $vertical_offset ) {
+							$falling_shapes_svg .= '<g transform="translate('.($star[0] + $horizontal_offset ).' '.($star[1] + $vertical_offset ).') scale('.$star[2].')"><use href="#trail-'.$star_index.'"/><g class="star-core" style="animation-duration:'.round($star[3] * .8, 2 ).'s;animation-delay:'.$star[4].'s"><use href="#shape" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round"/></g></g>';
+						}
+					}
+				}
+				$falling_shapes_svg .= '</svg>';
+				$falling_background_size = '480px 600px';
+				$falling_duration = '27s';
+				$falling_animation = 'pz-lkc-stars-fall';
 				$css = '.lkc-external-wrap, .lkc-internal-wrap { position: relative; isolation: isolate; }';
 				$css .= '.lkc-external-wrap::before, .lkc-internal-wrap::before { content: ""; position: absolute; inset: 0; z-index: 0; border-radius: inherit; background-image: url("data:image/svg+xml,'.rawurlencode($falling_shapes_svg ).'"); background-repeat: repeat; background-size: '.$falling_background_size.'; pointer-events: none; animation: '.$falling_animation.' '.$falling_duration.' linear infinite; }';
 				$css .= '.lkc-external-wrap, .lkc-internal-wrap { --pz-lkc-stars-enabled: 1; }';

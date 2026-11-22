@@ -7,11 +7,7 @@
 	// 次回生存確認日時を越えているものを古い順に必要件数だけ抽出
 	$max_count	=	max(1, intval($this->options['alive-period-num'] ) );
 	$candidate_count	=	$max_count * 3;
-	$proc_datas	=	$wpdb->get_results($wpdb->prepare(
-		"SELECT id,url,domain,alive_nexttime FROM $this->db_card WHERE alive_nexttime < %d ORDER BY alive_nexttime ASC, id ASC LIMIT %d",
-		$this->now,
-		$candidate_count
-	) );
+	$proc_datas	=	$wpdb->get_results($wpdb->prepare("SELECT id,url,domain,alive_nexttime FROM %i WHERE alive_nexttime < %d ORDER BY alive_nexttime ASC, id ASC LIMIT %d", $this->db_card, $this->now, $candidate_count) );
 	if	(is_array($proc_datas ) && count($proc_datas ) > 1 ) {
 		usort($proc_datas, function($a, $b ) {
 			$domain_order	=	strcmp((string) $a->domain, (string) $b->domain );
